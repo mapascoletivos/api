@@ -9,7 +9,7 @@
 * Map edit;
 * Add pre-processed layers of OpenStreetMap data related to education, culture, transports, sports and others;
 
-## Techonology
+## Technology
 
 * Back-end: Node.js, MongoDB, Express
 * Front-end: Leaflet
