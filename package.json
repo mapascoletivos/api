@@ -31,7 +31,8 @@
     "nodemon": "latest",
     "mocha": "latest",
     "should": "latest",
-    "supertest": "latest"
+    "supertest": "latest",
+    "zombie":"latest"
   },
   "keywords": [
     "mapas",

@@ -10,7 +10,8 @@ var passportOptions = {
 }
 
 // controllers
-var home = require('home')
+var home = require('home'),
+	users = require('users')
 
 /**
  * Expose
@@ -20,4 +21,6 @@ module.exports = function (app, passport) {
 
   app.get('/', home.index)
 
+  // Users routes
+  //app.get('/signup', users.index)
 }
