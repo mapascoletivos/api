@@ -1,15 +1,10 @@
 # Mapas Coletivos
 
-[Mapas Coletivos](http://www.mapascoletivos.com.br) is a collaborative mapping platform that currently uses  [Ushahidi](http://www.ushahidi.com/). Ecolab team is rewriting this platform to make it easier to create custom maps, mixing user generated data and OpenStreetMap pre-processed layers.
+[Mapas Coletivos](http://www.mapascoletivos.com.br) is a collaborative mapping platform that currently uses  [Ushahidi](http://www.ushahidi.com/). Ecolab team is rewriting this platform to make it easier to create custom maps, re-mixing user generated content and OpenStreetMap data.
 
-## Wanted features
+## The new platform
 
-* User profiles;
-* Map creation by user;
-* Map edit;
-* Add pre-processed layers of OpenStreetMap data related to education, culture, transports, sports and others;
+We don't exactly how it is going to be, but it should have this data from the current platform:
 
-## Technology
+* [mapascoletivos-20141001.zip](https://dl.dropboxusercontent.com/u/3291375/mapascoletivos/mapascoletivos-20141001.zip)
 
-* Back-end: Node.js, MongoDB, Express
-* Front-end: Leaflet
