@@ -3,9 +3,9 @@
  * Module dependencies
  */
 
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
-var userPlugin = require('mongoose-user')
+var mongoose = require('mongoose'),
+	Schema = mongoose.Schema,
+	userPlugin = require('mongoose-user')
 
 /**
  * User schema
