@@ -1,4 +1,4 @@
-REPORTER = spec
+REPORTER = nyan
 TESTS = test/*.js test/**/*.js test/**/**/*.js
 
 test:
