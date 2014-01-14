@@ -3,23 +3,28 @@
  * Module dependencies.
  */
 
-var mongoose = require('mongoose')
-var passportOptions = {
-  failureFlash: 'Invalid email or password.',
-  failureRedirect: '/login'
-}
+var mongoose = require('mongoose');
 
-// controllers
+/**
+ * Controllers dependencies.
+ */
+
 var home = require('home'),
 	users = require('users');
 
 /**
- * Expose
+ * Expose routes
  */
 
 module.exports = function (app, passport) {
 
-  app.get('/', home.index)
+  app.get('/', home.index);
+
+  // User routesb
+  app.get('/login', users.login);
+  // app.get('/signup', users.signup);
+  // app.get('/logout', users.logout);
+  // app.post('/users', users.create);
 
   // Feature routes 
   //app.post('/api/v1/feature', features.create);

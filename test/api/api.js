@@ -5,12 +5,12 @@
 
 var request = require('supertest')
 	, should = require('should')
-	, api = require('../server')
-	, http = require('http')
-	, assert = require('assert')
+	, app = require('../../server')
+	// , http = require('http')
+	// , assert = require('assert')
 	, mongoose = require('mongoose')
 	, User = mongoose.model('User')
-	, agent = request.agent(api);
+	, agent = request.agent(app);
 
 
 describe('API', function(){
