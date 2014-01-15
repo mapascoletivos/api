@@ -34,6 +34,26 @@ module.exports = function (app, passport) {
 	, users.session);
 
 	// Feature routes 
-	//app.post('/api/v1/feature', features.create);
+	// app.param('id', features.load)
+	// app.get('/features/new', auth.requiresLogin, features.new)
+	// app.post('/features', auth.requiresLogin, features.create)
+	// app.get('/features/:id', features.show)
+	// app.put('/features/:id', articleAuth, features.update)
+	// app.del('/features/:id', articleAuth, features.destroy)
+	// app.put('/features/:feaureId/add/media/:featureId', layerAuth, layers.addFeature)
+
+	// Layers routes
+	// app.param('layerId', layers.load)
+	// app.get('/layers/new', auth.requiresLogin, layers.new)
+	// app.post('/layers', auth.requiresLogin, layers.create)
+	// app.get('/layers/:layerId', layers.show)
+	// app.put('/layers/:layerId', articleAuth, layers.update)
+	// app.del('/layers/:layerId', articleAuth, layers.destroy)
+	// app.put('/layers/:layerId/add/feature/:featureId', layerAuth, layers.addFeature)
+	// app.put('/layers/:layerId/remove/feature/:featureId', layerAuth, layers.addFeature)	
+	// app.put('/layers/:layerId/add/media/:mediaId', layerAuth, layers.addFeature)
+	// app.put('/layers/:layerId/remove/media/:mediaId', layerAuth, layers.addFeature)	
+	// app.put('/layers/:layerId/associate/media/:mediaId/to/feature/:featureId', layerAuth, layers.addFeature)
+	// app.put('/layers/:layerId/dissociate/media/:mediaId/from/feature/:featureId', layerAuth, layers.addFeature)
 
 }
