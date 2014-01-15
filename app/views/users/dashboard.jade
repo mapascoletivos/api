@@ -1,0 +1,10 @@
+extends ../layouts/default
+
+block main
+
+block content
+
+	- if (req.isAuthenticated())
+		p Dashboard.
+	- else
+		p Please login.

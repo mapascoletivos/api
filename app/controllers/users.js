@@ -4,11 +4,11 @@
  */
 
 var mongoose = require('mongoose')
-  , User = mongoose.model('User');
-  //, utils = require('../../lib/utils');
+  , User = mongoose.model('User')
+  , utils = require('../../lib/utils');
 
 var login = function (req, res) {
-  var redirectTo = req.session.returnTo ? req.session.returnTo : '/';
+  var redirectTo = req.session.returnTo ? req.session.returnTo : '/dashboard';
   delete req.session.returnTo;
   res.redirect(redirectTo);
 }
@@ -83,7 +83,7 @@ exports.create = function (req, res) {
 }
 
 /**
- *  Show profile
+ *  Show a user profile
  */
 
 exports.show = function (req, res) {
@@ -93,6 +93,20 @@ exports.show = function (req, res) {
     user: user
   });
 }
+
+/**
+ *  Show user dashboard
+ */
+exports.dashboard = function (req, res) {
+
+  // if a session exists, show dashboard
+  if (req.session.user) return res.render('users/dashboard',{user: req.session.user});
+  
+  // if not, respond with proper error code
+  res.status(401).render('users/dashboard');
+   
+}
+
 
 /**
  * Find user by id
