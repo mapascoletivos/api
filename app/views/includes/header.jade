@@ -1,10 +1,14 @@
 header
-  nav(class="navbar navbar-default navbar-fixed-top" role="navigation")
-    .container
-      .navbar-header
-        a(class="navbar-brand" href="/") Mapas Coletivos
-      ul.nav.navbar-nav.navbar-right
-        li 
-          a.signup(href="/signup") Registrar
-        li 
-          a.login(href="/login") Entrar
+	nav(class="navbar navbar-default navbar-fixed-top" role="navigation")
+		.container
+			.navbar-header
+				a(class="navbar-brand" href="/") Mapas Coletivos
+				ul.nav.navbar-nav.navbar-right
+					- if (req.isAuthenticated())
+						li
+							a(href="/dashboard", title="Dashboard") Dashboard
+						li
+							a(href="/logout", title="logout") Logout
+					- else
+						li 
+							a.login(href="/login") Entrar

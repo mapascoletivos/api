@@ -18,15 +18,22 @@ var home = require('home'),
 
 module.exports = function (app, passport) {
 
-  app.get('/', home.index);
+	app.get('/', home.index);
 
-  // User routesb
-  app.get('/login', users.login);
-  // app.get('/signup', users.signup);
-  // app.get('/logout', users.logout);
-  // app.post('/users', users.create);
+	// User routes
+	app.get('/login', users.login);
+	app.get('/signup', users.signup);
+	app.get('/logout', users.logout);
+	app.post('/users', users.create)
+	app.get('/dashboard', users.dashboard);
+	app.post('/users/session',
+		passport.authenticate('local', {
+		  failureRedirect: '/login',
+		  failureFlash: 'Invalid email or password.'
+		})
+	, users.session);
 
-  // Feature routes 
-  //app.post('/api/v1/feature', features.create);
+	// Feature routes 
+	//app.post('/api/v1/feature', features.create);
 
 }
