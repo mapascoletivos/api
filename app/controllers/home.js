@@ -4,7 +4,13 @@
  */
 
 exports.index = function (req, res) {
-  res.render('home', {
-    title: 'Mapas Coletivos'
-  })
+	if(req.isAuthenticated()) {
+	  res.render('home', {
+	    title: 'Mapas Coletivos'
+	  })	
+	} else {
+		res.render('home/landing', {
+			title: 'Mapas Coletivos'
+		})
+	}
 }
