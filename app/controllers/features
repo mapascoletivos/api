@@ -1,0 +1,7 @@
+
+/**
+ * Module dependencies.
+ */
+
+var mongoose = require('mongoose')
+  , Feature = mongoose.model('Feature');
