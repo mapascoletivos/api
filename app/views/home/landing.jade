@@ -1,0 +1,19 @@
+doctype html
+html
+	include ../includes/head
+	body
+		header
+			nav(class="navbar navbar-default navbar-fixed-top" role="navigation")
+				.container
+					.navbar-header
+						a(class="navbar-brand" href="/")
+							img(alt="Mapas Coletivos" src="img/logo-big.png")
+						ul.nav.navbar-nav.navbar-right
+							- if (req.isAuthenticated())
+								li
+									a(href="/dashboard", title="Dashboard") Dashboard
+								li
+									a(href="/logout", title="logout") Logout
+							- else
+								li 
+									a.login(href="/login") Entrar
