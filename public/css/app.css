@@ -1,8 +1,85 @@
-
 body {
-  font: 13px Helvetica, arial, freesans, clean, sans-serif;
-  line-height: 1.4;
-  color: #333333;
-  background: #fff;
-  padding: 50px;
+	font: 14px "Open Sans", Helvetica, arial, freesans, clean, sans-serif;
+	line-height: 1.4;
+	color: #333333;
+	background: #fff;
+}
+
+h1,h2,h3 {
+	font-family: "Lato", sans-serif;
+	font-weight: 100;
+}
+
+img {
+	max-width: 100%;
+}
+
+a.button,
+.button,
+button,
+input[type=submit] {
+	background: #80d478;
+	padding: 20px;
+	text-transform: uppercase;
+	color: #fff;
+	text-decoration: none;
+	display: inline-block;
+	line-height: 100%;
+	border: 0;
+	cursor: pointer;
+}
+
+a.button.light-button,
+.button.light-button,
+button.light-button,
+input[type=submit].light-button {
+	opacity: .6;
+}
+
+#mast-header {
+	background: #ebf6ff;
+	padding: 10px 0;
+}
+
+#mast-header h1 {
+	text-indent: -9999px;
+	line-height: 0;
+	margin: 0;
+	padding: 0;
+}
+
+#mast-header h2 {
+	float: right;
+	text-transform: uppercase;
+	font-size: 18px;
+	color: #000;
+}
+
+#mast-header h1 img {
+	display: block;
+}
+
+#mast-header #mast-nav {
+	float: right;
+	margin: 0;
+}
+
+#mast-header #mast-nav li {
+	float: left;
+	margin: 0 0 0 1px;
+	padding: 0;
+}
+
+#mast-header #mast-nav li a {
+	font-size: 12px;
+	padding: 10px 15px;
+}
+
+.landing #mast-header {
+	padding: 60px 0;
+}
+
+.landing #mast-header #mast-nav li a {
+	font-size: 14px;
+	padding: 20px;
 }
