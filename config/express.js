@@ -46,7 +46,8 @@ module.exports = function (app, config, passport) {
     // setup less
     app.use(lessMiddleware({
       src: config.root + '/public',
-      compress: true
+      compress: true,
+      force: true
     }));
 
     // bodyParser should be above methodOverride
