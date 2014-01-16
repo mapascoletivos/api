@@ -1,21 +1,26 @@
 doctype html
 html
   include ../includes/head
+  block head
+    link(rel="stylesheet", href="/vendor/leaflet/leaflet.css")
   body
     include ../includes/header
-    .map-editor-container
-      #editor
-        .editor-content
-          .page-header
-            block main
-          .messages
-            include ../includes/messages
-          .content
-            block content
-      #map
-        block map
+    #map-editor(ng-app="mapEditor")
+      .map-editor-container
+        #editor
+          .editor-content
+            .page-header
+              block main
+            .messages
+              include ../includes/messages
+            .content
+              block content
+        #map
+          block map
     include ../includes/footer
     include ../includes/foot
     block javascript
       script(src="/vendor/leaflet/leaflet.js")
+      script(src="/vendor/angular.min.js")
+      script(src="/js/map-editor.js")
       link(rel="stylesheet", href="/vendor/leaflet/leaflet.css")
