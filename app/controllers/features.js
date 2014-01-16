@@ -4,7 +4,9 @@
  */
 
 var mongoose = require('mongoose'), 
-	Feature = mongoose.model('Feature');
+	Feature = mongoose.model('Feature'),
+	utils = require('../../lib/utils'),
+	extend = require('util')._extend;
   
 /**
  * Load
@@ -78,6 +80,38 @@ exports.create = function (req, res) {
 }
 
 /**
+ * Update article
+ */
+
+exports.update = function(req, res){
+  var feature = req.feature
+  feature = extend(feature, req.body)
+
+  feature.save(function(err) {
+    if (!err) {
+      return res.redirect('/features/' + feature._id)
+    }
+
+    res.render('features/edit', {
+      title: 'Edit Article',
+      feature: feature,
+      errors: err.errors
+    })
+  })
+}
+
+/**
+ * Edit an feature
+ */
+
+exports.edit = function (req, res) {
+  res.render('features/edit', {
+    title: 'Edit ' + req.feature.title,
+    feature: req.feature
+  })
+}
+
+/**
  * Show
  */
 
@@ -85,5 +119,17 @@ exports.show = function(req, res){
   res.render('features/show', {
     title: req.feature.title,
     feature: req.feature
+  })
+}
+
+/**
+ * Delete an article
+ */
+
+exports.destroy = function(req, res){
+  var feature = req.feature
+  feature.remove(function(err){
+    req.flash('info', 'Deleted successfully')
+    res.redirect('/features')
   })
 }

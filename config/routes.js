@@ -17,6 +17,12 @@ var
 	auth = require('./middlewares/authorization');
 
 /**
+ * Route middlewares
+ */
+
+var featureAuth = [auth.requiresLogin, auth.feature.hasAuthorization]
+
+/**
  * Expose routes
  */
 
@@ -44,8 +50,9 @@ module.exports = function (app, passport) {
 	app.get('/features/new', auth.requiresLogin, features.new)
 	app.post('/features', auth.requiresLogin, features.create)
 	app.get('/features/:featureId', features.show)
-	// app.put('/features/:id', articleAuth, features.update)
-	// app.del('/features/:id', articleAuth, features.destroy)
+	app.get('/features/:featureId/edit', featureAuth, features.edit)	
+	app.put('/features/:featureId', featureAuth, features.update)
+	app.del('/features/:featureId', featureAuth, features.destroy)
 	// app.put('/features/:feaureId/add/media/:featureId', layerAuth, layers.addFeature)
 
 	// Layers routes
