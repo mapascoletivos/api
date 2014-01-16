@@ -26,7 +26,8 @@
     "jade": "latest",
     "async": "latest",
     "forever": "latest",
-    "less": "latest"
+    "less": "latest",
+    "less-middleware": "latest"
   },
   "devDependencies": {
     "nodemon": "latest",

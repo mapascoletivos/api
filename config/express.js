@@ -33,6 +33,9 @@ module.exports = function (app, config, passport) {
   // use express favicon
   app.use(express.favicon())
 
+	// setup less
+	app.use(require('less-middleware')({ src: __dirname + '/public',compress: true }));
+
   app.use(express.static(config.root + '/public'))
   app.use(express.logger('dev'))
 
