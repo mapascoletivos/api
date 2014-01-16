@@ -5,4 +5,10 @@ block main
 	hr
 
 block content
-	p New Layer
+	#layer-edit
+		#layer-features(ng-controller="FeatureCtrl")
+			h3 Features
+			input(type="text" ng-model="query" placeholder="Find features")
+			ul
+				li(ng-repeat="feature in features | filter:query") {{feature.properties.title}}
+			p {{features.length}} features registered.
