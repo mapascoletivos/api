@@ -13,6 +13,7 @@ var
 	home = require('home'),
 	users = require('users'),
 	features = require('features'),
+	layers = require('layers'),
 	auth = require('./middlewares/authorization');
 
 /**
@@ -47,7 +48,7 @@ module.exports = function (app, passport) {
 
 	// Layers routes
 	// app.param('layerId', layers.load)
-	// app.get('/layers/new', auth.requiresLogin, layers.new)
+	app.get('/layers/new', auth.requiresLogin, layers.new)
 	// app.post('/layers', auth.requiresLogin, layers.create)
 	// app.get('/layers/:layerId', layers.show)
 	// app.put('/layers/:layerId', articleAuth, layers.update)
