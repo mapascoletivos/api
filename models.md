@@ -1,3 +1,8 @@
+# Models
+
+Some thoughts on how will be the models/database architecture
+
+```javascript
 User = {
   name: String
   email: String
@@ -7,30 +12,30 @@ User = {
   (isAdmin: Boolean)
   (isEditor: Boolean)
 }
-
+ 
 (UserPrileveges = {
   title: String
   priveleges: ''
 })
-
+ 
 Activity = {
   user: User
   type: ActivityType
   date: Date
 }
-
+ 
 ActivityType = {
   title: String
   template: String
 }
-
+ 
 Star = {
   user: User
   target: Map || Feature || Layer || Media
   date: Date
   inactive: Boolean
 }
-
+ 
 Feature = {
   creator: User
   geometry: GeoJSON Feature
@@ -43,7 +48,7 @@ Feature = {
   visibility: Enum {Public, Visible, Private}
   stars: [Star]
 }
-
+ 
 Media = {
   creator: User
   version: Number
@@ -56,7 +61,7 @@ Media = {
   maps: [Map]
   stars: [Star]
 }
-
+ 
 LayerObject = {
   creator: User
   title: String
@@ -66,26 +71,26 @@ LayerObject = {
   stars: [Star]
   tags: [String]
 }
-
+ 
 FeatureLayer = {
-  mediaCollection: [Media]
-  data: [{
-    feature: feature_id,
-    media: [media_id]
+  medias: [Media]
+  features: [{
+    Feature: feature_id,
+    [Media]
   }]
 }
-
+ 
 TileLayer = {
   url: String
   attribution: String
   center: [Number, Number, Number]
   bounds: [Number, Number, Number, Number]
 }
-
+ 
 TileJsonLayer = {
   url: String
 }
-
+ 
 Map = {
   creator: User
   createdAt: Date
@@ -100,3 +105,4 @@ Map = {
   medias: [Media]
   stars: [Star]
 }
+```
