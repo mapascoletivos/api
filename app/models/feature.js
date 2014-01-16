@@ -27,3 +27,25 @@ var FeatureSchema = new Schema({
  **/
 
 FeatureSchema.index({ loc: '2dsphere' })
+
+/**
+ * Statics
+ */
+
+FeatureSchema.statics = {
+
+	/**
+	 * Find feature by id
+	 *
+	 * @param {ObjectId} id
+	 * @param {Function} cb
+	 * @api private
+	 */
+
+	load: function (id, cb) {
+		this.findOne({ _id : id })
+			.exec(cb)
+	}
+}
+
+mongoose.model('Feature', FeatureSchema)

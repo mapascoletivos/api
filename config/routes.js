@@ -9,8 +9,11 @@ var mongoose = require('mongoose');
  * Controllers dependencies.
  */
 
-var home = require('home'),
-	users = require('users');
+var 
+	home = require('home'),
+	users = require('users'),
+	features = require('features'),
+	auth = require('./middlewares/authorization');
 
 /**
  * Expose routes
@@ -34,10 +37,10 @@ module.exports = function (app, passport) {
 	, users.session);
 
 	// Feature routes 
-	// app.param('id', features.load)
-	// app.get('/features/new', auth.requiresLogin, features.new)
-	// app.post('/features', auth.requiresLogin, features.create)
-	// app.get('/features/:id', features.show)
+  app.param('featureId', features.load)
+	app.get('/features/new', auth.requiresLogin, features.new)
+	app.post('/features', auth.requiresLogin, features.create)
+	app.get('/features/:featureId', features.show)
 	// app.put('/features/:id', articleAuth, features.update)
 	// app.del('/features/:id', articleAuth, features.destroy)
 	// app.put('/features/:feaureId/add/media/:featureId', layerAuth, layers.addFeature)

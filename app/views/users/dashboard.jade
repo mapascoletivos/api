@@ -5,6 +5,8 @@ block main
 block content
 
 	- if (req.isAuthenticated())
-		p Dashboard.
+		p Dashboard
+		a(href="/features/new") New Feature
+
 	- else
 		p Please login.
