@@ -1,0 +1,21 @@
+doctype html
+html
+  include ../includes/head
+  body
+    include ../includes/header
+    .map-editor-container
+      #editor
+        .editor-content
+          .page-header
+            block main
+          .messages
+            include ../includes/messages
+          .content
+            block content
+      #map
+        block map
+    include ../includes/footer
+    include ../includes/foot
+    block javascript
+      script(src="/vendor/leaflet/leaflet.js")
+      link(rel="stylesheet", href="/vendor/leaflet/leaflet.css")
