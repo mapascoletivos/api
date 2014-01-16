@@ -17,11 +17,8 @@ Requirements:
 * npm 1.2.x
 * MongoDB
 
-Local install:
+Clone locally: `git clone git@github.com:oeco/mapascoletivos.git`
 
-* Create database `mapascoletivos` in MongoDB;
-* Run `npm install`
+Install: `npm install`
 
-Test:
-
-* Run `npm test`
+Test: `npm test`
