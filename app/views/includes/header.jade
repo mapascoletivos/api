@@ -1,14 +1,21 @@
-header
-	nav(class="navbar navbar-default navbar-fixed-top" role="navigation")
+header#mast-header
+	nav(class="navbar" role="navigation")
 		.container
-			.navbar-header
-				a(class="navbar-brand" href="/") Mapas Coletivos
-				ul.nav.navbar-nav.navbar-right
+			.six.columns
+				h1
+					a(class="brand" href="/") Mapas Coletivos
+						img(alt="Mapas Coletivos" src="/img/logo-small.png")
+			.six.columns
+				ul#mast-nav
 					- if (req.isAuthenticated())
 						li
-							a(href="/dashboard", title="Dashboard") Dashboard
+							a.button(href="/explore", title="Explorar") Explorar
 						li
-							a(href="/logout", title="logout") Logout
+							a.button(href="/dashboard", title="Dashboard") Dashboard
+						li
+							a.button(href="/logout", title="logout") Logout
 					- else
+						li
+							a.button.light-button(href="/explore", title="Explorar") Explorar
 						li 
-							a.login(href="/login") Entrar
+							a.button.login(href="/login") Entrar
