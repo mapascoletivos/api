@@ -31,7 +31,7 @@ exports.new = function(req, res){
 }
 
 /**
- * Create an feature
+ * Create a feature
  */
 
 exports.create = function (req, res) {
