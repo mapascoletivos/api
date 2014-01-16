@@ -64,9 +64,49 @@
 /* #Big screens
 ===================================================*/
 
+    /* Note: Design for a width of 1680px */
+
+    @media only screen and (min-width: 1680px) {
+        .container                                  { width: 1680px; }
+        .container .column,
+        .container .columns                         { margin-left: 20px; margin-right: 20px;  }
+        .row                                        { margin-bottom: 40px; }
+        .column.alpha, .columns.alpha               { margin-left: 0; }
+        .column.omega, .columns.omega               { margin-right: 0; }
+        
+        .container .one.column                      { width: 100px;  }
+        .container .two.columns                     { width: 240px; }
+        .container .three.columns                   { width: 380px; }
+        .container .four.columns                    { width: 520px; }
+        .container .five.columns                    { width: 660px; }
+        .container .six.columns                     { width: 800px; }
+        .container .seven.columns                   { width: 940px; }   
+        .container .eight.columns                   { width: 1080px; }
+        .container .nine.columns                    { width: 1220px; }
+        .container .ten.columns                     { width: 1360px; }   
+        .container .eleven.columns                  { width: 1500px; }   
+        .container .twelve.columns                  { width: 1640px; }
+        
+        .container .one-third.column                { width: 520px; }
+        .container .two-thirds.column               { width: 1080px; }
+
+        /* Offsets */
+        .container .offset-by-one                   { margin-left: 140px;  }
+        .container .offset-by-two                   { margin-left: 280px; }
+        .container .offset-by-three                 { margin-left: 420px; }
+        .container .offset-by-four                  { margin-left: 560px; }
+        .container .offset-by-five                  { margin-left: 700px; }
+        .container .offset-by-six                   { margin-left: 840px; }
+        .container .offset-by-seven                 { margin-left: 980px; }
+        .container .offset-by-eight                 { margin-left: 1120px; }
+        .container .offset-by-nine                  { margin-left: 1260px; }
+        .container .offset-by-ten                   { margin-left: 1400px; }
+        .container .offset-by-eleven                { margin-left: 1540px; }
+    }
+
     /* Note: Design for a width of 1200px */
 
-    @media only screen and (min-width: 1200px) {
+    @media only screen and (min-width: 1200px) and (max-width: 1679px) {
         .container                                  { width: 1200px; }
         .container .column,
         .container .columns                         { margin-left: 20px; margin-right: 20px;  }
@@ -87,8 +127,8 @@
         .container .eleven.columns                  { width: 1060px; }   
         .container .twelve.columns                  { width: 1160px; }
         
-        .container .one-third.column                { width: 380px; }
-        .container .two-thirds.column               { width: 780px; }
+        .container .one-third.column                { width: 360px; }
+        .container .two-thirds.column               { width: 760px; }
 
         /* Offsets */
         .container .offset-by-one                   { margin-left: 100px;  }
