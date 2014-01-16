@@ -45,7 +45,26 @@ FeatureSchema.statics = {
 	load: function (id, cb) {
 		this.findOne({ _id : id })
 			.exec(cb)
-	}
+	},
+	
+	/**
+	 * List articles
+	 *
+	 * @param {Object} options
+	 * @param {Function} cb
+	 * @api private
+	 */
+
+	list: function (options, cb) {
+		var criteria = options.criteria || {}
+
+		this.find(criteria)
+			.sort({'createdAt': -1}) // sort by date
+			.limit(options.perPage)
+			.skip(options.perPage * options.page)
+		.exec(cb)
+	}	
+	
 }
 
 mongoose.model('Feature', FeatureSchema)

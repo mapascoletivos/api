@@ -23,6 +23,7 @@ var
 module.exports = function (app, passport) {
 
 	app.get('/', home.index);
+	app.get('/explore', home.explore);
 
 	// User routes
 	app.get('/login', users.login);
@@ -38,7 +39,8 @@ module.exports = function (app, passport) {
 	, users.session);
 
 	// Feature routes 
-  app.param('featureId', features.load)
+	app.param('featureId', features.load)
+	app.get('/features', features.index)
 	app.get('/features/new', auth.requiresLogin, features.new)
 	app.post('/features', auth.requiresLogin, features.create)
 	app.get('/features/:featureId', features.show)
