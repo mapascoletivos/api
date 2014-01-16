@@ -44,7 +44,9 @@ module.exports = function (app, passport) {
 		})
 	, users.session);
 
-	// Feature routes 
+	/** 
+	 * Feature routes 
+	 **/
 	app.param('featureId', features.load)
 	app.get('/features', features.index)
 	app.get('/features/new', auth.requiresLogin, features.new)
@@ -55,8 +57,10 @@ module.exports = function (app, passport) {
 	app.del('/features/:featureId', featureAuth, features.destroy)
 	// app.put('/features/:feaureId/add/media/:featureId', layerAuth, layers.addFeature)
 
+	app.get('/api/v1/features/:featureId', features.showJSON)
+
 	// Layers routes
-	// app.param('layerId', layers.load)
+	app.param('layerId', layers.load)
 	app.get('/layers/new', auth.requiresLogin, layers.new)
 	// app.post('/layers', auth.requiresLogin, layers.create)
 	// app.get('/layers/:layerId', layers.show)

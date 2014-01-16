@@ -63,8 +63,8 @@ exports.new = function(req, res){
 
 exports.create = function (req, res) {
 	var feature = new Feature(req.body);
-	feature.creator = req.user
-
+	feature.creator = req.user;
+	
 	feature.save(function (err) {
 		if (!err) {
 			req.flash('success', 'Successfully created feature!')
@@ -120,6 +120,10 @@ exports.show = function(req, res){
     title: req.feature.title,
     feature: req.feature
   })
+}
+
+exports.showJSON = function(req, res){
+  res.json(req.feature);
 }
 
 /**
