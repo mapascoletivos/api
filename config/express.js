@@ -5,6 +5,7 @@
 var express = require('express')
 var mongoStore = require('connect-mongo')(express)
 var helpers = require('view-helpers')
+var lessMiddleware = require('less-middleware')
 var pkg = require('../package')
 var flash = require('connect-flash')
 var env = process.env.NODE_ENV || 'development'
@@ -33,9 +34,6 @@ module.exports = function (app, config, passport) {
   // use express favicon
   app.use(express.favicon())
 
-	// setup less
-	app.use(require('less-middleware')({ src: __dirname + '/public',compress: true }));
-
   app.use(express.static(config.root + '/public'))
   app.use(express.logger('dev'))
 
@@ -44,6 +42,13 @@ module.exports = function (app, config, passport) {
   app.set('view engine', 'jade')
 
   app.configure(function () {
+
+    // setup less
+    app.use(lessMiddleware({
+      src: config.root + '/public',
+      compress: true
+    }));
+
     // bodyParser should be above methodOverride
     app.use(express.bodyParser())
     app.use(express.methodOverride())
