@@ -1,0 +1,5 @@
+#layer-media.map-editor-subcontent
+	p Você tem {{media.length}} features nesta camada.
+	input(type="text" ng-model="search" placeholder="Find media")
+	ul
+		li(ng-repeat="m in media | filter:search") {{m.title}}

@@ -14,7 +14,11 @@ mapEditor.config(function($routeProvider, $locationProvider) {
 	$routeProvider
 		.when('/features', {
 			controller: 'FeatureCtrl',
-			templateUrl: '/partials/map-editor/features',
+			templateUrl: '/partials/map-editor/features'
+		})
+		.when('/media', {
+			controller: 'MediaCtrl',
+			templateUrl: '/partials/map-editor/media'
 		})
 		.otherwise({
 			redirectTo: '/features'
@@ -42,5 +46,18 @@ mapEditor.controller('FeatureCtrl', function($scope, $http) {
 		//map.fitBounds(featureLayer.getBounds());
 
 	});
+
+});
+
+mapEditor.controller('MediaCtrl', function($scope, $http) {
+
+	$scope.media = [
+		{
+			title: 'Media 01'
+		},
+		{
+			title: 'Media 02'
+		}
+	];
 
 });
