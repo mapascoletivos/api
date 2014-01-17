@@ -73,4 +73,9 @@ module.exports = function (app, passport) {
 	// app.put('/layers/:layerId/associate/media/:mediaId/to/feature/:featureId', layerAuth, layers.addFeature)
 	// app.put('/layers/:layerId/dissociate/media/:mediaId/from/feature/:featureId', layerAuth, layers.addFeature)
 
+	// Partials route and rendering
+	app.get('/partials/:view/:partial', function(req, res) {
+		res.render('partials/' + req.params.view + '/' + req.params.partial);
+	});
+
 }

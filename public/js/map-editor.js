@@ -1,21 +1,34 @@
-var mapEditor = angular.module('mapEditor', []);
+var mapEditor = angular.module('mapEditor', ['ngRoute']);
 var apiPrefix = '/api/v1';
 var map;
 var featureLayer;
 
-(function($) {
+map = L.map('map', {
+	center: [0, 0],
+	zoom: 2
+});
+map.addLayer(L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png'));
 
-	map = L.map('map', {
-		center: [0, 0],
-		zoom: 2
-	});
-	map.addLayer(L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png'));
+mapEditor.config(function($routeProvider, $locationProvider) {
 
-	mapEditor.controller('FeatureCtrl', function($scope, $http) {
+	$routeProvider
+		.when('/features', {
+			controller: 'FeatureCtrl',
+			templateUrl: '/partials/map-editor/features',
+		})
+		.otherwise({
+			redirectTo: '/features'
+		});
 
-		$http.get('/js/infoamazonia.json').success(function(features) {
+});
 
-			$scope.features = features;
+mapEditor.controller('FeatureCtrl', function($scope, $http) {
+
+	$http.get('/js/infoamazonia.json').success(function(features) {
+
+		$scope.features = features;
+
+		if(typeof featureLayer === 'undefined' && !map.hasLayer(featureLayer)) {
 
 			featureLayer = L.geoJson({
 				type: "FeatureCollection",
@@ -24,10 +37,10 @@ var featureLayer;
 
 			map.addLayer(featureLayer);
 
-			//map.fitBounds(featureLayer.getBounds());
+		}
 
-		});
+		//map.fitBounds(featureLayer.getBounds());
 
 	});
 
-})(jQuery);
+});
