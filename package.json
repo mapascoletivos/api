@@ -33,7 +33,8 @@
     "nodemon": "latest",
     "mocha": "latest",
     "should": "latest",
-    "supertest": "latest"
+    "supertest": "latest",
+    "factory-lady": "latest"
   },
   "keywords": [
     "mapas",
