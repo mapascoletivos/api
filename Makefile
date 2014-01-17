@@ -7,4 +7,7 @@ test:
     --ui tdd \
     $(TESTS)
 
+populate:
+	@NODE_ENV=development NODE_PATH=./app/controllers node lib/factories.js
+
 .PHONY: test
