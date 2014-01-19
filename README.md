@@ -21,4 +21,6 @@ Clone locally: `git clone git@github.com:oeco/mapascoletivos.git`
 
 Install: `npm install`
 
+Populate with random data: `make populate` 
+
 Test: `npm test`
