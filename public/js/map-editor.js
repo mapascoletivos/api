@@ -32,16 +32,18 @@ mapEditor.controller('FeatureCtrl', function($scope, $http) {
 
 		$scope.features = features;
 
-		if(typeof featureLayer === 'undefined' && !map.hasLayer(featureLayer)) {
+		if(typeof featureLayer !== 'undefined' && map.hasLayer(featureLayer)) {
 
-			featureLayer = L.geoJson({
-				type: "FeatureCollection",
-				features: features
-			});
-
-			map.addLayer(featureLayer);
+			map.removeLayer(featureLayer);
 
 		}
+
+		featureLayer = L.geoJson({
+			type: "FeatureCollection",
+			features: features
+		});
+
+		map.addLayer(featureLayer);
 
 		//map.fitBounds(featureLayer.getBounds());
 

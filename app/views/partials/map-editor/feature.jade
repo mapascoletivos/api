@@ -1,0 +1,5 @@
+form
+	input(type="text" placeholder="Feature title" ng-model="feature.properties.title")
+	button.btn.btn-primary(type="submit" ng-click="save()") Salvar
+	button(type="submit" ng-click="delete()" ng-hide="!feature") Remover
+	a.button(href="#/features") Cancelar
