@@ -27,7 +27,8 @@
     "async": "latest",
     "forever": "latest",
     "less": "latest",
-    "less-middleware": "latest"
+    "less-middleware": "latest",
+    "lorem-ipsum": "latest"
   },
   "devDependencies": {
     "nodemon": "latest",
