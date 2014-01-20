@@ -12,11 +12,19 @@ var mongoose = require('mongoose'),
 
 exports.index = function (req, res) {
 	if(req.isAuthenticated()) {
-		res.render('home', {
+		res.render('layouts/default', {
 			title: 'Mapas Coletivos'
 		})	
 	} else {
 		res.render('home/landing', {
+			title: 'Mapas Coletivos'
+		})
+	}
+}
+
+exports.app = function(req, res) {
+	if(req.isAuthenticated()) {
+		res.render('home', {
 			title: 'Mapas Coletivos'
 		})
 	}
