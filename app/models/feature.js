@@ -50,7 +50,7 @@ FeatureSchema.statics = {
 	},
 	
 	/**
-	 * List articles
+	 * List feature
 	 *
 	 * @param {Object} options
 	 * @param {Function} cb
