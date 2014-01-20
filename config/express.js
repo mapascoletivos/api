@@ -35,7 +35,7 @@ module.exports = function (app, config, passport) {
   // use express favicon
   app.use(express.favicon())
 
-  app.use(express.static(config.root + '/public'))
+
   app.use(express.logger('dev'))
 
   // views config
@@ -50,6 +50,8 @@ module.exports = function (app, config, passport) {
       compress: true,
       force: true
     }));
+    
+    app.use(express.static(config.root + '/public'))    
 
     // bodyParser should be above methodOverride
     app.use(express.bodyParser())
