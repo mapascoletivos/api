@@ -22,5 +22,44 @@ var LayerSchema = new Schema({
 
 })
 
+/**
+ * Statics
+ */
+
+LayerSchema.statics = {
+
+	/**
+	 * Find layer by id
+	 *
+	 * @param {ObjectId} id
+	 * @param {Function} cb
+	 * @api private
+	 */
+
+	load: function (id, cb) {
+		this.findOne({ _id : id })
+			.populate('creator')
+			.exec(cb)
+	},
+	
+	/**
+	 * List layers
+	 *
+	 * @param {Object} options
+	 * @param {Function} cb
+	 * @api private
+	 */
+
+	list: function (options, cb) {
+		var criteria = options.criteria || {}
+
+		this.find(criteria)
+			.sort({'createdAt': -1}) // sort by date
+			.limit(options.perPage)
+			.skip(options.perPage * options.page)
+		.exec(cb)
+	}	
+	
+}
 
 mongoose.model('Layer', LayerSchema)

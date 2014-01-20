@@ -126,10 +126,6 @@ exports.show = function(req, res){
   }
 }
 
-exports.showJSON = function(req, res){
-  res.json(req.feature);
-}
-
 /**
  * Delete an article
  */

@@ -6,45 +6,61 @@ angular.module('mapasColetivos.map', []);
 
 angular.module('mapasColetivos.user', []);
 
+angular.module('mapasColetivos.session', []);
+
 angular.module('mapasColetivos.media', []);
 
 angular.module('mapasColetivos.feature', []);
 
 angular.module('mapasColetivos.layer', [
-	'ngRoute',
 	'mapasColetivos.feature',
 	'mapasColetivos.media'
 ]);
 
 angular.module('mapasColetivos', [
+	'ngRoute',
 	'mapasColetivos.layer',
 	'mapasColetivos.user'
 ]);
 
 /*
- * App routes
+ * App routes and interceptors
  */
 
 angular.module('mapasColetivos').config([
 	'$routeProvider',
 	'$locationProvider',
-	function($routeProvider, $locationProvider) {
+	'$httpProvider',
+	function($routeProvider, $locationProvider, $httpProvider) {
+
+		$httpProvider.defaults.withCredentials = true;
+
 		$routeProvider
 			.when('/', {
 				controller: 'Index',
-				templateUrl: '/app/home'
+				templateUrl: '/template/home'
 			})
 			.when('/explore', {
 				controller: 'Explore',
-				templateUrl: '/app/explore'
+				templateUrl: '/template/explore'
 			})
 			.when('/dashboard', {
 				controller: 'Dashboard',
-				templateUrl: '/app/dashboard'
+				templateUrl: '/template/dashboard'
 			})
+			.when('/layers', {
+				controller: 'LayerCtrl',
+				templateUrl: '/template/layers'
+			})
+			.when('/layers/:layerId', {
+				controller: 'LayerCtrl',
+				templateUrl: '/template/layers/show'
+			});
+
+			/*
 			.when('/layers/new', {
 				controller: 'LayerNew',
-				templateUrl: '/app/layers/new'
+				templateUrl: '/template/layers/new'
 			})
 			.when('/layers/new/features', {
 				controller: 'FeatureCtrl',
@@ -62,14 +78,58 @@ angular.module('mapasColetivos').config([
 				controller: 'MediaCtrl',
 				templateUrl: '/partials/map-editor/media'
 			});
+			*/
 
 		$locationProvider.html5Mode(true);
+
+		var interceptor = ['$rootScope', '$q', '$location', function(scope, $q, $location) {
+
+			function success(response) {
+				return response;
+			}
+
+			function error(response) {
+
+				var status = response.status;
+
+				if (status == 401) {
+					window.location = '/login';
+					return;
+				}
+				// otherwise
+				return $q.reject(response);
+
+			}
+
+			return function (promise) {
+				return promise.then(success, error);
+			}
+
+		}];
+
+		$httpProvider.responseInterceptors.push(interceptor);
+	}
+]);
+
+angular.module('mapasColetivos').factory('SessionService', [
+	function($resource) {
+		var _this = this;
+			_this._data = {
+				user: window.user,
+				authenticated: !! window.user
+		};
+		return _this._data;
 	}
 ]);
 
 angular.module('mapasColetivos').controller('Index', [
 	'$scope',
-	function($scope) {
+	'SessionService',
+	function($scope, SessionService) {
+
+		console.log(SessionService);
+
+		$scope.global = SessionService;
 
 	}
 ]);
@@ -81,9 +141,19 @@ angular.module('mapasColetivos').controller('Explore', [
 	}
 ]);
 
+angular.module('mapasColetivos').controller('Dashboard', [
+	'$scope',
+	function($scope) {
+
+	}
+]);
+
 angular.module('mapasColetivos').controller('LayerNew', [
 	'$scope',
-	function() {
+	'SessionService',
+	function($scope, SessionService) {
+
+		$scope.global = SessionService;
 
 	}
 ]);
@@ -105,13 +175,64 @@ layerEditor.value('media', []);
 */
 
 /*
+ * Layer Services
+ */
+angular.module('mapasColetivos.layer').factory('LayerService', [
+	'$http',
+	'$q',
+	function($http, $q) {
+		return {
+			query: function(params) {
+				return $http({
+					url: '/api/v1/layers.json',
+					params: params,
+					method: 'GET'
+				});
+			},
+			get: function(layerId) {
+				return $http.get('/api/v1/layers/' + layerId + '.json');
+			}
+		}
+	}
+]);
+
+/*
+ * Layer controller
+ */
+angular.module('mapasColetivos.layer').controller('LayerCtrl', [
+	'$scope',
+	'$routeParams',
+	'LayerService',
+	function($scope, $routeParams, LayerService) {
+
+		// Single layer
+		if($routeParams.layerId) {
+
+			LayerService.get($routeParams.layerId).success(function(layer) {
+
+				$scope.layer = layer;
+
+			});
+
+		// All layers
+		} else {
+
+			LayerService.query({perPage: 5}).success(function(layers) {
+				$scope.layers = layers;
+			});
+
+		}
+
+	}
+]);
+
+/*
  * Get layer features
  */
 angular.module('mapasColetivos.feature').factory('FeaturesService', [
 	'$http',
 	'$q',
-	'features',
-	function($http, $q, features) {
+	function($http, $q) {
 		return {
 			query: function() {
 				return $http.get('/features');

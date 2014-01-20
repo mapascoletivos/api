@@ -3,7 +3,7 @@ header#mast-header.row
 		.container
 			.six.columns
 				h1
-					a(class="brand" href="/") Mapas Coletivos
+					a(class="brand" href="/" target="_self") Mapas Coletivos
 						img(alt="Mapas Coletivos" src="/img/logo-small.png")
 			.six.columns
 				ul#mast-nav
@@ -13,9 +13,9 @@ header#mast-header.row
 						li
 							a.button(href="/dashboard", title="Dashboard") Dashboard
 						li
-							a.button(href="/logout", title="logout") Logout
+							a.button(href="/logout", title="logout" target="_self") Logout
 					- else
 						li
 							a.button.light-button(href="/explore", title="Explorar") Explorar
 						li 
-							a.button.login(href="/login") Entrar
+							a.button.login(href="/login" target="_self") Entrar

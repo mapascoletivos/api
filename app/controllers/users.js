@@ -98,13 +98,7 @@ exports.show = function (req, res) {
  *  Show user dashboard
  */
 exports.dashboard = function (req, res) {
-
-  // if a session exists, show dashboard
-  if (req.session.user) return res.render('users/dashboard',{user: req.session.user});
-  
-  // if not, respond with proper error code
-  res.status(401).render('users/dashboard');
-   
+  res.render('users/dashboard',{user: req.session.user}); 
 }
 
 
