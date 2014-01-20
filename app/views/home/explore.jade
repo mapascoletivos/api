@@ -1,15 +1,6 @@
-extends ../layouts/default
+extends ../layouts/content
 
 block main
 
 block content
 	h2 Features
-		p
-			a(href='/features/new') Add new
-		- if (features.length)
-		- each feature in features
-			.feature
-				h2
-					a(href='/features/'+feature._id, title=feature.title) #{feature.title}
-					|  
-					a(href='/api/v1/features/'+feature._id, title=feature.title) JSON

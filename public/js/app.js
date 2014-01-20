@@ -1,3 +1,95 @@
+/*
+ * App modules
+ */
+
+angular.module('mapasColetivos.map', []);
+
+angular.module('mapasColetivos.user', []);
+
+angular.module('mapasColetivos.media', []);
+
+angular.module('mapasColetivos.feature', []);
+
+angular.module('mapasColetivos.layer', [
+	'ngRoute',
+	'mapasColetivos.feature',
+	'mapasColetivos.media'
+]);
+
+angular.module('mapasColetivos', [
+	'mapasColetivos.layer',
+	'mapasColetivos.user'
+]);
+
+/*
+ * App routes
+ */
+
+angular.module('mapasColetivos').config([
+	'$routeProvider',
+	'$locationProvider',
+	function($routeProvider, $locationProvider) {
+		$routeProvider
+			.when('/', {
+				controller: 'Index',
+				templateUrl: '/app/home'
+			})
+			.when('/explore', {
+				controller: 'Explore',
+				templateUrl: '/app/explore'
+			})
+			.when('/dashboard', {
+				controller: 'Dashboard',
+				templateUrl: '/app/dashboard'
+			})
+			.when('/layers/new', {
+				controller: 'LayerNew',
+				templateUrl: '/app/layers/new'
+			})
+			.when('/layers/new/features', {
+				controller: 'FeatureCtrl',
+				templateUrl: '/partials/map-editor/features'
+			})
+			.when('/layers/new/features/edit/:featureId', {
+				controller: 'FeatureEdit',
+				templateUrl: '/partials/map-editor/feature'
+			})
+			.when('/layers/new/features/new', {
+				controller: 'FeatureNew',
+				templateUrl: '/partials/map-editor/feature'
+			})
+			.when('/layers/new/media', {
+				controller: 'MediaCtrl',
+				templateUrl: '/partials/map-editor/media'
+			});
+
+		$locationProvider.html5Mode(true);
+	}
+]);
+
+angular.module('mapasColetivos').controller('Index', [
+	'$scope',
+	function($scope) {
+
+	}
+]);
+
+angular.module('mapasColetivos').controller('Explore', [
+	'$scope',
+	function($scope) {
+
+	}
+]);
+
+angular.module('mapasColetivos').controller('LayerNew', [
+	'$scope',
+	function() {
+
+	}
+]);
+
+/*
+
 var map = L.map('map', {
 	center: [0, 0],
 	zoom: 2
@@ -6,177 +98,154 @@ map.addLayer(L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png'));
 
 var apiPrefix = '/api/v1';
 
-var layerEditor = angular.module('layerEditor', ['ngRoute']);
-
 layerEditor.value('features', []);
 layerEditor.value('markers', []);
 layerEditor.value('media', []);
 
-layerEditor.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-
-	$routeProvider
-		.when('/features', {
-			controller: 'FeatureCtrl',
-			templateUrl: '/partials/map-editor/features'
-		})
-		.when('/features/edit/:featureId', {
-			controller: 'FeatureEdit',
-			templateUrl: '/partials/map-editor/feature'
-		})
-		.when('/features/new', {
-			controller: 'FeatureEdit',
-			templateUrl: '/partials/map-editor/feature'
-		})
-		.when('/media', {
-			controller: 'MediaCtrl',
-			templateUrl: '/partials/map-editor/media'
-		})
-		.otherwise({
-			redirectTo: '/features'
-		});
-
-}]);
+*/
 
 /*
  * Get layer features
  */
-layerEditor.factory('Features', ['$http', '$q', 'features', function($http, $q, features) {
-
-	var deferred = $q.defer();
-
-	$http.get('/js/infoamazonia.json')
-		.success(function(data) {
-
-			features = data;
-
-			deferred.resolve({
-
-				query: function() {
-					return features;
-				},
-				get: function(featureId) {
-					return features.filter(function(f) { return f.properties.id == featureId; })[0];
-				}
-
-			});
-
-		});
-
-	return deferred.promise;
-
-}]);
+angular.module('mapasColetivos.feature').factory('FeaturesService', [
+	'$http',
+	'$q',
+	'features',
+	function($http, $q, features) {
+		return {
+			query: function() {
+				return $http.get('/features');
+			},
+			get: function(featureId) {
+				return $http.get('/api/v1/features/' + featureId);
+			}
+		}
+	}
+]);
 
 /*
- * Add feature ID data to item in DOM
+ * Feature directive
+ * Add feature ID data to DOM item
  */
-layerEditor.directive('registerLayerData', function() {
+angular.module('mapasColetivos.feature').directive('FeatureData', function() {
 	return function(scope, element, attrs) {
-		element[0].setAttribute('data-feature', scope.feature.properties.id);
+		if(scope.feature._id) {
+			element[0].setAttribute('data-feature', scope.feature._id);
+		}
 	};
 });
 
 /*
- * Map of features
+ * Feature controllers
  */
-layerEditor.controller('FeatureMap', function() { });
+angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
+	'$scope',
+	'$http',
+	'FeaturesService',
+	'markers',
+	function($scope, $http, Features, markers) {
 
-/*
- * Feature controller
- */
-layerEditor.controller('FeatureCtrl', ['$scope', '$http', 'Features', 'markers', function($scope, $http, Features, markers) {
+		Features.query().success(function(features) {
 
-	Features.then(function(features) {
+			$scope.features = features;
 
-		$scope.features = features.query();
+			markers = [];
 
-		markers = [];
+			angular.forEach(features, function(value) {
 
-		layerEditor.featureLayer = L.geoJson(
-			{
-				// Format GeoJSON with obtained data
-				type: "FeatureCollection",
-				features: features.query()
-			},
-			{
-				// Store feature marker to module global value
-				pointToLayer: function(feature, LatLng) {
-					var marker = L.marker(LatLng);
-					markers.push(marker);
-					return marker;
-				}
+				var marker = L.marker(value.geometry.coordinates);
+				markers.push(marker);
+
+			});
+
+			layerEditor.featureLayer = L.featureGroup(markers);
+
+			// Add feature layer to map
+			if(layerEditor.featureLayer && !map.hasLayer(layerEditor.eatureLayer)) {
+
+				//map.addLayer(layerEditor.featureLayer);
+
 			}
-		);
 
-		// Add feature layer to map
-		if(layerEditor.featureLayer && !map.hasLayer(layerEditor.eatureLayer)) {
+			// fit bounds breaking map (leaflet issue)
+			//map.fitBounds(featureLayer.getBounds());
 
-			map.addLayer(layerEditor.featureLayer);
+			/*
+			 * Feature click event
+			 */
 
-		}
+			$scope.viewInMap = function($event) {
 
-		// fit bounds breaking map (leaflet issue)
-		//map.fitBounds(featureLayer.getBounds());
+				var featureID = $event.currentTarget.dataset.feature;
 
-		/*
-		 * Feature click event
-		 */
+				var feature = features.filter(function(f) { return f._id == featureID })[0];
 
-		$scope.click = function($event) {
+				map.setView(feature.geometry.coordinates, 10);
 
-			var featureID = $event.currentTarget.dataset.feature;
+			};
 
-			var marker = markers.filter(function(m) { return m.toGeoJSON().properties.id == featureID })[0];
-
-			map.setView(marker.getLatLng(), 10);
-
-		};
-
-	});
-
-}]);
-
-layerEditor.controller('FeatureEdit', ['$scope', '$routeParams', '$location', 'Features', function($scope, $routeParams, $location, Features) {
-
-	if($routeParams.featureId) {
-
-		Features.then(function(feature) {
-			$scope.feature = feature.get($routeParams.featureId);
 		});
 
 	}
+]);
 
-	$scope.save = function() {
-		feature = $scope.feature;
-		$location.path('/features');
-	}
+angular.module('mapasColetivos.feature').controller('FeatureEdit', [
+	'$scope',
+	'$routeParams',
+	'$location',
+	'FeaturesService',
+	function($scope, $routeParams, $location, Features) {
 
-	$scope.delete = function() {
-		$location.path('/features');
-	}
+		if($routeParams.featureId) {
 
-}]);
+			Features.get($routeParams.featureId).success(function(feature) {
+				$scope.feature = feature;
+			});
 
-layerEditor.controller('FeatureNew', ['$scope', '$location', 'features', function($scope, $location, features) {
-
-	$scope.save = function() {
-		features.push($scope.feature);
-	}
-
-	$scope.delete = function() {
-		$location.path('/features');
-	}
-
-}]);
-
-layerEditor.controller('MediaCtrl', ['$scope', '$http', function($scope, $http) {
-
-	$scope.media = [
-		{
-			title: 'Media 01'
-		},
-		{
-			title: 'Media 02'
 		}
-	];
 
-}]);
+		$scope.save = function() {
+			feature = $scope.feature;
+			$location.path('/features');
+		}
+
+		$scope.delete = function() {
+			$location.path('/features');
+		}
+
+	}
+]);
+
+angular.module('mapasColetivos.feature').controller('FeatureNew', [
+	'$scope',
+	'$location',
+	'features',
+	function($scope, $location, features) {
+
+		$scope.save = function() {
+			features.push($scope.feature);
+		}
+
+		$scope.delete = function() {
+			$location.path('/features');
+		}
+
+	}
+]);
+
+angular.module('mapasColetivos.media').controller('MediaCtrl', [
+	'$scope',
+	'$http',
+	function($scope, $http) {
+
+		$scope.media = [
+			{
+				title: 'Media 01'
+			},
+			{
+				title: 'Media 02'
+			}
+		];
+
+	}
+]);
