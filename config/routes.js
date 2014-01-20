@@ -29,6 +29,7 @@ var featureAuth = [auth.requiresLogin, auth.feature.hasAuthorization]
 module.exports = function (app, passport) {
 
 	app.get('/', home.index);
+	app.get('/home', home.app);
 
 	/** 
 	 * Users routes 
@@ -68,23 +69,5 @@ module.exports = function (app, passport) {
 
 	app.get('/api/v1/layers.:format?', layers.index);
 	app.get('/api/v1/layers/:layerId.:format?', layers.show);
-	
-	/*
-	 * Angular templates
-	 */
-	var templatePrefix = '/template';
-
-	app.get(templatePrefix + '/home', home.app);
-	app.get(templatePrefix + '/explore', home.explore);
-	app.get(templatePrefix + '/dashboard', auth.requiresLogin, users.dashboard);
-
-	// Layers
-	app.get(templatePrefix + '/layers', layers.templates.index);
-	app.get(templatePrefix + '/layers/show', layers.templates.show);
-
-	// Partials route and rendering
-	app.get('/partials/:view/:partial', function(req, res) {
-		res.render('partials/' + req.params.view + '/' + req.params.partial);
-	});
 
 }

@@ -38,23 +38,23 @@ angular.module('mapasColetivos').config([
 		$routeProvider
 			.when('/', {
 				controller: 'Index',
-				templateUrl: '/template/home'
+				templateUrl: '/home'
 			})
 			.when('/explore', {
 				controller: 'Explore',
-				templateUrl: '/template/explore'
+				templateUrl: '/views/explore.html'
 			})
 			.when('/dashboard', {
 				controller: 'Dashboard',
-				templateUrl: '/template/dashboard'
+				templateUrl: '/views/dashboard.html'
 			})
 			.when('/layers', {
 				controller: 'LayerCtrl',
-				templateUrl: '/template/layers'
+				templateUrl: '/views/layers/index.html'
 			})
 			.when('/layers/:layerId', {
 				controller: 'LayerCtrl',
-				templateUrl: '/template/layers/show'
+				templateUrl: '/views/layers/show.html'
 			});
 
 			/*
