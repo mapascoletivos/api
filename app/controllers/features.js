@@ -36,12 +36,13 @@ exports.index = function(req, res){
   Feature.list(options, function(err, features) {
     if (err) return res.render('500')
     Feature.count().exec(function (err, count) {
-      res.render('features/index', {
-        title: 'Features',
-        features: features,
-        page: page + 1,
-        pages: Math.ceil(count / perPage)
-      })
+      res.json(features);
+      // res.render('features/index', {
+      //   title: 'Features',
+      //   features: features,
+      //   page: page + 1,
+      //   pages: Math.ceil(count / perPage)
+      // })
     })
   })
 }
