@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
 	Feature = mongoose.model('Feature'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend;
-  
+	
 /**
  * Load
  */
@@ -26,29 +26,29 @@ exports.load = function(req, res, next, id){
  */
 
 exports.index = function(req, res){
-  var page = (req.param('page') > 0 ? req.param('page') : 1) - 1
-  var perPage = 30
-  var options = {
-    perPage: perPage,
-    page: page
-  }
+	var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
+	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
+	var options = {
+		perPage: perPage,
+		page: page
+	}
 
-  Feature.list(options, function(err, features) {
-    if (err) return res.render('500')
-    Feature.count().exec(function (err, count) {
+	Feature.list(options, function(err, features) {
+		if (err) return res.render('500')
+		Feature.count().exec(function (err, count) {
 
-      if (req.params.format == "json") { 
-        res.json(features); 
-      } else {
-        res.render('features/index', {
-          title: 'Features',
-          features: features,
-          page: page + 1,
-          pages: Math.ceil(count / perPage)
-        })
-      }
-    })
-  })
+			if (req.params.format == "json") { 
+				res.json(features); 
+			} else {
+				res.render('features/index', {
+					title: 'Features',
+					features: features,
+					page: page + 1,
+					pages: Math.ceil(count / perPage)
+				})
+			}
+		})
+	})
 }
 
 /**
@@ -56,10 +56,10 @@ exports.index = function(req, res){
  */
 
 exports.new = function(req, res){
-  res.render('features/new', {
-    title: 'New Feature',
-    feature: new Feature({})
-  })
+	res.render('features/new', {
+		title: 'New Feature',
+		feature: new Feature({})
+	})
 }
 
 /**
@@ -72,32 +72,32 @@ exports.create = function (req, res) {
 	
 	feature.save(function (err) {
 		if (!err) {
-      res.send(feature.id);
+			res.send(feature.id);
 		} else {
-      res.send(400, 'Bad request')
-    }
+			res.send(400, 'Bad request')
+		}
 	})
 }
 
 /**
- * Update article
+ * Update feature
  */
 
 exports.update = function(req, res){
-  var feature = req.feature
-  feature = extend(feature, req.body)
+	var feature = req.feature
+	feature = extend(feature, req.body)
 
-  feature.save(function(err) {
-    if (!err) {
-      return res.redirect('/features/' + feature._id)
-    }
+	feature.save(function(err) {
+		if (!err) {
+			return res.redirect('/features/' + feature._id)
+		}
 
-    res.render('features/edit', {
-      title: 'Edit Article',
-      feature: feature,
-      errors: err.errors
-    })
-  })
+		res.render('features/edit', {
+			title: 'Edit Feature',
+			feature: feature,
+			errors: err.errors
+		})
+	})
 }
 
 /**
@@ -105,10 +105,10 @@ exports.update = function(req, res){
  */
 
 exports.edit = function (req, res) {
-  res.render('features/edit', {
-    title: 'Edit ' + req.feature.title,
-    feature: req.feature
-  })
+	res.render('features/edit', {
+		title: 'Edit ' + req.feature.title,
+		feature: req.feature
+	})
 }
 
 /**
@@ -116,24 +116,24 @@ exports.edit = function (req, res) {
  */
 
 exports.show = function(req, res){
-  if (req.params.format == "json") { 
-    res.json(req.feature); 
-  } else {
-    res.render('features/show', {
-      title: req.feature.title,
-      feature: req.feature
-    })
-  }
+	if (req.params.format == "json") { 
+		res.json(req.feature); 
+	} else {
+		res.render('features/show', {
+			title: req.feature.title,
+			feature: req.feature
+		})
+	}
 }
 
 /**
- * Delete an article
+ * Delete an feature
  */
 
 exports.destroy = function(req, res){
-  var feature = req.feature
-  feature.remove(function(err){
-    req.flash('info', 'Deleted successfully')
-    res.redirect('/features')
-  })
+	var feature = req.feature
+	feature.remove(function(err){
+		req.flash('info', 'Deleted successfully')
+		res.redirect('/features')
+	})
 }
