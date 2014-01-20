@@ -4,6 +4,6 @@
 		a(href="#/features/new") Adicionar nova
 	input(type="text" ng-model="search" placeholder="Find features")
 	ul
-		li(ng-repeat="feature in features | filter:search" ng-click="click($event)" register-layer-data)
-			{{feature.properties.title}}
-			a(href="#/features/edit/{{feature.properties.id}}") Editar
+		li(ng-repeat="feature in features | filter:search" ng-click="viewInMap($event)" feature-data)
+			{{feature.title}}
+			a(href="#/features/edit/{{feature._id}}") Editar

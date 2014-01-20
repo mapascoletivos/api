@@ -1,13 +1,8 @@
 doctype html
 html
   include ../includes/head
-    include ../includes/header
-    .container
-      .page-header
-        block main
-      .messages
-        include ../includes/messages
-      .content
-        block content
-    include ../includes/footer
-    include ../includes/foot
+    body(ng-app="mapasColetivos")
+      include ../includes/header
+      .container.ng-view
+      include ../includes/footer
+      include ../includes/foot
