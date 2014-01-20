@@ -57,8 +57,9 @@ module.exports = function (app, passport) {
 	app.del('/features/:featureId', featureAuth, features.destroy)
 	// app.put('/features/:feaureId/add/media/:featureId', layerAuth, layers.addFeature)
 
-	app.get('/api/v1/features/', features.index);
-	app.get('/api/v1/features/:featureId', features.showJSON);
+	app.get('/api/v1/features.:format?', features.index	);
+	app.get('/api/v1/features/:featureId.:format?', features.show );
+	app.post('/api/v1/features', auth.requiresLogin, features.create)	
 
 
 	// Layers routes

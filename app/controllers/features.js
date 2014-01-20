@@ -36,13 +36,17 @@ exports.index = function(req, res){
   Feature.list(options, function(err, features) {
     if (err) return res.render('500')
     Feature.count().exec(function (err, count) {
-      res.json(features);
-      // res.render('features/index', {
-      //   title: 'Features',
-      //   features: features,
-      //   page: page + 1,
-      //   pages: Math.ceil(count / perPage)
-      // })
+
+      if (req.params.format == "json") { 
+        res.json(features); 
+      } else {
+        res.render('features/index', {
+          title: 'Features',
+          features: features,
+          page: page + 1,
+          pages: Math.ceil(count / perPage)
+        })
+      }
     })
   })
 }
@@ -68,15 +72,10 @@ exports.create = function (req, res) {
 	
 	feature.save(function (err) {
 		if (!err) {
-			req.flash('success', 'Successfully created feature!')
-			return res.redirect('/features/'+feature._id)
-		}
-
-		res.render('features/new', {
-			title: 'New Feature',
-			feature: feature,
-			errors: utils.errors(err.errors || err)
-		})
+      res.send(feature.id);
+		} else {
+      res.send(400, 'Bad request')
+    }
 	})
 }
 
@@ -117,10 +116,14 @@ exports.edit = function (req, res) {
  */
 
 exports.show = function(req, res){
-  res.render('features/show', {
-    title: req.feature.title,
-    feature: req.feature
-  })
+  if (req.params.format == "json") { 
+    res.json(req.feature); 
+  } else {
+    res.render('features/show', {
+      title: req.feature.title,
+      feature: req.feature
+    })
+  }
 }
 
 exports.showJSON = function(req, res){
