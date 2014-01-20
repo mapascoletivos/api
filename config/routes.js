@@ -29,7 +29,8 @@ var featureAuth = [auth.requiresLogin, auth.feature.hasAuthorization]
 module.exports = function (app, passport) {
 
 	app.get('/', home.index);
-	app.get('/explore', home.explore);
+	app.get('/app/home', home.app);
+	app.get('/app/explore', home.explore);
 
 	// User routes
 	app.get('/login', users.login);
@@ -61,7 +62,7 @@ module.exports = function (app, passport) {
 
 	// Layers routes
 	app.param('layerId', layers.load)
-	app.get('/layers/new', auth.requiresLogin, layers.new)
+	app.get('/app/layers/new', auth.requiresLogin, layers.new)
 	// app.post('/layers', auth.requiresLogin, layers.create)
 	// app.get('/layers/:layerId', layers.show)
 	// app.put('/layers/:layerId', articleAuth, layers.update)
