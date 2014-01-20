@@ -19,7 +19,8 @@ var FeatureSchema = new Schema({
 	tags: [String],
 	// medias: [{ type: Schema.ObjectId, ref: 'Media'}],	
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
-	title: { type: String, required: true }
+	title: { type: String, required: true },
+	description: { type: String }
 })
 
 /**
