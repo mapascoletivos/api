@@ -64,10 +64,13 @@ module.exports = function (app, passport) {
 	/** 
 	 * Layer routes 
 	 **/
-	app.param('layerId', layers.load)
-	app.get('/app/layers/new', auth.requiresLogin, layers.new)
-
+	app.param('layerId', layers.load);
+	app.get('/app/layers/new', auth.requiresLogin, layers.new);
+	app.get('/api/v1/layers/new', auth.requiresLogin, layers.newDraft);
+	app.put('/api/v1/layers/:layerId', auth.requiresLogin, layers.update);
 	app.get('/api/v1/layers.:format?', layers.index);
 	app.get('/api/v1/layers/:layerId.:format?', layers.show);
+
+
 
 }
