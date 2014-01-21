@@ -14,8 +14,8 @@ var mongoose = require('mongoose'),
 
 exports.load = function(req, res, next, id){
 	Layer.load(id, function (err, layer) {
-		if (err) return next(err)
-		if (!layer) return next(new Error('not found'))
+		if (err) return res.json(400, new Error('not found'));
+		if (!layer) res.json(400, new Error('not found'));
 		req.layer = layer
 		next()
 	})
@@ -34,9 +34,13 @@ exports.index = function(req, res){
   }
 
   Layer.list(options, function(err, layers) {
-    if (err) return res.render('500')
+    if (err) return res.json(400, err);
     Layer.count().exec(function (err, count) {
-      res.json(layers); 
+      if (!err) {
+        res.json({options: options, layersTotal: count, layers: layers});
+      } else {
+        res.json(400, err)
+      } 
     })
   })
 }
@@ -81,7 +85,6 @@ exports.create = function (req, res) {
  */
 
 exports.update = function(req, res){
-  console.log(req);
   var layer = req.layer
   layer = extend(layer, req.body)
 

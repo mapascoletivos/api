@@ -51,30 +51,17 @@ module.exports = function (app, passport) {
 	 * Feature routes 
 	 **/
 	app.param('featureId', features.load)
-	app.get('/features', features.index)
-	app.get('/features/new', auth.requiresLogin, features.new)
-	app.post('/features', auth.requiresLogin, features.create)
-	app.get('/features/:featureId', features.show)
-	app.get('/features/:featureId/edit', featureAuth, features.edit)	
-	app.put('/features/:featureId', featureAuth, features.update)
-	app.del('/features/:featureId', featureAuth, features.destroy)
-
-	app.get('/api/v1/features.:format?', features.index);
-	app.get('/api/v1/features/:featureId.:format?', features.show);
-	app.post('/api/v1/features', auth.requiresLogin, features.create);
-
+	app.get(apiPrefix + '/features', features.index);
+	app.get(apiPrefix + '/features/:featureId', features.show);
 	app.post(apiPrefix + '/features', auth.requiresLogin, features.create);
-	app.del(apiPrefix + '/features/:featureId', auth.requiresLogin, features.destroy);
 	app.put(apiPrefix + '/features/:featureId', auth.requiresLogin, features.update);
-	app.get(apiPrefix + '/features/:featureId', layers.show);
+	app.del(apiPrefix + '/features/:featureId', auth.requiresLogin, features.destroy);
 
 
 	/** 
 	 * Layer routes 
 	 **/
 	app.param('layerId', layers.load);
-	//app.get('/app/layers/new', auth.requiresLogin, layers.new);
-	//app.get('/api/v1/layers/new', auth.requiresLogin, layers.newDraft);
 	app.get(apiPrefix + '/layers', layers.index);
 	app.post(apiPrefix + '/layers', auth.requiresLogin, layers.create);
 	app.del(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.destroy);
