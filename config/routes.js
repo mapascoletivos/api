@@ -67,9 +67,11 @@ module.exports = function (app, passport) {
 	app.param('layerId', layers.load);
 	app.get('/app/layers/new', auth.requiresLogin, layers.new);
 	app.get('/api/v1/layers/new', auth.requiresLogin, layers.newDraft);
+	app.post('/api/v1/layers', auth.requiresLogin, layers.create)	
 	app.put('/api/v1/layers/:layerId', auth.requiresLogin, layers.update);
 	app.get('/api/v1/layers.:format?', layers.index);
-	app.get('/api/v1/layers/:layerId.:format?', layers.show);
+	app.get('/api/v1/layers/:layerId', layers.show);
+
 
 
 

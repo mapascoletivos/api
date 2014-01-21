@@ -56,6 +56,7 @@ exports.index = function(req, res){
  */
 
 exports.new = function(req, res){
+	console.log(new Feature({}));
 	res.render('features/new', {
 		title: 'New Feature',
 		feature: new Feature({})
