@@ -19,7 +19,7 @@ var LayerSchema = new Schema({
 	updateAt: {type: Date, default: Date.now},
 	tags: [String],
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
-
+	isDraft: {type: Boolean, default: true}
 })
 
 /**

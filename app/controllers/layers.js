@@ -77,6 +77,36 @@ exports.new = function(req, res){
 }
 
 /**
+ * New layer draft
+ */
+
+exports.newDraft = function(req, res){
+  var newLayer = new Layer();
+  newLayer.save(function(err){
+    res.json(newLayer);
+  })
+}
+
+/**
+ * Update layer
+ */
+
+exports.update = function(req, res){
+  var layer = req.layer
+  layer = extend(layer, req.body)
+
+  layer.save(function(err) {
+    if (!err) {
+      return res.json(layer)
+    } else {
+      return res.json(400, false)
+    }
+  })
+}
+
+
+
+/**
  * Templates
  */
 
