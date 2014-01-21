@@ -1,4 +1,20 @@
 /*
+
+var map = L.map('map', {
+	center: [0, 0],
+	zoom: 2
+});
+map.addLayer(L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png'));
+
+var apiPrefix = '/api/v1';
+
+layerEditor.value('features', []);
+layerEditor.value('markers', []);
+layerEditor.value('media', []);
+
+*/
+
+/*
  * App modules
  */
 
@@ -13,15 +29,18 @@ angular.module('mapasColetivos.media', []);
 angular.module('mapasColetivos.feature', []);
 
 angular.module('mapasColetivos.layer', [
+	'ngResource',
 	'mapasColetivos.feature',
 	'mapasColetivos.media'
 ]);
 
-angular.module('mapasColetivos', [
-	'ngRoute',
-	'mapasColetivos.layer',
-	'mapasColetivos.user'
-]);
+angular
+	.module('mapasColetivos', [
+		'ngRoute',
+		'mapasColetivos.layer',
+		'mapasColetivos.user'
+	])
+	.value('apiPrefix', '/api/v1');
 
 /*
  * App routes and interceptors
@@ -37,48 +56,37 @@ angular.module('mapasColetivos').config([
 
 		$routeProvider
 			.when('/', {
-				controller: 'Index',
+				controller: 'IndexCtrl',
 				templateUrl: '/home'
 			})
 			.when('/explore', {
-				controller: 'Explore',
+				controller: 'ExploreCtrl',
 				templateUrl: '/views/explore.html'
 			})
 			.when('/dashboard', {
-				controller: 'Dashboard',
+				controller: 'DashboardCtrl',
 				templateUrl: '/views/dashboard.html'
 			})
 			.when('/layers', {
 				controller: 'LayerCtrl',
 				templateUrl: '/views/layers/index.html'
 			})
+			.when('/layers/new', {
+				controller: 'LayerCtrl',
+				templateUrl: '/views/layers/index.html'
+			})
 			.when('/layers/:layerId', {
 				controller: 'LayerCtrl',
 				templateUrl: '/views/layers/show.html'
-			});
-
-			/*
-			.when('/layers/new', {
-				controller: 'LayerNew',
-				templateUrl: '/template/layers/new'
 			})
-			.when('/layers/new/features', {
-				controller: 'FeatureCtrl',
-				templateUrl: '/partials/map-editor/features'
+			.when('/layers/:layerId/:action', {
+				controller: 'LayerCtrl',
+				templateUrl: '/views/layers/edit.html'
 			})
-			.when('/layers/new/features/edit/:featureId', {
+			.when('/layers/:layerId/:action/feature/:featureId', {
 				controller: 'FeatureEdit',
-				templateUrl: '/partials/map-editor/feature'
-			})
-			.when('/layers/new/features/new', {
-				controller: 'FeatureNew',
-				templateUrl: '/partials/map-editor/feature'
-			})
-			.when('/layers/new/media', {
-				controller: 'MediaCtrl',
-				templateUrl: '/partials/map-editor/media'
+				templateUrl: '/views/features/edit.html'
 			});
-			*/
 
 		$locationProvider.html5Mode(true);
 
@@ -112,43 +120,16 @@ angular.module('mapasColetivos').config([
 ]);
 
 angular.module('mapasColetivos').factory('SessionService', [
-	function($resource) {
+	function() {
 		var _this = this;
-			_this._data = {
-				user: window.user,
-				authenticated: !! window.user
+		_this._data = {
+			authenticated: !! window.isAuthenticated
 		};
 		return _this._data;
 	}
 ]);
 
-angular.module('mapasColetivos').controller('Index', [
-	'$scope',
-	'SessionService',
-	function($scope, SessionService) {
-
-		console.log(SessionService);
-
-		$scope.global = SessionService;
-
-	}
-]);
-
-angular.module('mapasColetivos').controller('Explore', [
-	'$scope',
-	function($scope) {
-
-	}
-]);
-
-angular.module('mapasColetivos').controller('Dashboard', [
-	'$scope',
-	function($scope) {
-
-	}
-]);
-
-angular.module('mapasColetivos').controller('LayerNew', [
+angular.module('mapasColetivos').controller('IndexCtrl', [
 	'$scope',
 	'SessionService',
 	function($scope, SessionService) {
@@ -158,41 +139,38 @@ angular.module('mapasColetivos').controller('LayerNew', [
 	}
 ]);
 
-/*
+angular.module('mapasColetivos').controller('ExploreCtrl', [
+	'$scope',
+	function($scope) {
 
-var map = L.map('map', {
-	center: [0, 0],
-	zoom: 2
-});
-map.addLayer(L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png'));
+	}
+]);
 
-var apiPrefix = '/api/v1';
-
-layerEditor.value('features', []);
-layerEditor.value('markers', []);
-layerEditor.value('media', []);
-
-*/
+angular.module('mapasColetivos').controller('DashboardCtrl', [
+	'$scope',
+	'SessionService',
+	'$location',
+	function($scope, SessionService, $location) {
+		if(!SessionService.authenticated) {
+			window.location = '/login';
+		}
+	}
+]);
 
 /*
  * Layer Services
  */
-angular.module('mapasColetivos.layer').factory('LayerService', [
-	'$http',
-	'$q',
-	function($http, $q) {
-		return {
-			query: function(params) {
-				return $http({
-					url: '/api/v1/layers.json',
-					params: params,
-					method: 'GET'
-				});
-			},
-			get: function(layerId) {
-				return $http.get('/api/v1/layers/' + layerId + '.json');
+angular.module('mapasColetivos.layer').factory('Layer', [
+	'$resource',
+	'apiPrefix',
+	function($resource, apiPrefix) {
+
+		return $resource(apiPrefix + '/layers/:layerId', {'_csrf': window.token}, {
+			'update': {
+				method: 'PUT'
 			}
-		}
+		});
+
 	}
 ]);
 
@@ -201,23 +179,67 @@ angular.module('mapasColetivos.layer').factory('LayerService', [
  */
 angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 	'$scope',
+	'$location',
 	'$routeParams',
-	'LayerService',
-	function($scope, $routeParams, LayerService) {
+	'Layer',
+	function($scope, $location, $routeParams, Layer) {
+
+		// New layer
+		if($location.path() == '/layers/new') {
+
+			var draft = new Layer({
+				title: 'Untitled'
+			});
+			draft.$save(function(draft) {
+				$location.path('/layers/' + draft._id + '/edit/');
+			}, function(err) {
+				// TODO error handling
+				console.log(err);
+			});
 
 		// Single layer
-		if($routeParams.layerId) {
+		} else if($routeParams.layerId) {
 
-			LayerService.get($routeParams.layerId).success(function(layer) {
+			Layer.get({layerId: $routeParams.layerId}, function(layer) {
 
 				$scope.layer = layer;
+
+				if($routeParams.action == 'edit') {
+
+					$scope.submit = function() {
+
+						Layer.update({layerId: layer._id}, $scope.layer, function(layer) {
+							$location.path('/layers/' + layer._id);
+						}, function(err){
+							// TODO error handling
+						});
+
+					}
+
+					$scope.delete = function() {
+
+						Layer.delete({layerId: layer._id}, function(res) {
+							if(res.success) {
+								$location.path('/layers');
+							} else {
+								//TODO error handling
+								console.log(res);
+							}
+						}, function(err) {
+							// TODO error handling
+							console.log(err);
+						});
+
+					}
+
+				}
 
 			});
 
 		// All layers
 		} else {
 
-			LayerService.query({perPage: 5}).success(function(layers) {
+			Layer.query(function(layers) {
 				$scope.layers = layers;
 			});
 
@@ -227,20 +249,19 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 ]);
 
 /*
- * Get layer features
+ * Feature Services
  */
-angular.module('mapasColetivos.feature').factory('FeaturesService', [
-	'$http',
-	'$q',
-	function($http, $q) {
-		return {
-			query: function() {
-				return $http.get('/features');
-			},
-			get: function(featureId) {
-				return $http.get('/api/v1/features/' + featureId);
+angular.module('mapasColetivos.layer').factory('Feature', [
+	'$resource',
+	'apiPrefix',
+	function($resource, apiPrefix) {
+
+		return $resource(apiPrefix + '/features/:featureId', {'_csrf': window.token}, {
+			'update': {
+				method: 'PUT'
 			}
-		}
+		});
+
 	}
 ]);
 
@@ -262,7 +283,7 @@ angular.module('mapasColetivos.feature').directive('FeatureData', function() {
 angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 	'$scope',
 	'$http',
-	'FeaturesService',
+	'FeatureService',
 	'markers',
 	function($scope, $http, Features, markers) {
 
@@ -281,27 +302,13 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 			layerEditor.featureLayer = L.featureGroup(markers);
 
-			// Add feature layer to map
-			if(layerEditor.featureLayer && !map.hasLayer(layerEditor.eatureLayer)) {
-
-				//map.addLayer(layerEditor.featureLayer);
-
-			}
-
-			// fit bounds breaking map (leaflet issue)
-			//map.fitBounds(featureLayer.getBounds());
-
-			/*
-			 * Feature click event
-			 */
-
 			$scope.viewInMap = function($event) {
 
 				var featureID = $event.currentTarget.dataset.feature;
 
 				var feature = features.filter(function(f) { return f._id == featureID })[0];
 
-				map.setView(feature.geometry.coordinates, 10);
+				//map.setView(feature.geometry.coordinates, 10);
 
 			};
 

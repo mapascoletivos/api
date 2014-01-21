@@ -17,4 +17,10 @@ head
   link(rel="stylesheet", href="/vendor/leaflet/leaflet.css")
   link(rel="stylesheet", href="/css/app.css")
 
+  - if (req.isAuthenticated())
+    script(type="text/javascript").
+      window.isAuthenticated = true;
+      window.token = '!{req.csrfToken()}';
+      //window.user = !{JSON.stringify(req.user)};
+
   block head

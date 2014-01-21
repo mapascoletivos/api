@@ -13,7 +13,8 @@ var mongoose = require('mongoose'),
 exports.index = function (req, res) {
 	if(req.isAuthenticated()) {
 		res.render('layouts/default', {
-			title: 'Mapas Coletivos'
+			title: 'Mapas Coletivos',
+			user: req.user ? JSON.stringify(req.user) : 'null'
 		})	
 	} else {
 		res.render('home/landing', {

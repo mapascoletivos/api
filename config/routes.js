@@ -28,6 +28,8 @@ var featureAuth = [auth.requiresLogin, auth.feature.hasAuthorization]
 
 module.exports = function (app, passport) {
 
+	var apiPrefix = '/api/v1';
+
 	app.get('/', home.index);
 	app.get('/home', home.app);
 
@@ -65,14 +67,12 @@ module.exports = function (app, passport) {
 	 * Layer routes 
 	 **/
 	app.param('layerId', layers.load);
-	app.get('/app/layers/new', auth.requiresLogin, layers.new);
-	app.get('/api/v1/layers/new', auth.requiresLogin, layers.newDraft);
-	app.post('/api/v1/layers', auth.requiresLogin, layers.create)	
-	app.put('/api/v1/layers/:layerId', auth.requiresLogin, layers.update);
-	app.get('/api/v1/layers.:format?', layers.index);
-	app.get('/api/v1/layers/:layerId', layers.show);
-
-
-
+	//app.get('/app/layers/new', auth.requiresLogin, layers.new);
+	//app.get('/api/v1/layers/new', auth.requiresLogin, layers.newDraft);
+	app.get(apiPrefix + '/layers', layers.index);
+	app.post(apiPrefix + '/layers', auth.requiresLogin, layers.create);
+	app.del(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.destroy);
+	app.put(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.update);
+	app.get(apiPrefix + '/layers/:layerId', layers.show);
 
 }

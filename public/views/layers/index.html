@@ -1,10 +1,15 @@
-<div class="page-header">
-
-</div>
-<div class="content">
-	<div ng-repeat="layer in layers">
-		<p>
-			<a href="/layers/{{layer._id}}">{{layer.title}}</a>
-		</p>
+<div class="container">
+	<div class="page-header">
+		<div class="twelve columns row">
+			<h1>Layers</h1>
+			<p><a href="/layers/new">Nova layer</a></p>
+		</div>
+	</div>
+	<div class="content row">
+		<div class="three columns" ng-repeat="layer in layers">
+			<p>
+				<a href="/layers/{{layer._id}}">{{layer.title}}</a>
+			</p>
+		</div>
 	</div>
 </div>

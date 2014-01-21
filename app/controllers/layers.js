@@ -15,10 +15,10 @@ var mongoose = require('mongoose'),
 exports.load = function(req, res, next, id){
 	Layer.load(id, function (err, layer) {
 		if (err) return next(err)
-			if (!layer) return next(new Error('not found'))
-			req.layer = layer
-			next()
-		})
+		if (!layer) return next(new Error('not found'))
+		req.layer = layer
+		next()
+	})
 }
 
 /**
@@ -36,17 +36,7 @@ exports.index = function(req, res){
   Layer.list(options, function(err, layers) {
     if (err) return res.render('500')
     Layer.count().exec(function (err, count) {
-
-      if (req.params.format == "json") { 
-        res.json(layers); 
-      } else {
-        res.render('layers/index', {
-          title: 'layers',
-          layers: layers,
-          page: page + 1,
-          pages: Math.ceil(count / perPage)
-        })
-      }
+      res.json(layers); 
     })
   })
 }
@@ -70,29 +60,18 @@ exports.new = function(req, res){
 }
 
 /**
- * New layer draft
- */
-
-exports.newDraft = function(req, res){
-  var newLayer = new Layer();
-  newLayer.save(function(err){
-    res.json(newLayer);
-  })
-}
-
-/**
  * Create a layer
  */
 
 exports.create = function (req, res) {
-  var layer = new layer(req.body);
+  var layer = new Layer(req.body);
   layer.creator = req.user;
   
   layer.save(function (err) {
     if (!err) {
       res.json(layer);
     } else {
-      res.send(400, 'Bad request')
+      res.json(400, err)
     }
   })
 }
@@ -102,29 +81,30 @@ exports.create = function (req, res) {
  */
 
 exports.update = function(req, res){
+  console.log(req);
   var layer = req.layer
   layer = extend(layer, req.body)
 
   layer.save(function(err) {
     if (!err) {
-      return res.json(layer)
+      res.json(layer)
     } else {
-      return res.json(400, false)
+      res.json(400, false)
     }
   })
 }
 
-
-
 /**
- * Templates
+ * Delete layer
  */
 
-exports.templates = {
-	index: function(req, res) {
-		res.render('layers');
-	},
-	show: function(req, res) {
-		res.render('layers/show');
-	}
+exports.destroy = function(req, res){
+  var layer = req.layer
+  layer.remove(function(err){
+    if(err) {
+      res.json(400, err);
+    } else {
+      res.json({success: true});
+    }
+  })
 }
