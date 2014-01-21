@@ -144,6 +144,10 @@ angular.module('mapasColetivos.feature').factory('Feature', [
 	function($resource, apiPrefix) {
 
 		return $resource(apiPrefix + '/features/:featureId', {'_csrf': window.token}, {
+			'save': {
+				method: 'POST',
+				url: apiPrefix + '/layers/:layerId/features/:featureId'
+			},
 			'update': {
 				method: 'PUT'
 			}
