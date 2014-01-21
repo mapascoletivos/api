@@ -15,7 +15,7 @@ var mongoose = require('mongoose'),
 exports.load = function(req, res, next, id){
 	Feature.load(id, function (err, feature) {
 		if (err) return next(err)
-			if (!feature) return next(new Error('not found'))
+			if (!feature) return res.json(400, new Error('not found'));
 			req.feature = feature
 			next()
 		})
@@ -34,21 +34,24 @@ exports.index = function(req, res){
 	}
 
 	Feature.list(options, function(err, features) {
-		if (err) return res.render('500')
+		if (err) return res.json(400, err);
 		Feature.count().exec(function (err, count) {
-
-			if (req.params.format == "json") { 
-				res.json(features); 
+			if (!err) {
+				res.json({options: options, featuresTotal: count, features: features});
 			} else {
-				res.render('features/index', {
-					title: 'Features',
-					features: features,
-					page: page + 1,
-					pages: Math.ceil(count / perPage)
-				})
+				res.json(400, err)
 			}
 		})
 	})
+}
+
+
+/**
+ * Show
+ */
+
+exports.show = function(req, res){
+	res.json(req.feature)
 }
 
 /**
@@ -66,12 +69,13 @@ exports.new = function(req, res){
 exports.create = function (req, res) {
 	var feature = new Feature(req.body);
 	feature.creator = req.user;
+	feature.layer = req.layer;
 	
 	feature.save(function (err) {
 		if (!err) {
-			res.send(feature.id);
+			res.json(feature);
 		} else {
-			res.send(400, 'Bad request')
+			res.json(400, err)
 		}
 	})
 }
@@ -86,41 +90,11 @@ exports.update = function(req, res){
 
 	feature.save(function(err) {
 		if (!err) {
-			return res.redirect('/features/' + feature._id)
+			res.json(feature);
+		} else {
+			res.json(400, err)
 		}
-
-		res.render('features/edit', {
-			title: 'Edit Feature',
-			feature: feature,
-			errors: err.errors
-		})
 	})
-}
-
-/**
- * Edit an feature
- */
-
-exports.edit = function (req, res) {
-	res.render('features/edit', {
-		title: 'Edit ' + req.feature.title,
-		feature: req.feature
-	})
-}
-
-/**
- * Show
- */
-
-exports.show = function(req, res){
-	if (req.params.format == "json") { 
-		res.json(req.feature); 
-	} else {
-		res.render('features/show', {
-			title: req.feature.title,
-			feature: req.feature
-		})
-	}
 }
 
 /**
@@ -130,7 +104,10 @@ exports.show = function(req, res){
 exports.destroy = function(req, res){
 	var feature = req.feature
 	feature.remove(function(err){
-		req.flash('info', 'Deleted successfully')
-		res.redirect('/features')
-	})
+		if (err) {
+			res.json(400, err);
+		} else {
+			res.json({success: true});
+		}
+	});
 }
