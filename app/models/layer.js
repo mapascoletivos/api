@@ -14,7 +14,7 @@ var LayerSchema = new Schema({
 	title: { type: String, required: true },
 	description: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
-	features: [{type: Schema.ObjectId, ref: 'Features'}],
+	features: [{type: Schema.ObjectId, ref: 'Feature'}],
 	createdAt: {type: Date, default: Date.now},
 	updateAt: {type: Date, default: Date.now},
 	tags: [String],
@@ -39,6 +39,7 @@ LayerSchema.statics = {
 	load: function (id, cb) {
 		this.findOne({ _id : id })
 			.populate('creator')
+			.populate('features')
 			.exec(cb)
 	},
 	

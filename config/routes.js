@@ -63,6 +63,12 @@ module.exports = function (app, passport) {
 	app.get('/api/v1/features/:featureId.:format?', features.show);
 	app.post('/api/v1/features', auth.requiresLogin, features.create);
 
+	app.post(apiPrefix + '/features', auth.requiresLogin, features.create);
+	app.del(apiPrefix + '/features/:featureId', auth.requiresLogin, features.destroy);
+	app.put(apiPrefix + '/features/:featureId', auth.requiresLogin, features.update);
+	app.get(apiPrefix + '/features/:featureId', layers.show);
+
+
 	/** 
 	 * Layer routes 
 	 **/
