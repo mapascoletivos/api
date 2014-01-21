@@ -56,14 +56,7 @@ exports.index = function(req, res){
  */
 
 exports.show = function(req, res){
-  if (req.params.format == "json") { 
-    res.json(req.layer); 
-  } else {
-    res.render('layers/show', {
-      title: req.layer.title,
-      layer: req.layer
-    })
-  }
+  res.json(req.layer); 
 }
 
 /**
@@ -84,6 +77,23 @@ exports.newDraft = function(req, res){
   var newLayer = new Layer();
   newLayer.save(function(err){
     res.json(newLayer);
+  })
+}
+
+/**
+ * Create a layer
+ */
+
+exports.create = function (req, res) {
+  var layer = new layer(req.body);
+  layer.creator = req.user;
+  
+  layer.save(function (err) {
+    if (!err) {
+      res.json(layer);
+    } else {
+      res.send(400, 'Bad request')
+    }
   })
 }
 
