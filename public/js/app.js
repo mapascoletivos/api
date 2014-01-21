@@ -1,20 +1,4 @@
 /*
-
-var map = L.map('map', {
-	center: [0, 0],
-	zoom: 2
-});
-map.addLayer(L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png'));
-
-var apiPrefix = '/api/v1';
-
-layerEditor.value('features', []);
-layerEditor.value('markers', []);
-layerEditor.value('media', []);
-
-*/
-
-/*
  * App modules
  */
 
@@ -30,6 +14,7 @@ angular.module('mapasColetivos.feature', []);
 
 angular.module('mapasColetivos.layer', [
 	'ngResource',
+	'mapasColetivos.map',
 	'mapasColetivos.feature',
 	'mapasColetivos.media'
 ]);
@@ -119,6 +104,9 @@ angular.module('mapasColetivos').config([
 	}
 ]);
 
+/*
+ * Session service
+ */
 angular.module('mapasColetivos').factory('SessionService', [
 	function() {
 		var _this = this;
@@ -129,12 +117,83 @@ angular.module('mapasColetivos').factory('SessionService', [
 	}
 ]);
 
+/*
+ * Map service
+ */
+angular.module('mapasColetivos.map').factory('MapService', [
+	function() {
+		var map = undefined;
+		return {
+			getMap: function() {
+				return map;
+			},
+			setMap: function(val) {
+				map = val;
+			}
+		}
+	}
+]);
+
+/*
+ * Feature service
+ */
+angular.module('mapasColetivos.feature').factory('Feature', [
+	'$resource',
+	'apiPrefix',
+	function($resource, apiPrefix) {
+
+		return $resource(apiPrefix + '/features/:featureId', {'_csrf': window.token}, {
+			'update': {
+				method: 'PUT'
+			}
+		});
+
+	}
+]);
+
+/*
+ * Layer service
+ */
+angular.module('mapasColetivos.layer').factory('Layer', [
+	'$resource',
+	'apiPrefix',
+	function($resource, apiPrefix) {
+
+		return $resource(apiPrefix + '/layers/:layerId', {'_csrf': window.token}, {
+			'query': {
+				isArray: false,
+				method: 'GET'
+			},
+			'update': {
+				method: 'PUT'
+			}
+		});
+
+	}
+]);
+
+/*
+ * Layer features service
+ */
+angular.module('mapasColetivos.layer').factory('LayerFeatures', [
+	function() {
+		var features = [];
+		return {
+			getFeatures: function() {
+				return features;
+			},
+			setFeatures: function(val) {
+				features = val;
+				return features;
+			}
+		}
+	}
+]);
+
 angular.module('mapasColetivos').controller('IndexCtrl', [
 	'$scope',
 	'SessionService',
 	function($scope, SessionService) {
-
-		$scope.global = SessionService;
 
 	}
 ]);
@@ -158,19 +217,18 @@ angular.module('mapasColetivos').controller('DashboardCtrl', [
 ]);
 
 /*
- * Layer Services
+ * Map controller
  */
-angular.module('mapasColetivos.layer').factory('Layer', [
-	'$resource',
-	'apiPrefix',
-	function($resource, apiPrefix) {
-
-		return $resource(apiPrefix + '/layers/:layerId', {'_csrf': window.token}, {
-			'update': {
-				method: 'PUT'
-			}
+angular.module('mapasColetivos.map').controller('MapCtrl', [
+	'$scope',
+	'MapService',
+	function($scope, MapService) {
+		$scope.map = L.map('map', {
+			center: [0, 0],
+			zoom: 2
 		});
-
+		MapService.setMap($scope.map);
+		$scope.map.addLayer(L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png'));
 	}
 ]);
 
@@ -181,8 +239,10 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 	'$scope',
 	'$location',
 	'$routeParams',
+	'$q',
 	'Layer',
-	function($scope, $location, $routeParams, Layer) {
+	'LayerFeatures',
+	function($scope, $location, $routeParams, $q, Layer, LayerFeatures) {
 
 		// New layer
 		if($location.path() == '/layers/new') {
@@ -200,13 +260,21 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 		// Single layer
 		} else if($routeParams.layerId) {
 
+			var deferred = $q.defer();
+			LayerFeatures.setFeatures(deferred.promise);
+
 			Layer.get({layerId: $routeParams.layerId}, function(layer) {
+
+				// Set layer features using service
+				deferred.resolve(layer.features);
+
+				//console.log(LayerFeatures.getFeatures());
 
 				$scope.layer = layer;
 
 				if($routeParams.action == 'edit') {
 
-					$scope.submit = function() {
+					$scope.save = function() {
 
 						Layer.update({layerId: layer._id}, $scope.layer, function(layer) {
 							$location.path('/layers/' + layer._id);
@@ -239,8 +307,8 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 		// All layers
 		} else {
 
-			Layer.query(function(layers) {
-				$scope.layers = layers;
+			Layer.query(function(res) {
+				$scope.layers = res.layers;
 			});
 
 		}
@@ -249,131 +317,64 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 ]);
 
 /*
- * Feature Services
- */
-angular.module('mapasColetivos.layer').factory('Feature', [
-	'$resource',
-	'apiPrefix',
-	function($resource, apiPrefix) {
-
-		return $resource(apiPrefix + '/features/:featureId', {'_csrf': window.token}, {
-			'update': {
-				method: 'PUT'
-			}
-		});
-
-	}
-]);
-
-/*
- * Feature directive
- * Add feature ID data to DOM item
- */
-angular.module('mapasColetivos.feature').directive('FeatureData', function() {
-	return function(scope, element, attrs) {
-		if(scope.feature._id) {
-			element[0].setAttribute('data-feature', scope.feature._id);
-		}
-	};
-});
-
-/*
- * Feature controllers
+ * Feature controller
  */
 angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 	'$scope',
-	'$http',
-	'FeatureService',
-	'markers',
-	function($scope, $http, Features, markers) {
+	'LayerFeatures',
+	'Feature',
+	'MapService',
+	function($scope, LayerFeatures, Feature, MapService) {
 
-		Features.query().success(function(features) {
+		LayerFeatures.getFeatures().then(function(features) {
+
+			var map = MapService.getMap();
 
 			$scope.features = features;
 
-			markers = [];
 
-			angular.forEach(features, function(value) {
+			$scope.edit = function(featureId) {
 
-				var marker = L.marker(value.geometry.coordinates);
-				markers.push(marker);
+				$scope.feature = features.filter(function(f) { return f._id == featureId; })[0];
+				$scope.editingFeature = true;
 
-			});
+			}
 
-			layerEditor.featureLayer = L.featureGroup(markers);
+			$scope.cancel = function() {
 
-			$scope.viewInMap = function($event) {
+				$scope.editingFeature = false;
 
-				var featureID = $event.currentTarget.dataset.feature;
+			}
 
-				var feature = features.filter(function(f) { return f._id == featureID })[0];
+			if(typeof map !== 'undefined') {
 
-				//map.setView(feature.geometry.coordinates, 10);
+				var markers = [];
 
-			};
+				angular.forEach($scope.features, function(f) {
+
+					var marker = L.marker(f.geometry.coordinates);
+					markers.push(marker);
+
+				});
+
+				var featureLayer = L.featureGroup(markers);
+
+				map.addLayer(featureLayer);
+				map.fitBounds(featureLayer.getBounds());
+
+				$scope.viewInMap = function($event) {
+
+					var featureID = $event.currentTarget.dataset.feature;
+
+					var feature = features.filter(function(f) { return f._id == featureID; })[0];
+
+					map.setView(feature.geometry.coordinates, 14);
+
+				};
+
+			}
 
 		});
-
-	}
-]);
-
-angular.module('mapasColetivos.feature').controller('FeatureEdit', [
-	'$scope',
-	'$routeParams',
-	'$location',
-	'FeaturesService',
-	function($scope, $routeParams, $location, Features) {
-
-		if($routeParams.featureId) {
-
-			Features.get($routeParams.featureId).success(function(feature) {
-				$scope.feature = feature;
-			});
-
-		}
-
-		$scope.save = function() {
-			feature = $scope.feature;
-			$location.path('/features');
-		}
-
-		$scope.delete = function() {
-			$location.path('/features');
-		}
-
-	}
-]);
-
-angular.module('mapasColetivos.feature').controller('FeatureNew', [
-	'$scope',
-	'$location',
-	'features',
-	function($scope, $location, features) {
-
-		$scope.save = function() {
-			features.push($scope.feature);
-		}
-
-		$scope.delete = function() {
-			$location.path('/features');
-		}
-
-	}
-]);
-
-angular.module('mapasColetivos.media').controller('MediaCtrl', [
-	'$scope',
-	'$http',
-	function($scope, $http) {
-
-		$scope.media = [
-			{
-				title: 'Media 01'
-			},
-			{
-				title: 'Media 02'
-			}
-		];
 
 	}
 ]);

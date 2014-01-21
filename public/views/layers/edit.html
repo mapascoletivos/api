@@ -1,29 +1,45 @@
-<div class="page-header">
-	<h1>{{layer.title}}</h1>
-</div>
-<div class="content">
-	<div id="layer-edit">
-		<form ng-submit="submit()">
-			<input type="text" ng-model="layer.title" value="{{layer.title}}" />
-			<button type="submit">Atualizar</button>
-			<a class="button" ng-click="delete()">Remover</a>
-			<a class="button" href="/layers/{{layer._id}}">Cancelar</a>
-		</form>
-		<ul class="map-editor-tabs layer-objects-nav">
-			<li>Features</li>
-			<li>Media</li>
-		</ul>
-		<div ng-controller="FeatureCtrl">
-			<div id="layer-features" class="map-editor-subcontent">
-				<p>Você tem {{features.length}} features nesta camada.</p>
-				<p><a ng-click="newFeature()">Adicionar nova</a></p>
-				<input type="text" ng-model="search" placeholder="Encontrar features" />
-				<ul>
-					<li ng-repeat="feature in features | filter:search" ng-click="viewInMap($event)" feature-data>
-						{{feature.title}} <a href="#" ng-click="editFeature(feature._id)">Editar</a>
-					</li>
-				</ul>
+<div class="map-editor-container">
+	<div id="editor">
+		<div class="editor-content">
+			<div class="page-header">
+				<h1>{{layer.title}}</h1>
+			</div>
+			<div class="content">
+				<div id="layer-edit">
+					<form ng-submit="save()">
+						<input type="text" ng-model="layer.title" value="{{layer.title}}" />
+						<button type="submit">Atualizar</button>
+						<a class="button" ng-click="delete()">Remover</a>
+						<a class="button" href="/layers/{{layer._id}}">Cancelar</a>
+					</form>
+					<ul class="map-editor-tabs layer-objects-nav">
+						<li><a href="#">Features</a></li>
+						<li><a href="#">Media</a></li>
+					</ul>
+					<div ng-controller="FeatureCtrl">
+						<div id="layer-features" class="map-editor-subcontent" ng-hide="editingFeature">
+							<p>Você tem {{features.length}} features nesta camada.</p>
+							<p><a ng-click="newFeature()">Adicionar nova</a></p>
+							<input type="text" ng-model="search" placeholder="Encontrar features" />
+							<ul>
+								<li ng-repeat="feature in features | filter:search" ng-click="viewInMap($event)" data-feature="{{feature._id}}">
+									{{feature.title}} <a href="#" ng-click="edit(feature._id)">Editar</a>
+								</li>
+							</ul>
+						</div>
+						<div id="edit-feature" ng-show="editingFeature">
+							<form ng-submit="save()">
+								<input type="text" placeholder="Feature title" ng-model="feature.title" value="feature.title" />
+								<button type="submit">Salvar</button>
+								<a class="button" href="#" ng-click="delete()" ng-hide="!feature">Remover</a>
+								<a class="button" ng-click="cancel()">Cancelar</a>
+							</form>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
+	</div>
+	<div id="map" ng-controller="MapCtrl">
 	</div>
 </div>
