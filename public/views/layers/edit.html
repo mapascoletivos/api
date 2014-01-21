@@ -17,9 +17,9 @@
 						<li><a href="#">Media</a></li>
 					</ul>
 					<div ng-controller="FeatureCtrl">
-						<div id="layer-features" class="map-editor-subcontent" ng-hide="editingFeature">
+						<div id="layer-features" class="map-editor-subcontent" ng-hide="editing">
 							<p>Você tem {{features.length}} features nesta camada.</p>
-							<p><a ng-click="newFeature()">Adicionar nova</a></p>
+							<p><a ng-click="new()">Adicionar nova</a></p>
 							<input type="text" ng-model="search" placeholder="Encontrar features" />
 							<ul>
 								<li ng-repeat="feature in features | filter:search" ng-click="viewInMap($event)" data-feature="{{feature._id}}">
@@ -27,9 +27,9 @@
 								</li>
 							</ul>
 						</div>
-						<div id="edit-feature" ng-show="editingFeature">
+						<div id="edit-feature" ng-show="editing">
 							<form ng-submit="save()">
-								<input type="text" placeholder="Feature title" ng-model="feature.title" value="feature.title" />
+								<input type="text" placeholder="Feature title" ng-model="feature.title" value="{{feature.title}}" />
 								<button type="submit">Salvar</button>
 								<a class="button" href="#" ng-click="delete()" ng-hide="!feature">Remover</a>
 								<a class="button" ng-click="cancel()">Cancelar</a>

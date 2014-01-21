@@ -129,6 +129,7 @@ angular.module('mapasColetivos.map').factory('MapService', [
 			},
 			setMap: function(val) {
 				map = val;
+				return map;
 			}
 		}
 	}
@@ -177,8 +178,16 @@ angular.module('mapasColetivos.layer').factory('Layer', [
  */
 angular.module('mapasColetivos.layer').factory('LayerFeatures', [
 	function() {
+		var layer = {};
 		var features = [];
 		return {
+			getLayer: function() {
+				return layer;
+			},
+			setLayer: function(val) {
+				layer = val;
+				return val;
+			},
 			getFeatures: function() {
 				return features;
 			},
@@ -260,15 +269,17 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 		// Single layer
 		} else if($routeParams.layerId) {
 
-			var deferred = $q.defer();
-			LayerFeatures.setFeatures(deferred.promise);
+			var featuresDefer = $q.defer();
+			LayerFeatures.setFeatures(featuresDefer.promise);
+
+			var layerDefer = $q.defer();
+			LayerFeatures.setLayer(layerDefer.promise);
 
 			Layer.get({layerId: $routeParams.layerId}, function(layer) {
 
-				// Set layer features using service
-				deferred.resolve(layer.features);
-
-				//console.log(LayerFeatures.getFeatures());
+				// Set layer and it's features using service (resolving promise)
+				featuresDefer.resolve(layer.features);
+				layerDefer.resolve(layer);
 
 				$scope.layer = layer;
 
@@ -326,23 +337,85 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 	'MapService',
 	function($scope, LayerFeatures, Feature, MapService) {
 
-		LayerFeatures.getFeatures().then(function(features) {
+		LayerFeatures.getLayer().then(function(layer) {
 
 			var map = MapService.getMap();
 
-			$scope.features = features;
+			$scope.features = layer.features;
+			$scope.editing = false;
 
+			$scope.new = function() {
+
+				$scope.editing = true;
+
+			}
 
 			$scope.edit = function(featureId) {
 
-				$scope.feature = features.filter(function(f) { return f._id == featureId; })[0];
-				$scope.editingFeature = true;
+				$scope.feature = $scope.features.filter(function(f) { return f._id == featureId; })[0];
+				$scope.editing = true;
+
+			}
+
+			$scope.save = function() {
+
+				$scope.feature.layer = layer._id;
+
+				if($scope.feature && $scope.feature._id) {
+
+					Feature.update({featureId: $scope.feature._id}, $scope.feature, function(feature) {
+
+						// Disable editing ui
+						$scope.editing = false;
+
+						// Reset feature
+						$scope.feature = null;
+
+					}, function(err) {
+						// TODO error handling
+						console.log(err);
+					});
+
+				} else {
+
+					var feature = new Feature($scope.feature);
+
+					feature.$save(function(feature) {
+
+						// Locally push feature to scope
+						$scope.features.push(feature);
+
+						// Disable editing ui
+						$scope.editing = false;
+
+					}, function(err) {
+						// TODO error handling
+						console.log(err);
+					});
+
+				}
+
+			}
+
+			$scope.delete = function() {
+
+				Feature.delete({featureId: $scope.feature._id}, function() {
+
+					$scope.features = $scope.features.filter(function(f) {
+						return f._id !== $scope.feature._id;
+					});
+					$scope.editingFeature = false;
+
+				}, function(err) {
+					// TODO error handling
+					console.log(err);
+				});
 
 			}
 
 			$scope.cancel = function() {
 
-				$scope.editingFeature = false;
+				$scope.editing = false;
 
 			}
 
@@ -366,7 +439,7 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 					var featureID = $event.currentTarget.dataset.feature;
 
-					var feature = features.filter(function(f) { return f._id == featureID; })[0];
+					var feature = $scope.features.filter(function(f) { return f._id == featureID; })[0];
 
 					map.setView(feature.geometry.coordinates, 14);
 
