@@ -4,21 +4,21 @@
  */
 
 var mongoose = require('mongoose'), 
-	Feature = mongoose.model('Feature'),
+	Content = mongoose.model('Content'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend;
-	
+
 /**
  * Load
  */
 
 exports.load = function(req, res, next, id){
-	Feature.load(id, function (err, feature) {
+	Content.load(id, function (err, content) {
 		if (err) return next(err)
-		if (!feature) return res.json(400, new Error('not found'));
-		req.feature = feature
-		next()
-	})
+			if (!content) return res.json(400, new Error('not found'));
+			req.content = content
+			next()
+		})
 }
 
 /**
@@ -33,11 +33,11 @@ exports.index = function(req, res){
 		page: page
 	}
 
-	Feature.list(options, function(err, features) {
+	Content.list(options, function(err, content) {
 		if (err) return res.json(400, err);
-		Feature.count().exec(function (err, count) {
+		Content.count().exec(function (err, count) {
 			if (!err) {
-				res.json({options: options, featuresTotal: count, features: features});
+				res.json({options: options, contentTotal: count, content: content});
 			} else {
 				res.json(400, err)
 			}
@@ -46,34 +46,35 @@ exports.index = function(req, res){
 }
 
 
+
 /**
  * Show
  */
 
 exports.show = function(req, res){
-	res.json(req.feature)
+	return res.json(req.content)
 }
 
 /**
- * New feature
+ * New content
  */
 
 exports.new = function(req, res){
-	res.json(new Feature({}))
+	res.json(new Content({}))
 }
 
 /**
- * Create a feature
+ * Create a content
  */
 
 exports.create = function (req, res) {
-	var feature = new Feature(req.body);
-	feature.creator = req.user;
-	feature.layer = req.layer;
+	var content = new Content(req.body);
+	content.creator = req.user;
+	content.layer = req.feature;
 	
-	feature.save(function (err) {
+	content.save(function (err) {
 		if (!err) {
-			res.json(feature);
+			res.json(content);
 		} else {
 			res.json(400, err)
 		}
@@ -81,16 +82,16 @@ exports.create = function (req, res) {
 }
 
 /**
- * Update feature
+ * Update content
  */
 
 exports.update = function(req, res){
-	var feature = req.feature
-	feature = extend(feature, req.body)
+	var content = req.content
+	content = extend(content, req.body)
 
-	feature.save(function(err) {
+	content.save(function(err) {
 		if (!err) {
-			res.json(feature);
+			res.json(content);
 		} else {
 			res.json(400, err)
 		}
@@ -98,12 +99,12 @@ exports.update = function(req, res){
 }
 
 /**
- * Delete an feature
+ * Delete an content
  */
 
 exports.destroy = function(req, res){
-	var feature = req.feature
-	feature.remove(function(err){
+	var content = req.content
+	content.remove(function(err){
 		if (err) {
 			res.json(400, err);
 		} else {

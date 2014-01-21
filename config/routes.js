@@ -14,6 +14,7 @@ var
 	users = require('users'),
 	features = require('features'),
 	layers = require('layers'),
+	content = require('contents'),
 	auth = require('./middlewares/authorization');
 
 /**
@@ -67,5 +68,17 @@ module.exports = function (app, passport) {
 	app.del(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.destroy);
 	app.put(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.update);
 	app.get(apiPrefix + '/layers/:layerId', layers.show);
+
+
+	/** 
+	 * Content routes 
+	 **/
+	app.param('contentId', content.load);
+	app.get(apiPrefix + '/contents/:contentId', content.show);
+	app.get(apiPrefix + '/contents', content.index);
+	app.post(apiPrefix + '/contents', auth.requiresLogin, content.create);
+	app.del(apiPrefix + '/contents/:contentId', auth.requiresLogin, content.destroy);
+	app.put(apiPrefix + '/contents/:contentId', auth.requiresLogin, content.update);
+
 
 }

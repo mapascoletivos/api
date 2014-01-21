@@ -7,36 +7,29 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 /**
- * Feature schema
+ * Layer schema
  */
 
-var FeatureSchema = new Schema({
-	creator: { type: Schema.ObjectId, ref: 'User'},
-	contents: [{ type: Schema.ObjectId, ref: 'Conent'}],	
-	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
+var ContentSchema = new Schema({
+	type: { type: String, enum: ['Markdown', 'Post', 'Video', 'Image Gallery'], required: true},
 	title: { type: String, required: true },
-	description: { type: String },
-	geometry: { type: {type: String}, coordinates: []},
-	version: { type: Number, default: 1},
+	url: String,
+	markdown: String,
+	creator: {type: Schema.ObjectId, ref: 'User'},
+	features: [{type: Schema.ObjectId, ref: 'Features'}],
 	createdAt: {type: Date, default: Date.now},
 	updateAt: {type: Date, default: Date.now},
 	tags: [String]
-})
-
-/**
- * Geo index
- **/
-
-FeatureSchema.index({ loc: '2dsphere' })
+});
 
 /**
  * Statics
  */
 
-FeatureSchema.statics = {
+ContentSchema.statics = {
 
 	/**
-	 * Find feature by id
+	 * Find Content by id
 	 *
 	 * @param {ObjectId} id
 	 * @param {Function} cb
@@ -45,12 +38,11 @@ FeatureSchema.statics = {
 
 	load: function (id, cb) {
 		this.findOne({ _id : id })
-			.populate('creator')
 			.exec(cb)
 	},
 	
 	/**
-	 * List feature
+	 * List Contents
 	 *
 	 * @param {Object} options
 	 * @param {Function} cb
@@ -69,4 +61,4 @@ FeatureSchema.statics = {
 	
 }
 
-mongoose.model('Feature', FeatureSchema)
+mongoose.model('Content', ContentSchema)
