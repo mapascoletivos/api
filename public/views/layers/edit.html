@@ -3,7 +3,7 @@
 		<div id="editor">
 			<div class="editor-content">
 				<div class="page-header">
-					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" mc-disable-enter="$event" placeholder="Título da camada" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.title}}</textarea>
+					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.title}}</textarea>
 					<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.description}}</textarea>
 				</div>
 				<div class="content">
@@ -20,17 +20,9 @@
 									<input type="text" ng-model="search" placeholder="Encontrar features" />
 									<ul>
 										<li ng-repeat="feature in features | filter:search" ng-click="viewInMap(feature._id)" data-feature="{{feature._id}}">
-											{{feature.title}} <a href="#" ng-click="edit(feature._id)">Editar</a>
+											{{feature.title}} <a href="javascript:void(0)" ng-click="edit(feature._id)">Editar</a>
 										</li>
 									</ul>
-								</div>
-								<div id="edit-feature" ng-show="editing">
-									<form ng-submit="save()">
-										<input type="text" placeholder="Feature title" ng-model="editing.title" value="{{editing.title}}" />
-										<button type="submit">Salvar</button>
-										<a class="button" href="#" ng-click="delete()" ng-show="editing._id">Remover</a>
-										<a class="button" ng-click="cancel()">Cancelar</a>
-									</form>
 								</div>
 							</div>
 						</div>
@@ -59,13 +51,16 @@
 	<div class="map-container">
 		<div id="map" ng-controller="MapCtrl">
 		</div>
-		<div ng-controller="FeatureCtrl">
+		<div ng-controller="FeatureEditCtrl">
 			<div id="edit-feature" ng-show="editing">
 				<form ng-submit="save()">
-					<input type="text" placeholder="Feature title" ng-model="editing.title" value="{{editing.title}}" />
-					<button type="submit">Salvar</button>
-					<a class="button" href="#" ng-click="delete()" ng-hide="!feature">Remover</a>
-					<a class="button" ng-click="cancel()">Cancelar</a>
+					<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.title}}</textarea>
+					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.description}}</textarea>
+					<div class="feature-actions">
+						<button type="submit">Salvar</button>
+						<a class="button" href="#" ng-click="delete()" ng-hide="!feature">Remover</a>
+						<a class="button" ng-click="cancel()">Cancelar</a>
+					</div>
 				</form>
 			</div>
 		</div>
