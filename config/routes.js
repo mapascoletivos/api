@@ -73,11 +73,11 @@ module.exports = function (app, passport) {
 	  **/
 
 	// new feature in layer
-	app.post(apiPrefix + 'layers/:layerId/features/create', auth.requiresLogin, layers.createFeature);
+	app.post(apiPrefix + '/layers/:layerId/features', auth.requiresLogin, layers.createFeature);
 	// add existing feature to layer
-	app.post(apiPrefix + 'layers/:layerId/features/:featureId/add', auth.requiresLogin, layers.addFeature);
+	app.put(apiPrefix + '/layers/:layerId/features/:featureId', auth.requiresLogin, layers.addFeature);
 	// remove feature from layer
-	app.post(apiPrefix + 'layers/:layerId/features/:featureId/remove', auth.requiresLogin, layers.removeFeature);
+	app.del(apiPrefix + '/layers/:layerId/features/:featureId', auth.requiresLogin, layers.removeFeature);
 
 	/** 
 	 * Content routes 

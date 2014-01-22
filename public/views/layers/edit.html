@@ -1,45 +1,73 @@
 <div class="map-editor-container">
-	<div id="editor">
-		<div class="editor-content">
-			<div class="page-header">
-				<h1>{{layer.title}}</h1>
-			</div>
-			<div class="content">
-				<div id="layer-edit">
-					<form ng-submit="save()">
-						<input type="text" ng-model="layer.title" value="{{layer.title}}" />
-						<button type="submit">Atualizar</button>
-						<a class="button" ng-click="delete()">Remover</a>
-						<a class="button" href="/layers/{{layer._id}}">Cancelar</a>
-					</form>
-					<ul class="map-editor-tabs layer-objects-nav">
-						<li><a href="#">Features</a></li>
-						<li><a href="#">Media</a></li>
-					</ul>
-					<div ng-controller="FeatureCtrl">
-						<div id="layer-features" class="map-editor-subcontent" ng-hide="editing">
-							<p>Você tem {{features.length}} features nesta camada.</p>
-							<p><a ng-click="new()">Adicionar nova</a></p>
-							<input type="text" ng-model="search" placeholder="Encontrar features" />
-							<ul>
-								<li ng-repeat="feature in features | filter:search" ng-click="viewInMap($event)" data-feature="{{feature._id}}">
-									{{feature.title}} <a href="#" ng-click="edit(feature._id)">Editar</a>
-								</li>
-							</ul>
+	<div class="editor-container">
+		<div id="editor">
+			<div class="editor-content">
+				<div class="page-header">
+					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" mc-disable-enter="$event" placeholder="Título da camada" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.title}}</textarea>
+					<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.description}}</textarea>
+				</div>
+				<div class="content">
+					<div id="layer-edit">
+						<ul class="map-editor-tabs layer-objects-nav">
+							<li><a href="#">Features</a></li>
+							<li><a href="#">Media</a></li>
+						</ul>
+						<div ng-controller="FeatureCtrl">
+							<div id="layer-features" class="map-editor-subcontent">
+								<div class="features-list">
+									<p>Você tem {{features.length}} features nesta camada.</p>
+									<p><a ng-click="new()">Adicionar nova</a></p>
+									<input type="text" ng-model="search" placeholder="Encontrar features" />
+									<ul>
+										<li ng-repeat="feature in features | filter:search" ng-click="viewInMap(feature._id)" data-feature="{{feature._id}}">
+											{{feature.title}} <a href="#" ng-click="edit(feature._id)">Editar</a>
+										</li>
+									</ul>
+								</div>
+								<div id="edit-feature" ng-show="editing">
+									<form ng-submit="save()">
+										<input type="text" placeholder="Feature title" ng-model="editing.title" value="{{editing.title}}" />
+										<button type="submit">Salvar</button>
+										<a class="button" href="#" ng-click="delete()" ng-show="editing._id">Remover</a>
+										<a class="button" ng-click="cancel()">Cancelar</a>
+									</form>
+								</div>
+							</div>
 						</div>
-						<div id="edit-feature" ng-show="editing">
-							<form ng-submit="save()">
-								<input type="text" placeholder="Feature title" ng-model="feature.title" value="{{feature.title}}" />
-								<button type="submit">Salvar</button>
-								<a class="button" href="#" ng-click="delete()" ng-hide="!feature">Remover</a>
-								<a class="button" ng-click="cancel()">Cancelar</a>
-							</form>
+						<div ng-controller="ContentCtrl">
+							<div id="layer-content" class="map-editor-subcontent" ng-hide="editing">
+								<p>Você tem {{content.length}} conteúdos nesta camada.</p>
+								<p><a ng-click="new()">Adicionar novo</a></p>
+								<input type="text" ng-model="search" placeholder="Encontrar conteúdo" />
+								<ul>
+									<li ng-repeat="item in content | filter:search" data-content="{{item._id}}">
+										{{item.title}} <a href="#" ng-click="edit(item._id)">Editar</a>
+									</li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<form class="layer-actions" ng-submit="save()">
+			<a href="#" class="button" ng-click="save()">Atualizar</button>
+			<a href="#" class="button" ng-click="delete()">Remover</a>
+			<a href="#" class="button" ng-click="cancel()">Cancelar</a>
+		</form>
 	</div>
-	<div id="map" ng-controller="MapCtrl">
+	<div class="map-container">
+		<div id="map" ng-controller="MapCtrl">
+		</div>
+		<div ng-controller="FeatureCtrl">
+			<div id="edit-feature" ng-show="editing">
+				<form ng-submit="save()">
+					<input type="text" placeholder="Feature title" ng-model="editing.title" value="{{editing.title}}" />
+					<button type="submit">Salvar</button>
+					<a class="button" href="#" ng-click="delete()" ng-hide="!feature">Remover</a>
+					<a class="button" ng-click="cancel()">Cancelar</a>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>

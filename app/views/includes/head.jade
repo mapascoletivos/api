@@ -21,6 +21,6 @@ head
     script(type="text/javascript").
       window.isAuthenticated = true;
       window.token = '!{req.csrfToken()}';
-      //window.user = !{JSON.stringify(req.user)};
+      window.user = !{JSON.stringify(req.user)};
 
   block head
