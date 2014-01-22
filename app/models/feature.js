@@ -12,7 +12,7 @@ var mongoose = require('mongoose'),
 
 var FeatureSchema = new Schema({
 	creator: { type: Schema.ObjectId, ref: 'User', required: true},
-	layer: { type: Schema.ObjectId, ref: 'layer', required: true},
+	layers: [{ type: Schema.ObjectId, ref: 'layer'}],
 	contents: [{ type: Schema.ObjectId, ref: 'Conent'}],	
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
 	title: { type: String, required: true },

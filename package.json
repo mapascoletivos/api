@@ -25,6 +25,7 @@
     "view-helpers": "latest",
     "jade": "latest",
     "async": "latest",
+    "underscore": "latest",
     "forever": "latest",
     "less": "latest",
     "less-middleware": "latest",
