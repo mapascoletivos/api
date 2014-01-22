@@ -227,7 +227,7 @@ angular.module('mapasColetivos.layer').factory('Layer', [
 /*
  * Layer features service
  */
-angular.module('mapasColetivos.layer').factory('LayerFeatures', [
+angular.module('mapasColetivos.layer').factory('LayerSharedData', [
 	function() {
 		var layer = {};
 		var features = [];
@@ -238,40 +238,6 @@ angular.module('mapasColetivos.layer').factory('LayerFeatures', [
 			setLayer: function(val) {
 				layer = val;
 				return val;
-			},
-			getFeatures: function() {
-				return features;
-			},
-			setFeatures: function(val) {
-				features = val;
-				return features;
-			}
-		}
-	}
-]);
-
-/*
- * Feature contents service - NOT WORKING (should be layerContents service)
- * TODO - Associate contents to layer to perform contents query in layer listing
- */
-angular.module('mapasColetivos.feature').factory('featureContents', [
-	function() {
-		var feature = {};
-		var contents = [];
-		return {
-			getFeature: function() {
-				return feature;
-			},
-			setFeature: function(val) {
-				feature = val;
-				return val;
-			},
-			getContents: function() {
-				return features;
-			},
-			setContents: function(val) {
-				contents = val;
-				return contents;
 			}
 		}
 	}
@@ -367,8 +333,15 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 	'$routeParams',
 	'$q',
 	'Layer',
-	'LayerFeatures',
-	function($scope, $location, $routeParams, $q, Layer, LayerFeatures) {
+	'LayerSharedData',
+	function($scope, $location, $routeParams, $q, Layer, LayerSharedData) {
+
+		/*
+		 * Shared data 
+		 * TODO
+		 */
+		$scope.editingFeature = false;
+		$scope.layer = false;
 
 		// New layer
 		if($location.path() == '/layers/new') {
@@ -386,16 +359,12 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 		// Single layer
 		} else if($routeParams.layerId) {
 
-			var featuresDefer = $q.defer();
-			LayerFeatures.setFeatures(featuresDefer.promise);
-
 			var layerDefer = $q.defer();
-			LayerFeatures.setLayer(layerDefer.promise);
+			LayerSharedData.setLayer(layerDefer.promise);
 
 			Layer.get({layerId: $routeParams.layerId}, function(layer) {
 
-				// Set layer and it's features using service (resolving promise)
-				featuresDefer.resolve(layer.features);
+				// Set layer shared data using service (resolving promise)
 				layerDefer.resolve(layer);
 
 				$scope.layer = layer;
@@ -416,7 +385,7 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 					$scope.delete = function() {
 
-						if(confirm('Você tem certeza que deseja remover esta feature?')) {
+						if(confirm('Você tem certeza que deseja remover esta camada?')) {
 							Layer.delete({layerId: layer._id}, function(res) {
 								$location.path('/layers');
 							}, function(err) {
@@ -461,76 +430,53 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 /*
  * Feature controller
  */
-angular.module('mapasColetivos.feature').value('editing', false).controller('FeatureCtrl', [
+
+angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 	'$scope',
-	'LayerFeatures',
+	'$rootScope',
 	'Feature',
-	'MapService',
-	'editing',
-	function($scope, LayerFeatures, Feature, MapService, editing) {
+	function($scope, $rootScope, Feature) {
 
-		LayerFeatures.getLayer().then(function(layer) {
+		var layer;
 
-			$scope.features = layer.features;
-
-			var map = MapService.getMap();
-
-			$scope.editing = editing;
-
-			$scope.new = function() {
-
-				$scope.editing = {};
-
+		$rootScope.$watch('layer', function(l) {
+			if (l) {
+				layer = l;
 			}
+		});
 
-			$scope.edit = function(featureId) {
+		$scope.editing = $rootScope.editing;
 
-				$scope.editing = $scope.features.filter(function(f) { return f._id == featureId; })[0];
-
+		$rootScope.$watch('editing', function(feature) {
+			if (feature) {
+				$scope.editing = feature;
 			}
+		});
 
-			$scope.save = function() {
+		$scope.save = function() {
 
-				if($scope.editing && $scope.editing._id) {
+			if($scope.editing && $scope.editing._id) {
 
-					Feature.update({featureId: $scope.editing._id, layerId: layer._id}, $scope.editing, function(feature) {
+				Feature.update({featureId: $scope.editing._id, layerId: layer._id}, $scope.editing, function(feature) {
 
-						// Disable editing ui
-						$scope.editing = false;
+					// Disable editing ui
+					$scope.editing = false;
 
-					}, function(err) {
-						// TODO error handling
-						console.log(err);
-					});
+				}, function(err) {
+					// TODO error handling
+					console.log(err);
+				});
 
-				} else {
+			} else {
 
-					var feature = new Feature($scope.editing);
+				var feature = new Feature($scope.editing);
 
-					feature.$save({layerId: layer._id}, function(feature) {
+				feature.$save({layerId: layer._id}, function(feature) {
 
-						// Locally push feature to scope
-						$scope.features.push(feature);
+					// Locally push feature to scope
+					$scope.features.push(feature);
 
-						// Disable editing ui
-						$scope.editing = false;
-
-					}, function(err) {
-						// TODO error handling
-						console.log(err);
-					});
-
-				}
-
-			}
-
-			$scope.delete = function() {
-
-				Feature.delete({featureId: $scope.editing._id, layerId: layer._id}, function() {
-
-					$scope.features = $scope.features.filter(function(f) {
-						return f._id !== $scope.editing._id;
-					});
+					// Disable editing ui
 					$scope.editing = false;
 
 				}, function(err) {
@@ -540,9 +486,61 @@ angular.module('mapasColetivos.feature').value('editing', false).controller('Fea
 
 			}
 
-			$scope.cancel = function() {
+		}
 
+		$scope.delete = function() {
+
+			Feature.delete({featureId: $scope.editing._id, layerId: layer._id}, function() {
+
+				$scope.features = $scope.features.filter(function(f) {
+					return f._id !== $scope.editing._id;
+				});
 				$scope.editing = false;
+
+			}, function(err) {
+				// TODO error handling
+				console.log(err);
+			});
+
+		}
+
+		$scope.cancel = function() {
+
+			$scope.editing = false;
+
+		}
+
+	}
+]);
+
+angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
+	'$scope',
+	'$rootScope',
+	'LayerSharedData',
+	'Feature',
+	'MapService',
+	function($scope, $rootScope, LayerSharedData, Feature, MapService) {
+
+		LayerSharedData.getLayer().then(function(layer) {
+
+			$rootScope.layer = layer;
+			$rootScope.editing = false;
+
+			$scope.features = layer.features;
+
+			var map = MapService.getMap();
+
+			$scope.new = function() {
+
+				$scope.editing = {};
+				$rootScope.editing = {};
+
+			}
+
+			$scope.edit = function(featureId) {
+
+				$scope.editing = $scope.features.filter(function(f) { return f._id == featureId; })[0];
+				$rootScope.editing = $scope.editing;
 
 			}
 
