@@ -70,19 +70,18 @@ exports.create = function (req, res) {
 	var feature = new Feature(req.body);
 	feature.creator = req.user;
 	
+	// save feature
 	feature.save(function (err) {
+		if (err) res.json(400, err);
 		var layer = feature.layer;
 		layer.features.push(feature);
+		
+		// save layer
 		layer.save(function(err){
-			
-		})
-
-		if (!err) {
+			if (err) res.json(400, err);
 			res.json(feature);
-		} else {
-			res.json(400, err)
-		}
-	})
+		});
+	});
 }
 
 /**
@@ -100,19 +99,4 @@ exports.update = function(req, res){
 			res.json(400, err)
 		}
 	})
-}
-
-/**
- * Delete an feature
- */
-
-exports.destroy = function(req, res){
-	var feature = req.feature
-	feature.remove(function(err){
-		if (err) {
-			res.json(400, err);
-		} else {
-			res.json({success: true});
-		}
-	});
 }
