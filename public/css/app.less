@@ -95,7 +95,30 @@ input[type=submit].light-button {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	#editor {
+	textarea.no-canvas,
+	input.no-canvas {
+		display: block;
+		width: 100%;
+		padding: 0;
+		background: transparent;
+		color: #f0f0f0;
+		border: 0;
+		resize: none;
+		&:focus,
+		&:hover {
+			color: #fff;
+		}
+	}
+	.edit-title {
+		font-size: 52px;
+		font-family: "Lato";
+		font-weight: 200;
+	}
+	.edit-description {
+		font-size: 16px;
+		line-height: 24px;
+	}
+	.editor-container {
 		width: 33%;
 		height: 100%;
 		float: left;
@@ -104,11 +127,33 @@ input[type=submit].light-button {
 		background: #333;
 		color: #f0f0f0;
 		overflow: auto;
+		position: relative;
+		z-index: 100;
+		.layer-actions {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			margin: 0;
+			padding: 0;
+			> a.button, button {
+				display: table-cell;
+				width: 1%;
+				margin: 0;
+				padding: 15px 0;
+				text-align: center;
+			}
+		}
+	}
+	#editor {
+		width: 100%;
+		height: 100%;
+		overflow: auto;
 		h1,h2,h3 {
 			color: #f0f0f0;
 		}
 		.editor-content {
-			margin: 40px;
+			margin: 40px 40px 100px 40px;
 			position: relative;
 		}
 		.map-editor-tabs {
@@ -139,9 +184,21 @@ input[type=submit].light-button {
 			color: #333;
 		}
 	}
-	#map {
+	.map-container {
 		height: 100%;
 		position: relative;
+		#map {
+			height: 100%;
+		}
+		#edit-feature {
+			position: absolute;
+			top: 0;
+			left: 33%;
+			right: 0;
+			bottom: 0;
+			z-index: 200;
+			background: #000;
+		}
 	}
 }
 

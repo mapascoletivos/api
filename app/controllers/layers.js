@@ -5,6 +5,7 @@
 
 var mongoose = require('mongoose'), 
 	Layer = mongoose.model('Layer'),
+  Feature = mongoose.model('Feature'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend,
 	_ = require('underscore');
@@ -86,8 +87,9 @@ exports.create = function (req, res) {
  */
 
 exports.update = function(req, res){
-  var layer = req.layer
-  layer = extend(layer, req.body)
+  var layer = req.layer;
+
+  layer = extend(layer, req.body);
 
   layer.save(function(err) {
     if (!err) {
@@ -118,17 +120,19 @@ exports.destroy = function(req, res){
  */
 
 exports.createFeature = function (req, res) {
-  var feature = new Feature(req.body);
+  var feature = new Feature(req.body),
+    layer = req.layer;
   
   feature.creator = req.user;
   feature.layers = [ req.layer ];
   
   feature.save(function (err) {
-    var layer = feature.layer;
+    if (err) res.json(400, err);
     layer.features.push(feature);
     layer.save(function(err){
+      if (err) res.json(400, err);
       res.json(feature);
-    })
+    })      
   })
 }
 
@@ -148,7 +152,7 @@ exports.addFeature = function (req, res) {
 	}
 
 	// associate layer to feature, if not already 
-	if ( ! _.contains(layers.features, feature._id) ) { 
+	if ( ! _.contains(layer.features, feature._id) ) { 
 		layer.features.push(feature);
 	}
 
@@ -170,17 +174,20 @@ exports.removeFeature = function (req, res) {
     feature = req.feature,
     layer = req.layer;
 
-	// remove feature from layer, if is associated 
-	layer.features = _.without(layer.features, _.findWhere(layer.features, feature._id));
+  var saveLayer = function(err) {
+    if (err) res.json(400, err);
+    layer.features = _.filter(layer.features, function(f) { return !f._id.equals(feature._id); });
+    layer.save(function(err) {
+      if (err) res.json(400,err);
+      else res.json(feature);
+    })
+  }
 
-	// remove layer from feature, if is associated 
-	feature.layers = _.without(feature.layers, _.findWhere(feature.layers, feature._id));
+  if(feature.layers.length === 1) {
+    feature.remove(saveLayer);
+  } else {
+    feature.layers = _.filter(feature.layers, function(l) { return !l.equals(layer._id); });
+  	feature.save(saveLayer);
+  }
 
-	feature.save(function(err){
-		 if (err) res.json(400, err);
-		layer.save(function(err){
-			if (err) res.json(400,err)
-			else res.json(feature);
-		})
-	})
 }
