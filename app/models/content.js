@@ -16,7 +16,8 @@ var ContentSchema = new Schema({
 	url: String,
 	markdown: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
-	features: [{type: Schema.ObjectId, ref: 'Features'}],
+	features: [{type: Schema.ObjectId, ref: 'Feature'}],
+	layer: {type: Schema.ObjectId, ref: 'Layer'},
 	createdAt: {type: Date, default: Date.now},
 	updateAt: {type: Date, default: Date.now},
 	tags: [String]

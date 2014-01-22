@@ -54,9 +54,25 @@ module.exports = function (app, passport) {
 	app.param('featureId', features.load)
 	app.get(apiPrefix + '/features', features.index);
 	app.get(apiPrefix + '/features/:featureId', features.show);
-//	app.post(apiPrefix + '/features', auth.requiresLogin, features.create);
 	app.put(apiPrefix + '/features/:featureId', auth.requiresLogin, features.update);
-	app.del(apiPrefix + '/features/:featureId', auth.requiresLogin, features.destroy);
+
+	/** 
+	 * Content routes 
+	 **/
+
+	// load middleware	
+	app.param('contentId', content.load);
+
+	// get and put
+	app.get(apiPrefix + '/contents/:contentId', content.show);
+	app.put(apiPrefix + '/contents/:contentId', auth.requiresLogin, content.update);
+
+	// create new content and associate it to feature and layer
+	app.post(apiPrefix + '/features/:featureId/contents', auth.requiresLogin, content.create);
+
+	// remove content from feature, if belongs to only one feature, destroy it
+	app.del(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, content.remove);
+
 
 	/** 
 	 * Layer routes 
@@ -79,15 +95,6 @@ module.exports = function (app, passport) {
 	// remove feature from layer
 	app.del(apiPrefix + '/layers/:layerId/features/:featureId', auth.requiresLogin, layers.removeFeature);
 
-	/** 
-	 * Content routes 
-	 **/
-	app.param('contentId', content.load);
-	app.get(apiPrefix + '/contents/:contentId', content.show);
-	app.get(apiPrefix + '/contents', content.index);
-	app.post(apiPrefix + '/contents', auth.requiresLogin, content.create);
-	app.del(apiPrefix + '/contents/:contentId', auth.requiresLogin, content.destroy);
-	app.put(apiPrefix + '/contents/:contentId', auth.requiresLogin, content.update);
 
 
 }
