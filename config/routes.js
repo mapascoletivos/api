@@ -54,10 +54,9 @@ module.exports = function (app, passport) {
 	app.param('featureId', features.load)
 	app.get(apiPrefix + '/features', features.index);
 	app.get(apiPrefix + '/features/:featureId', features.show);
-	app.post(apiPrefix + '/features', auth.requiresLogin, features.create);
+//	app.post(apiPrefix + '/features', auth.requiresLogin, features.create);
 	app.put(apiPrefix + '/features/:featureId', auth.requiresLogin, features.update);
 	app.del(apiPrefix + '/features/:featureId', auth.requiresLogin, features.destroy);
-
 
 	/** 
 	 * Layer routes 
@@ -68,7 +67,17 @@ module.exports = function (app, passport) {
 	app.del(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.destroy);
 	app.put(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.update);
 	app.get(apiPrefix + '/layers/:layerId', layers.show);
+	
+	/** 
+	  * Layer x Features routes
+	  **/
 
+	// new feature in layer
+	app.post(apiPrefix + 'layers/:layerId/features/create', auth.requiresLogin, layers.createFeature);
+	// add existing feature to layer
+	app.post(apiPrefix + 'layers/:layerId/features/:featureId/add', auth.requiresLogin, layers.addFeature);
+	// remove feature from layer
+	app.post(apiPrefix + 'layers/:layerId/features/:featureId/remove', auth.requiresLogin, layers.removeFeature);
 
 	/** 
 	 * Content routes 

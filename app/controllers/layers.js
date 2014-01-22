@@ -6,7 +6,8 @@
 var mongoose = require('mongoose'), 
 	Layer = mongoose.model('Layer'),
 	utils = require('../../lib/utils'),
-	extend = require('util')._extend;
+	extend = require('util')._extend,
+	_ = require('underscore');
   
 /**
  * Load
@@ -110,4 +111,76 @@ exports.destroy = function(req, res){
       res.json({success: true});
     }
   })
+}
+
+/**
+ * Create a feature in layer
+ */
+
+exports.createFeature = function (req, res) {
+  var feature = new Feature(req.body);
+  
+  feature.creator = req.user;
+  feature.layers = [ req.layer ];
+  
+  feature.save(function (err) {
+    var layer = feature.layer;
+    layer.features.push(feature);
+    layer.save(function(err){
+      res.json(feature);
+    })
+  })
+}
+
+
+/**
+ * Add a feature in layer
+ */
+
+exports.addFeature = function (req, res) {
+  var 
+    feature = req.feature,
+    layer = req.layer;
+
+	// associate feature to layer, if not already 
+	if ( ! _.contains(feature.layers, layer._id) ) { 
+		feature.layers.push(layer);
+	}
+
+	// associate layer to feature, if not already 
+	if ( ! _.contains(layers.features, feature._id) ) { 
+		layer.features.push(feature);
+	}
+
+	feature.save(function(err){
+		 if (err) res.json(400, err);
+		layer.save(function(err){
+			if (err) res.json(400,err)
+			else res.json(feature);
+		})
+	})
+}
+
+/**
+ * Remove a feature in layer
+ */
+
+exports.removeFeature = function (req, res) {
+  var 
+    feature = req.feature,
+    layer = req.layer;
+
+	// remove feature from layer, if is associated 
+	layer.features = _.without(layer.features, _.findWhere(layer.features, feature._id));
+
+	// remove layer from feature, if is associated 
+	feature.layers = _.without(feature.layers, _.findWhere(feature.layers, feature._id));
+
+	feature.save(function(err){
+		 if (err) res.json(400, err);
+		layer.save(function(err){
+			if (err) res.json(400,err)
+			else res.json(feature);
+		})
+	})
 }

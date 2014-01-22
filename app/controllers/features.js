@@ -69,9 +69,14 @@ exports.new = function(req, res){
 exports.create = function (req, res) {
 	var feature = new Feature(req.body);
 	feature.creator = req.user;
-	feature.layer = req.layer;
 	
 	feature.save(function (err) {
+		var layer = feature.layer;
+		layer.features.push(feature);
+		layer.save(function(err){
+			
+		})
+
 		if (!err) {
 			res.json(feature);
 		} else {
