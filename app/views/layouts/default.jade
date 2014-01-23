@@ -3,6 +3,10 @@ html
 	include ../includes/head
 		body(ng-app="mapasColetivos")
 			include ../includes/header
+			#messages(ng-controller="MessageCtrl")
+				.message-content.animate-show(ng-show="message.text")
+					a.close-button(ng-click="close()" href="#") Fechar
+					p(ng-class="message.status") {{message.text}}
 			.ng-view
 				include content
 			include ../includes/footer
