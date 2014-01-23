@@ -2,17 +2,17 @@
 	<div class="editor-container">
 		<div id="editor">
 			<div class="editor-content">
-				<div class="page-header">
+				<div class="page-header layer-settings">
 					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.title}}</textarea>
 					<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.description}}</textarea>
 				</div>
 				<div class="content">
 					<div id="layer-edit">
 						<ul class="map-editor-tabs layer-objects-nav">
-							<li><a href="#">Features</a></li>
-							<li><a href="#">Media</a></li>
+							<li ng-class="layerObj('feature')" ng-click="setLayerObj('feature')"><a href="javascript:void(0);">Features</a></li>
+							<li ng-class="layerObj('content')" ng-click="setLayerObj('content')"><a href="javascript:void(0);">Conteúdo</a></li>
 						</ul>
-						<div ng-controller="FeatureCtrl">
+						<div ng-controller="FeatureCtrl" ng-show="layerObj(objType)">
 							<div id="layer-features" class="map-editor-subcontent">
 								<div class="features-list">
 									<p>Você tem {{features.length}} features nesta camada.</p>
@@ -26,8 +26,8 @@
 								</div>
 							</div>
 						</div>
-						<div ng-controller="ContentCtrl">
-							<div id="layer-content" class="map-editor-subcontent" ng-hide="editing">
+						<div ng-controller="ContentCtrl" ng-show="layerObj(objType)">
+							<div id="layer-content" class="map-editor-subcontent">
 								<p>Você tem {{content.length}} conteúdos nesta camada.</p>
 								<p><a ng-click="new()">Adicionar novo</a></p>
 								<input type="text" ng-model="search" placeholder="Encontrar conteúdo" />
@@ -49,8 +49,6 @@
 		</form>
 	</div>
 	<div class="map-container">
-		<div id="map" ng-controller="MapCtrl">
-		</div>
 		<div ng-controller="FeatureEditCtrl">
 			<div id="edit-feature" ng-show="editing">
 				<form ng-submit="save()">
@@ -58,11 +56,13 @@
 					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.description}}</textarea>
 					<div class="feature-actions">
 						<button type="submit">Salvar</button>
-						<a class="button" href="#" ng-click="delete()" ng-hide="!feature">Remover</a>
+						<a class="button" href="#" ng-click="delete()" ng-hide="!editing._id">Remover</a>
 						<a class="button" ng-click="cancel()">Cancelar</a>
 					</div>
 				</form>
 			</div>
+		</div>
+		<div id="map" ng-controller="MapCtrl">
 		</div>
 	</div>
 </div>
