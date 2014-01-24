@@ -28,11 +28,11 @@
 						</div>
 						<div ng-controller="ContentCtrl" ng-show="layerObj(objType)">
 							<div id="layer-content" class="map-editor-subcontent">
-								<p class="count">Você tem {{content.length}} conteúdos nesta camada.</p>
+								<p class="count">Você tem {{contents.length}} conteúdos nesta camada.</p>
 								<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 								<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar novo</a></p>
 								<ul class="obj-list">
-									<li ng-repeat="item in content | filter:search" data-content="{{item._id}}">
+									<li ng-repeat="item in contents | filter:search" data-content="{{item._id}}">
 										{{item.title}} <a href="#" ng-click="edit(item._id)">Editar</a>
 									</li>
 								</ul>
