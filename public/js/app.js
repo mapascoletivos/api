@@ -142,12 +142,12 @@ angular.module('mapasColetivos.feature').factory('Feature', [
 				method: 'POST',
 				url: apiPrefix + '/layers/:layerId/features'
 			},
-			'update': {
-				method: 'PUT'
-			},
 			'delete': {
 				method: 'DELETE',
 				url: apiPrefix + '/layers/:layerId/features/:featureId'
+			},
+			'update': {
+				method: 'PUT'
 			}
 		});
 
@@ -165,7 +165,11 @@ angular.module('mapasColetivos.content').factory('Content', [
 		return $resource(apiPrefix + '/contents/:contentId', {'_csrf': window.token}, {
 			'save': {
 				method: 'POST',
-				url: apiPrefix + '/contents/:contentId' // TODO '/layers/:layerId/contents/:contentId'
+				url: apiPrefix + '/features/:featureId/contents/:contentId'
+			},
+			'delete': {
+				method: 'DELETE',
+				url: apiPrefix + '/features/:featureId/contents/:contentId'
 			},
 			'update': {
 				method: 'PUT'
@@ -523,8 +527,7 @@ angular.module('mapasColetivos').controller('MessageCtrl', [
 angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 	'$scope',
 	'LayerSharedData',
-	'Feature',
-	function($scope, LayerSharedData, Feature) {
+	function($scope, LayerSharedData) {
 
 		$scope.objType = 'feature';
 		
@@ -543,8 +546,6 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 				$scope.$watch('sharedData.features()', function(features) {
 
 					if(features.length) {
-
-						console.log(features);
 
 						$scope.features = features;
 
@@ -747,12 +748,185 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 	}
 ]);
 
+
+
+/*
+ * Content controller
+ */
+
 angular.module('mapasColetivos.content').controller('ContentCtrl', [
 	'$scope',
-	'Content',
-	function($scope, Content) {
+	'LayerSharedData',
+	function($scope, LayerSharedData) {
 
 		$scope.objType = 'content';
+		
+		$scope.sharedData = LayerSharedData;
+
+		$scope.contents = [];
+
+		$scope.sharedData.layer().then(function(layer) {
+
+			$scope.$watch('sharedData.contents()', function(contents) {
+				if(contents.length) {
+					$scope.contents = contents;
+				}
+			});
+
+			$scope.sharedData.contents(layer.contents);
+
+			$scope.new = function() {
+
+				$scope.sharedData.editingContent({});
+
+			};
+
+			$scope.edit = function(contentId) {
+
+				$scope.sharedData.editingContent(angular.copy($scope.contents.filter(function(c) { return c._id == contentId; })[0]));
+
+			};
+
+		});
+
+	}
+]);
+
+
+
+/*
+ * Content edit controller
+ */
+
+angular.module('mapasColetivos.feature').controller('ContentEditCtrl', [
+	'$scope',
+	'Content',
+	'LayerSharedData',
+	'MessageService',
+	function($scope, Content, LayerSharedData, Message) {
+
+		$scope.sharedData = LayerSharedData;
+
+		$scope.sharedData.layer().then(function(layer) {
+
+			$scope.$watch('sharedData.editingContent()', function(editing) {
+				$scope.editing = editing;
+			});
+
+			$scope.$watch('sharedData.contents()', function(contents) {
+				$scope.contents = contents;
+			});
+
+			$scope.save = function() {
+
+				if($scope.editing && $scope.editing._id) {
+
+					Content.update({layerId: layer._id}, $scope.editing, function(content) {
+
+						// Replace content in local features
+						angular.forEach($scope.contents, function(content, i) {
+							if(content._id == $scope.editing._id)
+								$scope.contents[i] = $scope.editing;
+						});
+						$scope.sharedData.contents($scope.contents);
+
+						Message.message({
+							status: 'ok',
+							text: 'Conteúdo salvo.'
+						});
+
+					}, function(err) {
+
+						if(err.status == 500)
+							Message.message({
+								status: 'error',
+								text: 'Ocorreu um erro interno. Tente novamente ou entre em contato com nossa equipe'
+							}, false);
+
+					});
+
+				} else {
+
+					if(!$scope.editing.geometry) {
+						$scope.editing.geometry = {
+							coordinates: [0,0]
+						};
+					}
+
+					var content = new Content($scope.editing);
+
+					content.$save({layerId: layer._id}, function(feature) {
+
+						// Locally push new content
+						$scope.contents.push(content);
+						$scope.sharedData.contents($scope.contents);
+
+						// Update editing content to saved data
+						$scope.sharedData.editingContent(content);
+
+						Message.message({
+							status: 'ok',
+							text: 'Conteúdo adicionado.'
+						});
+
+					}, function(err) {
+
+						var message = {status: 'error'};
+
+						if(err.status == 400 && err.data.message) {
+							message.text = err.data.message;
+						} else {
+							message.text = 'Ocorreu um erro interno.';
+						}
+
+						Message.message(message, false);
+
+					});
+
+				}
+
+			}
+
+			$scope.delete = function() {
+
+				if(confirm('Você tem certeza que deseja remover esta feature?')) {
+
+					Cotnent.delete({layerId: layer._id}, function() {
+
+						$scope.sharedData.contents($scope.contents.filter(function(c) {
+							return c._id !== $scope.editing._id;
+						}));
+						LayerSharedData.editingContent(false);
+
+						Message.message({
+							status: 'ok',
+							text: 'Conteúdo removido.'
+						});
+
+					}, function(err) {
+
+						var message = {status: 'error'};
+
+						if(err.status == 400 && err.data.message) {
+							message.text = err.data.message;
+						} else {
+							message.text = 'Ocorreu um erro interno.';
+						}
+
+						Message.message(message, false);
+					});
+
+				}
+
+			}
+
+			$scope.cancel = function() {
+
+				LayerSharedData.editingContent(false);
+
+			}
+
+		});
 
 	}
 ]);
