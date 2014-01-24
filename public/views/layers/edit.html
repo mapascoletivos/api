@@ -15,10 +15,10 @@
 						<div ng-controller="FeatureCtrl" ng-show="layerObj(objType)">
 							<div id="layer-features" class="map-editor-subcontent">
 								<div class="features-list">
-									<p>Você tem {{features.length}} features nesta camada.</p>
-									<p><a ng-click="new()">Adicionar nova</a></p>
-									<input type="text" ng-model="search" placeholder="Encontrar features" />
-									<ul>
+									<p class="count">Você tem {{features.length}} features nesta camada.</p>
+									<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
+									<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar nova</a></p>
+									<ul class="obj-list">
 										<li ng-repeat="feature in features | filter:search" ng-click="viewInMap(feature._id)" data-feature="{{feature._id}}">
 											{{feature.title}} <a href="javascript:void(0)" ng-click="edit(feature._id)">Editar</a>
 										</li>
@@ -28,10 +28,10 @@
 						</div>
 						<div ng-controller="ContentCtrl" ng-show="layerObj(objType)">
 							<div id="layer-content" class="map-editor-subcontent">
-								<p>Você tem {{content.length}} conteúdos nesta camada.</p>
-								<p><a ng-click="new()">Adicionar novo</a></p>
-								<input type="text" ng-model="search" placeholder="Encontrar conteúdo" />
-								<ul>
+								<p class="count">Você tem {{content.length}} conteúdos nesta camada.</p>
+								<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
+								<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar novo</a></p>
+								<ul class="obj-list">
 									<li ng-repeat="item in content | filter:search" data-content="{{item._id}}">
 										{{item.title}} <a href="#" ng-click="edit(item._id)">Editar</a>
 									</li>
@@ -43,26 +43,24 @@
 			</div>
 		</div>
 		<form class="layer-actions" ng-submit="save()">
-			<a href="#" class="button" ng-click="save()">Atualizar</button>
+			<a href="#" class="button" ng-click="save()">Salvar</button>
 			<a href="#" class="button" ng-click="delete()">Remover</a>
 			<a href="#" class="button" ng-click="cancel()">Cancelar</a>
 		</form>
 	</div>
 	<div class="map-container">
-		<div ng-controller="FeatureEditCtrl">
-			<div id="edit-feature" ng-show="editing">
-				<form ng-submit="save()">
-					<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.title}}</textarea>
-					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.description}}</textarea>
-					<div class="feature-actions">
-						<button type="submit">Salvar</button>
-						<a class="button" href="#" ng-click="delete()" ng-hide="!editing._id">Remover</a>
-						<a class="button" ng-click="cancel()">Cancelar</a>
-					</div>
-				</form>
-			</div>
+		<div ng-controller="FeatureEditCtrl" id="edit-feature" ng-show="editing">
+			<form ng-submit="save()">
+				<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.title}}</textarea>
+				<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.description}}</textarea>
+				<div class="feature-actions">
+					<a class="button" href="#" ng-click="save()" ng-show="editing._id">Salvar</a>
+					<a class="button" href="#" ng-click="save()" ng-hide="editing._id">Adicionar nova feature</a>
+					<a class="button" href="#" ng-click="delete()" ng-show="editing._id">Remover</a>
+					<a class="button" ng-click="cancel()">Cancelar</a>
+				</div>
+			</form>
 		</div>
-		<div id="map" ng-controller="MapCtrl">
-		</div>
+		<leaflet center="map.world" tiles="map.tiles" markers="map.markers" event-broadcast="map.events"></leaflet>
 	</div>
 </div>
