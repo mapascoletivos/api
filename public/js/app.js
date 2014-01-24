@@ -2,7 +2,9 @@
  * App modules
  */
 
-angular.module('mapasColetivos.map', []);
+angular.module('mapasColetivos.map', [
+	'leaflet-directive'
+]);
 
 angular.module('mapasColetivos.user', []);
 
@@ -79,10 +81,6 @@ angular.module('mapasColetivos').config([
 				controller: 'LayerCtrl',
 				templateUrl: '/views/layers/edit.html'
 			})
-			.when('/layers/:layerId/:action/feature/:featureId', {
-				controller: 'FeatureEdit',
-				templateUrl: '/views/features/edit.html'
-			})
 			.otherwise('/');
 
 		$locationProvider.html5Mode(true);
@@ -128,32 +126,6 @@ angular.module('mapasColetivos').factory('SessionService', [
 			user: window.user
 		};
 		return _this._data;
-	}
-]);
-
-/*
- * Map service
- */
-angular.module('mapasColetivos.map').factory('MapService', [
-	function() {
-		var map = undefined;
-		return {
-			getMap: function() {
-				if(map instanceof L.Map)
-					return map;
-				else
-					return false;
-			},
-			setMap: function(val) {
-				if(val instanceof L.Map)
-					map = val;
-				else {
-					console.log('Map must be an instance of Leaflet map (L.Map)');
-					map = false;
-				}
-				return map;
-			}
-		}
 	}
 ]);
 
@@ -228,7 +200,8 @@ angular.module('mapasColetivos.layer').factory('Layer', [
  * Layer features service
  */
 angular.module('mapasColetivos.layer').factory('LayerSharedData', [
-	function() {
+	'leafletData',
+	function(leafletData) {
 		var layer = {};
 		var features = [];
 		var contents = [];
@@ -241,6 +214,9 @@ angular.module('mapasColetivos.layer').factory('LayerSharedData', [
 					layer = val;
 
 				return layer;
+			},
+			map: function() {
+				return leafletData.getMap();
 			},
 			features: function(val) {
 
@@ -341,22 +317,6 @@ angular.module('mapasColetivos').controller('DashboardCtrl', [
 ]);
 
 /*
- * Map controller
- */
-angular.module('mapasColetivos.map').controller('MapCtrl', [
-	'$scope',
-	'MapService',
-	function($scope, MapService) {
-		$scope.map = L.map('map', {
-			center: [0, 0],
-			zoom: 2
-		});
-		MapService.setMap($scope.map);
-		$scope.map.addLayer(L.tileLayer('http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png'));
-	}
-]);
-
-/*
  * Layer controller
  */
 angular.module('mapasColetivos.layer').controller('LayerCtrl', [
@@ -367,7 +327,7 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 	'Layer',
 	'LayerSharedData',
 	'MessageService',
-	function($scope, $location, $routeParams, $q, Layer, LayerSharedData, MessageService) {
+	function($scope, $location, $routeParams, $q, Layer, LayerSharedData, Message) {
 
 		// New layer
 		if($location.path() == '/layers/new') {
@@ -397,15 +357,21 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 				if($routeParams.action == 'edit') {
 
+					if($scope.layer.title == 'Untitled')
+						$scope.layer.title = '';
+
 					$scope.save = function($event) {
 
 						Layer.update({layerId: layer._id}, $scope.layer, function(layer) {
-							MessageService.message({
+							Message.message({
 								status: 'ok',
 								text: 'Camada atualizada'
 							});
 						}, function(err){
-							// TODO error handling
+							Message.message({
+								status: 'error',
+								text: 'Ocorreu um erro.'
+							});
 						});
 
 					}
@@ -415,9 +381,15 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 						if(confirm('Você tem certeza que deseja remover esta camada?')) {
 							Layer.delete({layerId: layer._id}, function(res) {
 								$location.path('/layers');
+								Message.message({
+									status: 'ok',
+									text: 'Camada removida.'
+								});
 							}, function(err) {
-								// TODO error handling
-								console.log(err);
+								Message.message({
+									status: 'error',
+									text: 'Ocorreu um erro.'
+								});
 							});
 						}
 
@@ -425,12 +397,12 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 					$scope.cancel = function() {
 
-						if($scope.layer.title == 'Untitled' && !$scope.layer.features.length) {
+						LayerSharedData.editingFeature(false);
+						LayerSharedData.editingContent(false);
+
+						if((!$scope.layer.title || $scope.layer.title == 'Untitled') && !$scope.layer.features.length) {
 							Layer.delete({layerId: layer._id}, function(res) {
 								$location.path('/layers');
-							}, function(err) {
-								// TODO error handling
-								console.log(err);
 							});
 						} else {
 							$location.path('/layers/' + layer._id);
@@ -465,6 +437,23 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 			activeObj = obj;
 
 		}
+
+		/*
+		 * Map
+		 */
+
+		$scope.map = {
+			world: {
+				lat: 0,
+				lng: 0,
+				zoom: 2
+			},
+			tiles: {
+				url: 'http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png'
+			},
+			markers: [],
+			events: {}
+		};
 
 	}
 ]);
@@ -535,60 +524,86 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 	'$scope',
 	'LayerSharedData',
 	'Feature',
-	'MapService',
-	function($scope, LayerSharedData, Feature, MapService) {
+	function($scope, LayerSharedData, Feature) {
 
 		$scope.objType = 'feature';
 		
 		$scope.sharedData = LayerSharedData;
 
+		$scope.markers = L.featureGroup();
+
+		var markers = [];
+
 		$scope.sharedData.layer().then(function(layer) {
 
 			$scope.sharedData.features(layer.features);
 
-			$scope.$watch('sharedData.features()', function(features) {
-				$scope.features = features;
-			});
+			$scope.sharedData.map().then(function(map) {
 
-			var map = MapService.getMap();
+				$scope.$watch('sharedData.features()', function(features) {
+
+					if(features.length) {
+
+						console.log(features);
+
+						$scope.features = features;
+
+						if(markers.length) {
+							angular.forEach(markers, function(marker) {
+								$scope.markers.removeLayer(marker);
+							});
+							markers = [];
+						}
+
+						angular.forEach(features, function(f) {
+
+							var marker = L.marker(f.geometry.coordinates);
+							markers.push(marker);
+							marker.addTo($scope.markers);
+
+						});
+
+						if(!map.hasLayer($scope.markers)) {
+							map.addLayer($scope.markers);
+						}
+
+						setTimeout(function() {
+							map.fitBounds($scope.markers.getBounds());
+						}, 100);
+
+					}
+
+				});
+
+
+				$scope.viewInMap = function(featureId) {
+
+					if(map) {
+
+						var feature = $scope.features.filter(function(f) { return f._id == featureId; })[0];
+						map.setView(feature.geometry.coordinates, 14);
+
+					}
+
+				};
+
+			});
 
 			$scope.new = function() {
 
 				$scope.sharedData.editingFeature({});
 
-			}
+			};
 
 			$scope.edit = function(featureId) {
 
-				$scope.sharedData.editingFeature($scope.features.filter(function(f) { return f._id == featureId; })[0]);
+				$scope.sharedData.editingFeature(angular.copy($scope.features.filter(function(f) { return f._id == featureId; })[0]));
 
-			}
+				setTimeout(function() {
+					window.dispatchEvent(new Event('resize'));
+				}, 100);
 
-			if(typeof map !== 'undefined' && typeof $scope.features !== 'undefined') {
-
-				var markers = [];
-
-				angular.forEach($scope.features, function(f) {
-
-					var marker = L.marker(f.geometry.coordinates);
-					markers.push(marker);
-
-				});
-
-				var featureLayer = L.featureGroup(markers);
-
-				map.addLayer(featureLayer);
-				map.fitBounds(featureLayer.getBounds());
-
-				$scope.viewInMap = function(featureId) {
-
-					var feature = $scope.features.filter(function(f) { return f._id == featureId; })[0];
-
-					map.setView(feature.geometry.coordinates, 14);
-
-				};
-
-			}
+			};
 
 		});
 
@@ -624,8 +639,12 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 					Feature.update({featureId: $scope.editing._id, layerId: layer._id}, $scope.editing, function(feature) {
 
-						// Disable editing ui
-						$scope.sharedData.editingFeature(false);
+						// Replace feature in local features
+						angular.forEach($scope.features, function(feature, i) {
+							if(feature._id == $scope.editing._id)
+								$scope.features[i] = $scope.editing;
+						});
+						$scope.sharedData.features($scope.features);
 
 						Message.message({
 							status: 'ok',
@@ -633,11 +652,22 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 						});
 
 					}, function(err) {
-						// TODO error handling
-						console.log(err);
+
+						if(err.status == 500)
+							Message.message({
+								status: 'error',
+								text: 'Ocorreu um erro interno. Tente novamente ou entre em contato com nossa equipe'
+							}, false);
+
 					});
 
 				} else {
+
+					if(!$scope.editing.geometry) {
+						$scope.editing.geometry = {
+							coordinates: [0,0]
+						};
+					}
 
 					var feature = new Feature($scope.editing);
 
@@ -645,13 +675,28 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 						// Locally push new feature
 						$scope.features.push(feature);
+						$scope.sharedData.features($scope.features);
 
-						// Disable editing ui
-						$scope.sharedData.editingFeature(false);
+						// Update editing feature to saved data
+						$scope.sharedData.editingFeature(feature);
+
+						Message.message({
+							status: 'ok',
+							text: 'Feature adicionada.'
+						});
 
 					}, function(err) {
-						// TODO error handling
-						console.log(err);
+
+						var message = {status: 'error'};
+
+						if(err.status == 400 && err.data.message) {
+							message.text = err.data.message;
+						} else {
+							message.text = 'Ocorreu um erro interno.';
+						}
+
+						Message.message(message, false);
+
 					});
 
 				}
@@ -660,17 +705,34 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 			$scope.delete = function() {
 
-				Feature.delete({featureId: $scope.editing._id, layerId: layer._id}, function() {
+				if(confirm('Você tem certeza que deseja remover esta feature?')) {
 
-					$scope.sharedData.features($scope.features.filter(function(f) {
-						return f._id !== $scope.editing._id;
-					}));
-					LayerSharedData.editingFeature(false);
+					Feature.delete({featureId: $scope.editing._id, layerId: layer._id}, function() {
 
-				}, function(err) {
-					// TODO error handling
-					console.log(err);
-				});
+						$scope.sharedData.features($scope.features.filter(function(f) {
+							return f._id !== $scope.editing._id;
+						}));
+						LayerSharedData.editingFeature(false);
+
+						Message.message({
+							status: 'ok',
+							text: 'Feature removida.'
+						});
+
+					}, function(err) {
+
+						var message = {status: 'error'};
+
+						if(err.status == 400 && err.data.message) {
+							message.text = err.data.message;
+						} else {
+							message.text = 'Ocorreu um erro interno.';
+						}
+
+						Message.message(message, false);
+					});
+
+				}
 
 			}
 

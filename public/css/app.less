@@ -112,6 +112,10 @@ input[type=submit].light-button {
 		background: green;
 		padding: 15px 0;
 	}
+	.error {
+		background: red;
+		padding: 15px 0;
+	}
 	.close-button {
 		color: #fff;
 		font-size: 12px;
@@ -137,6 +141,18 @@ input[type=submit].light-button {
 	left: 0;
 	right: 0;
 	bottom: 0;
+	::-webkit-scrollbar {
+	    width: 5px;
+	}
+	 
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	 
+	::-webkit-scrollbar-thumb {
+	    border-radius: 0;
+	    background: #ddd; 
+	}
 	textarea.no-canvas,
 	input.no-canvas {
 		display: block;
@@ -154,7 +170,7 @@ input[type=submit].light-button {
 		}
 	}
 	.layer-settings {
-		padding: 40px 40px 20px;
+		padding: 40px 40px 0;
 	}
 	.edit-title {
 		font-size: 28px;
@@ -206,7 +222,7 @@ input[type=submit].light-button {
 		border-right: 1px solid #eee;
 		box-shadow: 0 0 10px rgba(0,0,0,1);
 		height: 100%;
-		overflow: hidden;
+		overflow: auto;
 		h1,h2,h3 {
 			color: #f0f0f0;
 		}
@@ -218,7 +234,6 @@ input[type=submit].light-button {
 			margin: 0;
 			padding: 0;
 			border-top: 1px solid #eee;
-			border-bottom: 1px solid #eee;
 			li {
 				display: table-cell;
 				width: 1%;
@@ -255,9 +270,52 @@ input[type=submit].light-button {
 			h1,h2,h3 {
 				color: #333;
 			}
-			background: #fefefe;
-			padding: 20px;
+			background: #f5f5f5;
 			color: #333;
+			input.filter {
+				display: block;
+				border: 0;
+				padding: 20px;
+				box-sizing: border-box;
+				width: 100%;
+				margin: 0;
+				background: transparent;
+			}
+			.add-new {
+				display: block;
+				width: auto;
+				margin: 0 20px;
+				box-sizing: border-box;
+				text-align: center;
+				padding: 10px 0;
+				font-weight: 600;
+			}
+			.count {
+				background: #666;
+				color: #f0f0f0;
+				font-size: 12px;
+				font-style: italic;
+				padding: 10px 20px;
+				border-top: 1px solid #555;
+				border-bottom: 1px solid #555;
+				margin: 0;
+			}
+			.obj-list {
+				margin: 20px;
+				padding: 0 0 60px;
+				li {
+					background: #fbfbfb;
+					margin: 0 0 1px;
+					padding: 15px;
+					cursor: pointer;
+					&:hover {
+						background: #fff;
+						box-shadow: 0 0 5px rgba(0,0,0,0.05);
+						position: relative;
+						z-index: 2;
+					}
+				}
+			}
 		}
 	}
 	.map-container {
@@ -266,14 +324,14 @@ input[type=submit].light-button {
 		height: 100%;
 		position: relative;
 		overflow: hidden;
-		#map {
+		.leaflet-container {
 			height: 100%;
 		}
 		#edit-feature {
 			height: 100%;
 			z-index: 200;
 			padding: 40px;
-			background: #fefefe;
+			background: #f9f9f9;
 			form {
 				.edit-title {
 					font-size: 20px;
@@ -285,10 +343,9 @@ input[type=submit].light-button {
 					color: #999;
 				}
 			}
-			.feature-actions {
-			}
 		}
 	}
+	#layer-features {	}
 }
 
 /*
