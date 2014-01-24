@@ -533,6 +533,8 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 		
 		$scope.sharedData = LayerSharedData;
 
+		$scope.features = [];
+
 		$scope.markers = L.featureGroup();
 
 		var markers = [];
