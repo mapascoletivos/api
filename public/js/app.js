@@ -303,15 +303,16 @@ angular.module('mapasColetivos.map').factory('MapService', [
 			markers = [];
 
 		return {
+			init: function(id) {
+				this.clearAll();
+				map = leafletData.getMap(id);
+				map.then(function(m) {
+					if(!m.hasLayer(markerLayer)) {
+						m.addLayer(markerLayer);
+					}
+				});
+			},
 			get: function() {
-				if(typeof map === 'undefined') {
-					map = leafletData.getMap();
-					map.then(function(m) {
-						if(!m.hasLayer(markerLayer)) {
-							m.addLayer(markerLayer);
-						}
-					});
-				}
 				return map;
 			},
 			clearMarkers: function() {
@@ -326,17 +327,20 @@ angular.module('mapasColetivos.map').factory('MapService', [
 				return markerLayer;
 			},
 			addMarker: function(marker) {
-				markers.push(marker);
 				markerLayer.addLayer(marker);
+				markers.push(marker);
 			},
 			removeMarker: function(marker) {
-				markers = markers.filter(function(m) { return m !== marker; });
+				markers = markers.filter(function(m) { return m == marker; });
 				markerLayer.removeLayer(marker);
 			},
 			fitWorld: function() {
 				map.then(function(map) {
 					map.setView([0,0], 2);
 				});
+			},
+			clearAll: function() {
+				this.clearMarkers();
 			}
 		}
 	}
@@ -387,6 +391,31 @@ angular.module('mapasColetivos').directive('mcDisableEnter', [
 	}
 ]);
 
+/*
+ * CONTROLLERS
+ */
+
+/*
+ * Message controller
+ */
+angular.module('mapasColetivos').controller('MessageCtrl', [
+	'$scope',
+	'MessageService',
+	function($scope, MessageService) {
+
+		$scope.service = MessageService;
+
+		$scope.$watch('service.message()', function(message) {
+			$scope.message = message;
+		});
+
+		$scope.close = function() {
+			$scope.service.message(false);
+		}
+
+	}
+]);
+
 angular.module('mapasColetivos').controller('IndexCtrl', [
 	'$scope',
 	'SessionService',
@@ -430,7 +459,8 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 	'Layer',
 	'LayerSharedData',
 	'MessageService',
-	function($scope, $location, $routeParams, $q, Layer, LayerSharedData, Message) {
+	'MapService',
+	function($scope, $location, $routeParams, $q, Layer, LayerSharedData, Message, MapService) {
 
 		// New layer
 		if($location.path() == '/layers/new') {
@@ -442,7 +472,6 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 				$location.path('/layers/' + draft._id + '/edit/');
 			}, function(err) {
 				// TODO error handling
-				console.log(err);
 			});
 
 		// Single layer
@@ -453,11 +482,16 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 			Layer.get({layerId: $routeParams.layerId}, function(layer) {
 
+				MapService.init('layer-map');
+
 				// Set layer shared data using service (resolving promise)
 				layerDefer.resolve(layer);
 
 				$scope.layer = layer;
 
+				/*
+				 * Edit functions
+				 */
 				if($routeParams.action == 'edit') {
 
 					if($scope.layer.title == 'Untitled')
@@ -523,6 +557,15 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 				}
 
+			}, function() {
+
+				$location.path('/layers');
+
+				Message.message({
+					status: 'error',
+					text: 'Esta camada não existe'
+				});
+
 			});
 
 		// All layers
@@ -563,27 +606,6 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 				url: 'http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png'
 			}
 		};
-
-	}
-]);
-
-/*
- * Message controller
- */
-angular.module('mapasColetivos').controller('MessageCtrl', [
-	'$scope',
-	'MessageService',
-	function($scope, MessageService) {
-
-		$scope.service = MessageService;
-
-		$scope.$watch('service.message()', function(message) {
-			$scope.message = message;
-		});
-
-		$scope.close = function() {
-			$scope.service.message(false);
-		}
 
 	}
 ]);
@@ -633,9 +655,11 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 				if($scope.features.length) {
 					MapService.get().then(function(map) {
-						map.fitBounds(MapService.getMarkerLayer().getBounds());
 						setTimeout(function() {
-							map.invalidateSize(false);
+							map.fitBounds(MapService.getMarkerLayer().getBounds(), {
+								reset:true
+							});
+							map.invalidateSize(true);
 						}, 100);
 					});
 				} else {
@@ -878,9 +902,11 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 			$scope.close = function() {
 
-				$scope._data = {};
-				$scope.sharedData.editingFeature(false);
-				$rootScope.$broadcast('closedFeature');
+				if($scope.editing) {
+					$scope._data = {};
+					$scope.sharedData.editingFeature(false);
+					$rootScope.$broadcast('closedFeature');
+				}
 
 			}
 
@@ -896,7 +922,7 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 			}
 
-			$scope.useNominatimFeature = function(feature) {
+			$scope.setNominatimFeature = function(feature) {
 
 				$scope.editing.geometry = {};
 
