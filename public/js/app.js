@@ -257,6 +257,58 @@ angular.module('mapasColetivos.layer').factory('LayerSharedData', [
 ]);
 
 /*
+ * Message service
+ */
+angular.module('mapasColetivos').factory('MessageService', [
+	'$timeout',
+	function($timeout) {
+
+		var message = {
+			status: 'ok',
+			text: false
+		};
+
+		return {
+			message: function(val, timeout) {
+
+				if(typeof val !== 'undefined') {
+					message = val;
+
+					if(timeout !== false) {
+						timeout = timeout ? timeout : 3000;
+						$timeout(function() {
+							message = {
+								status: 'ok',
+								text: ''
+							};
+						}, timeout);
+					}
+
+				}
+
+				return message;
+			}
+		}
+
+	}
+]);
+
+/*
+ * Geocode service
+ */
+
+angular.module('mapasColetivos').factory('GeocodeService', [
+	'$http',
+	function($http) {
+		return {
+			get: function(query) {
+				return $http.jsonp('http://nominatim.openstreetmap.org/search.php?q=' + query + '&format=json&json_callback=JSON_CALLBACK');
+			}
+		}
+	}
+]);
+
+/*
  * Directives
  */
 
@@ -266,7 +318,6 @@ angular.module('mapasColetivos').directive('mcDisableEnter', [
 			link: function(scope, element) {
 
 				function triggerBlur() {
-					//console.log(element);
 					element.blur();
 				}
 
@@ -274,7 +325,6 @@ angular.module('mapasColetivos').directive('mcDisableEnter', [
 
 					if(event.which == 13) {
 
-						//scope.$apply(triggerBlur);
 						triggerBlur();
 						event.preventDefault();
 
@@ -364,6 +414,15 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 					if($scope.layer.title == 'Untitled')
 						$scope.layer.title = '';
 
+					var deleteDraft = function(callback) {
+						if((!$scope.layer.title || $scope.layer.title == 'Untitled') && !$scope.layer.features.length) {
+							if(typeof callback === 'function')
+								Layer.delete({layerId: layer._id}, callback);
+							else
+								Layer.delete({layerId: layer._id});
+						}
+					}
+
 					$scope.save = function($event) {
 
 						Layer.update({layerId: layer._id}, $scope.layer, function(layer) {
@@ -401,11 +460,8 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 					$scope.cancel = function() {
 
-						LayerSharedData.editingFeature(false);
-						LayerSharedData.editingContent(false);
-
 						if((!$scope.layer.title || $scope.layer.title == 'Untitled') && !$scope.layer.features.length) {
-							Layer.delete({layerId: layer._id}, function(res) {
+							deleteDraft(function(res) {
 								$location.path('/layers');
 							});
 						} else {
@@ -413,6 +469,8 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 						}
 
 					}
+
+					$scope.$on('$routeChangeStart', deleteDraft);
 
 				}
 
@@ -458,43 +516,6 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 			markers: [],
 			events: {}
 		};
-
-	}
-]);
-
-/*
- * Message service
- */
-angular.module('mapasColetivos').factory('MessageService', [
-	'$timeout',
-	function($timeout) {
-
-		var message = {
-			status: 'ok',
-			text: false
-		};
-
-		return {
-			message: function(val, timeout) {
-
-				if(typeof val !== 'undefined') {
-					message = val;
-
-					if(timeout !== false) {
-						timeout = timeout ? timeout : 3000;
-						$timeout(function() {
-							message = {
-								status: 'ok',
-								text: ''
-							};
-						}, timeout);
-					}
-
-				}
-
-				return message;
-			}
-		}
 
 	}
 ]);
@@ -622,14 +643,42 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 	'Feature',
 	'LayerSharedData',
 	'MessageService',
-	function($scope, Feature, LayerSharedData, Message) {
+	'GeocodeService',
+	function($scope, Feature, LayerSharedData, Message, Geocode) {
 
 		$scope.sharedData = LayerSharedData;
+
+		$scope._data = {};
+
+		$scope.defaults = {
+			scrollWheelZoom: false
+		};
 
 		$scope.sharedData.layer().then(function(layer) {
 
 			$scope.$watch('sharedData.editingFeature()', function(editing) {
+
+				$scope.$broadcast('newFeature');
+
 				$scope.editing = editing;
+
+				if($scope.editing) {
+
+					if(!$scope.editing.geometry)
+						$scope.editing.geometry.coordinates = [0,0];
+
+					$scope._data.markers = {
+						feature: {
+							lat: $scope.editing.geometry.coordinates[0],
+							lng: $scope.editing.geometry.coordinates[1],
+							message: $scope.editing.title,
+							draggable: true,
+							focus: true
+						}
+					};
+
+				}
+
 			});
 
 			$scope.$watch('sharedData.features()', function(features) {
@@ -648,6 +697,8 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 								$scope.features[i] = $scope.editing;
 						});
 						$scope.sharedData.features($scope.features);
+
+						$scope.sharedData.editingFeature(angular.copy($scope.editing));
 
 						Message.message({
 							status: 'ok',
@@ -681,7 +732,7 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 						$scope.sharedData.features($scope.features);
 
 						// Update editing feature to saved data
-						$scope.sharedData.editingFeature(feature);
+						$scope.sharedData.editingFeature(angular.copy(feature));
 
 						Message.message({
 							status: 'ok',
@@ -741,9 +792,36 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 			$scope.cancel = function() {
 
-				LayerSharedData.editingFeature(false);
+				$scope._data = {};
+				$scope.editing = false;
 
 			}
+
+			$scope.geocode = function() {
+
+				Geocode.get($scope._data.geocode)
+					.success(function(res) {
+						$scope._data.geocodeResults = res;
+					})
+					.error(function(err) {
+						$scope._data.geocodeResults = [];
+					});
+
+			}
+
+			$scope.useNominatimFeature = function(feature) {
+
+				$scope.editing.geometry = {};
+
+				$scope.editing.geometry.coordinates = [
+					parseFloat(feature.lat),
+					parseFloat(feature.lon)
+				];
+
+			}
+
+			$scope.$on('$routeChangeStart', $scope.cancel);
+			$scope.$on('newFeature', $scope.cancel);
 
 		});
 

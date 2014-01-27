@@ -221,8 +221,13 @@ input[type=submit].light-button {
 		box-shadow: 0 0 10px rgba(0,0,0,1);
 		height: 100%;
 		overflow: auto;
-		h1,h2,h3 {
-			color: #f0f0f0;
+		h2 {
+			font-size: 12px;
+			font-weight: 800;
+			line-height: 20px;
+			margin: 0;
+			text-transform: uppercase;
+			color: #999;
 		}
 		.editor-content {
 			position: relative;
@@ -331,9 +336,18 @@ input[type=submit].light-button {
 		#edit-feature {
 			height: 100%;
 			z-index: 200;
-			padding: 40px;
 			background: #f9f9f9;
+			overflow: hidden;
+			h3 {
+				font-size: 12px;
+				font-weight: 800;
+				color: #999;
+				text-transform: uppercase;
+				margin: 0;
+				line-height: 20px;
+			}
 			form {
+				height: 100%;
 				.edit-title {
 					font-size: 20px;
 					font-weight: 400;
@@ -343,6 +357,43 @@ input[type=submit].light-button {
 					font-size: 12px;
 					color: #999;
 				}
+			}
+			.feature-settings,
+			.feature-location {
+				height: 50%;
+				box-sizing: border-box;
+				overflow: auto;
+				position: relative;
+			}
+			.feature-settings {
+				padding: 40px;
+			}
+			.feature-location {
+				overflow: hidden;
+				.location-editor {
+					position: absolute;
+					overflow: auto;
+					top: 0;
+					bottom: 0;
+					left: 0;
+					right: 70%;
+					background: #fff;
+					padding: 20px;
+					box-sizing: border-box;
+				}
+				.leaflet-container {
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					right: 0;
+					left: 30%;
+				}
+			}
+			.feature-actions {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				z-index: 9999;
 			}
 		}
 	}
