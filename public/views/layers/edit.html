@@ -3,6 +3,7 @@
 		<div id="editor">
 			<div class="editor-content">
 				<div class="page-header layer-settings">
+					<h2>Camada</h2>
 					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.title}}</textarea>
 					<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.description}}</textarea>
 				</div>
@@ -51,8 +52,25 @@
 	<div class="map-container">
 		<div ng-controller="FeatureEditCtrl" id="edit-feature" ng-show="editing">
 			<form ng-submit="save()">
-				<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.title}}</textarea>
-				<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.description}}</textarea>
+				<div class="feature-settings">
+					<h3>Feature</h3>
+					<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.title}}</textarea>
+					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.description}}</textarea>
+				</div>
+				<div class="feature-location">
+					<div class="location-editor">
+						<input class="geocode" type="text" ui-keypress="{'enter': 'geocode()'}" ng-model="_data.geocode" placeholder="Procure um endereço" />
+						<a href="javascript:void(0);" ng-click="geocode()">Buscar</a>
+						<div class="geocode-results">
+							<ul ng-repeat="result in _data.geocodeResults">
+								<li ng-click="useNominatimFeature(result)">{{result.display_name}}</li>
+							</ul>
+						</div>
+						Latitude: <input ng-model="editing.geometry.coordinates[0]" type="text" />
+						Longitude: <input ng-model="editing.geometry.coordinates[1]" type="text" />
+					</div>
+					<leaflet markers="_data.markers"></leaflet>
+				</div>
 				<div class="feature-actions">
 					<a class="button" href="#" ng-click="save()" ng-show="editing._id">Salvar</a>
 					<a class="button" href="#" ng-click="save()" ng-hide="editing._id">Adicionar nova feature</a>
@@ -61,6 +79,6 @@
 				</div>
 			</form>
 		</div>
-		<leaflet center="map.world" tiles="map.tiles" markers="map.markers" event-broadcast="map.events"></leaflet>
+		<leaflet center="map.world" tiles="map.tiles" ng-hide="editing"></leaflet>
 	</div>
 </div>
