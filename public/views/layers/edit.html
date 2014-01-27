@@ -59,11 +59,11 @@
 				</div>
 				<div class="feature-location">
 					<div class="location-editor">
-						<input class="geocode" type="text" ui-keypress="{'enter': 'geocode()'}" ng-model="_data.geocode" placeholder="Procure um endereço" />
+						<input class="geocode" type="text" ui-keypress="{'enter': 'geocode()'}" ng-model="_data.geocode" placeholder="Encontre uma localização" />
 						<a href="javascript:void(0);" ng-click="geocode()">Buscar</a>
 						<div class="geocode-results">
 							<ul ng-repeat="result in _data.geocodeResults">
-								<li ng-click="setNominatimFeature(result)">{{result.display_name}}</li>
+								<li ng-click="setNominatimFeature(result)">{{result.display_name}} <span class="lsf-icon">geo</span></li>
 							</ul>
 						</div>
 						Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" />

@@ -766,6 +766,10 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 				}
 
+				setTimeout(function() {
+					window.dispatchEvent(new Event('resize'));
+				}, 100);
+
 			}
 
 		}
