@@ -63,7 +63,7 @@
 						<a href="javascript:void(0);" ng-click="geocode()">Buscar</a>
 						<div class="geocode-results">
 							<ul ng-repeat="result in _data.geocodeResults">
-								<li ng-click="useNominatimFeature(result)">{{result.display_name}}</li>
+								<li ng-click="setNominatimFeature(result)">{{result.display_name}}</li>
 							</ul>
 						</div>
 						Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" />
@@ -78,6 +78,6 @@
 				</div>
 			</form>
 		</div>
-		<leaflet center="map.world" tiles="map.tiles"></leaflet>
+		<leaflet id="layer-map" center="map.world" tiles="map.tiles"></leaflet>
 	</div>
 </div>
