@@ -20,8 +20,8 @@
 									<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 									<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar nova</a></p>
 									<ul class="obj-list">
-										<li ng-repeat="feature in features | filter:search" ng-click="viewInMap(feature._id)" data-feature="{{feature._id}}">
-											{{feature.title}} <a href="javascript:void(0)" ng-click="edit(feature._id)">Editar</a>
+										<li ng-repeat="feature in features | filter:search" ng-click="edit(feature._id)" data-feature="{{feature._id}}">
+											{{feature.title}}
 										</li>
 									</ul>
 								</div>
@@ -46,11 +46,11 @@
 		<form class="layer-actions" ng-submit="save()">
 			<a href="#" class="button" ng-click="save()">Salvar</button>
 			<a href="#" class="button" ng-click="delete()">Remover</a>
-			<a href="#" class="button" ng-click="cancel()">Cancelar</a>
+			<a href="#" class="button" ng-click="close()">Cancelar</a>
 		</form>
 	</div>
-	<div class="map-container">
-		<div ng-controller="FeatureEditCtrl" id="edit-feature" ng-show="editing">
+	<div ng-controller="FeatureEditCtrl" class="map-container" ng-class="{editing: editing}">
+		<div id="edit-feature" ng-show="editing">
 			<form ng-submit="save()">
 				<div class="feature-settings">
 					<h3>Feature</h3>
@@ -66,19 +66,18 @@
 								<li ng-click="useNominatimFeature(result)">{{result.display_name}}</li>
 							</ul>
 						</div>
-						Latitude: <input ng-model="editing.geometry.coordinates[0]" type="text" />
-						Longitude: <input ng-model="editing.geometry.coordinates[1]" type="text" />
+						Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" />
+						Longitude: <input ng-model="editing.geometry.coordinates[1]" ng-change="setMarker()" type="text" />
 					</div>
-					<leaflet markers="_data.markers"></leaflet>
 				</div>
 				<div class="feature-actions">
 					<a class="button" href="#" ng-click="save()" ng-show="editing._id">Salvar</a>
 					<a class="button" href="#" ng-click="save()" ng-hide="editing._id">Adicionar nova feature</a>
 					<a class="button" href="#" ng-click="delete()" ng-show="editing._id">Remover</a>
-					<a class="button" ng-click="cancel()">Cancelar</a>
+					<a class="button" ng-click="close()">Cancelar</a>
 				</div>
 			</form>
 		</div>
-		<leaflet center="map.world" tiles="map.tiles" ng-hide="editing"></leaflet>
+		<leaflet center="map.world" tiles="map.tiles"></leaflet>
 	</div>
 </div>
