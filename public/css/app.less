@@ -331,13 +331,20 @@ input[type=submit].light-button {
 		position: relative;
 		overflow: hidden;
 		.leaflet-container {
+			width: 100%;
 			height: 100%;
 		}
+		&.editing {
+			.leaflet-container {
+				height: 50%;
+			}
+		}
 		#edit-feature {
-			height: 100%;
+			width: 100%;
+			height: 50%;
 			z-index: 200;
 			background: #f9f9f9;
-			overflow: hidden;
+			overflow: auto;
 			h3 {
 				font-size: 12px;
 				font-weight: 800;
@@ -360,7 +367,6 @@ input[type=submit].light-button {
 			}
 			.feature-settings,
 			.feature-location {
-				height: 50%;
 				box-sizing: border-box;
 				overflow: auto;
 				position: relative;
@@ -370,24 +376,6 @@ input[type=submit].light-button {
 			}
 			.feature-location {
 				overflow: hidden;
-				.location-editor {
-					position: absolute;
-					overflow: auto;
-					top: 0;
-					bottom: 0;
-					left: 0;
-					right: 70%;
-					background: #fff;
-					padding: 20px;
-					box-sizing: border-box;
-				}
-				.leaflet-container {
-					position: absolute;
-					top: 0;
-					bottom: 0;
-					right: 0;
-					left: 30%;
-				}
 			}
 			.feature-actions {
 				position: absolute;

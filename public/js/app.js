@@ -219,9 +219,6 @@ angular.module('mapasColetivos.layer').factory('LayerSharedData', [
 
 				return layer;
 			},
-			map: function() {
-				return leafletData.getMap();
-			},
 			features: function(val) {
 
 				if(typeof val !== 'undefined')
@@ -294,10 +291,62 @@ angular.module('mapasColetivos').factory('MessageService', [
 ]);
 
 /*
+ * Map Service
+ */
+
+angular.module('mapasColetivos.map').factory('MapService', [
+	'leafletData',
+	function(leafletData) {
+
+		var map,
+			markerLayer = L.featureGroup(),
+			markers = [];
+
+		return {
+			get: function() {
+				if(typeof map === 'undefined') {
+					map = leafletData.getMap();
+					map.then(function(m) {
+						if(!m.hasLayer(markerLayer)) {
+							m.addLayer(markerLayer);
+						}
+					});
+				}
+				return map;
+			},
+			clearMarkers: function() {
+				if(markers.length) {
+					angular.forEach(markers, function(marker) {
+						markerLayer.removeLayer(marker);
+					});
+					markers = [];
+				}
+			},
+			getMarkerLayer: function() {
+				return markerLayer;
+			},
+			addMarker: function(marker) {
+				markers.push(marker);
+				markerLayer.addLayer(marker);
+			},
+			removeMarker: function(marker) {
+				markers = markers.filter(function(m) { return m !== marker; });
+				markerLayer.removeLayer(marker);
+			},
+			fitWorld: function() {
+				map.then(function(map) {
+					map.setView([0,0], 2);
+				});
+			}
+		}
+	}
+]);
+
+/*
  * Geocode service
  */
 
-angular.module('mapasColetivos').factory('GeocodeService', [
+angular.module('mapasColetivos.map').factory('GeocodeService', [
 	'$http',
 	function($http) {
 		return {
@@ -458,7 +507,7 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 					}
 
-					$scope.cancel = function() {
+					$scope.close = function() {
 
 						if((!$scope.layer.title || $scope.layer.title == 'Untitled') && !$scope.layer.features.length) {
 							deleteDraft(function(res) {
@@ -512,9 +561,7 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 			},
 			tiles: {
 				url: 'http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png'
-			},
-			markers: [],
-			events: {}
+			}
 		};
 
 	}
@@ -548,7 +595,8 @@ angular.module('mapasColetivos').controller('MessageCtrl', [
 angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 	'$scope',
 	'LayerSharedData',
-	function($scope, LayerSharedData) {
+	'MapService',
+	function($scope, LayerSharedData, MapService) {
 
 		$scope.objType = 'feature';
 		
@@ -556,60 +604,66 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 		$scope.features = [];
 
-		$scope.markers = L.featureGroup();
+		var populateMap = function() {
 
-		var markers = [];
+			MapService.clearMarkers();
+
+			if($scope.features) {
+
+				angular.forEach($scope.features, function(f) {
+
+					var marker = L.marker(f.geometry.coordinates);
+
+					marker
+						.on('click', function() {
+							$scope.edit(f._id);
+						})
+						.on('mouseover', function() {
+							marker.openPopup();
+						})
+						.on('mouseout', function() {
+							marker.closePopup();
+						})
+						.bindPopup('<h3 class="feature-title">' + f.title + '</h3>');
+
+
+					MapService.addMarker(marker);
+
+				});
+
+				if($scope.features.length) {
+					MapService.get().then(function(map) {
+						map.fitBounds(MapService.getMarkerLayer().getBounds());
+						setTimeout(function() {
+							map.invalidateSize(false);
+						}, 100);
+					});
+				} else {
+					MapService.fitWorld();
+				}
+
+			} else {
+
+				MapService.fitWorld();
+
+			}
+
+		}
 
 		$scope.sharedData.layer().then(function(layer) {
 
 			$scope.sharedData.features(layer.features);
 
-			$scope.sharedData.map().then(function(map) {
+			MapService.get().then(function(map) {
 
 				$scope.$watch('sharedData.features()', function(features) {
 
-					if(features.length) {
-
-						$scope.features = features;
-
-						if(markers.length) {
-							angular.forEach(markers, function(marker) {
-								$scope.markers.removeLayer(marker);
-							});
-							markers = [];
-						}
-
-						angular.forEach(features, function(f) {
-
-							var marker = L.marker(f.geometry.coordinates);
-							markers.push(marker);
-							marker.addTo($scope.markers);
-
-						});
-
-						if(!map.hasLayer($scope.markers)) {
-							map.addLayer($scope.markers);
-						}
-
-						setTimeout(function() {
-							map.fitBounds($scope.markers.getBounds());
-						}, 100);
-
-					}
+					$scope.features = features;
+					populateMap(features);
 
 				});
 
-
-				$scope.viewInMap = function(featureId) {
-
-					if(map) {
-
-						var feature = $scope.features.filter(function(f) { return f._id == featureId; })[0];
-						map.setView(feature.geometry.coordinates, 14);
-
-					}
-
-				};
+				$scope.$on('closedFeature', populateMap);
 
 			});
 
@@ -640,11 +694,13 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 	'$scope',
+	'$rootScope',
 	'Feature',
 	'LayerSharedData',
 	'MessageService',
 	'GeocodeService',
-	function($scope, Feature, LayerSharedData, Message, Geocode) {
+	'MapService',
+	function($scope, $rootScope, Feature, LayerSharedData, Message, Geocode, MapService) {
 
 		$scope.sharedData = LayerSharedData;
 
@@ -654,30 +710,60 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 			scrollWheelZoom: false
 		};
 
-		$scope.sharedData.layer().then(function(layer) {
+		$scope.setMarker = function() {
 
-			$scope.$watch('sharedData.editingFeature()', function(editing) {
+			if($scope.editing) {
 
-				$scope.$broadcast('newFeature');
+				MapService.clearMarkers();
 
-				$scope.editing = editing;
+				if($scope.editing.geometry) {
 
-				if($scope.editing) {
+					var marker = L.marker($scope.editing.geometry.coordinates, {
+						draggable: true
+					});
 
-					if(!$scope.editing.geometry)
-						$scope.editing.geometry.coordinates = [0,0];
+					marker.on('drag', function() {
+						var coordinates = marker.getLatLng();
+						$scope.editing.geometry.coordinates = [
+							coordinates.lat,
+							coordinates.lng
+						];
+					});
 
-					$scope._data.markers = {
-						feature: {
-							lat: $scope.editing.geometry.coordinates[0],
-							lng: $scope.editing.geometry.coordinates[1],
-							message: $scope.editing.title,
-							draggable: true,
-							focus: true
-						}
-					};
+					MapService.addMarker(marker);
+
+					MapService.get().then(function(map) {
+						map.fitBounds(MapService.getMarkerLayer().getBounds());
+					});
+
+				} else {
+
+					MapService.fitWorld();
 
 				}
+
+			}
+
+		}
+
+		/*
+		 * Get layer shared data
+		 */
+		$scope.sharedData.layer().then(function(layer) {
+
+			MapService.get().then(function(map) {
+
+				/*
+				 * Watch editing feature
+				 */
+				$scope.$watch('sharedData.editingFeature()', function(editing) {
+
+					$scope._data = {};
+					$rootScope.$broadcast('editFeature');
+					$scope.editing = editing;
+					$scope.setMarker();
+
+				});
 
 			});
 
@@ -790,10 +876,11 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 			}
 
-			$scope.cancel = function() {
+			$scope.close = function() {
 
 				$scope._data = {};
-				$scope.editing = false;
+				$scope.sharedData.editingFeature(false);
+				$rootScope.$broadcast('closedFeature');
 
 			}
 
@@ -818,10 +905,11 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 					parseFloat(feature.lon)
 				];
 
+				$scope.setMarker();
+
 			}
 
-			$scope.$on('$routeChangeStart', $scope.cancel);
-			$scope.$on('newFeature', $scope.cancel);
+			$scope.$on('$routeChangeStart', $scope.close);
 
 		});
 
