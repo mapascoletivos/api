@@ -22,6 +22,29 @@ exports.load = function(req, res, next, id){
 }
 
 /**
+ * Create a feature
+ */
+
+exports.create = function (req, res) {
+	var feature = new Feature(req.body);
+	feature.creator = req.user;
+	feature.layer = req.layer;
+	
+	// save feature
+	feature.save(function (err) {
+		if (err) res.json(400, err);
+		var layer = feature.layer;
+		layer.features.push(feature);
+		
+		// save layer
+		layer.save(function(err){
+			if (err) res.json(400, err);
+			res.json(feature);
+		});
+	});
+}
+
+/**
  * List
  */
 
@@ -55,36 +78,6 @@ exports.show = function(req, res){
 }
 
 /**
- * New feature
- */
-
-exports.new = function(req, res){
-	res.json(new Feature({}))
-}
-
-/**
- * Create a feature
- */
-
-exports.create = function (req, res) {
-	var feature = new Feature(req.body);
-	feature.creator = req.user;
-	
-	// save feature
-	feature.save(function (err) {
-		if (err) res.json(400, err);
-		var layer = feature.layer;
-		layer.features.push(feature);
-		
-		// save layer
-		layer.save(function(err){
-			if (err) res.json(400, err);
-			res.json(feature);
-		});
-	});
-}
-
-/**
  * Update feature
  */
 
@@ -99,4 +92,56 @@ exports.update = function(req, res){
 			res.json(400, err)
 		}
 	})
+}
+
+/**
+ * Add content to feature
+ */
+
+exports.addContent = function(req, res){
+	var 
+		feature = req.feature,
+		content = req.content;
+
+	// associate content to feature, if not already 
+	if ( ! _.contains(feature.contents, content._id) ) { 
+		feature.contents.push(content);
+	}
+
+	// associate feature to content, if not already 
+	if ( ! _.contains(content.features, feature._id) ) { 
+		contents.features.push(features);
+	}
+
+	// save both
+	content.save(function(err){
+		 if (err) res.json(400, err);
+		feature.save(function(err){
+			if (err) res.json(400,err)
+			else res.json(feature);
+		});
+	});
+
+}
+
+/**
+ * Remove content from feature
+ */
+
+exports.removeContent = function(req, res){
+	var 
+		feature = req.feature,
+		content = req.content;
+	
+	feature.contents = _.filter(feature.contents, function(c) { return !c._id.equals(content._id); });	
+	content.features = _.filter(content.features, function(f) { return !f._id.equals(feature._id); });	
+	
+	// save both
+	content.save(function(err){
+		 if (err) res.json(400, err);
+		feature.save(function(err){
+			if (err) res.json(400,err)
+			else res.json(feature);
+		});
+	});
 }
