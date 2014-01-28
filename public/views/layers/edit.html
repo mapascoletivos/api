@@ -4,8 +4,8 @@
 			<div class="editor-content">
 				<div class="page-header layer-settings">
 					<h2>Camada</h2>
-					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.title}}</textarea>
-					<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{layer.description}}</textarea>
+					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 				</div>
 				<div class="content">
 					<div id="layer-edit">
@@ -20,7 +20,7 @@
 									<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 									<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar nova</a></p>
 									<ul class="obj-list">
-										<li ng-repeat="feature in features | filter:search" ng-click="edit(feature._id)" data-feature="{{feature._id}}">
+										<li ng-repeat="feature in features | filter:search" ng-click="edit(feature._id)">
 											{{feature.title}}
 										</li>
 									</ul>
@@ -49,13 +49,13 @@
 			<a href="javascript:void(0);" class="button" ng-click="close()">Cancelar</a>
 		</form>
 	</div>
-	<div ng-controller="FeatureEditCtrl" class="map-container" ng-class="{editing: editing}">
+	<div ng-controller="FeatureEditCtrl" class="map-container object-editor" ng-class="{editing: editing}" ng-hide="sharedData.editingContent()">
 		<div id="edit-feature" ng-show="editing" ng-animate="'top-down'">
 			<form ng-submit="save()">
 				<div class="feature-settings">
 					<h3>Feature</h3>
-					<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.title}}</textarea>
-					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic>{{editing.description}}</textarea>
+					<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 				</div>
 				<div class="feature-location">
 					<div class="location-editor">
@@ -80,5 +80,18 @@
 		</div>
 		<leaflet id="layer-map" center="map.world" tiles="map.tiles"></leaflet>
 		<div class="add-marker-tip" ng-hide="marker">Clique no mapa para adicionar um marcador</div>
+	</div>
+	<div ng-controller="ContentEditCtrl" class="content-editor object-editor" ng-show="editing">
+		<form>
+			<h3>Conteúdo</h3>
+			<textarea class="edit-title no-canvas" placeholder="Título" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+			<textarea sir-trevor-editor ng-model="editing.sirTrevor"></textarea>
+			<div class="content-actions">
+				<a class="button" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
+				<a class="button" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar novo conteúdo</a>
+				<a class="button" href="javascript:void(0);" ng-click="delete()" ng-show="editing._id">Remover</a>
+				<a class="button" href="javascript:void(0);" ng-click="close()">Cancelar</a>
+			</div>
+		</form>
 	</div>
 </div>
