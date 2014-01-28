@@ -56,16 +56,6 @@ exports.show = function(req, res){
 }
 
 /**
- * New layer
- */
-
-exports.new = function(req, res){
-	res.render('layers/new', {
-		title: 'New layer'
-	})
-}
-
-/**
  * Create a layer
  */
 
@@ -116,28 +106,6 @@ exports.destroy = function(req, res){
 }
 
 /**
- * Create a feature in layer
- */
-
-exports.createFeature = function (req, res) {
-	var feature = new Feature(req.body),
-		layer = req.layer;
-	
-	feature.creator = req.user;
-	feature.layers = [ req.layer ];
-	
-	feature.save(function (err) {
-		if (err) res.json(400, err);
-		layer.features.push(feature);
-		layer.save(function(err){
-			if (err) res.json(400, err);
-			res.json(feature);
-		})      
-	})
-}
-
-
-/**
  * Add a feature in layer
  */
 
@@ -166,7 +134,7 @@ exports.addFeature = function (req, res) {
 }
 
 /**
- * Remove a feature in layer
+ * Remove feature from layer
  */
 
 exports.removeFeature = function (req, res) {
@@ -183,6 +151,7 @@ exports.removeFeature = function (req, res) {
 		})
 	}
 
+	// if feature belongs to only one layer, destroy it
 	if(feature.layers.length === 1) {
 		feature.remove(saveLayer);
 	} else {

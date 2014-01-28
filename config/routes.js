@@ -51,29 +51,25 @@ module.exports = function (app, passport) {
 	/** 
 	 * Feature routes 
 	 **/
-	app.param('featureId', features.load)
+	app.param('featureId', features.load) 
+	// new feature should be associated to a layer
+	app.post(apiPrefix + '/layers/:layerId/features', auth.requiresLogin, features.create);	
 	app.get(apiPrefix + '/features', features.index);
 	app.get(apiPrefix + '/features/:featureId', features.show);
 	app.put(apiPrefix + '/features/:featureId', auth.requiresLogin, features.update);
-
+	
 	/** 
 	 * Content routes 
 	 **/
-
-	// load middleware	
+	
 	app.param('contentId', content.load);
-
-	// get and put
+	// new content should be associated to a layer
+	app.post(apiPrefix + '/layers/:layerId/contents', auth.requiresLogin, content.create);
 	app.get(apiPrefix + '/contents/:contentId', content.show);
 	app.put(apiPrefix + '/contents/:contentId', auth.requiresLogin, content.update);
-
-	// create new content and associate it to feature and layer
-	app.post(apiPrefix + '/features/:featureId/contents', auth.requiresLogin, content.create);
-
-	// remove content from feature, if belongs to only one feature, destroy it
-	app.del(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, content.remove);
-
-
+	// destroy content from belonging layer and all features associated
+	app.del(apiPrefix + '/contents/:contentId', auth.requiresLogin, content.destroy);
+	
 	/** 
 	 * Layer routes 
 	 **/
@@ -85,16 +81,15 @@ module.exports = function (app, passport) {
 	app.get(apiPrefix + '/layers/:layerId', layers.show);
 	
 	/** 
-	  * Layer x Features routes
-	  **/
-
-	// new feature in layer
-	app.post(apiPrefix + '/layers/:layerId/features', auth.requiresLogin, layers.createFeature);
-	// add existing feature to layer
+	 * Association routes
+	 **/
+	
+	// layer x feature
 	app.put(apiPrefix + '/layers/:layerId/features/:featureId', auth.requiresLogin, layers.addFeature);
-	// remove feature from layer
 	app.del(apiPrefix + '/layers/:layerId/features/:featureId', auth.requiresLogin, layers.removeFeature);
-
-
+	
+	// feature x content
+	app.put(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, features.addContent);
+	app.del(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, features.removeContent);
 
 }
