@@ -6,7 +6,8 @@
 var mongoose = require('mongoose'), 
 	Content = mongoose.model('Content'),
 	utils = require('../../lib/utils'),
-	extend = require('util')._extend;
+	extend = require('util')._extend,
+	_ = require('underscore');
 
 /**
  * Load
@@ -76,7 +77,7 @@ exports.update = function(req, res){
 exports.destroy = function(req, res){
 	var 
 		content = req.content,
-		layer = feature.layer;
+		layer = content.layer;
 
 	// TODO Remove from features
 

@@ -1056,10 +1056,11 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 
 angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 	'$scope',
+	'$rootScope',
 	'Content',
 	'LayerSharedData',
 	'MessageService',
-	function($scope, Content, LayerSharedData, Message) {
+	function($scope, $rootScope, Content, LayerSharedData, Message) {
 
 		$scope.sharedData = LayerSharedData;
 
@@ -1086,7 +1087,7 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 				if($scope.editing && $scope.editing._id) {
 
-					Content.update({layerId: layer._id}, $scope.editing, function(content) {
+					Content.update({contentId: $scope.editing._id}, $scope.editing, function(content) {
 
 						// Replace content in local features
 						angular.forEach($scope.contents, function(content, i) {
@@ -1156,7 +1157,7 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 				if(confirm('Você tem certeza que deseja remover esta feature?')) {
 
-					Cotnent.delete({layerId: layer._id}, function() {
+					Content.delete({contentId: $scope.editing._id}, function() {
 
 						$scope.sharedData.contents($scope.contents.filter(function(c) {
 							return c._id !== $scope.editing._id;
