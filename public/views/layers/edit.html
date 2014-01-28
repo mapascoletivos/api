@@ -33,8 +33,8 @@
 								<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 								<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar novo</a></p>
 								<ul class="obj-list">
-									<li ng-repeat="item in contents | filter:search" data-content="{{item._id}}">
-										{{item.title}} <a href="javascript:void(0);" ng-click="edit(item._id)">Editar</a>
+									<li ng-repeat="item in contents | filter:search" data-content="{{item._id}}" ng-click="edit(item._id)">
+										{{item.title}}
 									</li>
 								</ul>
 							</div>

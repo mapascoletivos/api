@@ -165,11 +165,11 @@ angular.module('mapasColetivos.content').factory('Content', [
 		return $resource(apiPrefix + '/contents/:contentId', {'_csrf': window.token}, {
 			'save': {
 				method: 'POST',
-				url: apiPrefix + '/features/:featureId/contents/:contentId'
+				url: apiPrefix + '/layers/:layerId/contents'
 			},
 			'delete': {
 				method: 'DELETE',
-				url: apiPrefix + '/features/:featureId/contents/:contentId'
+				url: apiPrefix + '/contents/:contentId'
 			},
 			'update': {
 				method: 'PUT'
@@ -410,7 +410,6 @@ angular.module('mapasColetivos.content').directive('sirTrevorEditor', [
 						'Video',
 						'Tweet'
 					],
-					defaultType: 'Text',
 					required: 'Text'
 				});
 			}
@@ -1076,15 +1075,14 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 			$scope.save = function() {
 
+				// Trigger SirTrevor form submit 
 				$scope.sirTrevor.onFormSubmit();
 
+				// Fixed content type
+				$scope.editing.type = 'Post';
+
+				// Store content (SirTrevor data)
 				$scope.editing.sirTrevorData = $scope.sirTrevor.dataStore.data;
-
-				$scope.editing.html = '';
-
-				console.log($scope.editing);
-
-				return false;
 
 				if($scope.editing && $scope.editing._id) {
 
@@ -1189,9 +1187,14 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 			$scope.close = function() {
 
-				LayerSharedData.editingContent(false);
+				if($scope.editing) {
+					$scope.sharedData.editingContent(false);
+					$rootScope.$broadcast('closedContent');
+				}
 
 			}
+
+			$scope.$on('$routeChangeStart', $scope.close);
 
 		});
 
