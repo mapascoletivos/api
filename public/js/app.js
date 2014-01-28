@@ -655,12 +655,12 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 				if($scope.features.length) {
 					MapService.get().then(function(map) {
+						map.fitBounds(MapService.getMarkerLayer().getBounds(), {
+							reset:true
+						});
 						setTimeout(function() {
-							map.fitBounds(MapService.getMarkerLayer().getBounds(), {
-								reset:true
-							});
 							map.invalidateSize(true);
-						}, 100);
+						}, 200);
 					});
 				} else {
 					MapService.fitWorld();
@@ -730,11 +730,29 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 		$scope._data = {};
 
+		$scope.marker = false;
+
 		$scope.defaults = {
 			scrollWheelZoom: false
 		};
 
-		$scope.setMarker = function() {
+		var addMarkerOnClick = function(LatLng) {
+
+			var LatLng = LatLng.latlng;
+
+			if(!$scope.marker) {
+				$scope.editing.geometry = {
+					coordinates: [
+						LatLng.lat,
+						LatLng.lng
+					]
+				};
+				$scope.setMarker(false);
+			}
+
+		}
+
+		$scope.setMarker = function(focus) {
 
 			if($scope.editing) {
 
@@ -742,23 +760,35 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 				if($scope.editing.geometry) {
 
-					var marker = L.marker($scope.editing.geometry.coordinates, {
+					$scope.marker = L.marker($scope.editing.geometry.coordinates, {
 						draggable: true
 					});
 
-					marker.on('drag', function() {
-						var coordinates = marker.getLatLng();
-						$scope.editing.geometry.coordinates = [
-							coordinates.lat,
-							coordinates.lng
-						];
-					});
+					$scope.marker
+						.bindPopup('<p class="tip">Arraste para alterar a localização.</p>')
+						.on('dragstart', function() {
+							$scope.marker.closePopup();
+						})
+						.on('drag', function() {
+							$scope.marker.closePopup();
+							var coordinates = $scope.marker.getLatLng();
+							$scope.editing.geometry.coordinates = [
+								coordinates.lat,
+								coordinates.lng
+							];
+						});
 
-					MapService.addMarker(marker);
+					MapService.addMarker($scope.marker);
 
-					MapService.get().then(function(map) {
-						map.fitBounds(MapService.getMarkerLayer().getBounds());
-					});
+					$scope.marker.openPopup();
+
+					if(focus !== false) {
+						MapService.get().then(function(map) {
+							map.setView($scope.marker.getLatLng(), 15, {
+								reset: true
+							});
+						});
+					}
 
 				} else {
 
@@ -768,7 +798,7 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 				setTimeout(function() {
 					window.dispatchEvent(new Event('resize'));
-				}, 100);
+				}, 200);
 
 			}
 
@@ -781,11 +811,14 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 			MapService.get().then(function(map) {
 
+				map.on('click', addMarkerOnClick);
+
 				/*
 				 * Watch editing feature
 				 */
 				$scope.$watch('sharedData.editingFeature()', function(editing) {
 
+					$scope.marker = false;
 					$scope._data = {};
 					$rootScope.$broadcast('editFeature');
 					$scope.editing = editing;
@@ -907,6 +940,7 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 			$scope.close = function() {
 
 				if($scope.editing) {
+					$scope.marker = false;
 					$scope._data = {};
 					$scope.sharedData.editingFeature(false);
 					$rootScope.$broadcast('closedFeature');
