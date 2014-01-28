@@ -325,12 +325,36 @@ input[type=submit].light-button {
 			}
 		}
 	}
-	.map-container {
+	.object-editor {
 		float: left;
 		width: 65%;
 		height: 100%;
 		position: relative;
 		overflow: hidden;
+		h3 {
+			font-size: 12px;
+			font-weight: 800;
+			color: #999;
+			text-transform: uppercase;
+			margin: 0;
+			line-height: 20px;
+		}
+		.edit-title {
+			font-size: 20px;
+			font-weight: 400;
+			color: #333;
+			border: 0;
+			padding: 0;
+			margin: 0;
+		}
+		.edit-description {
+			font-size: 12px;
+			color: #999;
+			margin: 0;
+			padding: 0;
+		}
+	}
+	.map-container {
 		.leaflet-container {
 			position: absolute;
 			top: 0;
@@ -394,28 +418,6 @@ input[type=submit].light-button {
 				width: 50%;
 				box-sizing: border-box;
 				padding: 20px;
-				h3 {
-					font-size: 12px;
-					font-weight: 800;
-					color: #999;
-					text-transform: uppercase;
-					margin: 0;
-					line-height: 20px;
-				}
-				.edit-title {
-					font-size: 20px;
-					font-weight: 400;
-					color: #333;
-					border: 0;
-					padding: 0;
-					margin: 0;
-				}
-				.edit-description {
-					font-size: 12px;
-					color: #999;
-					margin: 0;
-					padding: 0;
-				}
 			}
 			.feature-actions {
 				position: absolute;
@@ -425,7 +427,15 @@ input[type=submit].light-button {
 			}
 		}
 	}
-	#layer-features {	}
+	.content-editor {
+		float: left;
+		width: 65%;
+		height: 100%;
+		overflow: auto;
+		position: relative;
+		padding: 20px;
+		box-sizing: border-box;
+	}
 }
 
 /*

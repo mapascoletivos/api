@@ -392,6 +392,33 @@ angular.module('mapasColetivos').directive('mcDisableEnter', [
 ]);
 
 /*
+ * Sir Trevor
+ */
+
+angular.module('mapasColetivos.content').directive('sirTrevorEditor', [
+	function() {
+		return {
+			link: function(scope, element, attrs) {
+				scope.sirTrevor = new SirTrevor.Editor({
+					el: $(element),
+					blockTypes: [
+						'Embedly',
+						'Text',
+						'List',
+						'Quote',
+						'Image',
+						'Video',
+						'Tweet'
+					],
+					defaultType: 'Text',
+					required: 'Text'
+				});
+			}
+		}
+	}
+]);
+
+/*
  * CONTROLLERS
  */
 
@@ -1024,13 +1051,11 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 	}
 ]);
 
-
-
 /*
  * Content edit controller
  */
 
-angular.module('mapasColetivos.feature').controller('ContentEditCtrl', [
+angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 	'$scope',
 	'Content',
 	'LayerSharedData',
@@ -1050,6 +1075,16 @@ angular.module('mapasColetivos.feature').controller('ContentEditCtrl', [
 			});
 
 			$scope.save = function() {
+
+				$scope.sirTrevor.onFormSubmit();
+
+				$scope.editing.sirTrevorData = $scope.sirTrevor.dataStore.data;
+
+				$scope.editing.html = '';
+
+				console.log($scope.editing);
+
+				return false;
 
 				if($scope.editing && $scope.editing._id) {
 
@@ -1152,7 +1187,7 @@ angular.module('mapasColetivos.feature').controller('ContentEditCtrl', [
 
 			}
 
-			$scope.cancel = function() {
+			$scope.close = function() {
 
 				LayerSharedData.editingContent(false);
 
