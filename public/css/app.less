@@ -170,7 +170,7 @@ input[type=submit].light-button {
 		}
 	}
 	.layer-settings {
-		padding: 40px 40px 0;
+		padding: 20px 20px 0;
 	}
 	.edit-title {
 		font-size: 28px;
@@ -184,7 +184,7 @@ input[type=submit].light-button {
 		color: #999;
 		&:focus,
 		&:hover {
-			color: #333;
+			color: #777;
 		}
 	}
 	.editor-container {
@@ -198,6 +198,7 @@ input[type=submit].light-button {
 		z-index: 200;
 		.layer-actions {
 			position: absolute;
+			z-index: 100;
 			bottom: 0;
 			left: 0;
 			right: 0;
@@ -331,15 +332,54 @@ input[type=submit].light-button {
 		position: relative;
 		overflow: hidden;
 		.leaflet-container {
-			width: 100%;
-			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
+		}
+		.add-marker-tip {
+			display: none;
 		}
 		&.editing {
 			.leaflet-container {
-				height: 50%;
+				top: 50%;
+				-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
+			}
+			.add-marker-tip {
+				display: block;
+				position: absolute;
+				top: 50%;
+				padding-top: 15%;
+				box-sizing: border-box;
+				left: 0;
+				bottom: 0;
+				right: 0;
+				background: rgba(0,0,0,0.5);
+				pointer-events: none;
+				text-align: center;
+				color: #fff;
+				z-index: 100;
+				font-size: 20px;
+				font-weight: 600;
+				text-transform: uppercase;
+				text-shadow: 2px 2px 1px rgba(0,0,0,0.2);
 			}
 		}
 		#edit-feature {
+			&.top-down-show,
+			&.top-down-hide, {
+				-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.2s;
+			}
+			&.top-down-hide {
+				height: 0;
+				overflow: hidden;
+			}
+			&.top-down-show {
+				height: 50%;
+				overflow: auto;
+			}
 			width: 100%;
 			height: 50%;
 			z-index: 200;
@@ -347,12 +387,13 @@ input[type=submit].light-button {
 			overflow: auto;
 			form {
 				height: 100%;
+				margin: 0;
 			}
 			.feature-settings {
 				float: left;
 				width: 50%;
 				box-sizing: border-box;
-				padding: 40px;
+				padding: 20px;
 				h3 {
 					font-size: 12px;
 					font-weight: 800;
@@ -372,6 +413,8 @@ input[type=submit].light-button {
 				.edit-description {
 					font-size: 12px;
 					color: #999;
+					margin: 0;
+					padding: 0;
 				}
 			}
 			.feature-actions {
@@ -386,27 +429,33 @@ input[type=submit].light-button {
 }
 
 /*
- * Layer editor
+ * Leaflet
  */
 
-.map-editor-container {
-	#layer-features {
+.leaflet-popup-close-button {
+	display: none;
+}
+
+.leaflet-popup-content-wrapper {
+	border-radius: 0;
+}
+
+.leaflet-popup-tip {
+	width: 12px;
+	height: 12px;
+}
+
+.leaflet-popup-content {
+	margin: 10px;
+	h3 {
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 20px;
 	}
-}
-
-.animate-show {
-	-webkit-transition:all linear 0.2s;
-	transition:all linear 0.2s;
-	opacity:1;
-}
-
-.animate-show.ng-hide-add,
-.animate-show.ng-hide-remove {
-	display:block!important;
-}
-
-.animate-show.ng-hide {
-	line-height:0;
-	opacity:0;
-	padding:0 10px;
+	.tip {
+		font-style: italic;
+		font-size: 12px;
+		margin: 0;
+		color: #999;
+	}
 }
