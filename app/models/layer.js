@@ -15,6 +15,7 @@ var LayerSchema = new Schema({
 	description: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
 	features: [{type: Schema.ObjectId, ref: 'Feature'}],
+	contents: [{type: Schema.ObjectId, ref: 'Content'}],
 	createdAt: {type: Date, default: Date.now},
 	updateAt: {type: Date, default: Date.now},
 	tags: [String],

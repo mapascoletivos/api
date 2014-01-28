@@ -33,11 +33,11 @@ exports.create = function (req, res) {
 	// associate content, feature and layer
 	content.creator = req.user;
 	content.layer = layer;
-	layer.contents.push(content);
 	
 	// save all
 	content.save(function (err) {
 		if (err) res.json(400, err);
+		layer.contents.push(content);
 		layer.save(function(err){
 			if (err) res.json(400, err);
 			res.json(content);
