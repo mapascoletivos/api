@@ -41,6 +41,7 @@ LayerSchema.statics = {
 		this.findOne({ _id : id })
 			.populate('creator')
 			.populate('features')
+			.populate('contents')
 			.exec(cb)
 	},
 	
