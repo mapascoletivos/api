@@ -33,7 +33,7 @@
 								<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 								<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar novo</a></p>
 								<ul class="obj-list">
-									<li ng-repeat="item in contents | filter:search" data-content="{{item._id}}" ng-click="edit(item._id)">
+									<li ng-repeat="item in contents | filter:search" ng-click="edit(item._id)">
 										{{item.title}}
 									</li>
 								</ul>
@@ -85,7 +85,15 @@
 		<form>
 			<h3>Conteúdo</h3>
 			<textarea class="edit-title no-canvas" placeholder="Título" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
-			<textarea sir-trevor-editor ng-model="editing.sirTrevor"></textarea>
+			<div class="content-features">
+				<h4>Features</h4>
+				<select ng-model="editing.features" multiple>
+					<option ng-repeat="feature in sharedData.features()" value="{{feature._id}}">{{feature.title}}</option>
+				</select>
+			</div>
+			<div class="content-body">
+				<textarea sir-trevor-editor ng-model="editing.sirTrevor"></textarea>
+			</div>
 			<div class="content-actions">
 				<a class="button" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
 				<a class="button" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar novo conteúdo</a>
