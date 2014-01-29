@@ -603,10 +603,10 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 		}
 
-		var activeObj = 'feature';
+		$scope.activeObj = 'feature';
 
 		$scope.layerObj = function(objType) {
-			if(activeObj == objType)
+			if($scope.activeObj == objType)
 				return 'active';
 
 			return false;
@@ -614,9 +614,18 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 		$scope.setLayerObj = function(obj) {
 
-			activeObj = obj;
+			$scope.activeObj = obj;
 
 		}
+
+		$scope.$watch('activeObj', function() {
+
+			console.log('changed layerobj');
+
+			LayerSharedData.editingFeature(false);
+			LayerSharedData.editingContent(false);
+
+		});
 
 		/*
 		 * Map
@@ -826,6 +835,10 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 					window.dispatchEvent(new Event('resize'));
 				}, 200);
 
+			} else {
+
+				$scope.close();
+
 			}
 
 		}
@@ -965,12 +978,10 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 			$scope.close = function() {
 
-				if($scope.editing) {
-					$scope.marker = false;
-					$scope._data = {};
-					$scope.sharedData.editingFeature(false);
-					$rootScope.$broadcast('closedFeature');
-				}
+				$scope.marker = false;
+				$scope._data = {};
+				$scope.sharedData.editingFeature(false);
+				$rootScope.$broadcast('closedFeature');
 
 			}
 
@@ -1074,6 +1085,15 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 				$scope.contents = contents;
 			});
 
+			$scope.$watch('editing.sirTrevor', function(val) {
+
+				// Reinitialize Sir Trevor with some delay (enough to populate the model with new data)
+				setTimeout(function() {
+					$scope.sirTrevor.reinitialize();
+				}, 20);
+
+			});
+
 			$scope.save = function() {
 
 				// Trigger SirTrevor form submit 
@@ -1084,6 +1104,11 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 				// Store content (SirTrevor data)
 				$scope.editing.sirTrevorData = $scope.sirTrevor.dataStore.data;
+
+				// Store stringified data
+				$scope.editing.sirTrevor = $scope.sirTrevor.el.value;
+
+				console.log($scope.editing);
 
 				if($scope.editing && $scope.editing._id) {
 
