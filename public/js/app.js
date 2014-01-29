@@ -524,7 +524,7 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 						$scope.layer.title = '';
 
 					var deleteDraft = function(callback) {
-						if((!$scope.layer.title || $scope.layer.title == 'Untitled') && !$scope.layer.features.length) {
+						if((!$scope.layer.title || $scope.layer.title == 'Untitled') && !$scope.layer.features.length && !$scope.layer.contents.length) {
 							if(typeof callback === 'function')
 								Layer.delete({layerId: layer._id}, callback);
 							else
@@ -569,7 +569,7 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 					$scope.close = function() {
 
-						if((!$scope.layer.title || $scope.layer.title == 'Untitled') && !$scope.layer.features.length) {
+						if((!$scope.layer.title || $scope.layer.title == 'Untitled') && !$scope.layer.features.length && !$scope.layer.contents.length) {
 							deleteDraft(function(res) {
 								$location.path('/layers');
 							});
@@ -618,12 +618,11 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 		}
 
-		$scope.$watch('activeObj', function() {
-
-			console.log('changed layerobj');
+		$scope.$watch('activeObj', function(active) {
 
 			LayerSharedData.editingFeature(false);
 			LayerSharedData.editingContent(false);
+			$scope.$broadcast('layerObjectChange', active);
 
 		});
 
@@ -693,9 +692,6 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 						map.fitBounds(MapService.getMarkerLayer().getBounds(), {
 							reset:true
 						});
-						setTimeout(function() {
-							map.invalidateSize(true);
-						}, 200);
 					});
 				} else {
 					MapService.fitWorld();
@@ -706,6 +702,12 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 				MapService.fitWorld();
 
 			}
+
+			setTimeout(function() {
+				MapService.get().then(function(map) {
+					map.invalidateSize(true);
+				});
+			}, 200);
 
 		}
 
@@ -742,6 +744,11 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 			};
 
+		});
+
+		$scope.$on('layerObjectChange', function(event, active) {
+			if(active == $scope.objType)
+				populateMap();
 		});
 
 	}
@@ -1036,13 +1043,11 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 
 		$scope.sharedData.layer().then(function(layer) {
 
-			$scope.$watch('sharedData.contents()', function(contents) {
-				if(contents.length) {
-					$scope.contents = contents;
-				}
-			});
-
 			$scope.sharedData.contents(layer.contents);
+
+			$scope.$watch('sharedData.contents()', function(contents) {
+				$scope.contents = contents;
+			});
 
 			$scope.new = function() {
 
@@ -1108,8 +1113,6 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 				// Store stringified data
 				$scope.editing.sirTrevor = $scope.sirTrevor.el.value;
 
-				console.log($scope.editing);
-
 				if($scope.editing && $scope.editing._id) {
 
 					Content.update({contentId: $scope.editing._id}, $scope.editing, function(content) {
@@ -1146,14 +1149,14 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 					var content = new Content($scope.editing);
 
-					content.$save({layerId: layer._id}, function(feature) {
+					content.$save({layerId: layer._id}, function(content) {
 
 						// Locally push new content
 						$scope.contents.push(content);
 						$scope.sharedData.contents($scope.contents);
 
 						// Update editing content to saved data
-						$scope.sharedData.editingContent(content);
+						$scope.sharedData.editingContent(angular.copy(content));
 
 						Message.message({
 							status: 'ok',
