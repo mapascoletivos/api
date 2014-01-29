@@ -14,6 +14,8 @@ var ContentSchema = new Schema({
 	type: { type: String, enum: ['Markdown', 'Post', 'Video', 'Image Gallery'], required: true},
 	title: { type: String, required: true },
 	url: String,
+	sirTrevorData: [],
+	sirTrevor: String,
 	markdown: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
 	features: [{type: Schema.ObjectId, ref: 'Feature'}],
