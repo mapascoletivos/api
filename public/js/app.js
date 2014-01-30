@@ -650,9 +650,10 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 	'$scope',
+	'$routeParams',
 	'LayerSharedData',
 	'MapService',
-	function($scope, LayerSharedData, MapService) {
+	function($scope, $routeParams, LayerSharedData, MapService) {
 
 		$scope.objType = 'feature';
 		
@@ -660,49 +661,52 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 		$scope.features = [];
 
-		var populateMap = function() {
+		var mapFeatures;
 
-			MapService.clearMarkers();
+		var populateMap = function(force) {
 
-			if($scope.features) {
+			// Repopulate map if feature in scope has changed
+			if(!angular.equals(mapFeatures, $scope.features) || force === true) {
 
-				angular.forEach($scope.features, function(f) {
+				mapFeatures = angular.copy($scope.features);
 
-					var marker = L.marker(f.geometry.coordinates);
+				MapService.clearMarkers();
 
-					marker
-						.on('click', function() {
-							$scope.edit(f._id);
-						})
-						.on('mouseover', function() {
-							marker.openPopup();
-						})
-						.on('mouseout', function() {
-							marker.closePopup();
-						})
-						.bindPopup('<h3 class="feature-title">' + f.title + '</h3>');
+				if($scope.features) {
+
+					angular.forEach($scope.features, function(f) {
+
+						var marker = L.marker(f.geometry.coordinates);
+
+						marker
+							.on('click', function() {
+								$scope.$emit('markerClicked', f);
+							})
+							.on('mouseover', function() {
+								marker.openPopup();
+							})
+							.on('mouseout', function() {
+								marker.closePopup();
+							})
+							.bindPopup('<h3 class="feature-title">' + f.title + '</h3>');
 
 
-					MapService.addMarker(marker);
+						MapService.addMarker(marker);
 
-				});
-
-				if($scope.features.length) {
-					MapService.get().then(function(map) {
-						map.fitBounds(MapService.getMarkerLayer().getBounds(), {
-							reset:true
-						});
 					});
-				} else {
-					MapService.fitWorld();
 				}
-
-			} else {
-
-				MapService.fitWorld();
-
 			}
 
+			// Fit map bounds
+			if($scope.features && $scope.features.length) {
+				MapService.get().then(function(map) {
+					map.fitBounds(MapService.getMarkerLayer().getBounds(), {
+						reset:true
+					});
+				});
+			}
+
+			// Fix map size after 200ms (animation safe)
 			setTimeout(function() {
 				MapService.get().then(function(map) {
 					map.invalidateSize(true);
@@ -711,38 +715,69 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 		}
 
+		// Get layer data then...
 		$scope.sharedData.layer().then(function(layer) {
 
+			// Update features shared data with layer features
 			$scope.sharedData.features(layer.features);
 
+			// Get map then...
 			MapService.get().then(function(map) {
 
+				// Watch layer features
 				$scope.$watch('sharedData.features()', function(features) {
 
 					$scope.features = features;
-					populateMap(features);
+					populateMap();
 
 				});
 
-				$scope.$on('closedFeature', populateMap);
+				if($routeParams.action && $routeParams.action === 'edit') {
 
+					// Force repopulate map on feature close
+					$scope.$on('closedFeature', function() {
+						populateMap(true);
+					});
+
+				}
 			});
 
-			$scope.new = function() {
 
-				$scope.sharedData.editingFeature({});
+			/*
+			 * Edit actions
+			 */
+			if($routeParams.action && $routeParams.action == 'edit') {
 
-			};
+				$scope.$on('markerClicked', function(event, feature) {
+					$scope.edit(feature._id);
+				});
 
-			$scope.edit = function(featureId) {
+				$scope.new = function() {
 
-				$scope.sharedData.editingFeature(angular.copy($scope.features.filter(function(f) { return f._id == featureId; })[0]));
+					$scope.sharedData.editingFeature({});
 
-				setTimeout(function() {
-					window.dispatchEvent(new Event('resize'));
-				}, 100);
+				};
 
-			};
+				$scope.edit = function(featureId) {
+
+					$scope.sharedData.editingFeature(angular.copy($scope.features.filter(function(f) { return f._id == featureId; })[0]));
+
+					setTimeout(function() {
+						window.dispatchEvent(new Event('resize'));
+					}, 100);
+
+				};
+
+			/*
+			 * View actions
+			 */
+			} else {
+
+				$scope.$on('markerClicked', function(event, feature) {
+
+				});
+
+			}
 
 		});
 
