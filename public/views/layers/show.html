@@ -1,12 +1,22 @@
-<div class="container">
+<div class="map-view layer-view">
 	<div class="page-header">
-		<div class="twelve columns row">
-			<p><a href="/layers">Voltar</a></p>
-			<h1>{{layer.title}}</h1>
-			<p><a href="/layers/{{layer._id}}/edit">Editar</a></p>
+		<div class="container">
+			<div class="four columns row">
+				<p><a href="/layers">Voltar</a></p>
+				<h1>{{layer.title}}</h1>
+				<p><a href="/layers/{{layer._id}}/edit">Editar</a></p>
+			</div>
 		</div>
 	</div>
-	<div class="content">
-		<leaflet id="layer-view" width="400" height="400" center="map.world" tiles="map.tiles"></leaflet>
+	<div id="map" ng-controller="FeatureCtrl">
+		<leaflet id="layer-map" center="map.world" tiles="map.tiles"></leaflet>
+	</div>
+	<div class="posts-container" ng-controller="ContentCtrl" ng-show="contents.length">
+		<div id="posts">
+			<h2>Posts</h2>
+			<ul class="content-list">
+				<li ng-repeat="post in contents">{{post.title}}</li>
+			</ul>
+		</div>
 	</div>
 </div>
