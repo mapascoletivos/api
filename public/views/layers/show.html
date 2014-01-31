@@ -14,9 +14,11 @@
 	<div class="posts-container" ng-controller="ContentCtrl" ng-show="contents.length">
 		<div id="posts">
 			<h2>Posts</h2>
+			<a href="javascript:void(0);" ng-click="close()" ng-show="content">Fechar</a>
 			<ul class="content-list">
-				<li ng-repeat="post in contents" ng-click="focusFeatures(post)">
-					<h3><a href="/layers/{{layer._id}}/content/{{post._id}}">{{post.title}}</a></li>
+				<li ng-repeat="post in contents" ng-click="view(post)">
+					<h3>{{post.title}}</h3>
+				</li>
 			</ul>
 		</div>
 	</div>
