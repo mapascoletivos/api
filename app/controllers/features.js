@@ -3,7 +3,9 @@
  * Module dependencies.
  */
 
-var mongoose = require('mongoose'), 
+var 
+	_ = require('underscore'),
+	mongoose = require('mongoose'), 
 	Feature = mongoose.model('Feature'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend;
@@ -107,10 +109,10 @@ exports.addContent = function(req, res){
 	if ( ! _.contains(feature.contents, content._id) ) { 
 		feature.contents.push(content);
 	}
-
+	
 	// associate feature to content, if not already 
 	if ( ! _.contains(content.features, feature._id) ) { 
-		contents.features.push(features);
+		content.features.push(feature);
 	}
 
 	// save both
@@ -118,7 +120,7 @@ exports.addContent = function(req, res){
 		 if (err) res.json(400, err);
 		feature.save(function(err){
 			if (err) res.json(400,err)
-			else res.json(feature);
+			else res.json({sucess: true});
 		});
 	});
 
@@ -133,15 +135,20 @@ exports.removeContent = function(req, res){
 		feature = req.feature,
 		content = req.content;
 	
-	feature.contents = _.filter(feature.contents, function(c) { return !c._id.equals(content._id); });	
-	content.features = _.filter(content.features, function(f) { return !f._id.equals(feature._id); });	
+	feature.contents = _.filter(feature.contents, function(c) { 
+		return !c._id.equals(content._id); 
+	});	
+	
+	content.features = _.filter(content.features, function(f) { 
+		return !f._id.equals(feature._id); 
+	});	
 	
 	// save both
 	content.save(function(err){
 		 if (err) res.json(400, err);
 		feature.save(function(err){
 			if (err) res.json(400,err)
-			else res.json(feature);
+			else res.json({success:true});
 		});
 	});
 }

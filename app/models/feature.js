@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
 var FeatureSchema = new Schema({
 	creator: { type: Schema.ObjectId, ref: 'User', required: true},
 	layers: [{ type: Schema.ObjectId, ref: 'layer'}],
-	contents: [{ type: Schema.ObjectId, ref: 'Conent'}],	
+	contents: [{ type: Schema.ObjectId, ref: 'Content'}],	
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
 	title: { type: String, required: true },
 	description: { type: String },
@@ -47,6 +47,7 @@ FeatureSchema.statics = {
 	load: function (id, cb) {
 		this.findOne({ _id : id })
 			.populate('creator')
+			.populate('contents')
 			.exec(cb)
 	},
 	

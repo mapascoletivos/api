@@ -8,14 +8,17 @@ var request = require('supertest'),
 	app = require('../../server'),
 	mongoose = require('mongoose'),
 	Layer = mongoose.model('Layer'),
-	User = mongoose.model('User'),
-	Content = mongoose.model('Content');
+	Feature = mongoose.model('Feature'),
+	Content = mongoose.model('Content'),
+	User = mongoose.model('User');
 
 var apiPrefix = '/api/v1';
 
 var 
 	user,
-	layerCounter;
+	layerCounter,
+	contentId,
+	featureId;
 
 
 describe('API', function(){
@@ -97,7 +100,6 @@ describe('API', function(){
 	 **/
 	
 	describe('Contents', function(){
-		var contentId;
 		
 		// populate some content
 		before(function(done){
@@ -113,17 +115,118 @@ describe('API', function(){
 				layer: layer
 			});
 			
+			var feature = new Feature({
+				creator: user,
+				title: 'a feature'
+			});
+			
 
 			layer.contents.push(content);
 
 			// save all
 			layer.save(function(err){
-				content.save(function(err){
-					contentId = content._id;
-					done();
+				feature.save(function(err){
+					featureId = feature._id;
+					content.save(function(err){
+						contentId = content._id;
+						done();
+					});
 				});
 			});
 		})
+		
+		/**
+		 * Content x feature association
+		 **/
+		
+		describe('PUT ' + apiPrefix + '/features/:featureId/contents/:contentId', function(){
+			context('When not logged in', function(){
+				it('should redirect to /login', function (done) {
+					request(app)
+						.put(apiPrefix + '/features/' + featureId + '/contents/' + contentId )
+						.expect('Content-Type', /plain/)
+						.expect(302)
+						.expect('Location', '/login')
+						.expect(/Moved Temporarily/)
+						.end(done)
+				});
+			});
+			
+			context('When logged in', function(){
+				var 
+					agent = request.agent(app),
+					contentCount;
+				
+				before(loginRegularUser(agent));
+				
+				it('should return true', function(done){
+					agent
+						.put(apiPrefix + '/features/' + featureId + '/contents/' + contentId)
+						.expect('Content-Type', /json/)
+						.expect(200)
+						.expect(/true/)
+						.end(done)
+				});
+				
+				it('should have association in both sides', function(done){
+					Feature.findOne(featureId, function(err,ft){
+						ft.contents.should.include(contentId);
+						Content.findOne(contentId, function(err,ct){
+							ct.features.should.include(featureId);
+							done();
+						});
+					})
+				});
+			});
+		});
+		
+		describe('DEL ' + apiPrefix + '/features/:featureId/contents/:contentId', function(){
+			context('When not logged in', function(){
+				it('should redirect to /login', function (done) {
+					request(app)
+						.del(apiPrefix + '/features/' + featureId + '/contents/' + contentId )
+						.expect('Content-Type', /plain/)
+						.expect(302)
+						.expect('Location', '/login')
+						.expect(/Moved Temporarily/)
+						.end(done)
+				});
+			});
+			
+			context('When logged in', function(){
+				var 
+					agent = request.agent(app),
+					contentCount;
+				
+				before(loginRegularUser(agent));
+				
+				it('should return true', function(done){
+					agent
+						.del(apiPrefix + '/features/' + featureId + '/contents/' + contentId)
+						.expect('Content-Type', /json/)
+						.expect(200)
+						.expect(/true/)
+						.end(done)
+				});
+				
+				it('should have association in both sides', function(done){
+					Feature.findOne(featureId, function(err,ft){
+						ft.contents.should.not.include(contentId);
+						Content.findOne(contentId, function(err,ct){
+							ct.features.should.not.include(featureId);
+							done();
+						});
+					})
+				});
+			});
+		});
+		
+		
+		
+		
+		/**
+		 * Delete content
+		 **/
 		
 		describe('DEL ' + apiPrefix +'/contents', function(){
 			context('When not logged in', function(){
@@ -157,7 +260,7 @@ describe('API', function(){
 						.expect(200)
 						.expect(/true/)
 						.end(done)
-				})
+				});
 				
 				it('should delete a record to the database', function (done) {
 					Content.count(function (err, cnt) {
