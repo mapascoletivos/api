@@ -15,7 +15,8 @@
 		<div id="posts">
 			<h2>Posts</h2>
 			<ul class="content-list">
-				<li ng-repeat="post in contents">{{post.title}}</li>
+				<li ng-repeat="post in contents" ng-click="focusFeatures(post)">
+					<h3><a href="/layers/{{layer._id}}/content/{{post._id}}">{{post.title}}</a></li>
 			</ul>
 		</div>
 	</div>
