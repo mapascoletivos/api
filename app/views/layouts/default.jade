@@ -7,7 +7,7 @@ html
 				.message-content.animate-show(ng-show="message.text")
 					a.close-button(ng-click="close()" href="#") Fechar
 					p(ng-class="message.status") {{message.text}}
-			.ng-view
+			.ui-view
 				include content
 			include ../includes/footer
 			include ../includes/foot
