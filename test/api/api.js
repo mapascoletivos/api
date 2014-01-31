@@ -3,95 +3,185 @@
  * Module dependencies.
  */
 
-var request = require('supertest')
-	, should = require('should')
-	, app = require('../../server')
-	// , http = require('http')
-	// , assert = require('assert')
-	, mongoose = require('mongoose')
-	, User = mongoose.model('User')
-	, agent = request.agent(app);
+var request = require('supertest'),
+	should = require('should'),
+	app = require('../../server'),
+	mongoose = require('mongoose'),
+	Layer = mongoose.model('Layer'),
+	User = mongoose.model('User'),
+	Content = mongoose.model('Content');
+
+var apiPrefix = '/api/v1';
+
+var 
+	user,
+	layerCounter;
 
 
 describe('API', function(){
 
 	before(function (done) {
 		// Clear DB before testing
-		User.collection.remove(function(){
-			// Then creates API User
-			var user = new User({
-				email: 'foobar@example.com',
-				name: 'Foo bar',
-				username: 'foobar',
-				password: 'foobar'
-			});
-			user.save(done);
-		});
-	});
-
-	describe('/api/v1/feature', function(){
-		context('User IS NOT logged', function(){
-			describe('When I get a existing feature', function(){
-				it('should return a valid json feature');
-			});
-
-			describe('When I get a non-existing feature', function(){
-				it('should return a empty json');
-			});
-
-			describe('When I post a new feature', function(){
-				it('should return HTTP status code 401 (Unauthorized)');
-			});
-		});
-
-		context('User IS logged', function(){
-			describe('When I get a existing feature', function(){
-				it('should return a valid json feature');
-			});
-
-			describe('When I get a non-existing feature', function(){
-				it('should return a empty json');
-			});
-
-			describe('When I post a VALID feature', function(){
-				it('should return HTTP status code 200 (OK)');
-			});
-
-			describe('When I post a NON-VALID feature', function(){
-				it('should return HTTP status code 400 (Bad Request)');
+		Layer.collection.remove(function(){		
+			Content.collection.remove(function(){
+				User.collection.remove(function(){
+					// Then creates API User
+					user = new User({
+						email: 'foobar@example.com',
+						name: 'Foo bar',
+						username: 'foobar',
+						password: 'foobar'
+					});
+					user.save(done);
+				});
 			});
 		});
 	});
+	
+	/**
+	 * Layer tests
+	 **/
 
-	describe('/api/v1/layer', function(){
-		describe('When I get a existing layer', function(){
-			it('should return a valid layer as json');
-		});
+	describe('Layers', function(){	
+		describe('POST /layers', function(){
+			context('When not logged in', function(){
+				it('should redirect to /login', function (done) {
+					request(app)
+						.post(apiPrefix + '/layers')
+						.expect('Content-Type', /plain/)
+						.expect(302)
+						.expect('Location', '/login')
+						.expect(/Moved Temporarily/)
+						.end(done)
+				})
+			});
+			
+			context('When logged in', function(){
 
-		describe('When I get a non-existing feature', function(){
-			it('should return a empty json');
+				var agent = request.agent(app);
+				
+				before(loginRegularUser(agent))
+				
+				describe('Invalid parameters', function(){
+					
+					before(function(done){
+						Layer.count(function(err,cnt){
+							layerCount = cnt;
+							done();
+						})
+					})
+					
+					it('should respond with error', function(done){
+						agent
+							.post(apiPrefix + '/layers')
+							.field('title', '')
+							.expect('Content-Type', /json/)
+							.expect(400)
+							.expect(/Path `title` is required./)
+							.end(done)
+					});
+					
+					it('should not save to database');
+				})
+				
+				describe('Valid parameters', function(){
+					it('should insert a record to database');
+					it('should save the layer');
+				});
+			});
 		});
 	});
+	
+	/**
+	 * Content tests
+	 **/
+	
+	describe('Contents', function(){
+		var contentId;
+		
+		// populate some content
+		before(function(done){
+			
+			var layer = new Layer({
+				creator: user,
+				title: 'Content test'
+			});
+			
+			var content = new Content({
+				type: 'Markdown',
+				title: 'Title of content',
+				layer: layer
+			});
+			
 
-	describe('/api/v1/map', function(){
-		describe('When I get a existing map', function(){
-			it('should return a valid map as json');
-		});
+			layer.contents.push(content);
 
-		describe('When I get a non-existing feature', function(){
-			it('should return a empty json');
+			// save all
+			layer.save(function(err){
+				content.save(function(err){
+					contentId = content._id;
+					done();
+				});
+			});
+		})
+		
+		describe('DEL ' + apiPrefix +'/contents', function(){
+			context('When not logged in', function(){
+				it('should redirect to /login', function (done) {
+					request(app)
+						.del(apiPrefix + '/contents/' + contentId)
+						.expect('Content-Type', /plain/)
+						.expect(302)
+						.expect('Location', '/login')
+						.expect(/Moved Temporarily/)
+						.end(done)
+				});
+			});
+			
+			context('When logged in', function(){
+				var 
+					agent = request.agent(app),
+					contentCount;
+				
+				before(function(done){
+					Content.count(function(err,cnt){
+						contentCount = cnt;
+						loginRegularUser(agent)(done);
+					})
+				});
+				
+				it('should return true', function(done){
+					agent
+						.del(apiPrefix + '/contents/' + contentId)
+						.expect('Content-Type', /json/)
+						.expect(200)
+						.expect(/true/)
+						.end(done)
+				})
+				
+				it('should delete a record to the database', function (done) {
+					Content.count(function (err, cnt) {
+						cnt.should.equal(contentCount - 1)
+						done()
+					});
+				});
+			});
 		});
 	});
-
-	describe('/api/v1/media', function(){
-		describe('When I get a existing layer', function(){
-			it('should return a valid layer as json');
-		});
-
-		describe('When I get a non-existing feature', function(){
-			it('should return a empty json');
-		});
-	});
-
 });
 
+function loginRegularUser(agent){
+	return function(done) {
+		agent
+		.post('/users/session')
+		.send({ email: 'foobar@example.com', password: 'foobar' })
+		.end(onResponse);
+
+		function onResponse(err, res) {
+			// test redirect to dashboard
+			res.should.have.status(302); 
+			res.header['location'].should.not.include('/login');
+			return done();
+		}
+	}
+}

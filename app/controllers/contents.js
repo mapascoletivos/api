@@ -82,9 +82,11 @@ exports.destroy = function(req, res){
 	// TODO Remove from features
 
 	// remove content from belonging layer and feaures
-	layer.contents = _.filter(layer.contents, function(c) { return !c._id.equals(content._id); });
+	layer.contents = _.filter(layer.contents, function(c) { 
+		return !c.equals(content._id); 
+	});
 
-	content.save(function(err) {
+	content.remove(function(err) {
 		if (err) res.json(400,err);
 		layer.save(function(err){
 			if (err) res.json(400,err);
