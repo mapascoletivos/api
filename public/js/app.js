@@ -77,6 +77,10 @@ angular.module('mapasColetivos').config([
 				controller: 'LayerCtrl',
 				templateUrl: '/views/layers/show.html'
 			})
+			.when('/layers/:layerId/content/:contentId', {
+				controller: 'LayerCtrl',
+				templateUrl: '/views/layers/show.html'
+			})
 			.when('/layers/:layerId/:action', {
 				controller: 'LayerCtrl',
 				templateUrl: '/views/layers/edit.html'
@@ -155,26 +159,90 @@ angular.module('mapasColetivos.feature').factory('Feature', [
 ]);
 
 /*
+ * Feature helpers
+ */
+
+angular.module('mapasColetivos.feature').factory('featureToMapObj', [
+	function() {
+		return function(feature) {
+			if(feature.geometry && feature.geometry.coordinates) {
+				return L.marker(feature.geometry.coordinates);
+			}
+			return false;
+		}
+	}
+]);
+
+angular.module('mapasColetivos.feature').factory('markersToLayer', [
+	function() {
+		return function(features, layer) {
+
+			if(features.length) {''
+
+				if(!(layer instanceof L.FeatureGroup)) {
+					layer = L.featureGroup();
+				}
+
+				angular.forEach(features, function(feature) {
+					feature.addTo(layer);
+				});
+
+				return layer;
+
+			}
+
+			return false;
+
+		}
+	}
+]);
+
+/*
  * Content service
  */
 angular.module('mapasColetivos.content').factory('Content', [
 	'$resource',
 	'apiPrefix',
-	function($resource, apiPrefix) {
+	'LayerSharedData',
+	'Feature',
+	function($resource, apiPrefix, LayerSharedData, Feature) {
 
-		return $resource(apiPrefix + '/contents/:contentId', {'_csrf': window.token}, {
-			'save': {
-				method: 'POST',
-				url: apiPrefix + '/layers/:layerId/contents'
-			},
-			'delete': {
-				method: 'DELETE',
-				url: apiPrefix + '/contents/:contentId'
-			},
-			'update': {
-				method: 'PUT'
+		return {
+			resource: $resource(apiPrefix + '/contents/:contentId', {'_csrf': window.token}, {
+				'save': {
+					method: 'POST',
+					url: apiPrefix + '/layers/:layerId/contents'
+				},
+				'delete': {
+					method: 'DELETE',
+					url: apiPrefix + '/contents/:contentId'
+				},
+				'update': {
+					method: 'PUT'
+				}
+			}),
+			getFeatures: function(content) {
+
+				if(content.features.length) {
+
+					var layerFeatures = LayerSharedData.features();
+
+					if(layerFeatures && layerFeatures.length) {
+
+						var contentFeatures = layerFeatures.filter(function(feature) {
+							return content.features.indexOf(feature._id) !== -1;
+						});
+
+						return contentFeatures;
+
+					}
+
+				}
+
+				return false;
+
 			}
-		});
+		};
 
 	}
 ]);
@@ -339,6 +407,13 @@ angular.module('mapasColetivos.map').factory('MapService', [
 					map.setView([0,0], 2);
 				});
 			},
+			fitMarkerLayer: function() {
+				if(markers.length) {
+					map.then(function(map) {
+						map.fitBounds(markerLayer.getBounds());
+					});
+				}
+			},
 			clearAll: function() {
 				this.clearMarkers();
 			}
@@ -438,6 +513,28 @@ angular.module('mapasColetivos').controller('MessageCtrl', [
 		$scope.close = function() {
 			$scope.service.message(false);
 		}
+
+	}
+]);
+
+/*
+ * Route controller
+ */
+angular.module('mapasColetivos').controller('RouteCtrl', [
+	'$scope',
+	'$route',
+	'$location',
+	function($scope, $route, $location) {
+
+		$scope.$on('$routeChangeSuccess', function() {
+
+			if($route.current.$$route.originalPath.indexOf('/layers/') === 0 && !$route.current.$$route.loadedTemplateUrl) {
+
+				$scope.templateUrl = '/views/layers/show.html';
+
+			}
+
+		});
 
 	}
 ]);
@@ -653,7 +750,8 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 	'$routeParams',
 	'LayerSharedData',
 	'MapService',
-	function($scope, $routeParams, LayerSharedData, MapService) {
+	'featureToMapObj',
+	function($scope, $routeParams, LayerSharedData, MapService, featureToMapObj) {
 
 		$scope.objType = 'feature';
 		
@@ -676,22 +774,26 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 					angular.forEach($scope.features, function(f) {
 
-						var marker = L.marker(f.geometry.coordinates);
+						var marker = featureToMapObj(f);
 
-						marker
-							.on('click', function() {
-								$scope.$emit('markerClicked', f);
-							})
-							.on('mouseover', function() {
-								marker.openPopup();
-							})
-							.on('mouseout', function() {
-								marker.closePopup();
-							})
-							.bindPopup('<h3 class="feature-title">' + f.title + '</h3>');
+						if(marker) {
+
+							marker
+								.on('click', function() {
+									$scope.$emit('markerClicked', f);
+								})
+								.on('mouseover', function() {
+									marker.openPopup();
+								})
+								.on('mouseout', function() {
+									marker.closePopup();
+								})
+								.bindPopup('<h3 class="feature-title">' + f.title + '</h3>');
 
 
-						MapService.addMarker(marker);
+							MapService.addMarker(marker);
+
+						}
 
 					});
 				}
@@ -1067,8 +1169,12 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 angular.module('mapasColetivos.content').controller('ContentCtrl', [
 	'$scope',
+	'Content',
 	'LayerSharedData',
-	function($scope, LayerSharedData) {
+	'MapService',
+	'featureToMapObj',
+	'markersToLayer',
+	function($scope, Content, LayerSharedData, MapService, featureToMapObj, markersToLayer) {
 
 		$scope.objType = 'content';
 		
@@ -1097,6 +1203,42 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 			};
 
 		});
+
+		$scope.focusFeatures = function(content) {
+
+			if(!content.featureLayer) {
+
+				var features = Content.getFeatures(content);
+
+				if(features && features.length) {
+
+					var mapObjs = [];
+
+					angular.forEach(features, function(feature) {
+
+						var mapObj = featureToMapObj(feature);
+
+						if(mapObj)
+							mapObjs.push(mapObj);
+
+					});
+
+					content.featureLayer = markersToLayer(mapObjs);
+
+				}
+
+			}
+
+			MapService.get().then(function(map) {
+				if(typeof map !== 'undefined') {
+					if(content.featureLayer)
+						map.fitBounds(content.featureLayer.getBounds());
+					else
+						MapService.fitMarkerLayer();
+				}
+			});
+
+		}
 
 	}
 ]);
@@ -1150,7 +1292,7 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 				if($scope.editing && $scope.editing._id) {
 
-					Content.update({contentId: $scope.editing._id}, $scope.editing, function(content) {
+					Content.resource.update({contentId: $scope.editing._id}, $scope.editing, function(content) {
 
 						// Replace content in local features
 						angular.forEach($scope.contents, function(content, i) {
@@ -1182,7 +1324,7 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 						};
 					}
 
-					var content = new Content($scope.editing);
+					var content = new Content.resource($scope.editing);
 
 					content.$save({layerId: layer._id}, function(content) {
 
@@ -1220,7 +1362,7 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 				if(confirm('Você tem certeza que deseja remover esta feature?')) {
 
-					Content.delete({contentId: $scope.editing._id}, function() {
+					Content.resource.delete({contentId: $scope.editing._id}, function() {
 
 						$scope.sharedData.contents($scope.contents.filter(function(c) {
 							return c._id !== $scope.editing._id;
