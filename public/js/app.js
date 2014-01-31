@@ -738,6 +738,10 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 			}
 		};
 
+		$scope.fitMarkerLayer = function() {
+			MapService.fitMarkerLayer();
+		}
+
 	}
 ]);
 
@@ -1169,12 +1173,13 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 angular.module('mapasColetivos.content').controller('ContentCtrl', [
 	'$scope',
+	'$location',
 	'Content',
 	'LayerSharedData',
 	'MapService',
 	'featureToMapObj',
 	'markersToLayer',
-	function($scope, Content, LayerSharedData, MapService, featureToMapObj, markersToLayer) {
+	function($scope, $location, Content, LayerSharedData, MapService, featureToMapObj, markersToLayer) {
 
 		$scope.objType = 'content';
 		
@@ -1183,6 +1188,8 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 		$scope.contents = [];
 
 		$scope.sharedData.layer().then(function(layer) {
+
+			$scope.layer = layer;
 
 			$scope.sharedData.contents(layer.contents);
 
@@ -1204,7 +1211,18 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 
 		});
 
-		$scope.focusFeatures = function(content) {
+		$scope.close = function() {
+
+			$scope.content = false;
+			MapService.fitMarkerLayer();
+
+		}
+
+		$scope.view = function(content) {
+
+			//$location.path('/layers/' + $scope.layer._id + '/content/' + content._id);
+
+			$scope.content = content;
 
 			if(!content.featureLayer) {
 
