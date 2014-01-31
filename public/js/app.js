@@ -663,7 +663,7 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 				title: 'Untitled'
 			});
 			draft.$save(function(draft) {
-				$location.path('/layers/' + draft._id + '/edit/').replace();
+				$location.path('/layers/' + draft._id + '/edit').replace();
 			}, function(err) {
 				// TODO error handling
 			});
