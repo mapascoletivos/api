@@ -64,10 +64,9 @@ module.exports = function (app, passport) {
 	
 	app.param('contentId', content.load);
 	// new content should be associated to a layer
-	app.post(apiPrefix + '/layers/:layerId/contents', auth.requiresLogin, content.create);
 	app.get(apiPrefix + '/contents/:contentId', content.show);
+	app.post(apiPrefix + '/layers/:layerId/contents', auth.requiresLogin, content.create);
 	app.put(apiPrefix + '/contents/:contentId', auth.requiresLogin, content.update);
-	// destroy content from belonging layer and all features associated
 	app.del(apiPrefix + '/contents/:contentId', auth.requiresLogin, content.destroy);
 	
 	/** 

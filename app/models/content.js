@@ -19,7 +19,7 @@ var ContentSchema = new Schema({
 	markdown: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
 	features: [{type: Schema.ObjectId, ref: 'Feature'}],
-	layer: {type: Schema.ObjectId, ref: 'Layer'},
+	layer: {type: Schema.ObjectId, ref: 'Layer', required: true},
 	createdAt: {type: Date, default: Date.now},
 	updateAt: {type: Date, default: Date.now},
 	tags: [String]
@@ -41,6 +41,7 @@ ContentSchema.statics = {
 
 	load: function (id, cb) {
 		this.findOne({ _id : id })
+			.populate('layer')
 			.exec(cb)
 	},
 	
