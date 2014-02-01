@@ -221,9 +221,6 @@ describe('API', function(){
 			});
 		});
 		
-		
-		
-		
 		/**
 		 * Delete content
 		 **/

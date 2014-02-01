@@ -5,6 +5,7 @@
 
 var mongoose = require('mongoose'), 
 	Content = mongoose.model('Content'),
+	Layer = mongoose.model('Layer'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend,
 	_ = require('underscore');
@@ -27,21 +28,27 @@ exports.load = function(req, res, next, id){
  */
 
 exports.create = function (req, res) {
-	var 
-		content = new Content(req.body),
-		layer = req.layer;
-
-	// associate content, feature and layer
-	content.creator = req.user;
-	content.layer = layer;
 	
-	// save all
-	content.save(function (err) {
+	// clear body from fields that should be handled internally
+	delete req.body['_id'];
+	delete req.body['id'];	
+	delete req.body['creator'];
+	
+	var 
+		content = new Content(req.body);
+
+	// associate content to user originating request
+	content.creator = req.user;
+	
+	Layer.findOne(req.body['layer'], function(err, layer){
 		if (err) res.json(400, err);
-		layer.contents.push(content);
-		layer.save(function(err){
+		content.save(function (err) {
 			if (err) res.json(400, err);
-			res.json(content);
+			layer.contents.push(content);
+			layer.save(function(err){
+				if (err) res.json(400, err);
+				res.json(content);
+			});
 		});
 	});
 }
