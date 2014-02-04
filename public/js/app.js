@@ -1399,16 +1399,18 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 								status: 'error',
 								text: 'Ocorreu um erro interno. Tente novamente ou entre em contato com nossa equipe'
 							}, false);
+						else {
+							Message.message({
+								status: 'error',
+								text: 'Ocorreu um erro interno. Tente novamente ou entre em contato com nossa equipe'
+							}, false);
+							console.log(err);
+						}
+
 
 					});
 
 				} else {
-
-					if(!$scope.editing.geometry) {
-						$scope.editing.geometry = {
-							coordinates: [0,0]
-						};
-					}
 
 					$scope.editing.layer = layer._id;
 
