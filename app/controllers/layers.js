@@ -79,13 +79,16 @@ exports.create = function (req, res) {
 exports.update = function(req, res){
 	var layer = req.layer;
 
+	delete req.body['features'];
+	delete req.body['contents'];
+
 	layer = extend(layer, req.body);
 
 	layer.save(function(err) {
 		if (!err) {
 			res.json(layer)
 		} else {
-			res.json(400, false)
+			res.json(400, err)
 		}
 	})
 }
