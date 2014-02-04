@@ -8,6 +8,6 @@ test:
     $(TESTS)
 
 populate:
-	@NODE_ENV=development NODE_PATH=./app/controllers node lib/factories.js
+	@NODE_ENV=development NODE_PATH=./app/controllers node lib/populate.js
 
 .PHONY: test
