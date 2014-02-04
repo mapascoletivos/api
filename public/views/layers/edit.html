@@ -10,8 +10,8 @@
 				<div class="content">
 					<div id="layer-edit">
 						<ul class="map-editor-tabs layer-objects-nav">
-							<li ng-class="layerObj('feature')"><a href="/layers/{{layer._id}}/edit/features">Features</a></li>
-							<li ng-class="layerObj('content')"><a href="/layers/{{layer._id}}/edit/contents">Conteúdo</a></li>
+							<li ng-class="layerObj('feature')" ng-click="setLayerObj('feature')"><a href="javascript:void(0);">Features</a></li>
+							<li ng-class="layerObj('content')" ng-click="setLayerObj('content')"><a href="javascript:void(0);">Conteúdo</a></li>
 						</ul>
 						<div ng-controller="FeatureCtrl" ng-show="layerObj(objType)">
 							<div id="layer-features" class="map-editor-subcontent">
@@ -20,10 +20,8 @@
 									<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 									<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar nova</a></p>
 									<ul class="obj-list">
-										<li ng-repeat="feature in features | filter:search">
-											<a href="/layers/{{layer._id}}/edit/features/{{feature._id}}">
-												{{feature.title}}
-											</a>
+										<li ng-repeat="feature in features | filter:search" ng-click="edit(feature._id)">
+											{{feature.title}}
 										</li>
 									</ul>
 								</div>
@@ -35,10 +33,8 @@
 								<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 								<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar novo</a></p>
 								<ul class="obj-list">
-									<li ng-repeat="item in contents | filter:search">
-										<a href="/layers/{{layer._id}}/edit/contents/{{item._id}}">
-											{{item.title}}
-										</a>
+									<li ng-repeat="item in contents | filter:search" ng-click="edit(item._id)">
+										{{item.title}}
 									</li>
 								</ul>
 							</div>
@@ -50,7 +46,7 @@
 		<form class="layer-actions" ng-submit="save()">
 			<a href="javascript:void(0);" class="button" ng-click="save()">Salvar</button>
 			<a href="javascript:void(0);" class="button" ng-click="delete()">Remover</a>
-			<a href="/layers/{{layer._id}}" class="button">Cancelar</a>
+			<a href="javascript:void(0);" class="button" ng-click="close()">Cancelar</a>
 		</form>
 	</div>
 	<div ng-controller="FeatureEditCtrl" class="map-container object-editor" ng-class="{editing: editing}" ng-hide="sharedData.editingContent()">
@@ -78,7 +74,7 @@
 					<a class="button" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
 					<a class="button" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar nova feature</a>
 					<a class="button" href="javascript:void(0);" ng-click="delete()" ng-show="editing._id">Remover</a>
-					<a class="button" href="/layers/{{layer._id}}/edit/features">Cancelar</a>
+					<a class="button" href="javascript:void(0);" ng-click="close()">Cancelar</a>
 				</div>
 			</form>
 		</div>
@@ -102,7 +98,7 @@
 				<a class="button" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
 				<a class="button" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar novo conteúdo</a>
 				<a class="button" href="javascript:void(0);" ng-click="delete()" ng-show="editing._id">Remover</a>
-				<a class="button" href="/layers/{{layer._id}}/edit/contents">Cancelar</a>
+				<a class="button" href="javascript:void(0);" ng-click="close()">Cancelar</a>
 			</div>
 		</form>
 	</div>
