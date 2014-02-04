@@ -1,3 +1,41 @@
+
+/* LIGATURE SYMBOLS */
+
+@font-face {
+    font-family: 'LigatureSymbols';
+    src: url('../font/LigatureSymbols-2.11.eot');
+    src: url('../font/LigatureSymbols-2.11.eot?#iefix') format('embedded-opentype'),
+         url('../font/LigatureSymbols-2.11.woff') format('woff'),
+         url('../font/LigatureSymbols-2.11.ttf') format('truetype'),
+         url('../font/LigatureSymbols-2.11.svg#LigatureSymbols') format('svg');
+    src: url('../font/LigatureSymbols-2.11.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.lsf, .lsf-icon:before {
+  font-family: 'LigatureSymbols';
+  -webkit-text-rendering: optimizeLegibility;
+  -moz-text-rendering: optimizeLegibility;
+  -ms-text-rendering: optimizeLegibility;
+  -o-text-rendering: optimizeLegibility;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -ms-font-smoothing: antialiased;
+  -o-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+.lsf-icon:before {
+  content:attr(title);
+  margin-right:0.3em;
+  font-size:130%;
+}
+
+/**
+**/
+
 html,body {
 	font: 14px "Open Sans", Helvetica, arial, freesans, clean, sans-serif;
 	line-height: 1.4;
@@ -42,13 +80,16 @@ input[type=submit] {
 	line-height: 100%;
 	border: 0;
 	cursor: pointer;
-}
-
-a.button.light-button,
-.button.light-button,
-button.light-button,
-input[type=submit].light-button {
-	opacity: .6;
+	&.button-small {
+		font-size: 90%;
+		padding: 12px 15px;
+	}
+	&.light-buton {
+		opacity: .6;
+	}
+	&:hover {
+		background: lighten(#90d478, 10%);
+	}
 }
 
 /*
@@ -124,6 +165,29 @@ input[type=submit].light-button {
 		float: right;
 		text-transform: uppercase;
 		font-weight: 600;
+	}
+}
+
+.loading-message {
+	position: fixed;
+	top: 52px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(255,255,255,0.8);
+	z-index: 99999;
+	opacity: 0;
+	pointer-events: none;
+	padding-top: 10%;
+	font-size: 20px;
+	text-transform: uppercase;
+	font-weight: 200;
+	text-align: center;
+	transition: all .5s ease-in-out;
+	&.active {
+		opacity: 1;
+		transition: all .2s ease-in-out;
+		pointer-events: auto;
 	}
 }
 
@@ -203,16 +267,18 @@ input[type=submit].light-button {
 			left: 0;
 			right: 0;
 			margin: 0;
-			padding: 0;
 			padding: 10px;
-			background: #fff;
-			border-top: 1px solid #eee;
+			background: #666;
+			height: 65px;
+			box-sizing: border-box;
+			border-top: 1px solid #555;
+			border-right: 1px solid #555;
 			> a.button, button {
 				display: table-cell;
 				width: 1%;
 				margin: 0;
 				padding: 15px 0;
-				border-right: 1px solid #fff;
+				border-right: 1px solid #666;
 				text-align: center;
 			}
 		}
@@ -368,17 +434,17 @@ input[type=submit].light-button {
 		}
 		&.editing {
 			.leaflet-container {
-				top: 50%;
+				bottom: 60%;
 				-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
 			}
 			.add-marker-tip {
 				display: block;
 				position: absolute;
-				top: 50%;
+				top: 0;
 				padding-top: 15%;
 				box-sizing: border-box;
 				left: 0;
-				bottom: 0;
+				bottom: 60%;
 				right: 0;
 				background: rgba(0,0,0,0.5);
 				pointer-events: none;
@@ -397,15 +463,19 @@ input[type=submit].light-button {
 				-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.2s;
 			}
 			&.top-down-hide {
-				height: 0;
+				top: 100%;
 				overflow: hidden;
 			}
 			&.top-down-show {
-				height: 50%;
+				top: 40%;
 				overflow: auto;
 			}
-			width: 100%;
-			height: 50%;
+			border-top: 1px solid #eee;
+			position: absolute;
+			top: 40%;
+			left: 0;
+			bottom: 0;
+			right: 0;
 			z-index: 200;
 			background: #f9f9f9;
 			overflow: auto;
@@ -419,11 +489,146 @@ input[type=submit].light-button {
 				box-sizing: border-box;
 				padding: 20px;
 			}
-			.feature-actions {
+			.editing-tools {
+				&.editing {
+					.tools-list {
+						position: absolute;
+						top: 0;
+						right: 50%;
+						li {
+							display: none;
+							&.active {
+								display: block;
+								margin-right: -1px;
+								position: relative;
+								z-index: 2;
+								border-left: 1px solid #eee;
+							}
+						}
+					}
+				}
+				.tools-list {
+					float: right;
+					border-left: 1px solid #eee;
+					li {
+						margin: 0;
+						&.remove-label {
+							a:hover {
+								background: #F05656;
+							}
+						}
+						a {
+							display: block;
+							text-decoration: none;
+							width: 75px;
+							height: 75px;
+							border-bottom: 1px solid #eee;
+							background: #fff;
+							&:hover {
+								color: #f0f0f0;
+								background: #77acde;
+							}
+							span {
+								display: block;
+								font-size: 40px;
+								line-height: 40px;
+								padding: 15px 0;
+								text-align: center;
+							}
+						}
+					}
+				}
+				.tools-editor {
+					border-left: 1px solid #eee;
+					position: absolute;
+					top: 0;
+					right: 0;
+					bottom: 65px;
+					overflow: auto;
+					width: 50%;
+					box-sizing: border-box;
+					padding: 20px;
+					background: #fff;
+				}
+			}
+			.feature-location {
+				input {
+					background: transparent;
+					border: 0;
+					padding: 10px 0 28px;
+					width: 100%;
+					margin: 0;
+					font-size: 16px;
+				}
+				.search-button {
+					width: 100%;
+					padding: 10px 0;
+					margin: 0 0 20px;
+					text-align: center;
+					.lsf {
+						padding-right: 10px;
+						font-size: 18px;
+					}
+				}
+				.geocode-results {
+					li {
+						font-size: 12px;
+						.locate {
+							float: left;
+							font-size: 26px;
+							margin: 0 10px 20px 0;
+							cursor: pointer;
+							text-decoration: none;
+							color: #999;
+							&:hover {
+								color: #333;
+							}
+						}
+					}
+				}
+			}
+			.editor-bottom {
 				position: absolute;
-				right: 0;
 				bottom: 0;
-				z-index: 9999;
+				left: 0;
+				right: 0;
+				height: 65px;
+				box-sizing: border-box;
+				background: #666;
+				border-top: 1px solid #555;
+				border-bottom: 1px solid #555;
+				padding: 20px;
+				color: #f0f0f0;
+				.feature-actions {
+					float: right;
+					margin: -5px 0;
+					a {
+						float: left;
+						margin-left: 1px;
+					}
+				}
+				.latlng {
+					p {
+						float: left;
+						font-size: 12px;
+						text-transform: uppercase;
+						font-weight: 600;
+						margin: 0;
+						input {
+							width: 150px;
+							display: inline;
+							margin: 0;
+							background: transparent;
+							border: 0;
+							padding-left: 15px;
+							color: #bbb;
+							&:hover,
+							&:focus {
+								color: #f0f0f0;
+							}
+						}
+					}
+				}
 			}
 		}
 	}

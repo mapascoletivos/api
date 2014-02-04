@@ -57,24 +57,35 @@
 					<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 				</div>
-				<div class="feature-location">
-					<div class="location-editor">
-						<input class="geocode" type="text" ui-keypress="{'enter': 'geocode()'}" ng-model="_data.geocode" placeholder="Encontre uma localização" />
-						<a href="javascript:void(0);" ng-click="geocode()">Buscar</a>
-						<div class="geocode-results">
-							<ul ng-repeat="result in _data.geocodeResults">
-								<li ng-click="setNominatimFeature(result)">{{result.display_name}} <span class="lsf-icon">geo</span></li>
-							</ul>
+				<div class="editing-tools" ng-class="{editing: tool}">
+					<ul class="tools-list">
+						<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover esta feature" ng-click="delete()"><span class="lsf">&#xE10f;</span></a></li>
+						<li class="feature-location-label" ng-class="{active: tool == 'feature-location'}"><a href="javascript:void(0);" title="Buscar uma localização" ng-click="setTool('feature-location')"><span class="lsf">&#xE116;</span></a></li>
+					</ul>
+					<div class="tools-editor" ng-show="tool">
+						<div class="feature-location" ng-show="tool == 'feature-location'">
+							<div class="location-editor">
+								<input class="geocode" type="text" ui-keypress="{'enter': 'geocode()'}" ng-model="_data.geocode" placeholder="Encontre uma localização" />
+								<a href="javascript:void(0);" ng-click="geocode()" class="search-button button button-small"><span class="lsf">&#xE116;</span> Buscar</a>
+								<div class="geocode-results">
+									<ul ng-repeat="result in _data.geocodeResults">
+										<li><a href="javascript:void(0);" class="lsf locate" title="Utilizar esta coordenada" ng-click="setNominatimFeature(result)">&#xE056;</a>{{result.display_name}}</li>
+									</ul>
+								</div>
+							</div>
 						</div>
-						Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" />
-						Longitude: <input ng-model="editing.geometry.coordinates[1]" ng-change="setMarker()" type="text" />
 					</div>
 				</div>
-				<div class="feature-actions">
-					<a class="button" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
-					<a class="button" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar nova feature</a>
-					<a class="button" href="javascript:void(0);" ng-click="delete()" ng-show="editing._id">Remover</a>
-					<a class="button" href="javascript:void(0);" ng-click="close()">Cancelar</a>
+				<div class="editor-bottom">
+					<div class="latlng">
+						<p class="latitude latlng-item">Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" /></p>
+						<p class="longitude latlng-item">Longitude: <input ng-model="editing.geometry.coordinates[1]" ng-change="setMarker()" type="text" /></p>
+					</div>
+					<div class="feature-actions">
+						<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
+						<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar nova feature</a>
+						<a class="button button-small" href="javascript:void(0);" ng-click="close()">Cancelar</a>
+					</div>
 				</div>
 			</form>
 		</div>

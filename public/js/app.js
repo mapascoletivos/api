@@ -23,6 +23,7 @@ angular.module('mapasColetivos.layer', [
 
 angular
 	.module('mapasColetivos', [
+		'loadingStatus',
 		'ui.router',
 		'ui.keypress',
 		'monospaced.elastic',
@@ -1082,6 +1083,7 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 				 */
 				$scope.$watch('sharedData.editingFeature()', function(editing) {
 
+					$scope.tool = false;
 					$scope.marker = false;
 					$scope._data = {};
 					$rootScope.$broadcast('editFeature');
@@ -1127,12 +1129,6 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 					});
 
 				} else {
-
-					if(!$scope.editing.geometry) {
-						$scope.editing.geometry = {
-							coordinates: [0,0]
-						};
-					}
 
 					var feature = new Feature($scope.editing);
 
@@ -1201,13 +1197,17 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 			}
 
-			$scope.close = function() {
+			/*
+			 * Tools
+			 */
 
-				$scope.marker = false;
-				$scope._data = {};
-				$scope.sharedData.editingFeature(false);
-				$rootScope.$broadcast('closedFeature');
+			$scope.tool = false;
 
+			$scope.setTool = function(tool) {
+				if(tool == $scope.tool)
+					$scope.tool = false;
+				else
+					$scope.tool = tool;
 			}
 
 			$scope.geocode = function() {
@@ -1232,6 +1232,16 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 				];
 
 				$scope.setMarker();
+
+			}
+
+			$scope.close = function() {
+
+				$scope.tool = false;
+				$scope.marker = false;
+				$scope._data = {};
+				$scope.sharedData.editingFeature(false);
+				$rootScope.$broadcast('closedFeature');
 
 			}
 
@@ -1496,3 +1506,59 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 	}
 ]);
+
+/*
+ * Loading service
+ */
+
+angular.module('loadingStatus', [])
+
+.config(function($httpProvider) {
+	$httpProvider.interceptors.push('loadingStatusInterceptor');
+})
+
+.directive('loadingStatusMessage', function() {
+	return {
+		link: function($scope, $element, attrs) {
+			var show = function() {
+				$element.addClass('active');
+			};
+			var hide = function() {
+				$element.removeClass('active');
+			};
+			$scope.$on('loadingStatusActive', show);
+			$scope.$on('loadingStatusInactive', hide);
+			hide();
+		}
+	};
+})
+
+.factory('loadingStatusInterceptor', function($q, $rootScope, $timeout) {
+	var activeRequests = 0;
+	var started = function() {
+		if(activeRequests==0) {
+			$rootScope.$broadcast('loadingStatusActive');
+		}    
+		activeRequests++;
+	};
+	var ended = function() {
+		activeRequests--;
+		if(activeRequests==0) {
+			$rootScope.$broadcast('loadingStatusInactive');
+		}
+	};
+	return {
+		request: function(config) {
+			started();
+			return config || $q.when(config);
+		},
+		response: function(response) {
+			ended();
+			return response || $q.when(response);
+		},
+		responseError: function(rejection) {
+			ended();
+			return $q.reject(rejection);
+		}
+	};
+});
