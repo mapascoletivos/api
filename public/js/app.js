@@ -260,7 +260,10 @@ angular.module('mapasColetivos.content').factory('Content', [
 			resource: $resource(apiPrefix + '/contents/:contentId', {'_csrf': window.token}, {
 				'save': {
 					method: 'POST',
-					url: apiPrefix + '/layers/:layerId/contents'
+					url: apiPrefix + '/contents',
+					params: {
+						layer: '@id'
+					}
 				},
 				'delete': {
 					method: 'DELETE',
@@ -1407,9 +1410,11 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 						};
 					}
 
+					$scope.editing.layer = layer._id;
+
 					var content = new Content.resource($scope.editing);
 
-					content.$save({layerId: layer._id}, function(content) {
+					content.$save(function(content) {
 
 						// Locally push new content
 						$scope.contents.push(content);
