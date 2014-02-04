@@ -4,6 +4,7 @@
 
 var 
 	async = require('async'),
+	_ = require('underscore'),
 	request = require('supertest'),
 	should = require('should'),
 	app = require('../../server'),
@@ -63,12 +64,22 @@ describe('Content', function(){
 						Factory.create('User', function(usr){
 							// Create and save layer for user1
 							Factory.create('Layer', {creator: usr._id}, function(lyr){
-								// Build content and don't save
-								Factory.build('Content', {creator: usr._id, layer: lyr._id}, function(cnt){
-									user1 = usr;
-									user1Content = cnt;
-									user1Layer = lyr;
-									cb();
+								Factory.create('Feature', {creator: usr._id}, function(ft1){
+									user1Feature1 = ft1;
+									Factory.create('Feature', {creator: usr._id}, function(ft2){
+										user1Feature2 = ft2;								
+										// Build content and don't save
+										Factory.build('Content', {
+											creator: usr._id,
+											layer: lyr._id, 
+											features: [user1Feature1._id, user1Feature2._id]}, function(cnt){
+											user1 = usr;
+											user1Content = cnt;
+											user1Layer = lyr;
+											cb();
+										});
+									});
+
 								});
 							});
 						});
@@ -95,9 +106,6 @@ describe('Content', function(){
 					// after populate, login user1
 					return loginUser(agent,user1)(done) 
 				});
-			  
-				
-				
 			});
 			
 			it('should return created content object as json', function (done) {
@@ -108,7 +116,14 @@ describe('Content', function(){
 					.expect(200)
 					.end(function(err,res){
 						user1ContentId = res.body._id;
-						done();
+						res.body.features.length.should.eql(2);
+						// Test if feature was updated with content_id
+						async.each(res.body.features, function(f, cb){
+							Feature.findById(f, function(err, ft){
+								ft.contents.should.include(user1ContentId);
+								cb();
+							})
+						}, done)
 					});
 			});
 			
@@ -123,9 +138,7 @@ describe('Content', function(){
 			
 			context('association validation', function(){
 
-				it("should return false if belonging layer wasn't created by the user", function(done){
-					done();
-				});
+				it("should return false if belonging layer wasn't created by the user");
 
 				it("should return false if associated features wasn't created by the user");
 				
@@ -135,9 +148,9 @@ describe('Content', function(){
 		});	
 	});
 
-	after(function(done){
+/*	after(function(done){
 		require('../../lib/clear-db').clearDb(done);
-	});
+	});*/
 });
 
 function loginUser(agent, user){

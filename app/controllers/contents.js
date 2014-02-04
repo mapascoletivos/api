@@ -33,16 +33,17 @@ exports.create = function (req, res) {
 	delete req.body['_id'];
 	delete req.body['id'];	
 	delete req.body['creator'];
-	
+
 	var 
-		content = new Content(req.body);
+		content = new Content(req.body),
+		newFeaturesArray = req.body.features;
 
 	// associate content to user originating request
 	content.creator = req.user;
 	
 	Layer.findOne(req.body['layer'], function(err, layer){
 		if (err) res.json(400, err);
-		content.save(function (err) {
+		content.updateFeaturesAssociationAndSave(req.body.features, function (err) {
 			if (err) res.json(400, err);
 			layer.contents.push(content);
 			layer.save(function(err){
@@ -67,14 +68,17 @@ exports.show = function(req, res){
 
 exports.update = function(req, res){
 	var 
-		content = req.content;
+		content = req.content,
+		newFeaturesArray = req.body.features;
+
+	delete req.body.features;
 
 	content = extend(content, req.body)
 
-	content.save(function(err) {
+	content.updateFeaturesAssociationAndSave(newFeaturesArray, function(err){
 		if (err) res.json(400, err);
 		res.json(content);
-	});
+	})
 }
 
 /**

@@ -12,7 +12,7 @@ var mongoose = require('mongoose'),
 
 var FeatureSchema = new Schema({
 	creator: { type: Schema.ObjectId, ref: 'User', required: true},
-	layers: [{ type: Schema.ObjectId, ref: 'layer'}],
+	layers: [{ type: Schema.ObjectId, ref: 'Layer'}],
 	contents: [{ type: Schema.ObjectId, ref: 'Content'}],	
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
 	title: { type: String, required: true },
@@ -29,6 +29,19 @@ var FeatureSchema = new Schema({
  **/
 
 FeatureSchema.index({ loc: '2dsphere' })
+
+/**
+ * Methods
+ */
+
+FeatureSchema.methods = {
+	addContent: function(content) {
+		this.contents.push(content);
+	},
+	removeContent: function(content){
+		this.contents = _.without(this.contents, _.findWhere(this.contents, {_id: content._id}));
+	}
+}
 
 /**
  * Statics

@@ -3,7 +3,9 @@
  * Module dependencies
  */
 
-var mongoose = require('mongoose'),
+var 
+	async = require('async'),
+	mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 /**
@@ -16,7 +18,7 @@ var ContentSchema = new Schema({
 	url: String,
 	sirTrevorData: [],
 	sirTrevor: String,
-	markdown: String,
+	markdown: String,	
 	creator: {type: Schema.ObjectId, ref: 'User'},
 	features: [{type: Schema.ObjectId, ref: 'Feature'}],
 	layer: {type: Schema.ObjectId, ref: 'Layer', required: true},
@@ -64,6 +66,49 @@ ContentSchema.statics = {
 		.exec(cb)
 	}	
 	
+}
+
+/**
+ * Methods
+ */
+
+ContentSchema.methods = {
+
+
+	updateFeaturesAssociationAndSave: function (newFeaturesArray, done) {
+
+		var 
+			currentFeatures = this.features,
+			theContent = this;
+
+		featuresToAdd = currentFeatures.filter(function(x) { return newFeaturesArray.indexOf(x) < 0 });
+
+		featuresToRemove = newFeaturesArray.filter(function(x) { return currentFeatures.indexOf(x) < 0 });
+
+		async.parallel([
+			function(callback){
+				// Features do Add
+				async.each(featuresToAdd, function(feature,cb){
+					mongoose.model('Feature').findById(feature, function(err, ft){
+						ft.addContent(theContent);
+						ft.save(cb);
+					});
+				}, callback); 
+			}, function(callback){
+				// Features do Remove
+				async.each(featuresToRemove, function(feature,cb){
+					mongoose.model('Feature').findById(feature, function(err, ft){
+						ft.removeContent(theContent);
+						ft.save(cb);
+					});
+				}, callback); 				
+			}
+		], function(err,results) {
+			theContent.save(done)
+		})
+
+
+	}
 }
 
 mongoose.model('Content', ContentSchema)
