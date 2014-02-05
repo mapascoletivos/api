@@ -3,7 +3,9 @@
  * Module dependencies
  */
 
-var mongoose = require('mongoose'),
+var 
+	_ = require('underscore'),
+	mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 /**

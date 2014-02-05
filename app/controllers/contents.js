@@ -40,10 +40,11 @@ exports.create = function (req, res) {
 
 	// associate content to user originating request
 	content.creator = req.user;
-	
-	Layer.findOne(req.body['layer'], function(err, layer){
+
+	Layer.findById(req.body['layer'], function(err, layer){
 		if (err) res.json(400, err);
-		content.updateFeaturesAssociationAndSave(req.body.features, function (err) {
+		content.save(function (err) {
+		// content.updateFeaturesAssociationAndSave(req.body.features, function (err) {
 			if (err) res.json(400, err);
 			layer.contents.push(content);
 			layer.save(function(err){
