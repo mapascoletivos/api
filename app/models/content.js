@@ -88,7 +88,8 @@ ContentSchema.methods = {
 		if (!newFeaturesArray) {newFeaturesArray = []}
 
 		featuresToRemove = currentFeatures.filter(function(x) { 
-			if (x.hasOwnProperty('_id')) { x = x._id; }
+			// collect feature id, if the whole object is passed as parameter
+			if (typeof(x['_id']) != 'undefined') { x = x._id.toHexString(); }
 			return newFeaturesArray.indexOf(x) < 0 
 		});
 
@@ -113,7 +114,7 @@ ContentSchema.methods = {
 				}, callback); 				
 			}
 		], function(err,results) {
-			theContent.save(done)
+			theContent.save(done(err))
 		})
 
 
