@@ -555,11 +555,10 @@ angular.module('mapasColetivos.content').directive('sirTrevorEditor', [
 						'Embedly',
 						'Text',
 						'List',
-						'Quote',
 						'Image',
-						'Video',
-						'Tweet'
+						'Video'
 					],
+					defaultType: 'Text',
 					required: 'Text'
 				});
 			}
@@ -1314,6 +1313,10 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 
 				$scope.sharedData.editingContent(angular.copy($scope.contents.filter(function(c) { return c._id == contentId; })[0]));
 
+				setTimeout(function() {
+					window.dispatchEvent(new Event('resize'));
+				}, 100);
+
 			};
 
 		});
@@ -1356,6 +1359,7 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 		$scope.sharedData.layer().then(function(layer) {
 
 			$scope.$watch('sharedData.editingContent()', function(editing) {
+				$scope.tool = false;
 				$scope.editing = editing;
 			});
 
@@ -1460,7 +1464,7 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 			$scope.delete = function() {
 
-				if(confirm('Você tem certeza que deseja remover esta feature?')) {
+				if(confirm('Você tem certeza que deseja remover este conteúdo?')) {
 
 					Content.resource.delete({contentId: $scope.editing._id}, function() {
 
@@ -1502,6 +1506,31 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 			$scope.$on('$routeChangeStart', $scope.close);
 
+			/*
+			 * Tools
+			 */
+
+			$scope.tool = false;
+
+			$scope.setTool = function(tool) {
+				if(tool == $scope.tool)
+					$scope.tool = false;
+				else
+					$scope.tool = tool;
+			}
+
+			$scope.geocode = function() {
+
+				Geocode.get($scope._data.geocode)
+					.success(function(res) {
+						$scope._data.geocodeResults = res;
+					})
+					.error(function(err) {
+						$scope._data.geocodeResults = [];
+					});
+
+			}
+
 		});
 
 	}
@@ -1511,7 +1540,7 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
  * Loading service
  */
 
-angular.module('loadingStatus', [])
+angular.module('loadingStatus', ['ngAnimate'])
 
 .config(function($httpProvider) {
 	$httpProvider.interceptors.push('loadingStatusInterceptor');

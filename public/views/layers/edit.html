@@ -81,7 +81,7 @@
 						<p class="latitude latlng-item">Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" /></p>
 						<p class="longitude latlng-item">Longitude: <input ng-model="editing.geometry.coordinates[1]" ng-change="setMarker()" type="text" /></p>
 					</div>
-					<div class="feature-actions">
+					<div class="feature-actions editor-actions">
 						<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
 						<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar nova feature</a>
 						<a class="button button-small" href="javascript:void(0);" ng-click="close()">Cancelar</a>
@@ -93,23 +93,36 @@
 		<div class="add-marker-tip" ng-hide="marker">Clique no mapa para adicionar um marcador</div>
 	</div>
 	<div ng-controller="ContentEditCtrl" class="content-editor object-editor" ng-show="editing">
-		<form>
-			<h3>Conteúdo</h3>
-			<textarea class="edit-title no-canvas" placeholder="Título" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
-			<div class="content-features">
-				<h4>Features</h4>
-				<select ng-model="editing.features" multiple>
-					<option ng-repeat="feature in sharedData.features()" value="{{feature._id}}">{{feature.title}}</option>
-				</select>
+		<form ng-submit="save()">
+			<div class="editing-tools" ng-class="{editing: tool}">
+				<ul class="tools-list">
+					<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover este content" ng-click="delete()"><span class="lsf">&#xE10f;</span></a></li>
+					<li class="content-features-label" ng-class="{active: tool == 'content-features'}"><a href="javascript:void(0);" title="Features deste conteúdo" ng-click="setTool('content-features')"><span class="lsf">&#xE103;</span><span class="feature-length" ng-show="editing.features">{{editing.features.length}}</span></a></li>
+				</ul>
+				<div class="tools-editor" ng-show="tool">
+					<div class="content-features" ng-show="tool == 'content-features'">
+						<p>Selecione a(s) feature(s) relacionadas a este conteúdo</p>
+						<select ng-model="editing.features" multiple>
+							<option ng-repeat="feature in sharedData.features()" value="{{feature._id}}">{{feature.title}}</option>
+						</select>
+					</div>
+				</div>
 			</div>
-			<div class="content-body">
-				<textarea sir-trevor-editor ng-model="editing.sirTrevor"></textarea>
+			<div class="content-settings">
+				<div class="content-title">
+					<h3>Conteúdo</h3>
+					<textarea class="edit-title no-canvas" placeholder="Título" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+				</div>
+				<div class="content-body">
+					<textarea sir-trevor-editor ng-model="editing.sirTrevor"></textarea>
+				</div>
 			</div>
-			<div class="content-actions">
-				<a class="button" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
-				<a class="button" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar novo conteúdo</a>
-				<a class="button" href="javascript:void(0);" ng-click="delete()" ng-show="editing._id">Remover</a>
-				<a class="button" href="javascript:void(0);" ng-click="close()">Cancelar</a>
+			<div class="editor-bottom">
+				<div class="content-actions editor-actions">
+					<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
+					<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar novo conteúdo</a>
+					<a class="button button-small" href="javascript:void(0);" ng-click="close()">Cancelar</a>
+				</div>
 			</div>
 		</form>
 	</div>
