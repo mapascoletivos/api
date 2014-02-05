@@ -85,8 +85,10 @@ ContentSchema.methods = {
 			currentFeatures = this.features,
 			theContent = this;
 
+		if (!newFeaturesArray) {newFeaturesArray = []}
+
 		featuresToRemove = currentFeatures.filter(function(x) { 
-			x = x.toHexString(x);
+			if (x.hasOwnProperty('_id')) { x = x._id; }
 			return newFeaturesArray.indexOf(x) < 0 
 		});
 
