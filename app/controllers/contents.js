@@ -43,8 +43,8 @@ exports.create = function (req, res) {
 
 	Layer.findById(req.body['layer'], function(err, layer){
 		if (err) res.json(400, err);
-		content.save(function (err) {
-		// content.updateFeaturesAssociationAndSave(req.body.features, function (err) {
+		//content.save(function (err) {
+		content.updateFeaturesAssociationAndSave(req.body.features, function (err) {
 			if (err) res.json(400, err);
 			layer.contents.push(content);
 			layer.save(function(err){

@@ -4,6 +4,7 @@
  */
 
 var 
+	async = require('async'),
 	_ = require('underscore'),
 	mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
@@ -44,6 +45,22 @@ FeatureSchema.methods = {
 		this.contents = _.without(this.contents, _.findWhere(this.contents, {_id: content._id}));
 	}
 }
+
+/**
+ * Pre-save hooks
+ */
+
+FeatureSchema.pre('remove', function(next){
+	var self = this;
+	async.each(self.contents, function(contentId, done){
+		mongoose.model('Content').findById(contentId, function(err, content){
+			if (!content) done();
+			content.removeFeature(self);
+			// content.features = _.without(_.toArray(content.features), self._id);
+			content.save(done);
+		})
+	}, next);
+});
 
 /**
  * Statics
