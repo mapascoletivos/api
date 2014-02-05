@@ -71,8 +71,8 @@ describe('Content', function(){
 										// Build content and don't save
 										Factory.build('Content', {
 											creator: usr._id,
-											layer: lyr._id, 
-											features: [user1Feature1._id, user1Feature2._id]}, function(cnt){
+											layer: lyr._id
+										}, function(cnt){
 											user1 = usr;
 											user1Content = cnt;
 											user1Layer = lyr;
@@ -109,6 +109,9 @@ describe('Content', function(){
 			});
 			
 			it('should return created content object as json', function (done) {
+				// add features to content
+				user1Content.features = [user1Feature1, user1Feature2];
+
 				agent
 					.post(apiPrefix + '/contents')
 					.send(user1Content)

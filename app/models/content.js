@@ -4,6 +4,7 @@
  */
 
 var 
+	_ = require('underscore'),
 	async = require('async'),
 	mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
@@ -74,6 +75,9 @@ ContentSchema.statics = {
 
 ContentSchema.methods = {
 
+	removeFeature: function(feature){
+		this.features = _.without(this.features, _.findWhere(this.features, feature._id));
+	},
 
 	updateFeaturesAssociationAndSave: function (newFeaturesArray, done) {
 
@@ -81,14 +85,17 @@ ContentSchema.methods = {
 			currentFeatures = this.features,
 			theContent = this;
 
-		featuresToAdd = currentFeatures.filter(function(x) { return newFeaturesArray.indexOf(x) < 0 });
+		featuresToRemove = currentFeatures.filter(function(x) { 
+			x = x.toHexString(x);
+			return newFeaturesArray.indexOf(x) < 0 
+		});
 
-		featuresToRemove = newFeaturesArray.filter(function(x) { return currentFeatures.indexOf(x) < 0 });
+		theContent.features = newFeaturesArray;
 
 		async.parallel([
 			function(callback){
-				// Features do Add
-				async.each(featuresToAdd, function(feature,cb){
+				// Features to update relation
+				async.each(newFeaturesArray, function(feature,cb){
 					mongoose.model('Feature').findById(feature, function(err, ft){
 						ft.addContent(theContent);
 						ft.save(cb);
