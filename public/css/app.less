@@ -99,6 +99,8 @@ input[type=submit] {
 	background: #ebf6ff;
 	padding: 10px 0;
 	border-bottom: 1px solid darken(#ebf6ff, 5%);
+	position: relative;
+	z-index: 99999;
 	h1 {
 		text-indent: -9999px;
 		line-height: 0;
@@ -170,8 +172,8 @@ input[type=submit] {
 
 .loading-message {
 	position: fixed;
-	top: 52px;
-	bottom: 0;
+	top: -100%;
+	bottom: 100%;
 	left: 0;
 	right: 0;
 	background: rgba(255,255,255,0.8);
@@ -184,7 +186,10 @@ input[type=submit] {
 	font-weight: 200;
 	text-align: center;
 	transition: all .5s ease-in-out;
+	overflow: hidden;
 	&.active {
+		top: 52px;
+		bottom: 0;
 		opacity: 1;
 		transition: all .2s ease-in-out;
 		pointer-events: auto;
@@ -420,6 +425,89 @@ input[type=submit] {
 			padding: 0;
 		}
 	}
+	.editor-bottom {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 65px;
+		box-sizing: border-box;
+		background: #666;
+		border-top: 1px solid #555;
+		border-bottom: 1px solid #555;
+		padding: 20px;
+		color: #f0f0f0;
+		.editor-actions {
+			float: right;
+			margin: -5px 0;
+			a {
+				float: left;
+				margin-left: 1px;
+			}
+		}
+	}
+	.editing-tools {
+		&.editing {
+			.tools-list {
+				position: absolute;
+				top: 0;
+				right: 50%;
+				li {
+					display: none;
+					&.active {
+						display: block;
+						margin-right: -1px;
+						position: relative;
+						z-index: 2;
+						border-left: 1px solid #eee;
+					}
+				}
+			}
+		}
+		.tools-list {
+			float: right;
+			border-left: 1px solid #eee;
+			li {
+				margin: 0;
+				&.remove-label {
+					a:hover {
+						background: #F05656;
+					}
+				}
+				a {
+					display: block;
+					text-decoration: none;
+					width: 75px;
+					height: 75px;
+					border-bottom: 1px solid #eee;
+					background: #fff;
+					&:hover {
+						color: #f0f0f0;
+						background: #77acde;
+					}
+					span {
+						display: block;
+						font-size: 40px;
+						line-height: 40px;
+						padding: 15px 0;
+						text-align: center;
+					}
+				}
+			}
+		}
+		.tools-editor {
+			border-left: 1px solid #eee;
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 65px;
+			overflow: auto;
+			width: 50%;
+			box-sizing: border-box;
+			padding: 20px;
+			background: #fff;
+		}
+	}
 	.map-container {
 		.leaflet-container {
 			position: absolute;
@@ -489,68 +577,6 @@ input[type=submit] {
 				box-sizing: border-box;
 				padding: 20px;
 			}
-			.editing-tools {
-				&.editing {
-					.tools-list {
-						position: absolute;
-						top: 0;
-						right: 50%;
-						li {
-							display: none;
-							&.active {
-								display: block;
-								margin-right: -1px;
-								position: relative;
-								z-index: 2;
-								border-left: 1px solid #eee;
-							}
-						}
-					}
-				}
-				.tools-list {
-					float: right;
-					border-left: 1px solid #eee;
-					li {
-						margin: 0;
-						&.remove-label {
-							a:hover {
-								background: #F05656;
-							}
-						}
-						a {
-							display: block;
-							text-decoration: none;
-							width: 75px;
-							height: 75px;
-							border-bottom: 1px solid #eee;
-							background: #fff;
-							&:hover {
-								color: #f0f0f0;
-								background: #77acde;
-							}
-							span {
-								display: block;
-								font-size: 40px;
-								line-height: 40px;
-								padding: 15px 0;
-								text-align: center;
-							}
-						}
-					}
-				}
-				.tools-editor {
-					border-left: 1px solid #eee;
-					position: absolute;
-					top: 0;
-					right: 0;
-					bottom: 65px;
-					overflow: auto;
-					width: 50%;
-					box-sizing: border-box;
-					padding: 20px;
-					background: #fff;
-				}
-			}
 			.feature-location {
 				input {
 					background: transparent;
@@ -588,17 +614,6 @@ input[type=submit] {
 				}
 			}
 			.editor-bottom {
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				height: 65px;
-				box-sizing: border-box;
-				background: #666;
-				border-top: 1px solid #555;
-				border-bottom: 1px solid #555;
-				padding: 20px;
-				color: #f0f0f0;
 				.feature-actions {
 					float: right;
 					margin: -5px 0;
@@ -638,8 +653,68 @@ input[type=submit] {
 		height: 100%;
 		overflow: auto;
 		position: relative;
-		padding: 20px;
 		box-sizing: border-box;
+		background: #f9f9f9;
+		.content-settings {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 76px;
+			bottom: 65px;
+			overflow: auto;
+			z-index: 3;
+			.content-title {
+				border-bottom: 1px solid #eee;
+				padding: 20px;
+				background: #fff;
+				.edit-title {
+					font-size: 28px;
+				}
+			}
+		}
+		.editing-tools {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 65px;
+			z-index: 4;
+			background: #fff;
+			border-left: 1px solid #eee;
+			&.editing {
+				.tools-list {
+					right: 300px;
+				}
+			}
+			.tools-list {
+				border-left: 0;
+				.content-features-label {
+					position: relative;
+					.feature-length {
+						display: block;
+						font-family: "Open Sans";
+						position: absolute;
+						bottom: 20px;
+						right: 20px;
+						padding: 0;
+						line-height: 12px;
+						font-size: 12px;
+						font-weight: 800;
+					}
+				}
+			}
+			.tools-editor {
+				width: 300px;
+				bottom: 0;
+			}
+		}
+		.content-features {
+			select {
+				width: 100%;
+				option {
+					padding: 5px;
+				}
+			}
+		}
 	}
 }
 
@@ -723,4 +798,91 @@ input[type=submit] {
 			padding: 20px;
 		}
 	}
+}
+
+/*
+ * Sir Trevor
+ */
+
+.st-block__inner,
+.st-block__messages,
+.st-block-ui-btn,
+.st-block-control-ui-btn {
+	border: 1px solid #eee;
+}
+
+.st-block__inner {
+	border-left: 0;
+	border-right: 0;
+}
+
+.st-block-ui-btn,
+.st-block-control-ui-btn {
+	border-right: 0;
+	border-bottom: 0;
+}
+
+.st-block__delete-label {
+	border-width: 1px;
+}
+
+.st-block__inner:hover,
+.st-block-ui-btn,
+.st-block-control-ui-btn,
+.st-block__messages,
+.st-block-positioner,
+.st-block-positioner:after,
+.st-block-positioner__title {
+	border-color: #ccc;
+}
+
+.st-block-ui-btn:hover,
+.st-block-control-ui-btn:hover,
+.st-block__upload-container:hover .st-upload-btn {
+	background-color: #77acde;
+}
+
+.st-block-controls__top:before,
+.st-icon--add:after,
+.st-block-controls {
+	border-radius: 0;
+}
+
+.st-block-controls__top:hover:before,
+.st-block-control:hover,
+.st-block-ui-btn,
+.st-block-control-ui-btn,
+.st-block--with-plus:after,
+.st-block-positioner__title,
+.st-format-btn:hover,
+.st-format-btn--is-active {
+	color: #77acde;
+}
+
+.st-block-controls a,
+.st-block-ui-btn,
+.st-block-control-ui-btn {
+	text-decoration: none;
+}
+
+.st-upload-btn {
+	font-size: 12px;
+	border-radius: 0;
+}
+
+.st-block__inner strong,
+.st-block__inner b {
+	font-weight: 800;
+}
+
+.st-block__inner i {
+	font-style: italic;
+}
+
+.st-block_inner a {
+	text-decoration: underline;
+}
+
+.st-block-positioner select {
+	width: auto;
 }
