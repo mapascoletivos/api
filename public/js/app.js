@@ -10,7 +10,9 @@ angular.module('mapasColetivos.user', []);
 
 angular.module('mapasColetivos.session', []);
 
-angular.module('mapasColetivos.content', []);
+angular.module('mapasColetivos.content', [
+	'ngSanitize'
+]);
 
 angular.module('mapasColetivos.feature', []);
 
@@ -23,6 +25,7 @@ angular.module('mapasColetivos.layer', [
 
 angular
 	.module('mapasColetivos', [
+		'fitVids',
 		'loadingStatus',
 		'ui.router',
 		'ui.keypress',
@@ -512,6 +515,55 @@ angular.module('mapasColetivos.map').factory('GeocodeService', [
 ]);
 
 /*
+ * Sir Trevor service
+ */
+
+angular.module('mapasColetivos').factory('SirTrevor', [
+	function() {
+
+		// Providers regex from SirTrevor's video block code
+		var videoProviders = {
+			vimeo: {
+				regex: /(?:http[s]?:\/\/)?(?:www.)?vimeo.com\/(.+)/,
+				html: "<iframe src=\"{{protocol}}//player.vimeo.com/video/{{remote_id}}?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>"
+			},
+			youtube: {
+				regex: /(?:http[s]?:\/\/)?(?:www.)?(?:(?:youtube.com\/watch\?(?:.*)(?:v=))|(?:youtu.be\/))([^&].+)/,
+				html: "<iframe src=\"{{protocol}}//www.youtube.com/embed/{{remote_id}}\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>"
+			}
+		};
+
+		return {
+			render: function(blocks) {
+				var self = this;
+				var rendered = '';
+				angular.forEach(blocks, function(block) {
+					rendered += self.renderBlock(block);
+				});
+				return rendered;
+			},
+			renderBlock: function(block) {
+				var rendered = '';
+				switch(block.type) {
+					case 'text':
+						rendered += '<div class="text">' + SirTrevor.toHTML(block.data.text, block.type) + '</div>';
+						break;
+					case 'list':
+						rendered += '<div class="list">' + SirTrevor.toHTML(block.data.text, block.type) + '</div>';
+						break;
+					case 'video':
+						rendered += '<div class="video" fit-vids>' + videoProviders[block.data.source].html
+							.replace('{{protocol}}', window.location.protocol)
+							.replace('{{remote_id}}', block.data.remote_id) + '</div>';
+						break;
+				}
+				return rendered;
+			}
+		}
+	}
+]);
+
+/*
  * Directives
  */
 
@@ -538,6 +590,32 @@ angular.module('mapasColetivos').directive('mcDisableEnter', [
 				element.on('keydown keypress', keyCallback);
 			}
 		}
+	}
+]);
+
+// Render bindings for dynamic html
+angular.module('mapasColetivos').directive('dynamic', [
+	'$compile',
+	function($compile) {
+		return function(scope, element, attrs) {
+			scope.$watch(
+				function(scope) {
+					// watch the 'dynamic' expression for changes
+					return scope.$eval(attrs.dynamic);
+				},
+				function(value) {
+					// when the 'dynamic' expression changes
+					// assign it into the current DOM
+					element.html(value);
+
+					// compile the new DOM and link it to the current
+					// scope.
+					// NOTE: we only compile .childNodes so that
+					// we don't get into infinite loop compiling ourselves
+					$compile(element.contents())(scope);
+				}
+			);
+		};
 	}
 ]);
 
@@ -1261,18 +1339,23 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 	'$scope',
 	'$rootScope',
 	'$stateParams',
+	'SirTrevor',
 	'Content',
 	'LayerSharedData',
 	'MapService',
 	'featureToMapObj',
 	'markersToLayer',
-	function($scope, $rootScope, $stateParams, Content, LayerSharedData, MapService, featureToMapObj, markersToLayer) {
+	function($scope, $rootScope, $stateParams, SirTrevor, Content, LayerSharedData, MapService, featureToMapObj, markersToLayer) {
 
 		$scope.objType = 'content';
 		
 		$scope.sharedData = LayerSharedData;
 
 		$scope.contents = [];
+
+		$scope.renderBlock = function(block) {
+			return SirTrevor.renderBlock(block);
+		}
 
 		$scope.sharedData.layer().then(function(layer) {
 
@@ -1352,7 +1435,8 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 	'Content',
 	'LayerSharedData',
 	'MessageService',
-	function($scope, $rootScope, Content, LayerSharedData, Message) {
+	'SirTrevor',
+	function($scope, $rootScope, Content, LayerSharedData, Message, SirTrevor) {
 
 		$scope.sharedData = LayerSharedData;
 
