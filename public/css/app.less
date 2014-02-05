@@ -506,6 +506,10 @@ input[type=submit] {
 			box-sizing: border-box;
 			padding: 20px;
 			background: #fff;
+			input {
+				width: 100%;
+				box-sizing: border-box;
+			}
 		}
 	}
 	.map-container {
@@ -708,10 +712,26 @@ input[type=submit] {
 			}
 		}
 		.content-features {
-			select {
-				width: 100%;
-				option {
-					padding: 5px;
+			.feature-list {
+				border: 1px solid #eee;
+				li {
+					cursor: pointer;
+					padding: 10px;
+					border-bottom: 1px solid #eee;
+					font-size: 12px;
+					margin: 0;
+					&:last-child {
+						border-bottom: 0;
+					}
+					&:hover {
+						background: #eee;
+					}
+					&.selected {
+						color: #fff;
+						background: #77acde;
+						margin: -1px;
+						border: 1px solid #669bcd;
+					}
 				}
 			}
 		}
@@ -794,8 +814,21 @@ input[type=submit] {
 		right: 0;
 		left: 70%;
 		bottom: 0;
+		transition: left .3s ease-in-out;
+		background: #fefefe;
+		&.active {
+			transition: left .2s ease-in-out;
+			left: 60%;
+		}
 		#posts {
+			max-width: 600px;
 			padding: 20px;
+		}
+		.single-post {
+			h2 {
+				font-weight: 600;
+				margin: 0 0 20px;
+			}
 		}
 	}
 }

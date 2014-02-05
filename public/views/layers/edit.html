@@ -102,9 +102,10 @@
 				<div class="tools-editor" ng-show="tool">
 					<div class="content-features" ng-show="tool == 'content-features'">
 						<p>Selecione a(s) feature(s) relacionadas a este conteúdo</p>
-						<select ng-model="editing.features" multiple>
-							<option ng-repeat="feature in sharedData.features()" value="{{feature._id}}">{{feature.title}}</option>
-						</select>
+						<input class="filter" type="text" ng-model="filterFeature" placeholder="Filtrar features da lista" />
+						<ul class="feature-list">
+							<li ng-repeat="feature in sharedData.features() | filter:filterFeature" ng-class="{selected:hasFeature(feature._id)}" ng-click="toggleFeature(feature._id)">{{feature.title}}</li>
+						</ul>
 					</div>
 				</div>
 			</div>
