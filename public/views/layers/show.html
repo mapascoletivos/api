@@ -16,6 +16,9 @@
 			<div ng-show="content">
 				<a href="/layers/{{layer._id}}">Fechar</a>
 				<h2>{{content.title}}</h2>
+				<div ng-repeat="block in content.sirTrevorData">
+					<div dynamic="renderBlock(block)"></div>
+				</div>
 			</div>
 			<div ng-hide="content">
 				<h2>Posts</h2>
