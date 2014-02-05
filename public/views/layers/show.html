@@ -11,9 +11,9 @@
 	<div id="map" ng-controller="FeatureCtrl">
 		<leaflet id="layer-map" center="map.world" tiles="map.tiles"></leaflet>
 	</div>
-	<div class="posts-container" ng-controller="ContentCtrl" ng-show="contents.length">
+	<div class="posts-container" ng-controller="ContentCtrl" ng-show="contents.length" ng-class="{active: content}">
 		<div id="posts">
-			<div ng-show="content">
+			<div class="single-post" ng-show="content">
 				<a href="/layers/{{layer._id}}">Fechar</a>
 				<h2>{{content.title}}</h2>
 				<div ng-repeat="block in content.sirTrevorData">

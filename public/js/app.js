@@ -1502,7 +1502,6 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 								status: 'error',
 								text: 'Ocorreu um erro interno. Tente novamente ou entre em contato com nossa equipe'
 							}, false);
-							console.log(err);
 						}
 
 
@@ -1589,6 +1588,30 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 			}
 
 			$scope.$on('$routeChangeStart', $scope.close);
+
+			/*
+			 * Features
+			 */
+			$scope.hasFeature = function(featureId) {
+				if($scope.editing) {
+					return $scope.editing.features.filter(function(f) { return f == featureId }).length;
+				}
+			}
+
+			$scope.toggleFeature = function(featureId) {
+
+				if(!$scope.features)
+					$scope.features = [];
+
+				if($scope.hasFeature(featureId)) {
+					$scope.editing.features = $scope.editing.features.filter(function(f) { return f !== featureId });
+				} else {
+					$scope.editing.features.push(featureId);
+				}
+
+				console.log($scope.editing.features);
+
+			}
 
 			/*
 			 * Tools
