@@ -1,21 +1,35 @@
-<div class="map-view layer-view">
+<div class="map-view layer-view" ng-controller="FeatureCtrl">
 	<div class="page-header">
 		<div class="container">
 			<div class="four columns row">
 				<p><a href="/layers">Voltar</a></p>
 				<h1>{{layer.title}}</h1>
-				<p><a href="/layers/{{layer._id}}/edit">Editar</a></p>
+				<div ng-show="canEdit(layer)">
+					<p><a href="/layers/{{layer._id}}/edit">Editar</a></p>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div id="map" ng-controller="FeatureCtrl">
+	<div id="map" ng-class="{shrink: activeSidebar}">
 		<div id="layer-map"></div>
 	</div>
-	<div class="posts-container" ng-controller="ContentCtrl" ng-show="contents.length" ng-class="{active: content}">
-		<div id="posts">
+	<div id="layer-sidebar" ng-class="{active: activeSidebar}">
+		<div id="feature-info" ng-show="feature">
+			<a href="/layers/{{layer._id}}">Fechar</a>
+			<h2>{{feature.title}}</h2>
+			<p>{{feature.description}}</p>
+		</div>
+		<div id="posts" ng-controller="ContentCtrl" ng-show="contents.length">
 			<div class="single-post" ng-show="content">
 				<a href="/layers/{{layer._id}}">Fechar</a>
 				<h2>{{content.title}}</h2>
+				<div class="content-meta">
+					<ul class="features">
+						<li ng-repeat="feature in content.featureObjs">
+							<a href="/layers/{{layer._id}}/feature/{{feature._id}}">{{feature.title}}</a>
+						</li>
+					</ul>
+				</div>
 				<div class="content-body">
 					<div ng-repeat="block in content.sirTrevorData">
 						<div dynamic="renderBlock(block)"></div>

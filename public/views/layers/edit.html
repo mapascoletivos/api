@@ -2,7 +2,7 @@
 	<div class="editor-container">
 		<div id="editor">
 			<div class="editor-content">
-				<div class="page-header layer-settings">
+				<div class="page-header layer-head">
 					<h2>Camada</h2>
 					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 					<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
@@ -10,9 +10,51 @@
 				<div class="content">
 					<div id="layer-edit">
 						<ul class="map-editor-tabs layer-objects-nav">
-							<li ng-class="layerObj('feature')" ng-click="setLayerObj('feature')"><a href="javascript:void(0);">Features</a></li>
-							<li ng-class="layerObj('content')" ng-click="setLayerObj('content')"><a href="javascript:void(0);">Conteúdo</a></li>
+							<li ng-class="layerObj('settings')" ng-click="setLayerObj('settings')">
+								<a href="javascript:void(0);">
+									<span class="lsf">&#xE055;</span>
+									Configurações
+								</a>
+							</li>
+							<li ng-class="layerObj('feature')" ng-click="setLayerObj('feature')">
+								<a href="javascript:void(0);">
+									<span class="lsf">&#xE103;</span>
+									Features
+								</a>
+							</li>
+							<li ng-class="layerObj('content')" ng-click="setLayerObj('content')">
+								<a href="javascript:void(0);">
+									<span class="lsf">&#xE101;</span>
+									Conteúdo
+								</a>
+							</li>
 						</ul>
+						<div ng-show="layerObj('settings')">
+							<div id="layer-settings">
+								<table class="options-table">
+									<tr>
+										<th>Tags</th>
+										<td><input type="text" ng-model="layer.tags" placeholder="Separe as tags por vírgula" /></td>
+									</tr>
+									<tr>
+										<th>Privacidade</th>
+										<td>
+											<ul class="radio-list">
+												<li ng-class="{active: layer.visibility == 'Visible'}" ng-click="layer.visibility = 'Visible'">
+													<span class="lsf">&#xE134;</span>
+													Pública
+												</li>
+												<li ng-class="{active: layer.visibility == 'Private'}" ng-click="layer.visibility = 'Private'">
+													<span class="lsf">&#xE086;</span>
+													Privada
+												</li>
+											</ul>
+										</td>
+									</tr>
+								</table>
+								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete()">Remover esta camada permanentemente.</a>
+							</div>
+						</div>
 						<div ng-controller="FeatureCtrl" ng-show="layerObj(objType)">
 							<div id="layer-features" class="map-editor-subcontent">
 								<div class="features-list">
@@ -44,9 +86,8 @@
 			</div>
 		</div>
 		<form class="layer-actions" ng-submit="save()">
-			<a href="javascript:void(0);" class="button" ng-click="save()">Salvar</button>
-			<a href="javascript:void(0);" class="button" ng-click="delete()">Remover</a>
-			<a href="javascript:void(0);" class="button" ng-click="close()">Cancelar</a>
+			<a href="javascript:void(0);" class="button button-light" ng-click="close()">Ver camada</a>
+			<a href="javascript:void(0);" class="button" ng-click="save()">Salvar alterações</a>
 		</form>
 	</div>
 	<div ng-controller="FeatureEditCtrl" class="map-container object-editor" ng-class="{editing: editing}" ng-hide="sharedData.editingContent()">
@@ -59,7 +100,7 @@
 				</div>
 				<div class="editing-tools" ng-class="{editing: tool}">
 					<ul class="tools-list">
-						<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover esta feature" ng-click="delete()"><span class="lsf">&#xE10f;</span></a></li>
+						<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover esta feature" ng-click="delete()"><span class="lsf">&#xE12c;</span></a></li>
 						<li class="feature-location-label" ng-class="{active: tool == 'feature-location'}"><a href="javascript:void(0);" title="Buscar uma localização" ng-click="setTool('feature-location')"><span class="lsf">&#xE116;</span></a></li>
 					</ul>
 					<div class="tools-editor" ng-show="tool">
@@ -96,7 +137,7 @@
 		<form ng-submit="save()">
 			<div class="editing-tools" ng-class="{editing: tool}">
 				<ul class="tools-list">
-					<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover este content" ng-click="delete()"><span class="lsf">&#xE10f;</span></a></li>
+					<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover este content" ng-click="delete()"><span class="lsf">&#xE12c;</span></a></li>
 					<li class="content-features-label" ng-class="{active: tool == 'content-features'}"><a href="javascript:void(0);" title="Features deste conteúdo" ng-click="setTool('content-features')"><span class="lsf">&#xE103;</span><span class="feature-length" ng-show="editing.features">{{editing.features.length}}</span></a></li>
 				</ul>
 				<div class="tools-editor" ng-show="tool">
