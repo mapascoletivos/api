@@ -14,11 +14,18 @@ exports.requiresLogin = function (req, res, next) {
  */
 
 exports.feature = {
-	hasAuthorization: function (req, res, next) {
-		if (req.feature.creator.id != req.user.id) {
-			req.flash('info', 'You are not authorized')
-			return res.redirect('/features/' + req.feature.id)
+	requireOwnership: function (req, res, next) {
+		if (req.method == 'POST') {
+			// POST: new feature require layer ownership
+			if (req.layer.creator.id != req.user.id) {
+				return res.json(403, {message: 'Unauthorized'});
+			}
+		} else {
+			// PUT: existing feature require feature ownership
+			if (req.feature.creator.id != req.user.id) {
+				return res.json(403, {message: 'Unauthorized'});
+			}
 		}
-		next()
+		next();
 	}
 }
