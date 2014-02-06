@@ -920,6 +920,8 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 		var populateMap = function(force) {
 
+			console.log('happened');
+
 			// Repopulate map if feature in scope has changed
 			if(!angular.equals(mapFeatures, $scope.features) || force === true) {
 
@@ -958,11 +960,7 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 			// Fit map bounds
 			if($scope.features && $scope.features.length) {
-				MapService.get().then(function(map) {
-					map.fitBounds(MapService.getMarkerLayer().getBounds(), {
-						reset:true
-					});
-				});
+				MapService.fitMarkerLayer();
 			}
 
 			// Fix map size after 200ms (animation safe)
@@ -1422,6 +1420,20 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 
 		}
 
+		$scope.$on('closedContent', function() {
+
+
+			// Fix map size after 200ms (animation safe)
+			setTimeout(function() {
+				alert('hi');
+				MapService.fitMarkerLayer();
+				MapService.get().then(function(map) {
+					map.invalidateSize(true);
+				});
+			}, 200);
+
+		});
+
 	}
 ]);
 
@@ -1438,11 +1450,14 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 	'SirTrevor',
 	function($scope, $rootScope, Content, LayerSharedData, Message, SirTrevor) {
 
+		var original = false;
+
 		$scope.sharedData = LayerSharedData;
 
 		$scope.sharedData.layer().then(function(layer) {
 
 			$scope.$watch('sharedData.editingContent()', function(editing) {
+				original = angular.copy(editing);
 				$scope.tool = false;
 				$scope.editing = editing;
 			});
@@ -1477,6 +1492,8 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 				if($scope.editing && $scope.editing._id) {
 
 					Content.resource.update({contentId: $scope.editing._id}, $scope.editing, function(content) {
+
+						original = angular.copy(content);
 
 						// Replace content in local features
 						angular.forEach($scope.contents, function(content, i) {
@@ -1514,6 +1531,8 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 					var content = new Content.resource($scope.editing);
 
 					content.$save(function(content) {
+
+						original = angular.copy(content);
 
 						// Locally push new content
 						$scope.contents.push(content);
@@ -1593,23 +1612,32 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 			 * Features
 			 */
 			$scope.hasFeature = function(featureId) {
-				if($scope.editing) {
+				if($scope.editing && $scope.editing.features) {
 					return $scope.editing.features.filter(function(f) { return f == featureId }).length;
 				}
+				return false;
 			}
 
 			$scope.toggleFeature = function(featureId) {
 
-				if(!$scope.features)
-					$scope.features = [];
+				if(!$scope.editing.features)
+					$scope.editing.features = [];
+
+				var features = angular.copy($scope.editing.features);
 
 				if($scope.hasFeature(featureId)) {
-					$scope.editing.features = $scope.editing.features.filter(function(f) { return f !== featureId });
+					features = features.filter(function(f) { return f !== featureId });
 				} else {
-					$scope.editing.features.push(featureId);
+					features.push(featureId);
 				}
 
-				console.log($scope.editing.features);
+				$scope.editing.features = features;
+
+			}
+
+			$scope.clearFeatures = function() {
+
+				$scope.editing.features = [];
 
 			}
 
@@ -1635,6 +1663,18 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 					.error(function(err) {
 						$scope._data.geocodeResults = [];
 					});
+
+			}
+
+			$scope.isRevertable = function() {
+
+				return (!angular.equals($scope.editing, original) && $scope.editing && $scope.editing._id);
+
+			}
+
+			$scope.revert = function() {
+
+				$scope.editing = angular.copy(original);
 
 			}
 
