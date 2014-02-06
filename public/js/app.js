@@ -483,6 +483,7 @@ angular.module('mapasColetivos.map').factory('MapService', [
 				map.setView([0,0], 2);
 			},
 			fitMarkerLayer: function() {
+				map.invalidateSize(false);
 				map.fitBounds(markerLayer.getBounds());
 				return map;
 			},
@@ -905,8 +906,6 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 		var populateMap = function(force) {
 
-			console.log('happened');
-
 			// Repopulate map if feature in scope has changed
 			if(!angular.equals(mapFeatures, $scope.features) || force === true) {
 
@@ -943,15 +942,12 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 				}
 			}
 
-			// Fit map bounds
 			if($scope.features && $scope.features.length) {
-				MapService.fitMarkerLayer();
+				// Fit marker layer after 200ms (animation safe)
+				setTimeout(function() {
+					MapService.fitMarkerLayer();
+				}, 200);
 			}
-
-			// Fix map size after 200ms (animation safe)
-			setTimeout(function() {
-				MapService.get().invalidateSize(true);
-			}, 200);
 
 		}
 
@@ -1404,7 +1400,6 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 			// Fix map size after 200ms (animation safe)
 			setTimeout(function() {
 				MapService.fitMarkerLayer();
-				MapService.get().invalidateSize(true);
 			}, 200);
 
 		});
