@@ -8,6 +8,7 @@
 	<div class="content row">
 		<div class="three columns" ng-repeat="layer in layers">
 			<h3><a href="/layers/{{layer._id}}">{{layer.title}}</a></h3>
+			<a ng-show="canEdit(layer)" href="/layers/{{layer._id}}/edit">Editar</a>
 			<p>{{layer.description}}</p>
 		</div>
 	</div>
