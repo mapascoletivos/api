@@ -103,6 +103,7 @@
 					<div class="content-features" ng-show="tool == 'content-features'">
 						<p>Selecione a(s) feature(s) relacionadas a este conteúdo</p>
 						<input class="filter" type="text" ng-model="filterFeature" placeholder="Filtrar features da lista" />
+						<a href="javascript:void(0);" ng-click="clearFeatures()" class="clear-selection" ng-show="editing.features">Limpar seleção</a>
 						<ul class="feature-list">
 							<li ng-repeat="feature in sharedData.features() | filter:filterFeature" ng-class="{selected:hasFeature(feature._id)}" ng-click="toggleFeature(feature._id)">{{feature.title}}</li>
 						</ul>
@@ -121,6 +122,7 @@
 			<div class="editor-bottom">
 				<div class="content-actions editor-actions">
 					<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
+					<a class="button button-small" href="javascript:void(0);" ng-click="revert()" ng-show="isRevertable()">Reverter alterações</a>
 					<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar novo conteúdo</a>
 					<a class="button button-small" href="javascript:void(0);" ng-click="close()">Cancelar</a>
 				</div>
