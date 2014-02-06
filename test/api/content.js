@@ -14,11 +14,9 @@ var
 	Content = mongoose.model('Content'),
 	User = mongoose.model('User'),
 	Factory = require('../../lib/factory');
-
-var 
-	apiPrefix = '/api/v1';
 	
 var
+	apiPrefix = '/api/v1',
 	user1,
 	user2,
 	layer1;
