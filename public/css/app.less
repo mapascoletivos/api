@@ -290,6 +290,7 @@ input[type=submit] {
 				color: #f0f0f0;
 			}
 			td {
+				border-top: 1px solid #eee;
 				border-bottom: 1px solid #eee;
 				padding: 15px;
 				width: 100%;
@@ -352,11 +353,14 @@ input[type=submit] {
 				padding: 15px 0;
 				border-right: 1px solid #666;
 				text-align: center;
+				&.button-secondary {
+					background: #6f6f6f;
+					color: #f0f0f0;
+				}
 			}
 		}
 	}
 	#layer-settings {
-		border-top: 1px solid #555;
 		.button-delete {
 			width: 100%;
 			padding: 15px 0;
@@ -389,6 +393,7 @@ input[type=submit] {
 			margin: 0;
 			padding: 0;
 			border-top: 1px solid #eee;
+			border-bottom: 5px solid #555;
 			li {
 				display: table-cell;
 				width: 1%;
@@ -403,6 +408,17 @@ input[type=submit] {
 					border-top: 1px solid #669bcd;
 					border-right: 0;
 					margin: -1px 0 0;
+					position: relative;
+					&:after {
+						content: '';
+						background: #77acde;
+						width: 20px;
+						height: 20px;
+						position: absolute;
+						left: 25px;
+						bottom: -10px;
+						-webkit-transform: rotate(45deg);
+					}
 					a {
 						color: #fff;
 						background: #77acde;
@@ -413,21 +429,22 @@ input[type=submit] {
 				}
 				a {
 					text-decoration: none;
-					padding: 15px 10px;
+					padding: 8px 10px;
 					display: block;
 					color: #d0d0d0;
 					text-transform: uppercase;
 					font-weight: 600;
-					font-size: 14px;
+					font-size: 12px;
 					line-height: 30px;
 					&:hover {
 						color: #999;
 					}
 					.lsf {
+						float: left;
 						font-size: 28px;
 						line-height: 30px;
-						display: inline-block;
-						margin-right: 10px;
+						display: block;
+						margin-left: 15px;
 						font-weight: 200;
 					}
 				}
