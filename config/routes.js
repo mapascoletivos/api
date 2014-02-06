@@ -18,12 +18,6 @@ var
 	auth = require('./middlewares/authorization');
 
 /**
- * Route middlewares
- */
-
-var featureAuth = [auth.requiresLogin, auth.feature.hasAuthorization]
-
-/**
  * Expose routes
  */
 
@@ -53,10 +47,10 @@ module.exports = function (app, passport) {
 	 **/
 	app.param('featureId', features.load) 
 	// new feature should be associated to a layer
-	app.post(apiPrefix + '/layers/:layerId/features', auth.requiresLogin, features.create);	
 	app.get(apiPrefix + '/features', features.index);
 	app.get(apiPrefix + '/features/:featureId', features.show);
-	app.put(apiPrefix + '/features/:featureId', auth.requiresLogin, features.update);
+	app.post(apiPrefix + '/layers/:layerId/features', [auth.requiresLogin, auth.feature.requireOwnership] , features.create);	
+	app.put(apiPrefix + '/features/:featureId', [auth.requiresLogin, auth.feature.requireOwnership], features.update);
 	
 	/** 
 	 * Content routes 

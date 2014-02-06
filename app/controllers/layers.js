@@ -32,7 +32,10 @@ exports.index = function(req, res){
 	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
 	var options = {
 		perPage: perPage,
-		page: page
+		page: page,
+		criteria: {
+			$or: [ {creator: req.user} , {visibility: 'Visible'} ]
+		}
 	}
 
 	Layer.list(options, function(err, layers) {
