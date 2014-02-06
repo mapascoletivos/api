@@ -80,11 +80,19 @@ input[type=submit] {
 	line-height: 100%;
 	border: 0;
 	cursor: pointer;
+	font-weight: 600;
 	&.button-small {
 		font-size: 90%;
 		padding: 12px 15px;
 	}
-	&.light-buton {
+	&.button-red {
+		background: #F05656;
+		color: rgba(255,255,255,0.8);
+		&:hover {
+			background: darken(#F05656, 10%);
+		}
+	}
+	&.button-light {
 		opacity: .6;
 	}
 	&:hover {
@@ -238,7 +246,7 @@ input[type=submit] {
 			color: #000;
 		}
 	}
-	.layer-settings {
+	.layer-head {
 		padding: 20px 20px 0;
 	}
 	.edit-title {
@@ -265,6 +273,65 @@ input[type=submit] {
 		overflow: hidden;
 		position: relative;
 		z-index: 200;
+		.options-table {
+			width: 100%;
+			background: #f9f9f9;
+			border-bottom: 1px solid #555;
+			th {
+				vertical-align: middle;
+				border-right: 1px solid #555;
+				border-bottom: 1px solid #555;
+				font-size: 10px;
+				text-transform: uppercase;
+				font-weight: 600;
+				text-align: right;
+				padding: 0 20px 0 20px;
+				background: #666;
+				color: #f0f0f0;
+			}
+			td {
+				border-bottom: 1px solid #eee;
+				padding: 15px;
+				width: 100%;
+				input {
+					width: 100%;
+					border: 0;
+					margin: 0;
+					background: transparent;
+				}
+				.radio-list {
+					margin: 0;
+					border: 1px solid #eee;
+					float: left;
+					li {
+						cursor: pointer;
+						float: left;
+						margin: 0;
+						padding: 5px 10px;
+						font-size: 11px;
+						font-weight: 600;
+						text-transform: uppercase;
+						.lsf {
+							font-size: 18px;
+							font-weight: 200;
+							display: inline-block;
+							margin-right: 10px;
+						}
+						&:hover {
+							background: #fff;
+						}
+						&.active {
+							background: #77acde;
+							color: #fff;
+							border: 1px solid #669bcd;
+							margin: -1px;
+							position: relative;
+							z-index: 2;
+						}
+					}
+				}
+			}
+		}
 		.layer-actions {
 			position: absolute;
 			z-index: 100;
@@ -288,11 +355,27 @@ input[type=submit] {
 			}
 		}
 	}
+	#layer-settings {
+		border-top: 1px solid #555;
+		.button-delete {
+			width: 100%;
+			padding: 15px 0;
+			font-size: 12px;
+			text-transform: none;
+			text-align: center;
+			border-top: 1px solid darken(#F05656, 10%);
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 65px;
+		}
+	}
 	#editor {
 		border-right: 1px solid #eee;
-		box-shadow: 0 0 10px rgba(0,0,0,1);
 		height: 100%;
 		overflow: auto;
+		float:right;
+		max-width: 600px;
 		h2 {
 			font-size: 12px;
 			font-weight: 800;
@@ -300,9 +383,6 @@ input[type=submit] {
 			margin: 0;
 			text-transform: uppercase;
 			color: #999;
-		}
-		.editor-content {
-			position: relative;
 		}
 		.map-editor-tabs {
 			display: table;
@@ -338,8 +418,17 @@ input[type=submit] {
 					color: #d0d0d0;
 					text-transform: uppercase;
 					font-weight: 600;
+					font-size: 14px;
+					line-height: 30px;
 					&:hover {
 						color: #999;
+					}
+					.lsf {
+						font-size: 28px;
+						line-height: 30px;
+						display: inline-block;
+						margin-right: 10px;
+						font-weight: 200;
 					}
 				}
 			}
@@ -808,12 +897,17 @@ input[type=submit] {
 		right: 30%;
 		bottom: 0;
 		z-index: 1;
+		transition: right .2s ease-in-out;
+		&.shrink {
+			right: 40%;
+			transition: right .2s ease-in-out;
+		}
 		.leaflet-container {
 			width: 100%;
 			height: 100%;
 		}
 	}
-	.posts-container {
+	#layer-sidebar {
 		position: absolute;
 		z-index: 2;
 		top: 0;
@@ -821,11 +915,14 @@ input[type=submit] {
 		left: 70%;
 		bottom: 0;
 		overflow: auto;
-		transition: left .3s ease-in-out;
+		transition: left .2s ease-in-out;
 		background: #fefefe;
 		&.active {
 			transition: left .2s ease-in-out;
 			left: 60%;
+		}
+		#feature-info {
+			padding: 20px;
 		}
 		#posts {
 			max-width: 600px;
@@ -850,6 +947,36 @@ input[type=submit] {
 			h2 {
 				font-weight: 600;
 				margin: 0 0 20px;
+			}
+			.content-meta {
+				.features {
+					&:before {
+						font-family: "LigatureSymbols";
+						content: '\E103';
+						font-size: 20px;
+						display: block;
+						float: left;
+						margin: 0 10px 0 0;
+						color: #77acde;
+					}
+					li {
+						font-size: 12px;
+						line-height: 20px;
+						display: inline-block;
+						font-weight: 600;
+						a {
+							text-decoration: none;
+							display: block;
+							background: #f9f9f9;
+							padding: 3px 8px;
+							margin-right: 1px;
+							&:hover {
+								background: #77acde;
+								color: #fff;
+							}
+						}
+					}
+				}
 			}
 			.content-body {
 				font-size: 14px;
