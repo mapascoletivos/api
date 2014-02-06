@@ -820,6 +820,7 @@ input[type=submit] {
 		right: 0;
 		left: 70%;
 		bottom: 0;
+		overflow: auto;
 		transition: left .3s ease-in-out;
 		background: #fefefe;
 		&.active {
@@ -849,6 +850,22 @@ input[type=submit] {
 			h2 {
 				font-weight: 600;
 				margin: 0 0 20px;
+			}
+			.content-body {
+				font-size: 14px;
+				line-height: 22px;
+				color: #333;
+				b, strong {
+					font-weight: 600;
+				}
+				i {
+					font-style: italic;
+				}
+				ul {
+					margin-left: 20px;
+					margin-bottom: 20px;
+					list-style: disc;
+				}
 			}
 		}
 	}
@@ -931,6 +948,14 @@ input[type=submit] {
 
 .st-block__inner i {
 	font-style: italic;
+}
+
+.st-block__inner ul {
+	margin: 0 0 20px 25px;
+	li {
+		list-style: disc;
+		margin: 0 0 15px;
+	}
 }
 
 .st-block_inner a {
