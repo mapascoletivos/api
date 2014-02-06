@@ -7,9 +7,8 @@
 	</div>
 	<div class="content row">
 		<div class="three columns" ng-repeat="layer in layers">
-			<p>
-				<a href="/layers/{{layer._id}}">{{layer.title}}</a>
-			</p>
+			<h3><a href="/layers/{{layer._id}}">{{layer.title}}</a></h3>
+			<p>{{layer.description}}</p>
 		</div>
 	</div>
 </div>

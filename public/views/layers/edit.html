@@ -89,7 +89,7 @@
 				</div>
 			</form>
 		</div>
-		<leaflet id="layer-map" center="map.world" tiles="map.tiles"></leaflet>
+		<div id="layer-map"></div>
 		<div class="add-marker-tip" ng-hide="marker">Clique no mapa para adicionar um marcador</div>
 	</div>
 	<div ng-controller="ContentEditCtrl" class="content-editor object-editor" ng-show="editing">
@@ -110,7 +110,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="content-settings">
+			<div id="content-edit-body" class="content-settings">
 				<div class="content-title">
 					<h3>Conteúdo</h3>
 					<textarea class="edit-title no-canvas" placeholder="Título" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>

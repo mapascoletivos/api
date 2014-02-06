@@ -2,9 +2,7 @@
  * App modules
  */
 
-angular.module('mapasColetivos.map', [
-	'leaflet-directive'
-]);
+angular.module('mapasColetivos.map', []);
 
 angular.module('mapasColetivos.user', []);
 
@@ -328,8 +326,7 @@ angular.module('mapasColetivos.layer').factory('Layer', [
  * Layer features service
  */
 angular.module('mapasColetivos.layer').factory('LayerSharedData', [
-	'leafletData',
-	function(leafletData) {
+	function() {
 		var layer = {};
 		var features = [];
 		var contents = [];
@@ -419,23 +416,25 @@ angular.module('mapasColetivos').factory('MessageService', [
  */
 
 angular.module('mapasColetivos.map').factory('MapService', [
-	'leafletData',
-	function(leafletData) {
+	function() {
 
 		var map,
 			markerLayer = L.featureGroup(),
 			markers = [],
-			hiddenMarkers = [];
+			hiddenMarkers = [],
+			baseTile = 'http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png';
 
 		return {
-			init: function(id) {
-				this.clearAll();
-				map = leafletData.getMap(id);
-				map.then(function(m) {
-					if(!m.hasLayer(markerLayer)) {
-						m.addLayer(markerLayer);
-					}
+			init: function(id, config) {
+				if(map instanceof L.Map) {
+					map.remove();
+				}
+				map = L.map(id, config);
+				map.whenReady(function() {
+					map.addLayer(L.tileLayer(baseTile));
+					map.addLayer(markerLayer);
 				});
+				return map;
 			},
 			get: function() {
 				return map;
@@ -481,16 +480,11 @@ angular.module('mapasColetivos.map').factory('MapService', [
 				}
 			},
 			fitWorld: function() {
-				map.then(function(map) {
-					map.setView([0,0], 2);
-				});
+				map.setView([0,0], 2);
 			},
 			fitMarkerLayer: function() {
-				if(markers.length) {
-					map.then(function(map) {
-						map.fitBounds(markerLayer.getBounds());
-					});
-				}
+				map.fitBounds(markerLayer.getBounds());
+				return map;
 			},
 			clearAll: function() {
 				this.clearMarkers();
@@ -546,10 +540,10 @@ angular.module('mapasColetivos').factory('SirTrevor', [
 				var rendered = '';
 				switch(block.type) {
 					case 'text':
-						rendered += '<div class="text">' + SirTrevor.toHTML(block.data.text, block.type) + '</div>';
+						rendered += '<div class="text">' + markdown.toHTML(block.data.text) + '</div>';
 						break;
 					case 'list':
-						rendered += '<div class="list">' + SirTrevor.toHTML(block.data.text, block.type) + '</div>';
+						rendered += '<div class="list">' + markdown.toHTML(block.data.text) + '</div>';
 						break;
 					case 'video':
 						rendered += '<div class="video" fit-vids>' + videoProviders[block.data.source].html
@@ -669,28 +663,6 @@ angular.module('mapasColetivos').controller('MessageCtrl', [
 	}
 ]);
 
-/*
- * Route controller
- */
-angular.module('mapasColetivos').controller('RouteCtrl', [
-	'$scope',
-	'$route',
-	'$location',
-	function($scope, $route, $location) {
-
-		$scope.$on('$routeChangeSuccess', function() {
-
-			if($route.current.$$route.originalPath.indexOf('/layers/') === 0 && !$route.current.$$route.loadedTemplateUrl) {
-
-				$scope.templateUrl = '/views/layers/show.html';
-
-			}
-
-		});
-
-	}
-]);
-
 angular.module('mapasColetivos').controller('IndexCtrl', [
 	'$scope',
 	'SessionService',
@@ -757,7 +729,29 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 			Layer.get({layerId: $stateParams.layerId}, function(layer) {
 
-				MapService.init('layer-map');
+				var map = MapService.init('layer-map', {
+					center: [0,0],
+					zoom: 2
+				});
+
+				/*
+				 * Map
+				 */
+
+				$scope.map = {
+					world: {
+						lat: 0,
+						lng: 0,
+						zoom: 2
+					},
+					tiles: {
+						url: 'http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png'
+					}
+				};
+
+				$scope.fitMarkerLayer = function() {
+					MapService.fitMarkerLayer();
+				}
 
 				// Set layer shared data using service (resolving promise)
 				layerDefer.resolve(layer);
@@ -783,16 +777,26 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 					$scope.save = function($event) {
 
-						Layer.update({layerId: layer._id}, $scope.layer, function(layer) {
-							Message.message({
-								status: 'ok',
-								text: 'Camada atualizada'
+						Message.message({
+							status: 'loading',
+							text: 'Salvando camada...'
+						});
+
+						MapService.fitMarkerLayer().then(function(map) {
+
+							Layer.update({layerId: layer._id}, $scope.layer, function(layer) {
+								$scope.$broadcast('savedLayer');
+								Message.message({
+									status: 'ok',
+									text: 'Camada atualizada'
+								});
+							}, function(err){
+								Message.message({
+									status: 'error',
+									text: 'Ocorreu um erro.'
+								});
 							});
-						}, function(err){
-							Message.message({
-								status: 'error',
-								text: 'Ocorreu um erro.'
-							});
+
 						});
 
 					}
@@ -828,7 +832,7 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 					}
 
-					$scope.$on('$routeChangeStart', deleteDraft);
+					$scope.$on('$stateChangeStart', deleteDraft);
 
 				}
 
@@ -874,25 +878,6 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 			$scope.$broadcast('layerObjectChange', active);
 
 		});
-
-		/*
-		 * Map
-		 */
-
-		$scope.map = {
-			world: {
-				lat: 0,
-				lng: 0,
-				zoom: 2
-			},
-			tiles: {
-				url: 'http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png'
-			}
-		};
-
-		$scope.fitMarkerLayer = function() {
-			MapService.fitMarkerLayer();
-		}
 
 	}
 ]);
@@ -965,9 +950,7 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 			// Fix map size after 200ms (animation safe)
 			setTimeout(function() {
-				MapService.get().then(function(map) {
-					map.invalidateSize(true);
-				});
+				MapService.get().invalidateSize(true);
 			}, 200);
 
 		}
@@ -979,26 +962,24 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 			$scope.sharedData.features(layer.features);
 
 			// Get map then...
-			MapService.get().then(function(map) {
+			var map = MapService.get();
 
-				// Watch layer features
-				$scope.$watch('sharedData.features()', function(features) {
+			// Watch layer features
+			$scope.$watch('sharedData.features()', function(features) {
 
-					$scope.features = features;
-					populateMap();
+				$scope.features = features;
+				populateMap();
 
-				});
-
-				if($stateParams.action && $stateParams.action === 'edit') {
-
-					// Force repopulate map on feature close
-					$scope.$on('closedFeature', function() {
-						populateMap(true);
-					});
-
-				}
 			});
 
+			if($stateParams.action && $stateParams.action === 'edit') {
+
+				// Force repopulate map on feature close
+				$scope.$on('closedFeature', function() {
+					populateMap(true);
+				});
+
+			}
 
 			/*
 			 * Edit actions
@@ -1041,8 +1022,7 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 		});
 
 		$scope.$on('layerObjectChange', function(event, active) {
-			if(active == $scope.objType)
-				populateMap();
+			populateMap();
 		});
 
 	}
@@ -1119,10 +1099,9 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 					$scope.marker.openPopup();
 
 					if(focus !== false) {
-						MapService.get().then(function(map) {
-							map.setView($scope.marker.getLatLng(), 15, {
-								reset: true
-							});
+						var map = MapService.get();
+						map.setView($scope.marker.getLatLng(), 15, {
+							reset: true
 						});
 					}
 
@@ -1136,10 +1115,6 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 					window.dispatchEvent(new Event('resize'));
 				}, 200);
 
-			} else {
-
-				$scope.close();
-
 			}
 
 		}
@@ -1149,23 +1124,21 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 		 */
 		$scope.sharedData.layer().then(function(layer) {
 
-			MapService.get().then(function(map) {
+			var map = MapService.get();
 
-				map.on('click', addMarkerOnClick);
+			map.on('click', addMarkerOnClick);
 
-				/*
-				 * Watch editing feature
-				 */
-				$scope.$watch('sharedData.editingFeature()', function(editing) {
+			/*
+			 * Watch editing feature
+			 */
+			$scope.$watch('sharedData.editingFeature()', function(editing) {
 
-					$scope.tool = false;
-					$scope.marker = false;
-					$scope._data = {};
-					$rootScope.$broadcast('editFeature');
-					$scope.editing = editing;
-					$scope.setMarker();
-
-				});
+				$scope.tool = false;
+				$scope.marker = false;
+				$scope._data = {};
+				$rootScope.$broadcast('editFeature');
+				$scope.editing = editing;
+				$scope.setMarker();
 
 			});
 
@@ -1320,7 +1293,8 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 			}
 
-			$scope.$on('$routeChangeStart', $scope.close);
+			$scope.$on('layerObjectChange', $scope.close);
+			$scope.$on('$stateChangeStart', $scope.close);
 
 		});
 
@@ -1396,19 +1370,24 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 
 				setTimeout(function() {
 					window.dispatchEvent(new Event('resize'));
+					document.getElementById('content-edit-body').scrollTop = 0;
 				}, 100);
 
 			};
 
+			$scope.close = function() {
+
+				$scope.sharedData.features($scope.layer.features);
+				$scope.content = false;
+				MapService.fitMarkerLayer();
+
+			}
+
+			$scope.$on('layerObjectChange', $scope.close);
+			$scope.$on('$stateChangeStart', $scope.close);
+
 		});
 
-		$scope.close = function() {
-
-			$scope.sharedData.features($scope.layer.features);
-			$scope.content = false;
-			MapService.fitMarkerLayer();
-
-		}
 
 		$scope.view = function(content) {
 
@@ -1422,14 +1401,10 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 
 		$scope.$on('closedContent', function() {
 
-
 			// Fix map size after 200ms (animation safe)
 			setTimeout(function() {
-				alert('hi');
 				MapService.fitMarkerLayer();
-				MapService.get().then(function(map) {
-					map.invalidateSize(true);
-				});
+				MapService.get().invalidateSize(true);
 			}, 200);
 
 		});
@@ -1606,7 +1581,7 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 			}
 
-			$scope.$on('$routeChangeStart', $scope.close);
+			$scope.$on('$stateChangeStart', $scope.close);
 
 			/*
 			 * Features
