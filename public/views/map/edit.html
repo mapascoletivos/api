@@ -1,0 +1,91 @@
+<div class="map-editor-container">
+	<div class="editor-container">
+		<div id="editor">
+			<div class="editor-content">
+				<div class="page-header map-head">
+					<h2>Mapa</h2>
+					<textarea class="edit-title no-canvas" type="text" ng-model="map.title" placeholder="Título da mapa" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+				</div>
+				<div class="content">
+					<div id="map-edit">
+						<ul class="map-editor-tabs layer-objects-nav">
+							<li ng-class="mapObj('settings')" ng-click="setMapObj('settings')">
+								<a title="Configurações" href="javascript:void(0);">
+									<span class="lsf">&#xE055;</span>
+									<span class="label" ng-show="mapObj('settings')">
+										Configurações
+									</span>
+								</a>
+							</li>
+							<li ng-class="mapObj('layer')" ng-click="setMapObj('layer')">
+								<a title="Camadas" href="javascript:void(0);">
+									<span class="lsf">&#xE129;</span>
+									<span class="label" ng-show="mapObj('layer')">
+										Camadas
+									</span>
+									<span class="layer-length tab-tip" ng-show="map.layers.length">
+										{{map.layers.length}}
+									</span>
+								</a>
+							</li>
+						</ul>
+						<div ng-show="mapObj('settings')">
+							<div id="settings">
+								<table class="options-table">
+									<tr>
+										<th>Descrição</th>
+										<td>
+											<textarea class="edit-description no-canvas" type="text" ng-model="map.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+										</td>
+									<tr>
+										<th>Tags</th>
+										<td><input type="text" ng-model="map.tags" placeholder="Separe as tags por vírgula" /></td>
+									</tr>
+									<tr>
+										<th>Privacidade</th>
+										<td>
+											<ul class="radio-list">
+												<li ng-class="{active: map.visibility == 'Visible'}" ng-click="map.visibility = 'Visible'">
+													<span class="lsf">&#xE134;</span>
+													Público
+												</li>
+												<li ng-class="{active: map.visibility == 'Private'}" ng-click="map.visibility = 'Private'">
+													<span class="lsf">&#xE086;</span>
+													Privado
+												</li>
+											</ul>
+										</td>
+									</tr>
+								</table>
+								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete()"><span class="lsf">&#xE12c;</span>Remover este mapa permanentemente.</a>
+							</div>
+						</div>
+						<div ng-show="mapObj('layer')">
+							<div id="map-layers" class="map-editor-subcontent">
+								<div class="layers-list">
+									<a href="javascript:void(0);" class="button add-new" ng-click="new()">
+										<span class="lsf">&#xE108;</span>
+										Adicionar nova
+									</a>
+									<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
+									<ul class="obj-list">
+										<li ng-repeat="layer in userLayers | filter:search" ng-click="toggleLayer(layer)" ng-class="{active:hasLayer(layer)}">
+											{{layer.title}}
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<form class="primary-actions" ng-submit="save()">
+			<a href="javascript:void(0);" class="button button-secondary" ng-click="close()">Ver mapa</a>
+			<a href="javascript:void(0);" class="button" ng-click="save()">Salvar alterações</a>
+		</form>
+	</div>
+	<div class="map-container object-editor">
+		<div id="map"></div>
+	</div>
+</div>

@@ -79,11 +79,11 @@ module.exports = function (app, passport) {
 	 * Map routes
 	 **/
 	app.param('mapId', maps.load);
-	app.get(apiPrefix + '/maps/:imageId', maps.index);
+	app.get(apiPrefix + '/maps', maps.index);
 	app.post(apiPrefix + '/maps', auth.requiresLogin, maps.create);
-	app.del(apiPrefix + '/maps/:layerId', auth.requiresLogin, maps.destroy);
-	app.put(apiPrefix + '/maps/:layerId', auth.requiresLogin, maps.update);
-	app.get(apiPrefix + '/maps/:layerId', maps.show);
+	app.del(apiPrefix + '/maps/:mapId', auth.requiresLogin, maps.destroy);
+	app.put(apiPrefix + '/maps/:mapId', auth.requiresLogin, maps.update);
+	app.get(apiPrefix + '/maps/:mapId', maps.show);
 
 	
 	/**
