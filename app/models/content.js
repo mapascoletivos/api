@@ -75,49 +75,70 @@ ContentSchema.statics = {
 
 ContentSchema.methods = {
 
-	removeFeature: function(feature){
-		this.features = _.without(this.features, _.findWhere(this.features, feature._id));
+	removeFeatureAndSave: function(feature, done){
+		var 
+			self = this;
+
+		if (typeof(feature['_id']) != 'undefined') { feature = feature._id; }
+
+		self.features = _.without(self.features, _.findWhere(self.features, feature));
+
+		self.save(done);
 	},
 
-	updateFeaturesAssociationAndSave: function (newFeaturesArray, done) {
-
+	updateFeaturesAssociationAndSave: function (newFeaturesArray, doneUpdate) {
 		var 
 			currentFeatures = this.features,
-			theContent = this;
+			self = this;
+			
+		if (!newFeaturesArray) { newFeaturesArray = [] }
+		
+		// transform newFeaturesArray to a array of ids, if not already
+		newFeaturesArray = _.map(newFeaturesArray, function(feature){
+			if (typeof(feature['_id']) === 'undefined') { 
+				return feature;
+			} else { 
+				return feature._id.toHexString(); 
+			}
+		});
 
-		if (!newFeaturesArray) {newFeaturesArray = []}
+		// transform currentFeatures to a array of ids, if not already
+		currentFeatures = _.map(currentFeatures, function(feature){
+			if (typeof(feature['_id']) === 'undefined') { 
+				return feature;
+			} else { 
+				return feature._id.toHexString(); 
+			}
+		});
 
 		featuresToRemove = currentFeatures.filter(function(x) { 
-			// collect feature id, if the whole object is passed as parameter
-			if (typeof(x['_id']) != 'undefined') { x = x._id.toHexString(); }
 			return newFeaturesArray.indexOf(x) < 0 
 		});
 
-		theContent.features = newFeaturesArray;
+		self.features = newFeaturesArray;
 
 		async.parallel([
 			function(callback){
+				if (newFeaturesArray.length == 0) { callback() };
 				// Features to update relation
 				async.each(newFeaturesArray, function(feature,cb){
 					mongoose.model('Feature').findById(feature, function(err, ft){
-						ft.addContent(theContent);
-						ft.save(cb);
+						ft.addContentAndSave(self, cb);
 					});
 				}, callback); 
 			}, function(callback){
+				if (newFeaturesArray.length == 0) { callback() };
 				// Features do Remove
 				async.each(featuresToRemove, function(feature,cb){
 					mongoose.model('Feature').findById(feature, function(err, ft){
-						ft.removeContent(theContent);
-						ft.save(cb);
+						ft.removeContentAndSave(self, cb);
 					});
-				}, callback); 				
+				}, callback);
 			}
 		], function(err,results) {
-			theContent.save(done(err))
-		})
-
-
+			if (err) doneUpdate(err);
+			self.save(doneUpdate);
+		});
 	}
 }
 
