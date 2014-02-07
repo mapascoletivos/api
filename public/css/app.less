@@ -236,15 +236,8 @@ input[type=submit] {
 		width: 100%;
 		padding: 0;
 		background: transparent;
-		color: #444;
 		border: 0;
 		resize: none;
-		border-bottom: 1px solid #f0f0f0;
-		padding-bottom: 10px;
-		&:focus,
-		&:hover {
-			color: #000;
-		}
 	}
 	.layer-head {
 		padding: 20px 20px 0;
@@ -253,16 +246,16 @@ input[type=submit] {
 		font-size: 28px;
 		font-family: "Lato";
 		font-weight: 300;
+		color: #444;
+		&:focus,
+		&:hover {
+			color: #000;
+		}
 	}
 	textarea.edit-description {
 		font-size: 14px;
 		line-height: 20px;
 		border-bottom: 0;
-		color: #999;
-		&:focus,
-		&:hover {
-			color: #777;
-		}
 	}
 	.editor-container {
 		width: 35%;
@@ -294,7 +287,8 @@ input[type=submit] {
 				border-bottom: 1px solid #eee;
 				padding: 15px;
 				width: 100%;
-				input {
+				input,
+				textarea {
 					width: 100%;
 					border: 0;
 					margin: 0;
@@ -361,6 +355,7 @@ input[type=submit] {
 		}
 	}
 	#layer-settings {
+		margin-bottom: 65px;
 		.button-delete {
 			width: 100%;
 			padding: 15px 0;
@@ -368,10 +363,13 @@ input[type=submit] {
 			text-transform: none;
 			text-align: center;
 			border-top: 1px solid darken(#F05656, 10%);
-			position: absolute;
-			left: 0;
-			right: 0;
-			bottom: 65px;
+			.lsf {
+				font-size: 26px;
+				line-height: 12px;
+				font-weight: 200;
+				margin-right: 10px;
+				display: inline-block;
+			}
 		}
 	}
 	#editor {
@@ -401,22 +399,55 @@ input[type=submit] {
 				margin: 0;
 				padding: 0;
 				border-right: 1px solid #eee;
+				.label {
+					margin-right: 10px;
+				}
+				.tab-tip {
+					font-size: 10px;
+					line-height: 10px;
+					padding: 2px 6px 2px 5px;
+					background: #f9f9f9;
+					font-weight: 700;
+					margin-left: -5px;
+				}
 				&:last-child {
 					border-right: 0;
+				}
+				a {
+					text-decoration: none;
+					padding: 8px 10px;
+					display: block;
+					color: #c0c0c0;
+					text-transform: uppercase;
+					font-weight: 600;
+					font-size: 12px;
+					line-height: 30px;
+					&:hover {
+						color: #777;
+					}
+					.lsf {
+						font-size: 28px;
+						line-height: 30px;
+						margin-right: 10px;
+						font-weight: 200;
+					}
 				}
 				&.active {
 					border-top: 1px solid #669bcd;
 					border-right: 0;
 					margin: -1px 0 0;
 					position: relative;
-					&:after {
+					.tab-tip {
+						background: darken(#669bcd, 5%);
+					}
+					&:before {
 						content: '';
 						background: #77acde;
-						width: 20px;
-						height: 20px;
+						width: 15px;
+						height: 15px;
 						position: absolute;
-						left: 25px;
-						bottom: -10px;
+						left: 21px;
+						bottom: -7px;
 						-webkit-transform: rotate(45deg);
 					}
 					a {
@@ -425,27 +456,6 @@ input[type=submit] {
 						&:hover {
 							color: #fff;
 						}
-					}
-				}
-				a {
-					text-decoration: none;
-					padding: 8px 10px;
-					display: block;
-					color: #d0d0d0;
-					text-transform: uppercase;
-					font-weight: 600;
-					font-size: 12px;
-					line-height: 30px;
-					&:hover {
-						color: #999;
-					}
-					.lsf {
-						float: left;
-						font-size: 28px;
-						line-height: 30px;
-						display: block;
-						margin-left: 15px;
-						font-weight: 200;
 					}
 				}
 			}
@@ -468,11 +478,20 @@ input[type=submit] {
 			.add-new {
 				display: block;
 				width: auto;
-				margin: 0 20px;
+				margin: 0;
 				box-sizing: border-box;
 				text-align: center;
-				padding: 10px 0;
+				padding: 15px 0;
 				font-weight: 600;
+				background: #666;
+				&:hover {
+					background: #777;
+				}
+				.lsf {
+					font-size: 22px;
+					display: inline-block;
+					margin: 5px 10px;
+				}
 			}
 			.count {
 				background: #666;
@@ -485,7 +504,7 @@ input[type=submit] {
 				margin: 0;
 			}
 			.obj-list {
-				margin: 20px;
+				margin: 0 20px 20px;
 				padding: 0 0 60px;
 				li {
 					background: #fbfbfb;
@@ -573,11 +592,17 @@ input[type=submit] {
 		.tools-list {
 			float: right;
 			border-left: 1px solid #eee;
+			margin: 0;
 			li {
 				margin: 0;
 				&.remove-label {
 					a:hover {
 						background: #F05656;
+					}
+				}
+				&.save-label {
+					a:hover {
+						background-color: #80d478;
 					}
 				}
 				a {
@@ -606,7 +631,7 @@ input[type=submit] {
 			position: absolute;
 			top: 0;
 			right: 0;
-			bottom: 65px;
+			bottom: 0;
 			overflow: auto;
 			width: 50%;
 			box-sizing: border-box;
@@ -770,7 +795,7 @@ input[type=submit] {
 			top: 0;
 			left: 0;
 			right: 76px;
-			bottom: 65px;
+			bottom: 0;
 			overflow: auto;
 			z-index: 3;
 			.content-title {
@@ -786,7 +811,7 @@ input[type=submit] {
 			position: absolute;
 			top: 0;
 			right: 0;
-			bottom: 65px;
+			bottom: 0;
 			z-index: 4;
 			background: #fff;
 			border-left: 1px solid #eee;

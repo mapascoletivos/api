@@ -812,6 +812,7 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 								status: 'ok',
 								text: 'Camada atualizada'
 							});
+							$scope.$broadcast('layerSaved');
 						}, function(err){
 							Message.message({
 								status: 'error',
@@ -888,6 +889,9 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 		$scope.setLayerObj = function(obj) {
 
 			$scope.activeObj = obj;
+			setTimeout(function() {
+				window.dispatchEvent(new Event('resize'));
+			}, 100);
 
 		}
 
@@ -1226,7 +1230,7 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 				$scope.features = features;
 			});
 
-			$scope.save = function() {
+			$scope.save = function(silent) {
 
 				if($scope.editing && $scope.editing._id) {
 
@@ -1241,10 +1245,13 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 						$scope.sharedData.editingFeature(angular.copy($scope.editing));
 
-						Message.message({
-							status: 'ok',
-							text: 'Feature salva.'
-						});
+						if(silent !== true) {
+							Message.message({
+								status: 'ok',
+								text: 'Feature salva.'
+							});
+							$scope.close();
+						}
 
 					}, function(err) {
 
@@ -1375,6 +1382,13 @@ angular.module('mapasColetivos.feature').controller('FeatureEditCtrl', [
 
 			$scope.$on('layerObjectChange', $scope.close);
 			$scope.$on('$stateChangeStart', $scope.close);
+			$scope.$on('layerSaved', function() {
+
+				if($scope.sharedData.editingFeature()) {
+					$scope.save(true);
+				}
+
+			});
 
 		});
 
