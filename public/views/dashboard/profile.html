@@ -1,0 +1,17 @@
+<div id="profile-editor">
+	<div class="container">
+		<form ng-submit="saveProfile()">
+			<div class="four columns">
+				Nome de usuário <input ng-model="user.name" type="text" />
+				Email <input ng-model="user.email" type="text" />
+			</div>
+			<div class="four columns">
+				<h4>Alteração de senha</h4>
+				Senha antiga <input type="password" ng-model="user.password" />
+				<h5>Senha nova</h5>
+				Senha <input type="password" ng-model="user.password" />
+				Repetir senha <input type="password" ng-model="user.password" />
+			</div>
+		</form>
+	</div>
+</div>

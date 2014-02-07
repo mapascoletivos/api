@@ -1,0 +1,19 @@
+<div class="container">
+	<div class="page-header">
+		<div class="twelve columns row">
+			<h1>Painel de controle do {{user.name}}</h1>
+		</div>
+	</div>
+	<div class="content row">
+		<div class="four columns">
+			<p><a href="/dashboard/layers">Camadas</a> <a class="button" href="/layers/new">Nova camada</a><p>
+		</div>
+		<div class="four columns">
+			<p><a href="/dashboard/maps">Mapas</a> <a class="button" href="/maps/new">Novo mapa</a></p>
+		</div>
+		<div class="four columns">
+			<h2><a href="/dashboard/profile">Perfil</a></h2>
+		</div>
+	</div>
+	<div ui-view></div>
+</div>
