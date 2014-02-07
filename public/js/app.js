@@ -1936,12 +1936,13 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 
 					Content.resource.update({contentId: $scope.editing._id}, $scope.editing, function(content) {
 
+						$scope.editing = angular.copy(content);
 						original = angular.copy(content);
 
 						// Replace content in local features
 						angular.forEach($scope.contents, function(c, i) {
 							if(c._id == $scope.editing._id)
-								$scope.contents[i] = angular.copy(content);
+								$scope.contents[i] = $scope.editing;
 						});
 						$scope.sharedData.contents($scope.contents);
 
