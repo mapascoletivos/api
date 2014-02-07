@@ -142,10 +142,7 @@ ContentSchema.methods = {
 		featuresToRemove = currentFeatures.filter(function(x) { 
 			return newFeaturesArray.indexOf(x) < 0 
 		});
-		
-		console.log('newFeaturesArray\n'+newFeaturesArray);
-		console.log('featuresToRemove\n'+featuresToRemove);
-		
+				
 		self.features = newFeaturesArray;
 
 		self.save(doneUpdate);

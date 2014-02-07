@@ -55,7 +55,6 @@ exports.create = function (req, res) {
 	
 	imager.upload([req.files.attachment.file], function (err, cdnUri, uploaded) {
 
-		console.log(err);
 		if (err) return res.json(400, err);
 
 		else {

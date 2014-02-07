@@ -23,22 +23,6 @@ exports.load = function(req, res, next, id){
 }
 
 /**
- * Create a map
- */
-
-exports.create = function (req, res) {
-	var map = new Map(req.body);
-	
-	map.creator = req.user;
-
-	// save map
-	map.save(function (err) {
-		if (err) res.json(400, err);
-		res.json(map);
-	});
-}
-
-/**
  * List
  */
 
@@ -72,19 +56,40 @@ exports.show = function(req, res){
 }
 
 /**
+ * Create a map
+ */
+
+exports.create = function (req, res) {
+	var 
+		map = new Map(req.body);
+	
+	map.creator = req.user;
+
+	// save map
+	map.setLayersAndSave(req.body.layers, function (err) {
+		if (err) res.json(400, err);
+		else res.json(map);
+	});
+}
+
+/**
  * Update map
  */
 
 exports.update = function(req, res){
 	var 
-		map = req.map;
+		map = req.map,
+		newLayerSet = req.body.layers;
 
 	// can't change map creator
 	delete(req.body['creator']);
 
+	// delete from body to keep it in the map model for updating relationships properly
+	delete(req.body['layers']);
+
 	map = extend(map, req.body);
 
-	map.save(function(err) {
+	map.setLayersAndSave(newLayerSet, function(err) {
 		if (err) res.json(400, err);
 		else res.json(map);
 	})

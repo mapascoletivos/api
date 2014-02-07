@@ -16,6 +16,7 @@ var LayerSchema = new Schema({
 	title: { type: String, required: true },
 	description: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
+	maps: [{type: Schema.ObjectId, ref: 'Map'}],
 	features: [{type: Schema.ObjectId, ref: 'Feature'}],
 	contents: [{type: Schema.ObjectId, ref: 'Content'}],
 	createdAt: {type: Date, default: Date.now},
@@ -26,6 +27,22 @@ var LayerSchema = new Schema({
 	type: { type: String, enum: ['FeatureLayer', 'TileLayer'], default: 'FeatureLayer'},
 	url: String
 });
+
+/**
+ * Methods
+ */
+
+LayerSchema.methods = {
+	removeMapAndSave: function(map, done){
+		var self = this;
+		
+		console.log('removing map:'+ map+' from layer.maps '+self.maps )
+
+		self.maps.pull({ _id: map._id });
+		
+		self.save(done);
+	}
+}
 
 /**
  * Statics
