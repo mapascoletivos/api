@@ -62,7 +62,19 @@ angular.module('mapasColetivos').config([
 			.state('dashboard', {
 				url: '/dashboard',
 				controller: 'DashboardCtrl',
-				templateUrl: '/views/dashboard.html'
+				templateUrl: '/views/dashboard/index.html'
+			})
+			.state('dashboard.layers', {
+				url: '/layers',
+				templateUrl: '/views/dashboard/layers.html'
+			})
+			.state('dashboard.maps', {
+				url: '/maps',
+				templateUrl: '/views/dashboard/maps.html'
+			})
+			.state('dashboard.profile', {
+				url: '/profile',
+				templateUrl: '/views/dashboard/profile.html'
 			})
 			.state('layers', {
 				url: '/layers',
@@ -756,13 +768,30 @@ angular.module('mapasColetivos').controller('ExploreCtrl', [
 
 angular.module('mapasColetivos').controller('DashboardCtrl', [
 	'$scope',
+	'$state',
+	'$stateParams',
 	'SessionService',
 	'$location',
-	function($scope, SessionService, $location) {
+	'Layer',
+	'Map',
+	function($scope, $state, $stateParams, SessionService, $location, Layer, Map) {
 		if(!SessionService.authenticated) {
 			window.location = '/login';
 		}
 		$scope.user = SessionService.user;
+
+		Layer.query({
+			creatorOnly: true
+		}, function(res) {
+			$scope.layers = res.layers;
+		});
+
+		Map.resource.query({
+			creatorOnly: true
+		}, function(res) {
+			$scope.maps = res.maps;
+		});
+
 	}
 ]);
 

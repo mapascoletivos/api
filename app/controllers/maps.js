@@ -50,6 +50,9 @@ exports.index = function(req, res){
 		page: page
 	}
 
+	if(req.param('creatorOnly'))
+		options.criteria = { creator: req.user }
+
 	Map.list(options, function(err, maps) {
 		if (err) return res.json(400, err);
 		Map.count().exec(function (err, count) {
