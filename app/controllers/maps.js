@@ -18,7 +18,7 @@ exports.load = function(req, res, next, id){
 		if (!map) return res.json(400, new Error('not found'));
 		req.map = map
 		next()
-	})
+	});
 }
 
 /**

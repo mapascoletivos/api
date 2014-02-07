@@ -11,9 +11,11 @@ var mongoose = require('mongoose'),
  */
 
 var ImageSchema = new Schema({
-  owner: {type: Schema.ObjectId, ref: 'User'},
-  uploadedAt: {type: Date, default: Date.now},
-	profile: String
+	creator: {type: Schema.ObjectId, ref: 'User'},
+	uploadedAt: {type: Date, default: Date.now},
+	file: {
+		url: String
+	}
 });
 
 mongoose.model('Image', ImageSchema);
