@@ -25,7 +25,7 @@ var LayerSchema = new Schema({
 	isDraft: {type: Boolean, default: true},
 	type: { type: String, enum: ['FeatureLayer', 'TileLayer'], default: 'FeatureLayer'},
 	url: String
-}, { collection : 'Layer', discriminatorKey : '_type' })
+});
 
 /**
  * Statics
@@ -70,14 +70,3 @@ LayerSchema.statics = {
 }
 
 mongoose.model('Layer', LayerSchema)
-
-/**
- * TileLayer schema
- */
-
-var TileLayerSchema = LayerSchema.extend({
-	url: String
-})
-
-
-mongoose.model('TileLayer', LayerSchema)
