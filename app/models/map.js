@@ -3,7 +3,9 @@
  * Module dependencies
  */
 
-var mongoose = require('mongoose'),
+var 
+	async = require('async'),
+	mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 /**
@@ -29,6 +31,57 @@ var MapSchema = new Schema({
 	isDraft: {type: Boolean, default: true}
 });
 
+
+/**
+ * Pre-save hooks
+ */
+
+MapSchema.pre('remove', function(next){
+	var self = this;
+	// remove references from layers
+	async.each( self.layers, 
+		function(layerId, done){
+			mongoose.model('Layer').findById(layerId, function(err, layer){
+				layer.removeMapAndSave(self, done);
+			})
+		}, next);
+});
+
+/**
+ * Methods
+ */
+
+MapSchema.methods = {
+	
+	setLayersAndSave: function(layersSet, done) {
+		var 
+			self = this;
+
+		async.each(this.layers, function(layerId, cb){
+			mongoose.model('Layer').findById(layerId, function(err,layer){
+				layer.maps.pull(self._id.toHexString());
+				layer.save(cb);
+			})
+		}, 
+		function(err){
+			if (err) done(err);
+
+			async.each(layersSet, function(layerId, cb){
+				mongoose.model('Layer').findById(layerId, function(err, layer){
+					layer.maps.addToSet(self._id);
+					layer.save(cb);
+				})
+			}, function(err){
+				if (err) done(err);
+				self.layers = layersSet;
+				self.save(done);
+			});
+			
+		});
+		
+
+	}
+}
 
 /**
  * Statics
