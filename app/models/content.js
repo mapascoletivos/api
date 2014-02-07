@@ -85,6 +85,34 @@ ContentSchema.methods = {
 
 		self.save(done);
 	},
+	
+	setFeaturesAndSave: function(featureSet, done) {
+		var 
+			currentFeatures = this.features,
+			self = this;
+
+		async.each(this.features, function(ftId, cb){
+			mongoose.model('Feature').findById(ftId, function(err,ft){
+				ft.contents.pull(self._id);
+				ft.save(cb);
+			})
+		}, 
+		function(err){
+			if (err) done(err);
+			async.each(featureSet, function(newFtId, cb){
+				mongoose.model('Feature').findById(newFtId, function(err, newFt){
+					newFt.contents.addToSet(self._id);
+					newFt.save(cb);
+				})
+			}, function(err){
+				if (err) done(err);
+				self.features = featureSet;
+				self.save(done);
+			});
+		})
+
+
+	},
 
 	updateFeaturesAssociationAndSave: function (newFeaturesArray, doneUpdate) {
 		var 
@@ -101,7 +129,7 @@ ContentSchema.methods = {
 				return feature._id.toHexString(); 
 			}
 		});
-
+		
 		// transform currentFeatures to a array of ids, if not already
 		currentFeatures = _.map(currentFeatures, function(feature){
 			if (typeof(feature['_id']) === 'undefined') { 
@@ -114,31 +142,52 @@ ContentSchema.methods = {
 		featuresToRemove = currentFeatures.filter(function(x) { 
 			return newFeaturesArray.indexOf(x) < 0 
 		});
-
+		
+		console.log('newFeaturesArray\n'+newFeaturesArray);
+		console.log('featuresToRemove\n'+featuresToRemove);
+		
 		self.features = newFeaturesArray;
 
-		async.parallel([
-			function(callback){
-				if (newFeaturesArray.length == 0) { callback() };
-				// Features to update relation
-				async.each(newFeaturesArray, function(feature,cb){
-					mongoose.model('Feature').findById(feature, function(err, ft){
-						ft.addContentAndSave(self, cb);
-					});
-				}, callback); 
-			}, function(callback){
-				if (newFeaturesArray.length == 0) { callback() };
-				// Features do Remove
-				async.each(featuresToRemove, function(feature,cb){
-					mongoose.model('Feature').findById(feature, function(err, ft){
-						ft.removeContentAndSave(self, cb);
-					});
-				}, callback);
-			}
-		], function(err,results) {
-			if (err) doneUpdate(err);
-			self.save(doneUpdate);
-		});
+		self.save(doneUpdate);
+		
+		// async.parallel([
+		// 	function(cb){ 
+		// 		console.log('tarefa 1');
+		// 		cb();
+		// 	}, 
+		// 	function(cb){ 
+		// 		console.log('tarefa 2');
+		// 		cb();
+		// 	}
+		// ], 
+		// function(){
+		// 		self.save(doneUpdate);
+		// })
+		
+		
+
+		// async.parallel([
+		// 	function(callback){
+		// 		if (newFeaturesArray.length == 0) { callback() };
+		// 		// Features to update relation
+		// 		async.each(newFeaturesArray, function(feature,cb){
+		// 			mongoose.model('Feature').findById(feature, function(err, ft){
+		// 				ft.addContentAndSave(self, cb);
+		// 			});
+		// 		}, callback); 
+		// 	}, function(callback){
+		// 		if (newFeaturesArray.length == 0) { callback() };
+		// 		// Features do Remove
+		// 		async.each(featuresToRemove, function(feature,cb){
+		// 			mongoose.model('Feature').findById(feature, function(err, ft){
+		// 				ft.removeContentAndSave(self, cb);
+		// 			});
+		// 		}, callback);
+		// 	}
+		// ], function(err,results) {
+		// 	if (err) doneUpdate(err);
+		// 	self.save(doneUpdate);
+		// });
 	}
 }
 

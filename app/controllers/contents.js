@@ -40,17 +40,28 @@ exports.create = function (req, res) {
 
 	// associate content to user originating request
 	content.creator = req.user;
-
+	
 	Layer.findById(req.body['layer'], function(err, layer){
 		if (err) res.json(400, err);
-		layer.contents.push(content);
-		layer.save(function(err){
-			if (err) res.json(400, err);
-			content.updateFeaturesAssociationAndSave(req.body.features, function (err) {
+		else {
+			layer.contents.addToSet(content);
+			layer.save(function(err){
 				if (err) res.json(400, err);
-				res.json(content);
+				else {
+					content.save(function(err){
+						if (err) res.json(400, err);
+						else res.json(content);
+					});
+				}
 			});
-		});
+		}
+			
+			
+			// content.updateFeaturesAssociationAndSave(req.body.features, function (err) {
+			// 	if (err) res.json(400, err);
+			// 	res.json(content);
+			// });
+		// });
 	});
 }
 
@@ -75,10 +86,17 @@ exports.update = function(req, res){
 
 	content = extend(content, req.body)
 
-	content.updateFeaturesAssociationAndSave(newFeaturesArray, function(err){
+	content.setFeaturesAndSave(newFeaturesArray, function(err){
 		if (err) res.json(400, err);
-		res.json(content);
-	})
+		else res.json(content);		
+	});
+
+
+	// 
+	// content.save(function(err){
+	// 	if (err) res.json(400, err);
+	// 	else res.json(content);
+	// })
 }
 
 /**
