@@ -6,7 +6,8 @@
 var 
 	mongoose = require('mongoose'),
 	extend = require('mongoose-schema-extend'),
-	Schema = mongoose.Schema;
+	Schema = mongoose.Schema
+	async = require('async');
 
 /**
  * Layer schema
@@ -26,6 +27,17 @@ var LayerSchema = new Schema({
 	isDraft: {type: Boolean, default: true},
 	type: { type: String, enum: ['FeatureLayer', 'TileLayer'], default: 'FeatureLayer'},
 	url: String
+});
+
+LayerSchema.pre('remove', function(next) {
+	var self = this;
+
+	async.each( self.maps, 
+		function(mapId, done){
+			mongoose.model('Map').findById(mapId, function(err, map){
+				map.removeLayerAndSave(self, done);
+			})
+		}, next);
 });
 
 /**

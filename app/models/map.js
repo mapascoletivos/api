@@ -6,7 +6,8 @@
 var 
 	async = require('async'),
 	mongoose = require('mongoose'),
-	Schema = mongoose.Schema;
+	Schema = mongoose.Schema,
+	_ = require('underscore');
 
 /**
  * Map schema
@@ -42,7 +43,10 @@ MapSchema.pre('remove', function(next){
 	async.each( self.layers, 
 		function(layerId, done){
 			mongoose.model('Layer').findById(layerId, function(err, layer){
-				layer.removeMapAndSave(self, done);
+				if(layer)
+					layer.removeMapAndSave(self, done);
+				else
+					done();
 			})
 		}, next);
 });
@@ -52,6 +56,17 @@ MapSchema.pre('remove', function(next){
  */
 
 MapSchema.methods = {
+
+	removeLayerAndSave: function(layer, done){
+		var 
+			self = this;
+
+		if (typeof(layer['_id']) != 'undefined') { layer = layer._id; }
+
+		self.layers = _.without(self.layers, _.findWhere(self.layers, layer));
+
+		self.save(done);
+	},
 	
 	setLayersAndSave: function(layersSet, done) {
 		var 
@@ -65,6 +80,9 @@ MapSchema.methods = {
 		}, 
 		function(err){
 			if (err) done(err);
+
+			if(!layersSet)
+				layersSet = [];
 
 			async.each(layersSet, function(layerId, cb){
 				mongoose.model('Layer').findById(layerId, function(err, layer){
