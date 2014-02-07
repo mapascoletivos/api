@@ -68,7 +68,10 @@
 										</td>
 									</tr>
 								</table>
-								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete()"><span class="lsf">&#xE12c;</span>Remover esta camada permanentemente.</a>
+								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete()" ng-hide="layer.isDraft">
+									<span class="lsf">&#xE12c;</span>
+									Remover esta camada permanentemente.
+								</a>
 							</div>
 						</div>
 						<div ng-controller="FeatureCtrl" ng-show="layerObj(objType)">
@@ -106,8 +109,14 @@
 			</div>
 		</div>
 		<form class="primary-actions" ng-submit="save()">
-			<a href="javascript:void(0);" class="button button-secondary" ng-click="close()">Ver camada</a>
-			<a href="javascript:void(0);" class="button" ng-click="save()">Salvar alterações</a>
+			<a href="javascript:void(0);" class="button button-secondary" ng-click="close()">
+				<span ng-hide="layer.isDraft">Ver camada</span>
+				<span ng-show="layer.isDraft">Cancelar</span>
+			</a>
+			<a href="javascript:void(0);" class="button" ng-click="save()">
+				<span ng-hide="layer.isDraft">Salvar alterações</span>
+				<span ng-show="layer.isDraft">Publicar camada</span>
+			</a>
 		</form>
 	</div>
 	<div ng-controller="FeatureEditCtrl" class="map-container object-editor" ng-class="{editing: editing}" ng-hide="sharedData.editingContent()">
