@@ -81,8 +81,14 @@
 			</div>
 		</div>
 		<form class="primary-actions" ng-submit="save()">
-			<a href="javascript:void(0);" class="button button-secondary" ng-click="close()">Ver mapa</a>
-			<a href="javascript:void(0);" class="button" ng-click="save()">Salvar alterações</a>
+			<a href="javascript:void(0);" class="button button-secondary" ng-click="close()">
+				<span ng-hide="map.isDraft">Ver mapa</span>
+				<span ng-show="map.isDraft">Cancelar</span>
+			</a>
+			<a href="javascript:void(0);" class="button" ng-click="save()">
+				<span ng-hide="map.isDraft">Salvar alterações</span>
+				<span ng-show="map.isDraft">Publicar mapa</span>
+			</a>
 		</form>
 	</div>
 	<div class="map-container object-editor">
