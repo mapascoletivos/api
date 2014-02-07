@@ -239,7 +239,7 @@ input[type=submit] {
 		border: 0;
 		resize: none;
 	}
-	.layer-head {
+	.page-header {
 		padding: 20px 20px 0;
 	}
 	.edit-title {
@@ -327,7 +327,7 @@ input[type=submit] {
 				}
 			}
 		}
-		.layer-actions {
+		.primary-actions {
 			position: absolute;
 			z-index: 100;
 			bottom: 0;
@@ -354,7 +354,7 @@ input[type=submit] {
 			}
 		}
 	}
-	#layer-settings {
+	#settings {
 		margin-bottom: 65px;
 		.button-delete {
 			width: 100%;
@@ -516,6 +516,10 @@ input[type=submit] {
 						box-shadow: 0 0 5px rgba(0,0,0,0.05);
 						position: relative;
 						z-index: 2;
+					}
+					&.active {
+						background: #77acde;
+						color: #fff;
 					}
 				}
 			}
@@ -932,7 +936,7 @@ input[type=submit] {
 			font-weight: 800;
 		}
 	}
-	#map {
+	.map-container {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -949,7 +953,7 @@ input[type=submit] {
 			height: 100%;
 		}
 	}
-	#layer-sidebar {
+	#map-sidebar {
 		position: absolute;
 		z-index: 2;
 		top: 0;

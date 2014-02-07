@@ -6,7 +6,8 @@
 var 
 	_ = require('underscore'),
 	mongoose = require('mongoose'), 
-	Map = mongoose.model('Map');
+	Map = mongoose.model('Map'),
+	extend = require('util')._extend;
 
 /**
  * Load
@@ -82,7 +83,7 @@ exports.update = function(req, res){
 
 	map.save(function(err) {
 		if (err) res.json(400, err);
-		res.json(map);
+		else res.json(map);
 	})
 }
 
@@ -94,6 +95,6 @@ exports.destroy = function(req, res){
 	var map = req.map
 	map.remove(function(err){
 		if (err) res.json(400, err);
-		res.json({success: true});
+		else res.json({success: true});
 	});
 }
