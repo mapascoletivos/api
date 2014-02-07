@@ -5,33 +5,49 @@
 				<div class="page-header layer-head">
 					<h2>Camada</h2>
 					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
-					<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 				</div>
 				<div class="content">
 					<div id="layer-edit">
 						<ul class="map-editor-tabs layer-objects-nav">
 							<li ng-class="layerObj('settings')" ng-click="setLayerObj('settings')">
-								<a href="javascript:void(0);">
+								<a title="Configurações" href="javascript:void(0);">
 									<span class="lsf">&#xE055;</span>
-									Configurações
+									<span class="label" ng-show="layerObj('settings')">
+										Configurações
+									</span>
 								</a>
 							</li>
 							<li ng-class="layerObj('feature')" ng-click="setLayerObj('feature')">
-								<a href="javascript:void(0);">
+								<a title="Features" href="javascript:void(0);">
 									<span class="lsf">&#xE103;</span>
-									Features
+									<span class="label" ng-show="layerObj('feature')">
+										Features
+									</span>
+									<span class="feature-length tab-tip" ng-show="sharedData.features().length">
+										{{sharedData.features().length}}
+									</span>
 								</a>
 							</li>
 							<li ng-class="layerObj('content')" ng-click="setLayerObj('content')">
-								<a href="javascript:void(0);">
+								<a title="Conteúdo" href="javascript:void(0);">
 									<span class="lsf">&#xE101;</span>
-									Conteúdo
+									<span class="label" ng-show="layerObj('content')">
+										Conteúdo
+									</span>
+									<span class="content-length tab-tip" ng-show="sharedData.contents().length">
+										{{sharedData.contents().length}}
+									</span>
 								</a>
 							</li>
 						</ul>
 						<div ng-show="layerObj('settings')">
 							<div id="layer-settings">
 								<table class="options-table">
+									<tr>
+										<th>Descrição</th>
+										<td>
+											<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+										</td>
 									<tr>
 										<th>Tags</th>
 										<td><input type="text" ng-model="layer.tags" placeholder="Separe as tags por vírgula" /></td>
@@ -42,25 +58,27 @@
 											<ul class="radio-list">
 												<li ng-class="{active: layer.visibility == 'Visible'}" ng-click="layer.visibility = 'Visible'">
 													<span class="lsf">&#xE134;</span>
-													Pública
+													Público
 												</li>
 												<li ng-class="{active: layer.visibility == 'Private'}" ng-click="layer.visibility = 'Private'">
 													<span class="lsf">&#xE086;</span>
-													Privada
+													Privado
 												</li>
 											</ul>
 										</td>
 									</tr>
 								</table>
-								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete()">Remover esta camada permanentemente.</a>
+								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete()"><span class="lsf">&#xE12c;</span>Remover esta camada permanentemente.</a>
 							</div>
 						</div>
 						<div ng-controller="FeatureCtrl" ng-show="layerObj(objType)">
 							<div id="layer-features" class="map-editor-subcontent">
 								<div class="features-list">
-									<p class="count">Você tem {{features.length}} features nesta camada.</p>
+									<a href="javascript:void(0);" class="button add-new" ng-click="new()">
+										<span class="lsf">&#xE108;</span>
+										Adicionar nova
+									</a>
 									<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
-									<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar nova</a></p>
 									<ul class="obj-list">
 										<li ng-repeat="feature in features | filter:search" ng-click="edit(feature._id)">
 											{{feature.title}}
@@ -71,9 +89,11 @@
 						</div>
 						<div ng-controller="ContentCtrl" ng-show="layerObj(objType)">
 							<div id="layer-content" class="map-editor-subcontent">
-								<p class="count">Você tem {{contents.length}} conteúdos nesta camada.</p>
+								<a href="javascript:void(0);" class="button add-new" ng-click="new()">
+									<span class="lsf">&#xE108;</span>
+									Adicionar novo
+								</a>
 								<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
-								<p><a href="javascript:void(0);" class="button add-new" ng-click="new()">Adicionar novo</a></p>
 								<ul class="obj-list">
 									<li ng-repeat="item in contents | filter:search" ng-click="edit(item._id)">
 										{{item.title}}
@@ -97,11 +117,16 @@
 					<h3>Feature</h3>
 					<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					<div class="latlng">
+						<p class="latitude latlng-item">Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" /></p>
+						<p class="longitude latlng-item">Longitude: <input ng-model="editing.geometry.coordinates[1]" ng-change="setMarker()" type="text" /></p>
+					</div>
 				</div>
 				<div class="editing-tools" ng-class="{editing: tool}">
 					<ul class="tools-list">
-						<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover esta feature" ng-click="delete()"><span class="lsf">&#xE12c;</span></a></li>
 						<li class="feature-location-label" ng-class="{active: tool == 'feature-location'}"><a href="javascript:void(0);" title="Buscar uma localização" ng-click="setTool('feature-location')"><span class="lsf">&#xE116;</span></a></li>
+						<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover esta feature" ng-click="delete()"><span class="lsf">&#xE12c;</span></a></li>
+						<li class="save-label"><a href="javascript:void(0);" title="Salvar alterações desta feature" ng-click="save()"><span class="lsf">&#xE029;</span></a></li>
 					</ul>
 					<div class="tools-editor" ng-show="tool">
 						<div class="feature-location" ng-show="tool == 'feature-location'">
@@ -117,17 +142,15 @@
 						</div>
 					</div>
 				</div>
+				<!--
 				<div class="editor-bottom">
-					<div class="latlng">
-						<p class="latitude latlng-item">Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" /></p>
-						<p class="longitude latlng-item">Longitude: <input ng-model="editing.geometry.coordinates[1]" ng-change="setMarker()" type="text" /></p>
-					</div>
 					<div class="feature-actions editor-actions">
 						<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
 						<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar nova feature</a>
 						<a class="button button-small" href="javascript:void(0);" ng-click="close()">Cancelar</a>
 					</div>
 				</div>
+				-->
 			</form>
 		</div>
 		<div id="layer-map"></div>
@@ -137,8 +160,21 @@
 		<form ng-submit="save()">
 			<div class="editing-tools" ng-class="{editing: tool}">
 				<ul class="tools-list">
-					<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover este content" ng-click="delete()"><span class="lsf">&#xE12c;</span></a></li>
-					<li class="content-features-label" ng-class="{active: tool == 'content-features'}"><a href="javascript:void(0);" title="Features deste conteúdo" ng-click="setTool('content-features')"><span class="lsf">&#xE103;</span><span class="feature-length" ng-show="editing.features">{{editing.features.length}}</span></a></li>
+					<li class="content-features-label" ng-class="{active: tool == 'content-features'}">
+						<a href="javascript:void(0);" title="Features deste conteúdo" ng-click="setTool('content-features')">
+							<span class="lsf">&#xE103;</span>
+							<span class="feature-length" ng-show="editing.features">{{editing.features.length}}</span>
+						</a>
+					</li>
+					<li class="remove-label" ng-show="editing._id">
+						<a href="javascript:void(0);" title="Remover este conteúdo permanentemente" ng-click="delete()"><span class="lsf">&#xE12c;</span></a>
+					</li>
+					<li class="save-label">
+						<a href="javascript:void(0);" title="Salvar alterações deste conteúdo" ng-click="save()"><span class="lsf">&#xE029;</span></a>
+					</li>
+					<li class="revert-label" ng-show="isRevertable()">
+						<a href="javascript:void(0);" title="Reverter alterações" ng-click="revert()"><span class="lsf">&#xE133;</span></a>
+					</li>
 				</ul>
 				<div class="tools-editor" ng-show="tool">
 					<div class="content-features" ng-show="tool == 'content-features'">
@@ -160,6 +196,7 @@
 					<textarea sir-trevor-editor ng-model="editing.sirTrevor"></textarea>
 				</div>
 			</div>
+			<!--
 			<div class="editor-bottom">
 				<div class="content-actions editor-actions">
 					<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
@@ -168,6 +205,7 @@
 					<a class="button button-small" href="javascript:void(0);" ng-click="close()">Cancelar</a>
 				</div>
 			</div>
+			-->
 		</form>
 	</div>
 </div>
