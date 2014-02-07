@@ -57,7 +57,10 @@
 										</td>
 									</tr>
 								</table>
-								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete()"><span class="lsf">&#xE12c;</span>Remover este mapa permanentemente.</a>
+								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete()" ng-hide="map.isDraft">
+									<span class="lsf">&#xE12c;</span>
+									Remover este mapa permanentemente.
+								</a>
 							</div>
 						</div>
 						<div ng-show="mapObj('layer')">

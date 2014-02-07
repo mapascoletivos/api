@@ -601,12 +601,16 @@ angular.module('mapasColetivos').factory('SirTrevor', [
 			},
 			renderBlock: function(block) {
 				var rendered = '';
+				console.log(block);
 				switch(block.type) {
 					case 'text':
 						rendered += '<div class="text">' + markdown.toHTML(block.data.text) + '</div>';
 						break;
 					case 'list':
 						rendered += '<div class="list">' + markdown.toHTML(block.data.text) + '</div>';
+						break;
+					case 'image':
+						rendered += '<div class="image"><img src="' + block.data.file.url + '" /></div>';
 						break;
 					case 'video':
 						rendered += '<div class="video" fit-vids>' + videoProviders[block.data.source].html
@@ -681,9 +685,13 @@ angular.module('mapasColetivos').directive('dynamic', [
  */
 
 angular.module('mapasColetivos.content').directive('sirTrevorEditor', [
-	function() {
+	'apiPrefix',
+	function(apiPrefix) {
 		return {
 			link: function(scope, element, attrs) {
+				SirTrevor.setDefaults({
+					uploadUrl: apiPrefix + '/images'
+				});
 				scope.sirTrevor = new SirTrevor.Editor({
 					el: $(element),
 					blockTypes: [
@@ -835,8 +843,6 @@ angular.module('mapasColetivos.map').controller('MapCtrl', [
 					creatorOnly: true
 				}, function(res) {
 
-					//$scope.map.layers = [];
-
 					$scope.userLayers = res.layers;
 
 					$scope.toggleLayer = function(layer) {
@@ -854,7 +860,7 @@ angular.module('mapasColetivos.map').controller('MapCtrl', [
 
 						$scope.map.layers = mapLayers;
 
-					}
+					};
 
 					$scope.hasLayer = function(layer) {
 
@@ -863,7 +869,7 @@ angular.module('mapasColetivos.map').controller('MapCtrl', [
 
 						return $scope.map.layers.filter(function(layerId) { return layerId == layer._id; }).length;
 
-					}
+					};
 
 					// Cache fetched layers
 					var fetchedLayers = {};
@@ -884,7 +890,7 @@ angular.module('mapasColetivos.map').controller('MapCtrl', [
 
 									if($location.path().indexOf('edit') == -1) {
 
-										$state.go('.feature', {
+										$state.go('singleMap.feature', {
 											featureId: marker.mcFeature._id
 										});
 
@@ -909,7 +915,7 @@ angular.module('mapasColetivos.map').controller('MapCtrl', [
 
 						});
 
-					}
+					};
 
 					$scope.$watch('map.layers', function(layers) {
 
@@ -933,6 +939,32 @@ angular.module('mapasColetivos.map').controller('MapCtrl', [
 						});
 
 					});
+
+					/*
+					 * Manage view state
+					var viewState = function() {
+						if($stateParams.featureId) {
+							var feature = layer.features.filter(function(f) { return f._id == $stateParams.featureId; })[0];
+							if(feature) {
+								$scope.view(feature);
+								return true;
+							}
+						} else if($stateParams.contentId) {
+
+						}
+						return false;
+					}
+
+					viewState();
+
+					$rootScope.$on('$stateChangeSuccess', function() {
+
+						if(!viewState() && viewing) {
+							$scope.close();
+						}
+
+					});
+					 */
 
 				});
 
@@ -1149,9 +1181,11 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 							text: 'Salvando camada...'
 						});
 
-						MapService.fitMarkerLayer();
+						var layer = angular.copy($scope.layer);
+						layer.isDraft = false;
 
-						Layer.update({layerId: layer._id}, $scope.layer, function(layer) {
+						Layer.update({layerId: layer._id}, layer, function(layer) {
+							$scope.layer = angular.copy(layer);
 							Message.message({
 								status: 'ok',
 								text: 'Camada atualizada'
@@ -1377,7 +1411,7 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 					var feature = layer.features.filter(function(f) { return f._id == $stateParams.featureId; })[0];
 					if(feature) {
 						$scope.view(feature);
-						return true;						
+						return true;
 					}
 				}
 				return false;
@@ -1425,7 +1459,7 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 				$scope.$on('markerClicked', function(event, feature) {
 
-					$state.go('.feature', {
+					$state.go('singleLayer.feature', {
 						featureId: feature._id
 					});
 
@@ -1905,9 +1939,9 @@ angular.module('mapasColetivos.content').controller('ContentEditCtrl', [
 						original = angular.copy(content);
 
 						// Replace content in local features
-						angular.forEach($scope.contents, function(content, i) {
-							if(content._id == $scope.editing._id)
-								$scope.contents[i] = $scope.editing;
+						angular.forEach($scope.contents, function(c, i) {
+							if(c._id == $scope.editing._id)
+								$scope.contents[i] = angular.copy(content);
 						});
 						$scope.sharedData.contents($scope.contents);
 

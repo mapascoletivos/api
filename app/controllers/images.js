@@ -38,7 +38,7 @@ exports.showForm = function (req, res) {
     '<body>' +
       '<form action="api/v1/images" method="post" enctype="multipart/form-data">' +
 				'<input type="hidden" name="_csrf" value="'+req.csrfToken()+'"  />' +
-        'Choose a file to upload <input type="file" name="image" />' +
+        'Choose a file to upload <input type="file" name="attachment[file]" />' +
         '<input type="submit" value="upload" />' +
       '</form>' +
     '</body>' +
@@ -50,19 +50,26 @@ exports.showForm = function (req, res) {
  */
 
 exports.create = function (req, res) {
-	if (!req.files.image) return res.json(400, new Error('Image file not found'));
-	
-	imager.upload([req.files.image], function (err, cdnUri, uploaded) {
-		if (err) return res.json(400, err);
-		
-		var image = new Image();
 
-		image.file.url = req.protocol + "://" + req.get('host') + '/uploads/images/large_'+ uploaded[0];		
+	if (!req.files.attachment.file) return res.json(400, new Error('Image file not found'));
+	
+	imager.upload([req.files.attachment.file], function (err, cdnUri, uploaded) {
+
+		console.log(err);
+		if (err) return res.json(400, err);
+
+		else {
 		
-		image.save(function(err){
-			if (err) return res.json(400, err);
-			else  res.json(image);
-		});
+			var image = new Image();
+
+			image.file.url = req.protocol + "://" + req.get('host') + '/uploads/images/large_'+ uploaded[0];		
+			
+			image.save(function(err){
+				if (err) return res.json(400, err);
+				else  res.json(image);
+			});
+
+		}
 	}, 'items');
 	
 }
