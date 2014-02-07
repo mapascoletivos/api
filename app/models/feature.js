@@ -38,11 +38,21 @@ FeatureSchema.index({ loc: '2dsphere' })
  */
 
 FeatureSchema.methods = {
-	addContent: function(content) {
-		this.contents.push(content);
+	addContentAndSave: function(content, done) {
+		this.contents = _.union(this.contents, [content]);
+		this.save(done);
 	},
-	removeContent: function(content){
-		this.contents = _.without(this.contents, _.findWhere(this.contents, {_id: content._id}));
+	removeContentAndSave: function(content, done){
+		var self = this;
+		
+		// transform newFeaturesArray to a array of ids, if not already
+		if (typeof(content['_id']) != 'undefined') { 
+			content = content._id;
+		}
+
+		self.contents = _.without(self.contents, _.findWhere(self.contents, content));
+		
+		self.save(done);
 	}
 }
 
@@ -52,14 +62,13 @@ FeatureSchema.methods = {
 
 FeatureSchema.pre('remove', function(next){
 	var self = this;
-	async.each(self.contents, function(contentId, done){
-		mongoose.model('Content').findById(contentId, function(err, content){
-			if (!content) done();
-			content.removeFeature(self);
-			// content.features = _.without(_.toArray(content.features), self._id);
-			content.save(done);
-		})
-	}, next);
+
+	async.each( self.contents, 
+		function(contentId, done){
+			mongoose.model('Content').findById(contentId, function(err, content){
+				content.removeFeatureAndSave(self, done);
+			})
+		}, next);
 });
 
 /**
@@ -68,14 +77,6 @@ FeatureSchema.pre('remove', function(next){
 
 FeatureSchema.statics = {
 
-	/**
-	 * Find feature by id
-	 *
-	 * @param {ObjectId} id
-	 * @param {Function} cb
-	 * @api private
-	 */
-
 	load: function (id, cb) {
 		this.findOne({ _id : id })
 			.populate('creator')
@@ -83,14 +84,6 @@ FeatureSchema.statics = {
 			.exec(cb)
 	},
 	
-	/**
-	 * List feature
-	 *
-	 * @param {Object} options
-	 * @param {Function} cb
-	 * @api private
-	 */
-
 	list: function (options, cb) {
 		var criteria = options.criteria || {}
 
