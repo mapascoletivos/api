@@ -10,7 +10,7 @@
 		"npm": "1.2.x"
 	},
 	"scripts": {
-		"start": "NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon server.js",
+		"start": "NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js",
 		"test": "make test"
 	},
 	"dependencies": {
