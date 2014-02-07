@@ -11,6 +11,8 @@ var mongoose = require('mongoose'),
  */
 
 var MapSchema = new Schema({
+	title: { type: String, required: true },
+	description: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
 	layers: [{type: Schema.ObjectId, ref: 'Layer'}],
 	createdAt: {type: Date, default: Date.now},
@@ -23,7 +25,8 @@ var MapSchema = new Schema({
 	northEast: [Number,Number],
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
 	layout:{ type: String, enum: ['Scroll', 'Timeline'], default: 'Scroll'},
-	tags: [String]
+	tags: [String],
+	isDraft: {type: Boolean, default: true}
 });
 
 
@@ -35,8 +38,6 @@ MapSchema.statics = {
 
 	load: function (id, cb) {
 		this.findOne({ _id : id })
-			.populate('creator')
-			.populate('layers')
 			.exec(cb)
 	},
 	

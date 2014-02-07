@@ -10,10 +10,10 @@
 			</div>
 		</div>
 	</div>
-	<div id="map" ng-class="{shrink: activeSidebar}">
+	<div class="map-container" ng-class="{shrink: activeSidebar}">
 		<div id="layer-map"></div>
 	</div>
-	<div id="layer-sidebar" ng-class="{active: activeSidebar}">
+	<div id="map-sidebar" ng-class="{active: activeSidebar}">
 		<div id="feature-info" ng-show="feature">
 			<a href="/layers/{{layer._id}}">Fechar</a>
 			<h2>{{feature.title}}</h2>

@@ -1,0 +1,18 @@
+<div class="map-view">
+	<div class="page-header">
+		<div class="container">
+			<div class="four columns row">
+				<p><a href="/maps">Voltar</a></p>
+				<h1>{{map.title}}</h1>
+				<div ng-show="canEdit(map)">
+					<p><a href="/map/{{map._id}}/edit">Editar</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="map-container">
+		<div id="map"></div>
+	</div>
+	<div id="map-sidebar">
+	</div>
+</div>
