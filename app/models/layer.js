@@ -1,9 +1,11 @@
 
-/*!
+/**
  * Module dependencies
  */
 
-var mongoose = require('mongoose'),
+var 
+	mongoose = require('mongoose'),
+	extend = require('mongoose-schema-extend'),
 	Schema = mongoose.Schema;
 
 /**
@@ -20,8 +22,10 @@ var LayerSchema = new Schema({
 	updateAt: {type: Date, default: Date.now},
 	tags: [String],
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
-	isDraft: {type: Boolean, default: true}
-})
+	isDraft: {type: Boolean, default: true},
+	type: { type: String, enum: ['FeatureLayer', 'TileLayer'], default: 'FeatureLayer'},
+	url: String
+}, { collection : 'Layer', discriminatorKey : '_type' })
 
 /**
  * Statics
@@ -66,3 +70,14 @@ LayerSchema.statics = {
 }
 
 mongoose.model('Layer', LayerSchema)
+
+/**
+ * TileLayer schema
+ */
+
+var TileLayerSchema = LayerSchema.extend({
+	url: String
+})
+
+
+mongoose.model('TileLayer', LayerSchema)

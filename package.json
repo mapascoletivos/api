@@ -18,6 +18,7 @@
 		"express-namespace": "latest",
 		"mongoose": "latest",
 		"mongoose-user": "latest",
+		"mongoose-schema-extend": "latest",
 		"passport": "latest",
 		"passport-local": "latest",
 		"connect-mongo": "latest",

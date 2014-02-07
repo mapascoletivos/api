@@ -39,7 +39,7 @@ FeatureSchema.index({ loc: '2dsphere' })
 
 FeatureSchema.methods = {
 	addContentAndSave: function(content, done) {
-		this.contents = _.union(this.contents, [content]);
+		this.contents.addToSet(content) // = _.union(this.contents, [content]);
 		this.save(done);
 	},
 	removeContentAndSave: function(content, done){
@@ -50,7 +50,7 @@ FeatureSchema.methods = {
 			content = content._id;
 		}
 
-		self.contents = _.without(self.contents, _.findWhere(self.contents, content));
+		self.contents.pull({ _id: content }); // _.without(self.contents, _.findWhere(self.contents, content));
 		
 		self.save(done);
 	}
