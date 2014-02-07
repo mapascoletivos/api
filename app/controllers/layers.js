@@ -38,9 +38,12 @@ exports.index = function(req, res){
 		}
 	}
 
+	if(req.param('creatorOnly'))
+		options.criteria = { creator: req.user }
+
 	Layer.list(options, function(err, layers) {
 		if (err) return res.json(400, err);
-		Layer.count().exec(function (err, count) {
+		Layer.count(options.criteria).exec(function (err, count) {
 			if (!err) {
 				res.json({options: options, layersTotal: count, layers: layers});
 			} else {
@@ -55,7 +58,7 @@ exports.index = function(req, res){
  */
 
 exports.show = function(req, res){
-	res.json(req.layer); 
+	res.json(req.layer);
 }
 
 /**
