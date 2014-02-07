@@ -105,6 +105,12 @@ angular.module('mapasColetivos').config([
 				controller: 'MapCtrl',
 				templateUrl: '/views/map/show.html'
 			})
+			.state('singleMap.content', {
+				url: '/content/:contentId'
+			})
+			.state('singleMap.feature', {
+				url: '/feature/:featureId'
+			})
 			.state('editMap', {
 				url: '/maps/:mapId/edit',
 				controller: 'MapCtrl',
@@ -460,7 +466,8 @@ angular.module('mapasColetivos.map').factory('MapService', [
 			clearMarkers: function() {
 				if(markers.length) {
 					angular.forEach(markers, function(marker) {
-						markerLayer.removeLayer(marker);
+						if(markerLayer.hasLayer(marker))
+							markerLayer.removeLayer(marker);
 					});
 					markers = [];
 				}
@@ -501,9 +508,11 @@ angular.module('mapasColetivos.map').factory('MapService', [
 				map.setView([0,0], 2);
 			},
 			fitMarkerLayer: function() {
-				map.invalidateSize(false);
-				if(markers.length) {
-					map.fitBounds(markerLayer.getBounds());
+				if(map instanceof L.Map) {
+					map.invalidateSize(false);
+					if(markers.length) {
+						map.fitBounds(markerLayer.getBounds());
+					}
 				}
 				return map;
 			},
@@ -511,14 +520,19 @@ angular.module('mapasColetivos.map').factory('MapService', [
 				var self = this;
 				var markers = [];
 				var markerLayer = L.featureGroup();
+				markerLayer.mcLayer = layer;
 				groups.push(markerLayer);
 				angular.forEach(layer.features, function(f) {
 					var marker = featureToMapObj(f);
+					marker.mcFeature = f;
 					markers.push(marker);
 					markerLayer.addLayer(marker);
 				});
 				markerLayer.addTo(map);
-				return [markerLayer, markers];
+				return {
+					markerLayer: markerLayer,
+					markers: markers
+				};
 			},
 			clearGroups: function() {
 				if(groups.length) {
@@ -527,11 +541,16 @@ angular.module('mapasColetivos.map').factory('MapService', [
 							map.removeLayer(group);
 					});
 				}
-				groups = [];
+				groups = []
 			},
 			clearAll: function() {
 				this.clearMarkers();
 				this.clearGroups();
+			},
+			destroy: function() {
+				this.clearAll();
+				map.remove();
+				map = null;
 			}
 		}
 	}
@@ -746,13 +765,14 @@ angular.module('mapasColetivos').controller('DashboardCtrl', [
 angular.module('mapasColetivos.map').controller('MapCtrl', [
 	'$scope',
 	'$location',
+	'$state',
 	'$stateParams',
 	'Map',
 	'Layer',
 	'MapService',
 	'MessageService',
 	'SessionService',
-	function($scope, $location, $stateParams, Map, Layer, MapService, Message, SessionService) {
+	function($scope, $location, $state, $stateParams, Map, Layer, MapService, Message, SessionService) {
 
 		/*
 		 * Permission control
@@ -809,7 +829,7 @@ angular.module('mapasColetivos.map').controller('MapCtrl', [
 
 			Map.resource.get({mapId: $stateParams.mapId}, function(map) {
 
-				$scope.map = map;
+				$scope.map = angular.copy(map);
 
 				Layer.query({
 					creatorOnly: true
@@ -848,21 +868,65 @@ angular.module('mapasColetivos.map').controller('MapCtrl', [
 					// Cache fetched layers
 					var fetchedLayers = {};
 
+					$scope.layers = [];
+
+					var renderLayer = function(layer) {
+
+						$scope.layers.push(layer);
+
+						// Add layer to map and get feature data
+						var layerData = MapService.addLayer(layer);
+
+						angular.forEach(layerData.markers, function(marker) {
+
+							marker
+								.on('click', function() {
+
+									if($location.path().indexOf('edit') == -1) {
+
+										$state.go('.feature', {
+											featureId: marker.mcFeature._id
+										});
+
+									} else {
+
+										// Do something?
+
+									}
+
+								})
+								.on('mouseover', function() {
+
+									marker.openPopup();
+
+								})
+								.on('mouseout', function() {
+
+									marker.closePopup();
+
+								})
+								.bindPopup('<h3 class="feature-title">' + marker.mcFeature.title + '</h3>');
+
+						});
+
+					}
+
 					$scope.$watch('map.layers', function(layers) {
 
 						MapService.clearAll();
 
 						angular.forEach(layers, function(layerId) {
 
-							var layer;
+							var layer,
+								layerData;
 
 							if(fetchedLayers[layerId]) {
 								layer = fetchedLayers[layerId];
-								MapService.addLayer(layer);
+								renderLayer(layer);
 							} else {
 								Layer.get({layerId: layerId}, function(layer) {
 									layer = fetchedLayers[layer._id] = layer;
-									MapService.addLayer(layer);
+									renderLayer(layer);
 								});
 							}
 
@@ -879,10 +943,11 @@ angular.module('mapasColetivos.map').controller('MapCtrl', [
 						text: 'Salvando mapa...'
 					});
 
-					//MapService.fitMarkerLayer();
+					var map = angular.copy($scope.map);
+					map.isDraft = false;
 
-					Map.resource.update({mapId: map._id}, $scope.map, function(map) {
-						$scope.map = map;
+					Map.resource.update({mapId: map._id}, map, function(map) {
+						$scope.map = angular.copy(map);
 						Message.message({
 							status: 'ok',
 							text: 'Mapa atualizado'
@@ -917,7 +982,7 @@ angular.module('mapasColetivos.map').controller('MapCtrl', [
 				}
 
 				var deleteDraft = function(callback) {
-					if((!$scope.map.title || $scope.map.title == 'Untitled') && !$scope.map.features.length && !$scope.map.contents.length) {
+					if((!$scope.map.title || $scope.map.title == 'Untitled') && !$scope.map.layers.length) {
 						if(typeof callback === 'function')
 							Map.resource.delete({mapId: map._id}, callback);
 						else
@@ -1147,6 +1212,10 @@ angular.module('mapasColetivos.layer').controller('LayerCtrl', [
 
 			});
 
+			$scope.$on('$destroy', function() {
+				MapService.destroy();
+			});
+
 		// All layers
 		} else {
 
@@ -1232,6 +1301,8 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 		var viewing = false;
 
+		var unhookContents;
+
 		$scope.view = function(feature) {
 
 			$scope.close(false);
@@ -1247,7 +1318,7 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 			var contents = Feature.getContents(feature);
 
 			$scope.sharedData.contents(contents);
-			$rootScope.$on('layerContentsReady', function() {
+			unhookContents = $rootScope.$on('layerContentsReady', function() {
 				$scope.sharedData.contents(contents);
 			});
 
@@ -1264,7 +1335,10 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 			if(fit !== false)
 				MapService.fitMarkerLayer();
 
-			viewing = false;				
+			viewing = false;
+
+			if(typeof unhookContents == 'function')
+				unhookContents();
 
 		}
 
@@ -1313,7 +1387,7 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 			$rootScope.$on('$stateChangeSuccess', function() {
 
-				if(!viewState()) {
+				if(!viewState() && viewing) {
 					$scope.close();
 				}
 
@@ -1351,7 +1425,7 @@ angular.module('mapasColetivos.feature').controller('FeatureCtrl', [
 
 				$scope.$on('markerClicked', function(event, feature) {
 
-					$state.go('singleLayer.feature', {
+					$state.go('.feature', {
 						featureId: feature._id
 					});
 
@@ -1675,9 +1749,41 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 			return SirTrevor.renderBlock(block);
 		}
 
+		var viewing = false;
+
+		$scope.view = function(content) {
+
+			if(!content)
+				return false;
+
+			viewing = true;
+
+			$scope.sharedData.activeSidebar(true);
+
+			var features = Content.getFeatures(content);
+			if(features) {
+				$scope.sharedData.features(features);
+			}
+
+			$scope.content = content;
+			$scope.content.featureObjs = features;
+
+		}
+
+		$scope.close = function() {
+
+			$scope.sharedData.features($scope.layer.features);
+			$scope.content = false;
+			$scope.sharedData.activeSidebar(false);
+			MapService.fitMarkerLayer();
+
+			viewing = false;
+
+		}
+
 		$scope.sharedData.layer().then(function(layer) {
 
-			var updateState = function() {
+			var viewState = function() {
 				if($stateParams.contentId) {
 					var content = layer.contents.filter(function(c) { return c._id == $stateParams.contentId; })[0];
 					$scope.view(content);
@@ -1686,11 +1792,11 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 				return false;
 			}
 
-			updateState();
+			viewState();
 
 			$rootScope.$on('$stateChangeSuccess', function() {
 
-				if(!updateState()) {
+				if(!viewState() && viewing) {
 					$scope.close();
 				}
 
@@ -1723,34 +1829,10 @@ angular.module('mapasColetivos.content').controller('ContentCtrl', [
 
 			};
 
-			$scope.close = function() {
-
-				$scope.sharedData.features($scope.layer.features);
-				$scope.content = false;
-				$scope.sharedData.activeSidebar(false);
-				MapService.fitMarkerLayer();
-
-			}
-
 			$scope.$on('layerObjectChange', $scope.close);
 			$scope.$on('$stateChangeStart', $scope.close);
 
 		});
-
-
-		$scope.view = function(content) {
-
-			$scope.sharedData.activeSidebar(true);
-
-			var features = Content.getFeatures(content);
-			if(features) {
-				$scope.sharedData.features(features);
-			}
-
-			$scope.content = content;
-			$scope.content.featureObjs = features;
-
-		}
 
 		$scope.$on('closedContent', function() {
 

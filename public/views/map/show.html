@@ -5,7 +5,7 @@
 				<p><a href="/maps">Voltar</a></p>
 				<h1>{{map.title}}</h1>
 				<div ng-show="canEdit(map)">
-					<p><a href="/map/{{map._id}}/edit">Editar</a></p>
+					<p><a href="/maps/{{map._id}}/edit">Editar</a></p>
 				</div>
 			</div>
 		</div>
@@ -14,5 +14,17 @@
 		<div id="map"></div>
 	</div>
 	<div id="map-sidebar">
+		<div class="map-layers">
+			<h2>Camadas</h2>
+			<ul class="layer-list">
+				<li ng-repeat="layer in layers">
+					<h3 ng-click="toggleLayer(layer)">{{layer.title}}</h3>
+					<ul class="layer-contents">
+						<li ng-repeat="content in layer.contents">
+							<h4><a href="/maps/{{map._id}}/content/{{content._id}}">{{content.title}}</a></h4>
+						</li>
+					</ul>
+				</li>
+			</ul>
 	</div>
 </div>
