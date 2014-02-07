@@ -84,16 +84,18 @@ exports.show = function(req, res){
  */
 
 exports.update = function(req, res){
-	var feature = req.feature
-	feature = extend(feature, req.body)
+	var 
+		feature = req.feature;
+	
+	// association to contents should be handled at Content Model.
+	delete(req.body['contents']);
+	
+	feature = extend(feature, req.body);
 
 	feature.save(function(err) {
-		if (!err) {
-			res.json(feature);
-		} else {
-			res.json(400, err)
-		}
-	})
+		if (err) res.json(400, err);
+		res.json(feature);
+	});
 }
 
 /**

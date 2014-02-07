@@ -29,7 +29,7 @@ exports.load = function(req, res, next, id){
 
 exports.create = function (req, res) {
 	
-	// clear body from fields that should be handled internally
+	// clear fields from body that should be handled internally
 	delete req.body['_id'];
 	delete req.body['id'];	
 	delete req.body['creator'];
