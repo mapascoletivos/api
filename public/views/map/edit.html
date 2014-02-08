@@ -4,7 +4,7 @@
 			<div class="editor-content">
 				<div class="page-header map-head">
 					<h2>Mapa</h2>
-					<textarea class="edit-title no-canvas" type="text" ng-model="map.title" placeholder="Título da mapa" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					<textarea class="edit-title no-canvas" type="text" ng-model="map.title" placeholder="Título da mapa" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 				</div>
 				<div class="content">
 					<div id="map-edit">
@@ -35,7 +35,7 @@
 									<tr>
 										<th>Descrição</th>
 										<td>
-											<textarea class="edit-description no-canvas" type="text" ng-model="map.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+											<textarea class="edit-description no-canvas" type="text" ng-model="map.description" disable-enter-key="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 										</td>
 									<tr>
 										<th>Tags</th>
