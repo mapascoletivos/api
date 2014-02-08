@@ -5,8 +5,7 @@ require('../common/sirTrevor');
 
 angular
 	.module('mapasColetivos.content', [
-		'mapasColetivos.sirTrevor',
-		'fitVids'
+		'mapasColetivos.sirTrevor'
 	])
 	.factory('Content', require('./service').Content)
 	.controller('ContentCtrl', require('./controller').ContentCtrl)
