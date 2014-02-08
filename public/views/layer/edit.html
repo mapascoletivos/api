@@ -4,7 +4,7 @@
 			<div class="editor-content">
 				<div class="page-header layer-head">
 					<h2>Camada</h2>
-					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 				</div>
 				<div class="content">
 					<div id="layer-edit">
@@ -46,7 +46,7 @@
 									<tr>
 										<th>Descrição</th>
 										<td>
-											<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" mc-disable-enter="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+											<textarea class="edit-description no-canvas" type="text" ng-model="layer.description" disable-enter-key="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 										</td>
 									<tr>
 										<th>Tags</th>
@@ -124,8 +124,8 @@
 			<form ng-submit="save()">
 				<div class="feature-settings">
 					<h3>Feature</h3>
-					<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
-					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					<textarea class="edit-title no-canvas" placeholder="Título da feature" ng-model="editing.title" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 					<div class="latlng">
 						<p class="latitude latlng-item">Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" /></p>
 						<p class="longitude latlng-item">Longitude: <input ng-model="editing.geometry.coordinates[1]" ng-change="setMarker()" type="text" /></p>
@@ -199,7 +199,7 @@
 			<div id="content-edit-body" class="content-settings">
 				<div class="content-title">
 					<h3>Conteúdo</h3>
-					<textarea class="edit-title no-canvas" placeholder="Título" ng-model="editing.title" mc-disable-enter="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					<textarea class="edit-title no-canvas" placeholder="Título" ng-model="editing.title" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 				</div>
 				<div class="content-body">
 					<textarea sir-trevor-editor ng-model="editing.sirTrevor"></textarea>

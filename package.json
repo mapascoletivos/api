@@ -11,7 +11,8 @@
 	},
 	"main": "web.js",
 	"scripts": {
-		"start": "NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js",
+		"start": "browserify client/app.js | uglifyjs > public/app.js; NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js",
+		"install": "napa; browserify client/app.js | uglifyjs > public/app.js",
 		"test": "make test"
 	},
 	"dependencies": {
@@ -32,14 +33,32 @@
 		"less": "latest",
 		"less-middleware": "latest",
 		"lorem-ipsum": "latest",
-		"imager": "latest"
+		"imager": "latest",
+		"leaflet": "latest",
+		"jquery": "latest"
 	},
 	"devDependencies": {
+		"browserify": "latest",
+		"uglify-js": "latest",
+		"napa": "latest",
 		"nodemon": "latest",
 		"mocha": "latest",
 		"should": "latest",
 		"supertest": "latest",
 		"factory-lady": "latest"
+	},
+	"napa": {
+		"angular": "angular/bower-angular",
+		"angular-route": "angular/bower-angular-route",
+		"angular-sanitize": "angular/bower-angular-sanitize",
+		"angular-resource": "angular/bower-angular-resource",
+		"angular-animate": "angular/bower-angular-animate",
+		"angular-elastic": "monospaced/angular-elastic",
+		"angular-fitvids": "jimmyhillis/angular-fitvids",
+		"angular-ui-utils": "angular-ui/ui-utils",
+		"angular-ui-router": "angular-ui/ui-router",
+		"eventable": "madebymany/eventable",
+		"sir-trevor": "madebymany/sir-trevor-js"
 	},
 	"keywords": [
 		"mapas",
