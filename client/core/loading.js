@@ -7,9 +7,12 @@ require('angular/angular');
  */
 angular.module('mapasColetivos.loadingStatus', [])
 
-.config(function($httpProvider) {
-	$httpProvider.interceptors.push('loadingStatusInterceptor');
-})
+.config([
+	'$httpProvider',
+	function($httpProvider) {
+		$httpProvider.interceptors.push('loadingStatusInterceptor');
+	}
+])
 
 .directive('loadingStatusMessage', function() {
 	return {
@@ -27,32 +30,37 @@ angular.module('mapasColetivos.loadingStatus', [])
 	};
 })
 
-.factory('loadingStatusInterceptor', function($q, $rootScope, $timeout) {
-	var activeRequests = 0;
-	var started = function() {
-		if(activeRequests==0) {
-			$rootScope.$broadcast('loadingStatusActive');
-		}    
-		activeRequests++;
-	};
-	var ended = function() {
-		activeRequests--;
-		if(activeRequests==0) {
-			$rootScope.$broadcast('loadingStatusInactive');
-		}
-	};
-	return {
-		request: function(config) {
-			started();
-			return config || $q.when(config);
-		},
-		response: function(response) {
-			ended();
-			return response || $q.when(response);
-		},
-		responseError: function(rejection) {
-			ended();
-			return $q.reject(rejection);
-		}
-	};
-});
+.factory('loadingStatusInterceptor', [
+	'$q',
+	'$rootScope',
+	'$timeout',
+	function($q, $rootScope, $timeout) {
+		var activeRequests = 0;
+		var started = function() {
+			if(activeRequests==0) {
+				$rootScope.$broadcast('loadingStatusActive');
+			}    
+			activeRequests++;
+		};
+		var ended = function() {
+			activeRequests--;
+			if(activeRequests==0) {
+				$rootScope.$broadcast('loadingStatusInactive');
+			}
+		};
+		return {
+			request: function(config) {
+				started();
+				return config || $q.when(config);
+			},
+			response: function(response) {
+				ended();
+				return response || $q.when(response);
+			},
+			responseError: function(rejection) {
+				ended();
+				return $q.reject(rejection);
+			}
+		};
+	}
+]);
