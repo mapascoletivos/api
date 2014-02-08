@@ -48,6 +48,7 @@ angular.module('mapasColetivos', [
 	'monospaced.elastic',
 	'ngRoute',
 	'ngAnimate',
+	'mapasColetivos.directives',
 	'mapasColetivos.session',
 	'mapasColetivos.index',
 	'mapasColetivos.dashboard',

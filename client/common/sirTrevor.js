@@ -3,6 +3,8 @@
 window.jQuery 			= require('jquery');
 window._ 			= require('underscore');
 
+var markdown = require("markdown").markdown;
+
 require('angular/angular');
 require('eventable/eventable');
 require('sir-trevor/sir-trevor');
@@ -63,7 +65,6 @@ angular.module('mapasColetivos.sirTrevor', [])
 			},
 			renderBlock: function(block) {
 				var rendered = '';
-				console.log(block);
 				switch(block.type) {
 					case 'text':
 						rendered += '<div class="text">' + markdown.toHTML(block.data.text) + '</div>';

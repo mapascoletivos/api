@@ -35,7 +35,8 @@
 		"lorem-ipsum": "latest",
 		"imager": "latest",
 		"leaflet": "latest",
-		"jquery": "latest"
+		"jquery": "latest",
+		"markdown": "latest"
 	},
 	"devDependencies": {
 		"browserify": "latest",
