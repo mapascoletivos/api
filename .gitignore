@@ -16,3 +16,4 @@ node_modules
 
 data/
 public/uploads/images/
+public/app.js
