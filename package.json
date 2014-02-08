@@ -11,8 +11,8 @@
 	},
 	"main": "web.js",
 	"scripts": {
-		"start": "browserify client/app.js | uglifyjs > public/app.js; NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js",
-		"install": "napa; browserify client/app.js | uglifyjs > public/app.js",
+		"start": "browserify client/app.js | uglifyjs -mt > public/app.js; NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js",
+		"install": "napa; browserify client/app.js | uglifyjs -mt > public/app.js",
 		"test": "make test"
 	},
 	"dependencies": {
