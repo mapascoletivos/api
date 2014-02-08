@@ -35,6 +35,7 @@ require('./layer/app');
 require('./map/app');
 
 var settings = angular.extend({
+	server: 'local',
 	apiPrefix: '/api/v1'
 }, require('./config'));
 
@@ -58,7 +59,7 @@ angular.module('mapasColetivos', [
 	'mapasColetivos.feature',
 	'mapasColetivos.content'
 ])
-.value('apiPrefix', settings.apiPrefix)
+.value('apiPrefix', (settings.server == 'local' ? '' : settings.server) + settings.apiPrefix)
 
 /*
  * Core routes
