@@ -111,12 +111,15 @@ exports.LayerCtrl = [
 					if($scope.layer.title == 'Untitled')
 						$scope.layer.title = '';
 
+					var isDraft = function() {
+						return (!$scope.layer.title || $scope.layer.title == 'Untitled')
+							&& !$scope.layer.features.length
+							&& !$scope.layer.contents.length;
+					}
+
 					var deleteDraft = function(callback) {
-						if((!$scope.layer.title || $scope.layer.title == 'Untitled') && !$scope.layer.features.length && !$scope.layer.contents.length) {
-							if(typeof callback === 'function')
-								Layer.delete({layerId: layer._id}, callback);
-							else
-								Layer.delete({layerId: layer._id});
+						if(isDraft()) {
+							Layer.delete({layerId: layer._id}, callback);
 						}
 					}
 
@@ -167,10 +170,8 @@ exports.LayerCtrl = [
 
 					$scope.close = function() {
 
-						if((!$scope.layer.title || $scope.layer.title == 'Untitled') && !$scope.layer.features.length && !$scope.layer.contents.length) {
-							deleteDraft(function(res) {
-								$location.path('/layers').replace();
-							});
+						if(isDraft()) {
+							$location.path('/layers').replace();
 						} else {
 							$location.path('/layers/' + layer._id);
 						}

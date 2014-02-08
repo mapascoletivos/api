@@ -1,5 +1,6 @@
 'use strict';
 
+
 require('angular/angular');
 require('angular-sanitize/angular-sanitize');
 require('angular-fitvids/angular-fitvids');
