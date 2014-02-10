@@ -2,14 +2,37 @@
 	<div class="page-header">
 		<div class="container">
 			<div class="six columns">
-				<h1>Painel de controle do {{user.name}}</h1>
+				<h1>
+					<img src="{{user.grvtr}}" alt="{{user.name}}" />
+					Painel de controle do {{user.name}}
+				</h1>
 			</div>
 			<div class="six columns">
 				<ul class="profile-actions header-actions">
-					<li><a href="/dashboard/layers">Camadas</a></li>
-					<li><a href="/dashboard/maps">Mapas</a></li>
-					<li><a href="/dashboard/profile">Meu perfil</a></li>
-					<li><a href="/logout" target="_self">Sair</a></li>
+					<li ng-class="{active: currentState === 'layers'}">
+						<a href="/dashboard/layers">
+							<span class="lsf">&#xE129;</span>
+							Camadas
+						</a>
+					</li>
+					<li ng-class="{active: currentState === 'maps'}">
+						<a href="/dashboard/maps">
+							<span class="lsf">&#xE08b;</span>
+							Mapas
+						</a>
+					</li>
+					<li ng-class="{active: currentState === 'profile'}">
+						<a href="/dashboard/profile">
+							<span class="lsf">&#xE137;</span>
+							Meu perfil
+						</a>
+					</li>
+					<li>
+						<a href="/logout" target="_self">
+							<span class="lsf">&#xE088;</span>
+							Sair
+						</a>
+					</li>
 				</ul>
 			</div>
 		</div>

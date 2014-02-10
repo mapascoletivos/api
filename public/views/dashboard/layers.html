@@ -1,8 +1,22 @@
+<div class="twelve columns">
+	<h2>Camadas</h2>
+</div>
 <div class="layers-list" ng-show="layers.length">
 	<div class="container">
+		<div class="three columns">
+			<div class="layer-item new-layer">
+				<h3><a href="/layers/new">Criar nova camada</a></h3>
+			</div>
+		</div>
 		<div class="three columns" ng-repeat="layer in layers">
-			<h3><a href="/layers/{{layer._id}}">{{layer.title}}</a></h3>
-			<p>{{layer.description}}</p>
+			<div class="layer-item">
+				<h3><a href="/layers/{{layer._id}}">{{layer.title}}</a></h3>
+				<p>{{layer.description}}</p>
+				<div class="actions">
+					<a href="/layers/{{layer._id}}/edit">Editar</a>
+					<a href="/layers/{{layer._id}}">Visualizar</a>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
