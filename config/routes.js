@@ -93,6 +93,7 @@ module.exports = function (app, passport) {
 	app.get(apiPrefix + '/images/:imageId', auth.requiresLogin, images.show);
 	app.get('/images', images.showForm);
 	app.post(apiPrefix + '/images', auth.requiresLogin, images.create);
+	app.del(apiPrefix + '/images', auth.requiresLogin, images.destroy);
 	
 	/** 
 	 * Association routes

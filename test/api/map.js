@@ -7,7 +7,7 @@ var
 	// _ = require('underscore'),
 	request = require('supertest'),
 	should = require('should'),
-	app = require('../../server'),
+	app = require('../../web'),
 	mongoose = require('mongoose');
 	// Map = mongoose.model('Map');
 	// Layer = mongoose.model('Layer'),

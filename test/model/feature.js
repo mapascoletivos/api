@@ -7,7 +7,7 @@ var
 	_ = require('underscore'),
 	request = require('supertest'),
 	should = require('should'),
-	app = require('../../server'),
+	app = require('../../web'),
 	mongoose = require('mongoose'),
 	Layer = mongoose.model('Layer'),
 	Feature = mongoose.model('Feature'),
@@ -81,7 +81,7 @@ describe('Content Model', function(){
 					feature2 = ft2;
 					Factory.create('Content', {creator: user1._id, layer: [user1Layer1._id], features:[feature1, feature2]}, function(ct1){
 						content = ct1;
-						content.updateFeaturesAssociationAndSave([feature1._id, feature2._id], done);
+						content.setFeaturesAndSave([feature1._id, feature2._id], done);
 					});
 				});
 			});

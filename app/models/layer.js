@@ -48,8 +48,6 @@ LayerSchema.methods = {
 	removeMapAndSave: function(map, done){
 		var self = this;
 		
-		console.log('removing map:'+ map+' from layer.maps '+self.maps )
-
 		self.maps.pull({ _id: map._id });
 		
 		self.save(done);
