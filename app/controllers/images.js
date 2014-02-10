@@ -60,8 +60,9 @@ exports.create = function (req, res) {
 		else {
 		
 			var image = new Image();
+			console.log(uploaded);
 
-			image.file.url = req.protocol + "://" + req.get('host') + '/uploads/images/large_'+ uploaded[0];		
+			image.file.url = req.protocol + "://" + req.get('host') + '/uploads/images/large_'+ uploaded[uploaded.length-1];		
 			
 			image.save(function(err){
 				if (err) return res.json(400, err);
