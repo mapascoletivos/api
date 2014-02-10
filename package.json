@@ -37,7 +37,8 @@
 		"imager": "latest",
 		"leaflet": "latest",
 		"jquery": "latest",
-		"markdown": "latest"
+		"markdown": "latest",
+		"grvtr": "latest"
 	},
 	"devDependencies": {
 		"watchify": "latest",

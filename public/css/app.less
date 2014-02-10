@@ -223,6 +223,11 @@ input[type=submit] {
 			line-height: 58px;
 			font-weight: 400;
 			color: #fff;
+			img {
+				float: left;
+				margin-right: 20px;
+				border: 2px solid #555;
+			}
 		}
 		.header-actions {
 			display: block;
@@ -243,12 +248,50 @@ input[type=submit] {
 					color: #fff;
 					text-transform: uppercase;
 					font-size: 12px;
+					line-height: 20px;
 					background: #555;
 					&:hover {
 						background: #444;
 					}
+					.lsf {
+						font-weight: 200;
+						font-size: 200%;
+						line-height: 12px;
+						margin-right: 10px;
+					}
+				}
+				&.active {
+					a {
+						background: #77acde;
+					}
 				}
 			}
+		}
+	}
+}
+
+/*
+ * Listing layouts
+ */
+
+// Layers
+
+.layer-item {
+	background: #f9f9f9;
+	padding: 20px;
+	h3 {
+		font-weight: 600;
+		font-size: 22px;
+		line-height: 28px;
+		a {
+			text-decoration: none;
+		}
+	}
+	&.new-layer {
+		background: #80d478;
+		a {
+			color: #fff;
+			text-decoration: none;
 		}
 	}
 }

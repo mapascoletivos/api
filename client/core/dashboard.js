@@ -1,6 +1,7 @@
 'use strict';
 
 require('angular/angular');
+var grvtr = require('grvtr');
 
 angular.module('mapasColetivos.dashboard', [])
 
@@ -24,25 +25,39 @@ angular.module('mapasColetivos.dashboard', [])
 
 .controller('DashboardCtrl', [
 	'$scope',
+	'$rootScope',
 	'$state',
 	'$stateParams',
 	'SessionService',
 	'$location',
 	'Layer',
 	'Map',
-	function($scope, $state, $stateParams, SessionService, $location, Layer, Map) {
+	function($scope, $rootScope, $state, $stateParams, SessionService, $location, Layer, Map) {
+
 		if(!SessionService.authenticated) {
 			window.location = '/login';
 		}
 		$scope.user = SessionService.user;
 
-		$scope.currentState = $state.current;
+		$scope.user.grvtr = grvtr.create($scope.user.email, {
+			size: 58,
+			defaultImage: 'mm',
+			rating: 'g'
+		});
 
-		$scope.$watch('currentState', function(current) {
+		var stateFunctions = function() {
 
-			$scope.current = current.name;
+			if($state.current.name === 'dashboard')
+				$state.go('dashboard.layers');
 
-			console.log($scope.current);
+			$scope.currentState = $state.current.name.replace('dashboard.', '');
+
+		}
+
+		stateFunctions();
+		$rootScope.$on('$stateChangeSuccess', function() {
+
+			stateFunctions();
 
 		});
 

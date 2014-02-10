@@ -10,7 +10,7 @@ angular.module('mapasColetivos.explore', [])
 
 		$stateProvider
 			.state('explore', {
-				url: 'explore',
+				url: '/explore',
 				controller: 'ExploreCtrl',
 				templateUrl: '/views/explore.html'
 			});
