@@ -259,12 +259,13 @@ input[type=submit] {
 					display: block;
 					padding: 20px 0;
 					text-decoration: none;
-					color: #fff;
+					color: #ccc;
 					text-transform: uppercase;
 					font-size: 12px;
 					line-height: 20px;
 					background: #555;
 					&:hover {
+						color: #fff;
 						background: #444;
 					}
 					.lsf {
@@ -276,6 +277,7 @@ input[type=submit] {
 				}
 				&.active {
 					a {
+						color: #fff;
 						background: @blue;
 					}
 				}
@@ -388,9 +390,30 @@ input[type=submit] {
 	}
 }
 
- /*
-  * Map editor
-  */
+/*
+ * Dashboard
+ */
+
+.dashboard-page {
+	.page-header {
+		h1 {
+			font-size: 16px;
+			line-height: 16px;
+			color: #999;
+			.user-name {
+				color: #fff;
+				display: block;
+				font-size: 36px;
+				line-height: 36px;
+				margin-top: 10px;
+			}
+		}
+	}
+}
+
+/*
+ * Map editor
+ */
 
 .map-editor-container {
 	position: absolute;

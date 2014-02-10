@@ -37,7 +37,7 @@ exports.LayerCtrl = [
 		// New layer
 		if($location.path() == '/layers/new') {
 
-			var draft = new Layer({
+			var draft = new Layer.resource({
 				title: 'Untitled'
 			});
 			draft.$save(function(draft) {
@@ -78,7 +78,7 @@ exports.LayerCtrl = [
 
 			});
 
-			Layer.get({layerId: $stateParams.layerId}, function(layer) {
+			Layer.resource.get({layerId: $stateParams.layerId}, function(layer) {
 
 				var map = MapService.init('layer-map', {
 					center: [0,0],
@@ -111,66 +111,17 @@ exports.LayerCtrl = [
 					if($scope.layer.title == 'Untitled')
 						$scope.layer.title = '';
 
-					var isDraft = function() {
-						return (!$scope.layer.title || $scope.layer.title == 'Untitled')
-							&& !$scope.layer.features.length
-							&& !$scope.layer.contents.length;
-					}
+					$scope.$on('layer.save.success', function(event, layer) {
+						$scope.layer = layer;
+					});
 
-					var deleteDraft = function(callback) {
-						if(isDraft()) {
-							Layer.delete({layerId: layer._id}, callback);
-						}
-					}
-
-					$scope.save = function($event) {
-
-						Message.message({
-							status: 'loading',
-							text: 'Salvando camada...'
-						});
-
-						var layer = angular.copy($scope.layer);
-						layer.isDraft = false;
-
-						Layer.update({layerId: layer._id}, layer, function(layer) {
-							$scope.layer = angular.copy(layer);
-							Message.message({
-								status: 'ok',
-								text: 'Camada atualizada'
-							});
-							$scope.$broadcast('layerSaved');
-						}, function(err){
-							Message.message({
-								status: 'error',
-								text: 'Ocorreu um erro.'
-							});
-						});
-
-					}
-
-					$scope.delete = function() {
-
-						if(confirm('Você tem certeza que deseja remover esta camada?')) {
-							Layer.delete({layerId: layer._id}, function(res) {
-								$location.path('/layers').replace();
-								Message.message({
-									status: 'ok',
-									text: 'Camada removida.'
-								});
-							}, function(err) {
-								Message.message({
-									status: 'error',
-									text: 'Ocorreu um erro.'
-								});
-							});
-						}
-
-					}
+					$scope.$on('layer.delete.success', function() {
+						$location.path('/dashboard/layers').replace();
+					});
 
 					$scope.close = function() {
 
-						if(isDraft()) {
+						if(Layer.isDraft(layer)) {
 							$location.path('/dashboard/layers').replace();
 						} else {
 							$location.path('/layers/' + layer._id);
@@ -178,7 +129,9 @@ exports.LayerCtrl = [
 
 					}
 
-					$scope.$on('$stateChangeStart', deleteDraft);
+					$scope.$on('$stateChangeStart', function() {
+						Layer.deleteDraft(layer);
+					});
 
 				}
 
@@ -200,7 +153,7 @@ exports.LayerCtrl = [
 		// All layers
 		} else {
 
-			Layer.query(function(res) {
+			Layer.resource.query(function(res) {
 				$scope.layers = res.layers;
 			});
 

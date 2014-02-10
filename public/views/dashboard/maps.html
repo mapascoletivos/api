@@ -6,7 +6,7 @@
 		</div>
 	</div>
 </div>
-<div class="maps-list" ng-show="maps.length">
+<div class="maps-list" ng-show="maps.length" ng-controller="MapActionsCtrl">
 	<div class="container">
 		<div class="three columns">
 			<div class="default-item new-item row">
@@ -25,6 +25,7 @@
 				<div class="actions">
 					<a href="/maps/{{map._id}}/edit">Editar</a>
 					<a href="/maps/{{map._id}}">Visualizar</a>
+					<a href="javascript:void(0);" ng-click="delete(map)">Deletar</a>
 				</div>
 			</div>
 		</div>

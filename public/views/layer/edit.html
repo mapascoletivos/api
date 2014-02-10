@@ -1,4 +1,4 @@
-<div class="map-editor-container">
+<div class="map-editor-container" ng-controller="LayerActionsCtrl">
 	<div class="editor-container">
 		<div id="editor">
 			<div class="editor-content">
@@ -68,7 +68,7 @@
 										</td>
 									</tr>
 								</table>
-								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete()" ng-hide="layer.isDraft">
+								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete(layer)" ng-hide="layer.isDraft">
 									<span class="lsf">&#xE12c;</span>
 									Remover esta camada permanentemente.
 								</a>
@@ -108,12 +108,12 @@
 				</div>
 			</div>
 		</div>
-		<form class="primary-actions" ng-submit="save()">
+		<form class="primary-actions" ng-submit="save(layer)">
 			<a href="javascript:void(0);" class="button button-secondary" ng-click="close()">
 				<span ng-hide="layer.isDraft">Ver camada</span>
 				<span ng-show="layer.isDraft">Cancelar</span>
 			</a>
-			<a href="javascript:void(0);" class="button" ng-click="save()">
+			<a href="javascript:void(0);" class="button" ng-click="save(layer)">
 				<span ng-hide="layer.isDraft">Salvar alterações</span>
 				<span ng-show="layer.isDraft">Publicar camada</span>
 			</a>

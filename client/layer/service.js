@@ -11,15 +11,25 @@ exports.Layer = [
 	'apiPrefix',
 	function($resource, apiPrefix) {
 
-		return $resource(apiPrefix + '/layers/:layerId', {'_csrf': window.token}, {
-			'query': {
-				isArray: false,
-				method: 'GET'
+		return {
+			resource: $resource(apiPrefix + '/layers/:layerId', {'_csrf': window.token}, {
+				'query': {
+					isArray: false,
+					method: 'GET'
+				},
+				'update': {
+					method: 'PUT'
+				}
+			}),
+			isDraft: function(layer) {
+				return layer.isDraft;
 			},
-			'update': {
-				method: 'PUT'
+			deleteDraft: function(layer, callback) {
+				if(this.isDraft(layer)) {
+					this.resource.delete({layerId: layer._id}, callback);
+				}
 			}
-		});
+		};
 
 	}
 ];

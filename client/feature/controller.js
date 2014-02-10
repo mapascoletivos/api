@@ -117,7 +117,7 @@ exports.FeatureCtrl = [
 		}
 
 		$scope.$on('layerObjectChange', function(event, active) {
-			populateMap();
+			populateMap(true);
 		});
 
 		// Get layer data then...

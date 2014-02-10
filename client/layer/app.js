@@ -49,4 +49,5 @@ angular
 	])
 	.factory('Layer', require('./service.js').Layer)
 	.factory('LayerSharedData', require('./sharedDataService.js').LayerSharedData)
+	.controller('LayerActionsCtrl', require('./actions.js').LayerActionsCtrl)
 	.controller('LayerCtrl', require('./controller.js').LayerCtrl);

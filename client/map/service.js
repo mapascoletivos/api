@@ -21,7 +21,15 @@ exports.Map = [
 				'update': {
 					method: 'PUT'
 				}
-			})
+			}),
+			isDraft: function(map) {
+				return map.isDraft;
+			},
+			deleteDraft: function(map, callback) {
+				if(this.isDraft(map)) {
+					this.resource.delete({mapId: map._id}, callback);
+				}
+			}
 		}
 
 	}
