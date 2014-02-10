@@ -87,6 +87,7 @@ exports.update = function(req, res){
 
 	delete req.body['features'];
 	delete req.body['contents'];
+	delete req.body['__v'];
 
 	layer = extend(layer, req.body);
 

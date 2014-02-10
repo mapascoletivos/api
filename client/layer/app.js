@@ -12,12 +12,7 @@ angular
 	])
 	.config([
 		'$stateProvider',
-		'$urlRouterProvider',
-		'$locationProvider',
-		'$httpProvider',
-		function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
-
-			$httpProvider.defaults.withCredentials = true;
+		function($stateProvider) {
 
 			$stateProvider
 				.state('dashboard.layers', {
