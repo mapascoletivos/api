@@ -1,7 +1,15 @@
-<div class="maps-list">
+<div class="maps-list" ng-show="maps.length">
 	<div class="container">
 		<div class="three columns" ng-repeat="map in maps">
 			<h3><a href="/maps/{{map._id}}">{{map.title}}</a></h3>
 		</div>
 	</div>
+</div>
+<div class="create-map" ng-hide="maps.length">
+	<div class="container">
+		<div class="twelve columns">
+			<div class="info-box">
+				<p>Você ainda não criou mapas! Clique aqui para <a href="/maps/new" title="Novo mapa">criar seu primeiro</a></p>
+			</div>
+		</div>
 </div>

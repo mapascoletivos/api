@@ -1,19 +1,20 @@
-<div class="container">
+<div class="regular-page">
 	<div class="page-header">
-		<div class="twelve columns row">
-			<h1>Painel de controle do {{user.name}}</h1>
+		<div class="container">
+			<div class="six columns">
+				<h1>Painel de controle do {{user.name}}</h1>
+			</div>
+			<div class="six columns">
+				<ul class="profile-actions header-actions">
+					<li><a href="/dashboard/layers">Camadas</a></li>
+					<li><a href="/dashboard/maps">Mapas</a></li>
+					<li><a href="/dashboard/profile">Meu perfil</a></li>
+					<li><a href="/logout" target="_self">Sair</a></li>
+				</ul>
+			</div>
 		</div>
 	</div>
-	<div class="content row">
-		<div class="four columns">
-			<p><a href="/dashboard/layers">Camadas</a> <a class="button" href="/layers/new">Nova camada</a><p>
-		</div>
-		<div class="four columns">
-			<p><a href="/dashboard/maps">Mapas</a> <a class="button" href="/maps/new">Novo mapa</a></p>
-		</div>
-		<div class="four columns">
-			<h2><a href="/dashboard/profile">Perfil</a></h2>
-		</div>
+	<div class="container">
+		<div ui-view></div>
 	</div>
-	<div ui-view></div>
 </div>

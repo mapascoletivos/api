@@ -1,7 +1,16 @@
-<div class="layers-list">
+<div class="layers-list" ng-show="layers.length">
 	<div class="container">
 		<div class="three columns" ng-repeat="layer in layers">
 			<h3><a href="/layers/{{layer._id}}">{{layer.title}}</a></h3>
+			<p>{{layer.description}}</p>
 		</div>
 	</div>
+</div>
+<div class="create-layer" ng-hide="layers.length">
+	<div class="container">
+		<div class="twelve columns">
+			<div class="info-box">
+				<p>Você ainda não criou camadas! Clique aqui para <a href="/layers/new" title="Nova camada">criar sua primeira</a></p>
+			</div>
+		</div>
 </div>

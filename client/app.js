@@ -75,25 +75,13 @@ angular.module('mapasColetivos', [
 
 		$httpProvider.defaults.withCredentials = true;
 
+		$urlRouterProvider.otherwise('/');
+
 		$stateProvider
 			.state('home', {
 				url: '/',
 				controller: 'IndexCtrl',
 				templateUrl: '/home'
-			})
-			.state('explore', {
-				url: '/explore',
-				controller: 'ExploreCtrl',
-				templateUrl: '/views/explore.html'
-			})
-			.state('dashboard', {
-				url: '/dashboard',
-				controller: 'DashboardCtrl',
-				templateUrl: '/views/dashboard/index.html'
-			})
-			.state('dashboard.profile', {
-				url: '/profile',
-				templateUrl: '/views/dashboard/profile.html'
 			});
 
 		$locationProvider.html5Mode(true);
