@@ -1,18 +1,41 @@
+<div class="page-subheader anti-row row">
+	<div class="container">
+		<div class="twelve columns">
+			<h2>Mapas</h2>
+			<p>Você tem <strong>{{maps.length}}</strong> mapas cadastrados.</p>
+		</div>
+	</div>
+</div>
 <div class="maps-list" ng-show="maps.length">
 	<div class="container">
 		<div class="three columns">
-			<h3><a href="/maps/new">Criar novo mapa</a></h3>
+			<div class="default-item new-item row">
+				<h3>
+					<a href="/maps/new">
+						<span class="lsf">&#xE108;</span>
+						Criar novo mapa
+					</a>
+				</h3>
+			</div>
 		</div>
 		<div class="three columns" ng-repeat="map in maps">
-			<h3><a href="/maps/{{map._id}}">{{map.title}}</a></h3>
+			<div class="default-item row">
+				<h3><a href="/maps/{{map._id}}">{{map.title}}</a></h3>
+				<p>{{map.description}}</p>
+				<div class="actions">
+					<a href="/maps/{{map._id}}/edit">Editar</a>
+					<a href="/maps/{{map._id}}">Visualizar</a>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 <div class="create-map" ng-hide="maps.length">
 	<div class="container">
 		<div class="twelve columns">
-			<div class="info-box">
-				<p>Você ainda não criou mapas! Clique aqui para <a href="/maps/new" title="Novo mapa">criar seu primeiro</a></p>
+			<div class="info-box new-item">
+				<p><a href="/maps/new" title="Novo mapa">Você ainda não criou mapas! Clique aqui para criar seu primeiro.</a></p>
 			</div>
 		</div>
+	</div>
 </div>

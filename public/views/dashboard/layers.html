@@ -1,15 +1,25 @@
-<div class="twelve columns">
-	<h2>Camadas</h2>
+<div class="page-subheader anti-row row">
+	<div class="container">
+		<div class="twelve columns">
+			<h2>Camadas</h2>
+			<p>Você tem <strong>{{layers.length}}</strong> camadas cadastradas.</p>
+		</div>
+	</div>
 </div>
 <div class="layers-list" ng-show="layers.length">
 	<div class="container">
 		<div class="three columns">
-			<div class="layer-item new-layer">
-				<h3><a href="/layers/new">Criar nova camada</a></h3>
+			<div class="default-item new-item row">
+				<h3>
+					<a href="/layers/new">
+						<span class="lsf">&#xE108;</span>
+						Criar nova camada
+					</a>
+				</h3>
 			</div>
 		</div>
 		<div class="three columns" ng-repeat="layer in layers">
-			<div class="layer-item">
+			<div class="default-item row">
 				<h3><a href="/layers/{{layer._id}}">{{layer.title}}</a></h3>
 				<p>{{layer.description}}</p>
 				<div class="actions">
@@ -23,8 +33,9 @@
 <div class="create-layer" ng-hide="layers.length">
 	<div class="container">
 		<div class="twelve columns">
-			<div class="info-box">
-				<p>Você ainda não criou camadas! Clique aqui para <a href="/layers/new" title="Nova camada">criar sua primeira</a></p>
+			<div class="info-box new-item">
+				<p><a href="/layers/new" title="Nova camada">Você ainda não criou camadas! Clique aqui para criar sua primeira.</a></p>
 			</div>
 		</div>
+	</div>
 </div>
