@@ -29,6 +29,26 @@ var ContentSchema = new Schema({
 });
 
 /**
+ * Hooks
+ */
+
+ContentSchema.pre('remove', function(next){
+	var self = this;
+
+	// remove association from features
+	async.each(self.features, function(featureId, done){
+		mongoose.model('Feature').findById(featureId, function(err, feature){
+			if (err) next(err)
+			else {
+				feature.contents.pull(self._id);
+				feature.save(done);				
+			}
+		})
+	}, next);
+
+});
+
+/**
  * Statics
  */
 
@@ -112,79 +132,6 @@ ContentSchema.methods = {
 		})
 
 
-	},
-
-	updateFeaturesAssociationAndSave: function (newFeaturesArray, doneUpdate) {
-		var 
-			currentFeatures = this.features,
-			self = this;
-			
-		if (!newFeaturesArray) { newFeaturesArray = [] }
-		
-		// transform newFeaturesArray to a array of ids, if not already
-		newFeaturesArray = _.map(newFeaturesArray, function(feature){
-			if (typeof(feature['_id']) === 'undefined') { 
-				return feature;
-			} else { 
-				return feature._id.toHexString(); 
-			}
-		});
-		
-		// transform currentFeatures to a array of ids, if not already
-		currentFeatures = _.map(currentFeatures, function(feature){
-			if (typeof(feature['_id']) === 'undefined') { 
-				return feature;
-			} else { 
-				return feature._id.toHexString(); 
-			}
-		});
-
-		featuresToRemove = currentFeatures.filter(function(x) { 
-			return newFeaturesArray.indexOf(x) < 0 
-		});
-				
-		self.features = newFeaturesArray;
-
-		self.save(doneUpdate);
-		
-		// async.parallel([
-		// 	function(cb){ 
-		// 		console.log('tarefa 1');
-		// 		cb();
-		// 	}, 
-		// 	function(cb){ 
-		// 		console.log('tarefa 2');
-		// 		cb();
-		// 	}
-		// ], 
-		// function(){
-		// 		self.save(doneUpdate);
-		// })
-		
-		
-
-		// async.parallel([
-		// 	function(callback){
-		// 		if (newFeaturesArray.length == 0) { callback() };
-		// 		// Features to update relation
-		// 		async.each(newFeaturesArray, function(feature,cb){
-		// 			mongoose.model('Feature').findById(feature, function(err, ft){
-		// 				ft.addContentAndSave(self, cb);
-		// 			});
-		// 		}, callback); 
-		// 	}, function(callback){
-		// 		if (newFeaturesArray.length == 0) { callback() };
-		// 		// Features do Remove
-		// 		async.each(featuresToRemove, function(feature,cb){
-		// 			mongoose.model('Feature').findById(feature, function(err, ft){
-		// 				ft.removeContentAndSave(self, cb);
-		// 			});
-		// 		}, callback);
-		// 	}
-		// ], function(err,results) {
-		// 	if (err) doneUpdate(err);
-		// 	self.save(doneUpdate);
-		// });
 	}
 }
 

@@ -29,14 +29,17 @@ exports.load = function(req, res, next, id){
 
 exports.create = function (req, res) {
 	
+	var 
+		newFeaturesArray = req.body.features;
+
 	// clear fields from body that should be handled internally
 	delete req.body['_id'];
 	delete req.body['id'];	
 	delete req.body['creator'];
+	delete req.body['features'];
 
 	var 
-		content = new Content(req.body),
-		newFeaturesArray = req.body.features;
+		content = new Content(req.body);
 
 	// associate content to user originating request
 	content.creator = req.user;
@@ -48,20 +51,13 @@ exports.create = function (req, res) {
 			layer.save(function(err){
 				if (err) res.json(400, err);
 				else {
-					content.save(function(err){
+					content.setFeaturesAndSave(newFeaturesArray, function(err){
 						if (err) res.json(400, err);
 						else res.json(content);
 					});
 				}
 			});
 		}
-			
-			
-			// content.updateFeaturesAssociationAndSave(req.body.features, function (err) {
-			// 	if (err) res.json(400, err);
-			// 	res.json(content);
-			// });
-		// });
 	});
 }
 
@@ -90,13 +86,6 @@ exports.update = function(req, res){
 		if (err) res.json(400, err);
 		else res.json(content);		
 	});
-
-
-	// 
-	// content.save(function(err){
-	// 	if (err) res.json(400, err);
-	// 	else res.json(content);
-	// })
 }
 
 /**
@@ -107,8 +96,6 @@ exports.destroy = function(req, res){
 	var 
 		content = req.content,
 		layer = content.layer;
-
-	// TODO Remove from features
 
 	// remove content from belonging layer and feaures
 	layer.contents = _.filter(layer.contents, function(c) { 

@@ -5,7 +5,7 @@
 
 var request = require('supertest'),
 	should = require('should'),
-	app = require('../../server'),
+	app = require('../../web'),
 	mongoose = require('mongoose'),
 	Layer = mongoose.model('Layer'),
 	Feature = mongoose.model('Feature'),
