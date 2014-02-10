@@ -75,7 +75,7 @@ exports.MapCtrl = [
 
 				$scope.map = angular.copy(map);
 
-				Layer.query({
+				Layer.resource.query({
 					creatorOnly: true
 				}, function(res) {
 
@@ -166,7 +166,7 @@ exports.MapCtrl = [
 								layer = fetchedLayers[layerId];
 								renderLayer(layer);
 							} else {
-								Layer.get({layerId: layerId}, function(layer) {
+								Layer.resource.get({layerId: layerId}, function(layer) {
 									layer = fetchedLayers[layer._id] = layer;
 									renderLayer(layer);
 								});
@@ -176,105 +176,30 @@ exports.MapCtrl = [
 
 					});
 
-					/*
-					 * Manage view state
-					var viewState = function() {
-						if($stateParams.featureId) {
-							var feature = layer.features.filter(function(f) { return f._id == $stateParams.featureId; })[0];
-							if(feature) {
-								$scope.view(feature);
-								return true;
-							}
-						} else if($stateParams.contentId) {
-
-						}
-						return false;
-					}
-
-					viewState();
-
-					$rootScope.$on('$stateChangeSuccess', function() {
-
-						if(!viewState() && viewing) {
-							$scope.close();
-						}
-
-					});
-					 */
-
 				});
 
-				$scope.save = function() {
+				$scope.$on('map.save.success', function(event, map) {
+					$scope.map = map;
+				});
 
-					Message.message({
-						status: 'loading',
-						text: 'Salvando mapa...'
-					});
+				$scope.$on('map.delete.success', function() {
+					$location.path('/dashboard/maps').replace();
+				});
 
-					var map = angular.copy($scope.map);
-					map.isDraft = false;
-
-					Map.resource.update({mapId: map._id}, map, function(map) {
-						$scope.map = angular.copy(map);
-						Message.message({
-							status: 'ok',
-							text: 'Mapa atualizado'
-						});
-						$scope.$broadcast('mapSaved');
-					}, function(err){
-						Message.message({
-							status: 'error',
-							text: 'Ocorreu um erro.'
-						});
-					});
-
-				}
-
-				$scope.delete = function() {
-
-					if(confirm('Você tem certeza que deseja remover este mapa?')) {
-						Map.resource.delete({mapId: map._id}, function(res) {
-							$location.path('/maps').replace();
-							Message.message({
-								status: 'ok',
-								text: 'Mapa removido.'
-							});
-						}, function(err) {
-							Message.message({
-								status: 'error',
-								text: 'Ocorreu um erro.'
-							});
-						});
-					}
-
-				}
-
-				var deleteDraft = function(callback) {
-					if((!$scope.map.title || $scope.map.title == 'Untitled') && !$scope.map.layers.length) {
-						if(typeof callback === 'function')
-							Map.resource.delete({mapId: map._id}, callback);
-						else
-							Map.resource.delete({mapId: map._id});
-					}
-				}
+				$scope.$on('$stateChangeStart', function() {
+					Map.deleteDraft($scope.map);
+				});
 
 				$scope.close = function() {
 
-					if((!$scope.map.title || $scope.map.title == 'Untitled') && !$scope.map.layers.length) {
-						deleteDraft(function(res) {
-							$location.path('/maps').replace();
-						});
+					if(Map.isDraft($scope.map)) {
+						$location.path('/dashboard/maps');
 					} else {
-						$location.path('/maps/' + map._id);
+						$location.path('/maps/' + $scope.map._id);
 					}
 
 				}
 
-				$scope.$on('$stateChangeStart', deleteDraft);
-
-				/*
-				 * Edit functions
-				 */
 				if($location.path().indexOf('edit') !== -1) {
 					if($scope.map.title == 'Untitled')
 						$scope.map.title = '';

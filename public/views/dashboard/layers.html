@@ -6,7 +6,7 @@
 		</div>
 	</div>
 </div>
-<div class="layers-list" ng-show="layers.length">
+<div class="layers-list" ng-show="layers.length" ng-controller="LayerActionsCtrl">
 	<div class="container">
 		<div class="three columns">
 			<div class="default-item new-item row">
@@ -25,6 +25,7 @@
 				<div class="actions">
 					<a href="/layers/{{layer._id}}/edit">Editar</a>
 					<a href="/layers/{{layer._id}}">Visualizar</a>
+					<a href="javascript:void(0);" ng-click="delete(layer)">Deletar</a>
 				</div>
 			</div>
 		</div>

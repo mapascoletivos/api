@@ -1,10 +1,10 @@
-<div class="map-editor-container">
+<div class="map-editor-container" ng-controller="MapActionsCtrl">
 	<div class="editor-container">
 		<div id="editor">
 			<div class="editor-content">
 				<div class="page-header map-head">
 					<h2>Mapa</h2>
-					<textarea class="edit-title no-canvas" type="text" ng-model="map.title" placeholder="Título da mapa" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					<textarea class="edit-title no-canvas" type="text" ng-model="map.title" placeholder="Título do mapa" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 				</div>
 				<div class="content">
 					<div id="map-edit">
@@ -57,7 +57,7 @@
 										</td>
 									</tr>
 								</table>
-								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete()" ng-hide="map.isDraft">
+								<a href="javascript:void(0);" class="button button-red button-delete" ng-click="delete(map)" ng-hide="map.isDraft">
 									<span class="lsf">&#xE12c;</span>
 									Remover este mapa permanentemente.
 								</a>
@@ -88,7 +88,7 @@
 				<span ng-hide="map.isDraft">Ver mapa</span>
 				<span ng-show="map.isDraft">Cancelar</span>
 			</a>
-			<a href="javascript:void(0);" class="button" ng-click="save()">
+			<a href="javascript:void(0);" class="button" ng-click="save(map)">
 				<span ng-hide="map.isDraft">Salvar alterações</span>
 				<span ng-show="map.isDraft">Publicar mapa</span>
 			</a>

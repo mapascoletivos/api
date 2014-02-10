@@ -48,4 +48,5 @@ angular
 		}
 	])
 	.factory('Map', require('./service').Map)
-	.controller('MapCtrl', require('./controller').MapCtrl);
+	.controller('MapCtrl', require('./controller').MapCtrl)
+	.controller('MapActionsCtrl', require('./actions').MapActionsCtrl);
