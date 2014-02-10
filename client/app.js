@@ -89,7 +89,7 @@ angular.module('mapasColetivos', [
 		var interceptor = ['$rootScope', '$q', '$location', function(scope, $q, $location) {
 
 			function success(response) {
-				return response;
+				return response;''
 			}
 
 			function error(response) {

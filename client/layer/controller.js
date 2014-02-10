@@ -171,7 +171,7 @@ exports.LayerCtrl = [
 					$scope.close = function() {
 
 						if(isDraft()) {
-							$location.path('/layers').replace();
+							$location.path('/dashboard/layers').replace();
 						} else {
 							$location.path('/layers/' + layer._id);
 						}

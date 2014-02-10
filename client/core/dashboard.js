@@ -48,7 +48,7 @@ angular.module('mapasColetivos.dashboard', [])
 		var stateFunctions = function() {
 
 			if($state.current.name === 'dashboard')
-				$state.go('dashboard.layers');
+				$location.path('/dashboard/layers').replace();
 
 			$scope.currentState = $state.current.name.replace('dashboard.', '');
 
