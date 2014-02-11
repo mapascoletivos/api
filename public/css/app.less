@@ -65,7 +65,7 @@ body {
 
 h1,h2,h3 {
 	font-family: "Lato", sans-serif;
-	font-weight: 100;
+	font-weight: 600;
 }
 
 img {
@@ -237,7 +237,6 @@ input[type=submit] {
 	.page-header {
 		background: #666;
 		padding: 40px 0;
-		margin-bottom: 40px;
 		border-bottom: 1px solid #555;
 		h1 {
 			font-size: 22px;
@@ -403,6 +402,7 @@ input[type=submit] {
 		}
 	}
 	&.new-item {
+		border: 0;
 		a {
 			padding: 0;
 			height: 250px;
@@ -1192,7 +1192,57 @@ input[type=submit] {
 		h1 {
 			font-size: 26px;
 			line-height: 32px;
-			font-weight: 800;
+			font-weight: 600;
+		}
+	}
+	.map-info {
+		background: rgba(255,255,255,0.8);
+		padding: 20px;
+		margin-top: 20px;
+		float: left;
+		p.author {
+			margin: 0;
+			font-size: 12px;
+			font-style: italic;
+			color: #666;
+		}
+	}
+	.map-controls {
+		position: absolute;
+		bottom: 20px;
+		left: 0;
+		right: 0;
+		z-index: 10;
+		pointer-events: none;
+		ul {
+			margin: 0;
+			li {
+				margin: 0 -1px 0 0;
+				float: left;
+				a {
+					position: relative;
+					pointer-events: auto;
+					display: block;
+					background: @blue;
+					border: 1px solid @dark-blue;
+					padding: 15px 20px;
+					color: #fff;
+					text-decoration: none;
+					&:hover {
+						background: #fff;
+						color: @blue;
+						border-color: @blue;
+						z-index: 2;
+					}
+					.lsf {
+						font-size: 24px;
+						line-height: 24px;
+					}
+					.label {
+						display: none;
+					}
+				}
+			}
 		}
 	}
 	.map-container {
@@ -1396,4 +1446,74 @@ input[type=submit] {
 
 .st-block-positioner select {
 	width: auto;
+}
+
+/*
+ * Modal layouts
+ */
+
+ /* Default styles */
+
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 999999;
+	background: rgba(0,0,0,0.5);
+	.modal-container {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		width: 50%;
+		max-width: 550px;
+		min-width: 330px;
+		height: auto;
+		z-index: 2000;
+		-webkit-transform: translateX(-50%) translateY(-50%);
+		-moz-transform: translateX(-50%) translateY(-50%);
+		-ms-transform: translateX(-50%) translateY(-50%);
+		transform: translateX(-50%) translateY(-50%);
+		padding: 10px;
+		background: rgba(0,0,0,0.2);
+		.modal-content {
+			padding: 40px;
+			background: #fff;
+			position: relative;
+			.close-button {
+				position: absolute;
+				top: 7px;
+				right: 14px;
+				color: @blue;
+				font-size: 26px;
+				text-decoration: none;
+			}
+		}
+	}
+}
+
+/* Layer share */
+
+.modal.layer-share {
+	.social {
+		text-align: center;
+		margin: 40px 0 0;
+		a {
+			display: inline-block;
+			margin: 0 20px 0 0;
+			font-size: 60px;
+			line-height: 60px;
+			text-decoration: none;
+			&.facebook {
+				color: #3B5998;
+			}
+			&.twitter {
+				color: #33ccff;
+			}
+			&:hover {
+				color: #333;
+			}
+		}
+	}
 }

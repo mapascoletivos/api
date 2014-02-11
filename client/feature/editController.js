@@ -2,7 +2,10 @@
 
 require('angular/angular');
 
-var L = require('leaflet');
+window.L = require('leaflet');
+require('mapbox.js');
+
+var featureToMapObj = require('./featureToMapObjService');
 
 /*
  * Feature edit controller
@@ -52,7 +55,7 @@ exports.FeatureEditCtrl = [
 
 				if($scope.editing.geometry) {
 
-					$scope.marker = L.marker($scope.editing.geometry.coordinates, {
+					$scope.marker = featureToMapObj($scope.editing, {
 						draggable: true
 					});
 

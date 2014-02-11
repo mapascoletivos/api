@@ -2,6 +2,8 @@
 
 require('angular/angular');
 
+var featureToMapObj = require('./featureToMapObjService');
+
 /*
  * Feature controller
  */
@@ -15,8 +17,7 @@ exports.FeatureCtrl = [
 	'Feature',
 	'LayerSharedData',
 	'MapService',
-	'featureToMapObj',
-	function($scope, $rootScope, $state, $stateParams, $location, Feature, LayerSharedData, MapService, featureToMapObj) {
+	function($scope, $rootScope, $state, $stateParams, $location, Feature, LayerSharedData, MapService) {
 
 		$scope.objType = 'feature';
 		

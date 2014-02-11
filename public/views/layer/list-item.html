@@ -1,0 +1,18 @@
+<div class="default-item row">
+	<h3><a href="/layers/{{layer._id}}">{{layer.title}}</a></h3>
+	<p>{{layer.description}}</p>
+	<div class="actions">
+		<a href="/layers/{{layer._id}}/edit" title="Editar" ng-show="canEdit(layer)">
+			<span class="lsf">&#xE09f;</span>
+			<span class="label">Editar</span>
+		</a>
+		<a href="/layers/{{layer._id}}" title="Visualizar">
+			<span class="lsf">&#xE13a;</span>
+			<span class="label">Visualizar</span>
+		</a>
+		<a href="javascript:void(0);" ng-click="delete(layer)" title="Remover permanentemente" ng-show="canEdit(layer)">
+			<span class="lsf">&#xE12c;</span>
+			<span class="label">Deletar</span>
+		</a>
+	</div>
+</div>

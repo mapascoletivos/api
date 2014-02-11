@@ -36,6 +36,7 @@
 		"lorem-ipsum": "latest",
 		"imager": "latest",
 		"leaflet": "latest",
+		"mapbox.js": "latest",
 		"jquery": "latest",
 		"markdown": "latest",
 		"grvtr": "latest"
@@ -61,6 +62,7 @@
 		"angular-fitvids": "jimmyhillis/angular-fitvids",
 		"angular-ui-utils": "angular-ui/ui-utils",
 		"angular-ui-router": "angular-ui/ui-router",
+		"angular-modal": "btford/angular-modal",
 		"eventable": "madebymany/eventable",
 		"sir-trevor": "madebymany/sir-trevor-js"
 	},

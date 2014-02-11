@@ -14,8 +14,7 @@ exports.ContentCtrl = [
 	'Content',
 	'LayerSharedData',
 	'MapService',
-	'featureToMapObj',
-	function($scope, $rootScope, $stateParams, SirTrevor, Content, LayerSharedData, MapService, featureToMapObj) {
+	function($scope, $rootScope, $stateParams, SirTrevor, Content, LayerSharedData, MapService) {
 
 		$scope.objType = 'content';
 		

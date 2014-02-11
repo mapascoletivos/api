@@ -1,14 +1,30 @@
 'use strict';
 
-var L = require('leaflet');
+require('angular/angular');
+window.L = require('leaflet');
+require('mapbox.js');
 
-exports.featureToMapObj = [
-	function() {
-		return function(feature) {
-			if(feature.geometry && feature.geometry.coordinates) {
-				return L.marker(feature.geometry.coordinates);
-			}
-			return false;
+module.exports = function(feature, options) {
+
+	if(feature.geometry && feature.geometry.coordinates) {
+
+		if(!feature.properties) {
+			feature.properties = {};
 		}
+
+		feature.properties = angular.extend({
+			'marker-size': 'medium',
+			'marker-color': '#444',
+			'stroke': '#333',
+			'stroke-width': 2,
+			'fill': '#444'
+		}, feature.properties);
+
+		var options = angular.extend({
+			icon: L.mapbox.marker.icon(feature.properties)
+		}, options);
+
+		return L.marker(feature.geometry.coordinates, options);
 	}
-];
+	return false;
+}

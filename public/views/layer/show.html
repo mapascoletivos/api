@@ -2,11 +2,36 @@
 	<div class="page-header">
 		<div class="container">
 			<div class="four columns row">
-				<p><a href="/layers">Voltar</a></p>
-				<h1>{{layer.title}}</h1>
-				<div ng-show="canEdit(layer)">
-					<p><a href="/layers/{{layer._id}}/edit">Editar</a></p>
+				<div id="layer-info" class="map-info">
+					<h1>{{layer.title}}</h1>
+					<p class="author">by {{layer.creator.name}}</p>
 				</div>
+			</div>
+		</div>
+	</div>
+	<div id="layer-controls" class="map-controls" ng-controller="LayerActionsCtrl">
+		<div class="container">
+			<div class="six columns">
+				<ul>
+					<li ng-show="canEdit(layer)">
+						<a href="/layers/{{layer._id}}/edit" title="Editar">
+							<span class="lsf">&#xE09f;</span>
+							<span class="label">Editar</span>
+						</a>
+					</li>
+					<li ng-show="canEdit(layer)">
+						<a href="javascript:void(0);" ng-click="delete(layer)" title="Editar">
+							<span class="lsf">&#xE12c;</span>
+							<span class="label">Remover</span>
+						</a>
+					</li>
+					<li ng-show="layer.visibility !== 'Private' || canEdit(layer)">
+						<a href="javascript:void(0);" ng-click="share(layer)" title="Compartilhar">
+							<span class="lsf">&#xE118;</span>
+							<span class="label">Compartilhar</span>
+						</a>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>
@@ -24,7 +49,7 @@
 				<a href="/layers/{{layer._id}}">Fechar</a>
 				<h2>{{content.title}}</h2>
 				<div class="content-meta">
-					<ul class="features">
+					<ul class="features" ng-show="content.featureObjs.length">
 						<li ng-repeat="feature in content.featureObjs">
 							<a href="/layers/{{layer._id}}/feature/{{feature._id}}">{{feature.title}}</a>
 						</li>

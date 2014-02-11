@@ -2,9 +2,11 @@
 
 require('angular/angular');
 
-var L = require('leaflet');
+window.L = require('leaflet');
 
-L.Icon.Default.imagePath = '/img/leaflet';
+require('mapbox.js');
+
+//L.Icon.Default.imagePath = '/img/leaflet';
 
 /*
  * Leaflet service
@@ -22,19 +24,12 @@ angular.module('mapasColetivos.leaflet', [])
 			hiddenMarkers = [],
 			baseTile = 'http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png';
 
-		var featureToMapObj = function(feature) {
-			if(feature.geometry && feature.geometry.coordinates) {
-				return L.marker(feature.geometry.coordinates);
-			}
-			return false;
-		}
+		var featureToMapObj = require('../feature/featureToMapObjService');
 
 		return {
 			init: function(id, config) {
-				if(map instanceof L.Map) {
-					map.remove();
-				}
-				map = L.map(id, config);
+				this.destroy();
+				map = L.mapbox.map(id, null, config);
 				map.whenReady(function() {
 					map.addLayer(L.tileLayer(baseTile));
 					map.addLayer(markerLayer);
@@ -130,7 +125,8 @@ angular.module('mapasColetivos.leaflet', [])
 			},
 			destroy: function() {
 				this.clearAll();
-				map.remove();
+				if(map instanceof L.Map)
+					map.remove();
 				map = null;
 			}
 		}
