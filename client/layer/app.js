@@ -2,10 +2,12 @@
 
 require('angular/angular');
 require('../common/geocode');
+require('angular-modal/modal');
 
 angular
 	.module('mapasColetivos.layer', [
 		'ngResource',
+		'btford.modal',
 		'mapasColetivos.geocode',
 		'mapasColetivos.feature',
 		'mapasColetivos.content'
@@ -48,6 +50,7 @@ angular
 		}
 	])
 	.factory('Layer', require('./service.js').Layer)
-	.factory('LayerSharedData', require('./sharedDataService.js').LayerSharedData)
-	.controller('LayerActionsCtrl', require('./actions.js').LayerActionsCtrl)
-	.controller('LayerCtrl', require('./controller.js').LayerCtrl);
+	.factory('LayerSharedData', require('./sharedDataService').LayerSharedData)
+	.factory('LayerShare', require('./share').shareService)
+	.controller('LayerActionsCtrl', require('./actions').LayerActionsCtrl)
+	.controller('LayerCtrl', require('./controller').LayerCtrl);

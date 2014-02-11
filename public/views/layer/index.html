@@ -1,5 +1,5 @@
 <div class="regular-page">
-	<div class="page-header">
+	<div class="page-header row">
 		<div class="container">
 			<div class="six columns">
 				<h1>Camadas</h1>
@@ -8,16 +8,8 @@
 	</div>
 	<div class="container">
 		<div class="content row" ng-controller="LayerActionsCtrl">
-			<div class="three columns" ng-repeat="layer in layers">
-				<div class="default-item row">
-					<h3><a href="/layers/{{layer._id}}">{{layer.title}}</a></h3>
-					<p>{{layer.description}}</p>
-					<div class="actions">
-						<a href="/layers/{{layer._id}}/edit" ng-show="canEdit(layer)">Editar</a>
-						<a href="/layers/{{layer._id}}">Visualizar</a>
-						<a href="javascript:void(0);" ng-click="delete(layer)" ng-show="canEdit(layer)">Deletar</a>
-					</div>
-				</div>
+			<div class="three columns" ng-repeat="layer in layers | filter:search">
+				<div ng-include="templates.list" autoscroll="false"></div>
 			</div>
 		</div>
 	</div>

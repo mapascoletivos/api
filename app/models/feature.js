@@ -18,6 +18,7 @@ var FeatureSchema = new Schema({
 	layers: [{ type: Schema.ObjectId, ref: 'Layer'}],
 	contents: [{ type: Schema.ObjectId, ref: 'Content'}],	
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
+	properties: {},
 	title: { type: String, required: true },
 	description: { type: String },
 	geometry: { type: {type: String}, coordinates: []},

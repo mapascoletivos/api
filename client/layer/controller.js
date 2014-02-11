@@ -15,19 +15,21 @@ exports.LayerCtrl = [
 	'Layer',
 	'LayerSharedData',
 	'MessageService',
-	'MapService',
 	'SessionService',
-	function($scope, $location, $stateParams, $q, Page, Layer, LayerSharedData, Message, MapService, SessionService) {
+	'MapService',
+	function($scope, $location, $stateParams, $q, Page, Layer, LayerSharedData, Message, Session, MapService) {
 
 		/*
 		 * Permission control
 		 */
 		$scope.canEdit = function(layer) {
 
-			if(!layer || !SessionService.user)
+			if(!layer || !Session.user)
 				return false;
 
-			if(layer.creator && layer.creator._id == SessionService.user._id) {
+			if(typeof layer.creator == 'string' && layer.creator == Session.user._id) {
+				return true;
+			} else if(typeof layer.creator == 'object' && layer.creator._id == Session.user._id) {
 				return true;
 			}
 
@@ -79,6 +81,10 @@ exports.LayerCtrl = [
 
 			});
 
+			$scope.$on('layer.delete.success', function() {
+				$location.path('/dashboard/layers').replace();
+			});
+
 			Layer.resource.get({layerId: $stateParams.layerId}, function(layer) {
 
 				Page.setTitle(layer.title);
@@ -120,11 +126,6 @@ exports.LayerCtrl = [
 						Page.setTitle(layer.title);
 						$scope.layer = layer;
 					});
-
-					$scope.$on('layer.delete.success', function() {
-						$location.path('/dashboard/layers').replace();
-					});
-
 					$scope.close = function() {
 
 						if(Layer.isDraft(layer)) {
@@ -158,6 +159,8 @@ exports.LayerCtrl = [
 
 		// All layers
 		} else {
+
+			Page.setTitle('Camadas');
 
 			Layer.resource.query(function(res) {
 				$scope.layers = res.layers;
