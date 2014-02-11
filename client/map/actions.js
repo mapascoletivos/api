@@ -14,7 +14,38 @@ exports.MapActionsCtrl = [
 	'MessageService',
 	'SessionService',
 	'Map',
-	function($rootScope, $scope, $q, $location, Message, Session, Map) {
+	'MapShare',
+	function($rootScope, $scope, $q, $location, Message, Session, Map, MapShare) {
+
+		$scope.share = function(map) {
+			MapShare.activate({
+				map: map,
+				social: {
+					facebook: 'http://facebook.com/share.php?u=' + 'http://google.com/',
+					twitter: 'http://twitter.com/share?url=' + 'http://google.com/'
+				},
+				socialWindow: function(url, type) {
+					window.open(url, type, "width=550,height=300,resizable=1");
+				},
+				close: function() {
+					MapShare.deactivate();
+				}
+			});
+
+			$scope.$on('$destroy', function() {
+				MapShare.deactivate();
+			});
+		};
+
+		$scope.templates = {
+			list: '/views/map/list-item.html'
+		};
+
+		$scope.getUrl = function(map) {
+
+
+
+		};
 
 		$scope.edit = function(map) {
 

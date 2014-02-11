@@ -17,17 +17,19 @@ exports.MapCtrl = [
 	'MapService',
 	'MessageService',
 	'SessionService',
-	function($scope, $location, $state, $stateParams, Page, Map, Layer, MapService, Message, SessionService) {
+	function($scope, $location, $state, $stateParams, Page, Map, Layer, MapService, Message, Session) {
 
 		/*
 		 * Permission control
 		 */
 		$scope.canEdit = function(map) {
 
-			if(!map || !SessionService.user)
+			if(!map || !Session.user)
 				return false;
 
-			if(map.creator && map.creator._id == SessionService.user._id) {
+			if(typeof map.creator == 'string' && map.creator == Session.user._id) {
+				return true;
+			} else if(typeof map.creator == 'object' && map.creator._id == Session.user._id) {
 				return true;
 			}
 
@@ -73,6 +75,8 @@ exports.MapCtrl = [
 			}
 
 			Map.resource.get({mapId: $stateParams.mapId}, function(map) {
+
+				console.log(map);
 
 				$scope.map = angular.copy(map);
 
