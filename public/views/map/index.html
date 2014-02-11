@@ -1,15 +1,16 @@
-<div class="container">
-	<div class="page-header">
-		<div class="twelve columns row">
-			<h1>Maps</h1>
-			<p><a href="/maps/new">Novo mapa</a></p>
+<div class="regular-page">
+	<div class="page-header row">
+		<div class="container">
+			<div class="six columns">
+				<h1>Mapas</h1>
+			</div>
 		</div>
 	</div>
-	<div class="content row">
-		<div class="three columns" ng-repeat="map in maps">
-			<h3><a href="/maps/{{map._id}}">{{map.title}}</a></h3>
-			<a ng-show="canEdit(map)" href="/maps/{{map._id}}/edit">Editar</a>
-			<p>{{map.description}}</p>
+	<div class="container">
+		<div class="content row" ng-controller="MapActionsCtrl">
+			<div class="three columns" ng-repeat="map in maps | filter:search">
+				<div ng-include="templates.list" autoscroll="false"></div>
+			</div>
 		</div>
 	</div>
 </div>

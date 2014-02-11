@@ -1,12 +1,14 @@
 'use strict';
 
 require('angular/angular');
+require('angular-modal/modal');
 
 /* 
  * Map module
  */
 angular
 	.module('mapasColetivos.map', [
+		'btford.modal',
 		'mapasColetivos.leaflet',
 		'mapasColetivos.layer'
 	])
@@ -48,5 +50,6 @@ angular
 		}
 	])
 	.factory('Map', require('./service').Map)
+	.factory('MapShare', require('./share').shareService)
 	.controller('MapCtrl', require('./controller').MapCtrl)
 	.controller('MapActionsCtrl', require('./actions').MapActionsCtrl);

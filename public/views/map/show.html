@@ -2,11 +2,36 @@
 	<div class="page-header">
 		<div class="container">
 			<div class="four columns row">
-				<p><a href="/maps">Voltar</a></p>
-				<h1>{{map.title}}</h1>
-				<div ng-show="canEdit(map)">
-					<p><a href="/maps/{{map._id}}/edit">Editar</a></p>
+				<div id="map-info" class="map-info">
+					<h1>{{map.title}}</h1>
+					<p class="author">by {{map.creator.name}}</p>
 				</div>
+			</div>
+		</div>
+	</div>
+	<div id="map-controls" class="map-controls" ng-controller="MapActionsCtrl">
+		<div class="container">
+			<div class="six columns">
+				<ul>
+					<li ng-show="canEdit(map)">
+						<a href="/map/{{map._id}}/edit" title="Editar">
+							<span class="lsf">&#xE09f;</span>
+							<span class="label">Editar</span>
+						</a>
+					</li>
+					<li ng-show="canEdit(map)">
+						<a href="javascript:void(0);" ng-click="delete(map)" title="Editar">
+							<span class="lsf">&#xE12c;</span>
+							<span class="label">Remover</span>
+						</a>
+					</li>
+					<li ng-show="map.visibility !== 'Private' || canEdit(map)">
+						<a href="javascript:void(0);" ng-click="share(map)" title="Compartilhar">
+							<span class="lsf">&#xE118;</span>
+							<span class="label">Compartilhar</span>
+						</a>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>

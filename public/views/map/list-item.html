@@ -1,0 +1,18 @@
+<div class="default-item row">
+	<h3><a href="/maps/{{map._id}}">{{map.title}}</a></h3>
+	<p>{{map.description}}</p>
+	<div class="actions">
+		<a href="/maps/{{map._id}}/edit" title="Editar" ng-show="canEdit(map)">
+			<span class="lsf">&#xE09f;</span>
+			<span class="label">Editar</span>
+		</a>
+		<a href="/maps/{{map._id}}" title="Visualizar">
+			<span class="lsf">&#xE13a;</span>
+			<span class="label">Visualizar</span>
+		</a>
+		<a href="javascript:void(0);" ng-click="delete(map)" title="Remover permanentemente" ng-show="canEdit(map)">
+			<span class="lsf">&#xE12c;</span>
+			<span class="label">Deletar</span>
+		</a>
+	</div>
+</div>
