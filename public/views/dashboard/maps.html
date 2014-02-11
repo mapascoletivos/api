@@ -2,6 +2,7 @@
 	<div class="container">
 		<div class="twelve columns">
 			<h2>Mapas</h2>
+			<input class="filter" type="text" ng-model="search" placeholder="Busque por seus mapas" />
 			<p>Você tem <strong>{{maps.length}}</strong> mapas cadastrados.</p>
 		</div>
 	</div>
@@ -18,14 +19,23 @@
 				</h3>
 			</div>
 		</div>
-		<div class="three columns" ng-repeat="map in maps">
+		<div class="three columns" ng-repeat="map in maps | filter:search">
 			<div class="default-item row">
 				<h3><a href="/maps/{{map._id}}">{{map.title}}</a></h3>
 				<p>{{map.description}}</p>
 				<div class="actions">
-					<a href="/maps/{{map._id}}/edit">Editar</a>
-					<a href="/maps/{{map._id}}">Visualizar</a>
-					<a href="javascript:void(0);" ng-click="delete(map)">Deletar</a>
+					<a href="/maps/{{map._id}}/edit" title="Editar">
+						<span class="lsf">&#xE09f;</span>
+						<span class="label">Editar</span>
+					</a>
+					<a href="/maps/{{map._id}}" title="Visualizar">
+						<span class="lsf">&#xE13a;</span>
+						<span class="label">Visualizar</span>
+					</a>
+					<a href="javascript:void(0);" ng-click="delete(map)" title="Remover permanentemente">
+						<span class="lsf">&#xE12c;</span>
+						<span class="label">Deletar</span>
+					</a>
 				</div>
 			</div>
 		</div>

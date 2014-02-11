@@ -20,7 +20,10 @@ angular.module('mapasColetivos.explore', [])
 
 .controller('ExploreCtrl', [
 	'$scope',
-	function($scope) {
+	'Page',
+	function($scope, Page) {
+
+		Page.setTitle('Explore');
 
 	}
 ]);

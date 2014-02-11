@@ -11,12 +11,13 @@ exports.MapCtrl = [
 	'$location',
 	'$state',
 	'$stateParams',
+	'Page',
 	'Map',
 	'Layer',
 	'MapService',
 	'MessageService',
 	'SessionService',
-	function($scope, $location, $state, $stateParams, Map, Layer, MapService, Message, SessionService) {
+	function($scope, $location, $state, $stateParams, Page, Map, Layer, MapService, Message, SessionService) {
 
 		/*
 		 * Permission control
@@ -78,6 +79,8 @@ exports.MapCtrl = [
 				Layer.resource.query({
 					creatorOnly: true
 				}, function(res) {
+
+					Page.setTitle(map.title);
 
 					$scope.userLayers = res.layers;
 
@@ -179,6 +182,7 @@ exports.MapCtrl = [
 				});
 
 				$scope.$on('map.save.success', function(event, map) {
+					Page.setTitle(map.title);
 					$scope.map = map;
 				});
 
@@ -201,13 +205,17 @@ exports.MapCtrl = [
 				}
 
 				if($location.path().indexOf('edit') !== -1) {
-					if($scope.map.title == 'Untitled')
+					if($scope.map.title == 'Untitled') {
 						$scope.map.title = '';
+						Page.setTitle('Novo mapa');
+					}
 				}
 
 			});
 
 		} else {
+
+			Page.setTitle('Mapas');
 
 			Map.resource.query(function(res) {
 				$scope.maps = res.maps;

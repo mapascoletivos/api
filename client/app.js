@@ -11,6 +11,7 @@ require('angular-ui-utils/modules/keypress/keypress');
  */
 
 require('./core/session');
+require('./core/title');
 require('./core/index');
 require('./core/loading');
 require('./core/message');
@@ -48,6 +49,7 @@ angular.module('mapasColetivos', [
 	'monospaced.elastic',
 	'ngRoute',
 	'ngAnimate',
+	'mapasColetivos.pageTitle',
 	'mapasColetivos.directives',
 	'mapasColetivos.session',
 	'mapasColetivos.index',
