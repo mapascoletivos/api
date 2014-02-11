@@ -110,28 +110,29 @@ ContentSchema.methods = {
 		var 
 			currentFeatures = this.features,
 			self = this;
-
-		async.each(this.features, function(ftId, cb){
-			mongoose.model('Feature').findById(ftId, function(err,ft){
-				ft.contents.pull(self._id);
-				ft.save(cb);
-			})
-		}, 
-		function(err){
-			if (err) done(err);
-			async.each(featureSet, function(newFtId, cb){
-				mongoose.model('Feature').findById(newFtId, function(err, newFt){
-					newFt.contents.addToSet(self._id);
-					newFt.save(cb);
+		
+		if (!featureSet) done();
+		else {
+			async.each(this.features, function(ftId, cb){
+				mongoose.model('Feature').findById(ftId, function(err,ft){
+					ft.contents.pull(self._id);
+					ft.save(cb);
 				})
-			}, function(err){
+			}, 
+			function(err){
 				if (err) done(err);
-				self.features = featureSet;
-				self.save(done);
+				async.each(featureSet, function(newFtId, cb){
+					mongoose.model('Feature').findById(newFtId, function(err, newFt){
+						newFt.contents.addToSet(self._id);
+						newFt.save(cb);
+					})
+				}, function(err){
+					if (err) done(err);
+					self.features = featureSet;
+					self.save(done);
+				});
 			});
-		})
-
-
+		} 
 	}
 }
 
