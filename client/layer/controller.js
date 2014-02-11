@@ -11,12 +11,13 @@ exports.LayerCtrl = [
 	'$location',
 	'$stateParams',
 	'$q',
+	'Page',
 	'Layer',
 	'LayerSharedData',
 	'MessageService',
 	'MapService',
 	'SessionService',
-	function($scope, $location, $stateParams, $q, Layer, LayerSharedData, Message, MapService, SessionService) {
+	function($scope, $location, $stateParams, $q, Page, Layer, LayerSharedData, Message, MapService, SessionService) {
 
 		/*
 		 * Permission control
@@ -80,6 +81,8 @@ exports.LayerCtrl = [
 
 			Layer.resource.get({layerId: $stateParams.layerId}, function(layer) {
 
+				Page.setTitle(layer.title);
+
 				var map = MapService.init('layer-map', {
 					center: [0,0],
 					zoom: 2
@@ -108,10 +111,13 @@ exports.LayerCtrl = [
 				 */
 				if($location.path().indexOf('edit') !== -1) {
 
-					if($scope.layer.title == 'Untitled')
+					if($scope.layer.title == 'Untitled') {
 						$scope.layer.title = '';
+						Page.setTitle('Nova camada');
+					}
 
 					$scope.$on('layer.save.success', function(event, layer) {
+						Page.setTitle(layer.title);
 						$scope.layer = layer;
 					});
 

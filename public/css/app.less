@@ -50,7 +50,11 @@
 /**
 **/
 
-html,body {
+html {
+	margin-top: 52px;
+}
+
+body {
 	font: 14px "Open Sans", Helvetica, arial, freesans, clean, sans-serif;
 	line-height: 1.4;
 	color: #333333;
@@ -69,7 +73,7 @@ img {
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
  
 ::-webkit-scrollbar-track {
@@ -77,7 +81,7 @@ img {
 }
  
 ::-webkit-scrollbar-thumb {
-    border-radius: 5px;
+    border-radius: 0px;
     background: #999; 
 }
 
@@ -121,7 +125,10 @@ input[type=submit] {
 	background: #ebf6ff;
 	padding: 10px 0;
 	border-bottom: 1px solid darken(#ebf6ff, 5%);
-	position: relative;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
 	z-index: 99999;
 	h1 {
 		text-indent: -9999px;
@@ -298,6 +305,16 @@ input[type=submit] {
 			margin: 0 40px 0 0;
 			float: left;
 		}
+		input {
+			height: 22px;
+			line-height: 22px;
+			float: left;
+			background: transparent;
+			border: 0;
+			color: #fff;
+			padding: 0;
+			margin: 0;
+		}
 		p {
 			font-weight: 200;
 			margin: 0;
@@ -307,6 +324,22 @@ input[type=submit] {
 			strong {
 				color: #fff;
 			}
+		}
+		::-webkit-input-placeholder {
+			color: #f0f0f0;
+			font-style: italic;
+		}
+		::-moz-placeholder {
+			color: #f0f0f0;
+			font-style: italic;
+		}
+		::-ms-input-placeholder {
+			color: #f0f0f0;
+			font-style: italic;
+		}
+		input:-moz-placeholder {
+			color: #f0f0f0;
+			font-style: italic;
 		}
 	}
 }
@@ -321,6 +354,7 @@ input[type=submit] {
 	background: #f9f9f9;
 	padding: 20px;
 	height: 250px;
+	overflow: hidden;
 	position: relative;
 	h3 {
 		font-weight: 400;
@@ -336,13 +370,36 @@ input[type=submit] {
 	}
 	.actions {
 		position: absolute;
-		bottom: 20px;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		background: #f9f9f9;
+		width: 100%;
 		a {
+			display: table-cell;
+			width: 1%;
+			text-align: center;
 			text-decoration: none;
 			text-transform: uppercase;
-			color: #999;
+			color: #fff;
 			font-size: 12px;
+			background: @light-blue;
+			border-right: 1px solid #f9f9f9;
+			position: relative;
+			padding: 5px;
+			.lsf {
+				font-size: 22px;
+				text-align: center;
+			}
+			.label {
+				display: none;
+			}
+			&:hover {
+				background: @dark-blue;
+			}
+			&:last-child {
+				border-right: 0;
+			}
 		}
 	}
 	&.new-item {

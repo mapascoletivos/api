@@ -30,9 +30,12 @@ angular.module('mapasColetivos.dashboard', [])
 	'$stateParams',
 	'SessionService',
 	'$location',
+	'Page',
 	'Layer',
 	'Map',
-	function($scope, $rootScope, $state, $stateParams, SessionService, $location, Layer, Map) {
+	function($scope, $rootScope, $state, $stateParams, SessionService, $location, Page, Layer, Map) {
+
+		Page.setTitle('Painel de Controle');
 
 		if(!SessionService.authenticated) {
 			window.location = '/login';
