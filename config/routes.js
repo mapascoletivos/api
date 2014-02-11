@@ -28,7 +28,6 @@ module.exports = function (app, passport) {
 	var apiPrefix = '/api/v1';
 
 	app.get('/', home.index);
-	app.get('/home', home.app);
 
 	/** 
 	 * Users routes 
@@ -106,5 +105,10 @@ module.exports = function (app, passport) {
 	// feature x content
 	app.put(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, features.addContent);
 	app.del(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, features.removeContent);
+
+	/*
+	 * All other routes enabled for Angular app (no 404)
+	 */
+	app.get('/*', home.app);
 
 }
