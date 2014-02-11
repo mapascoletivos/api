@@ -1,9 +1,0 @@
-#layer-features.map-editor-subcontent
-	p Você tem {{features.length}} features nesta camada.
-		br
-		a(href="#/features/new") Adicionar nova
-	input(type="text" ng-model="search" placeholder="Find features")
-	ul
-		li(ng-repeat="feature in features | filter:search" ng-click="viewInMap($event)" feature-data)
-			{{feature.title}}
-			a(href="#/features/edit/{{feature._id}}") Editar
