@@ -134,9 +134,6 @@ exports.MapCtrl = [
 
 				var renderLayer = function(layer) {
 
-					$scope.layers.push(layer);
-					$scope.layers = $scope.layers; // update val (push method doesn't apply on angular)
-
 					// Add layer to map and get feature data
 					var layerData = MapService.addLayer(layer);
 
@@ -172,6 +169,21 @@ exports.MapCtrl = [
 
 					});
 
+					$scope.layers.push(layer);
+
+					// Fix ordering
+					if($scope.layers.length === $scope.map.layers.length) {
+						$scope.fixLayerOrdering();
+					}
+
+				};
+
+				$scope.fixLayerOrdering = function() {
+					var ordered = [];
+					angular.forEach($scope.map.layers, function(layerId) {
+						ordered.push($scope.layers.filter(function(layer) { return layer._id == layerId; })[0]);
+					});
+					$scope.layers = ordered;
 				};
 
 				$scope.$watch('map.layers', function(layers) {
