@@ -94,35 +94,6 @@ ContentSchema.methods = {
 		self.save(done);
 	},
 	
-	setFeaturesAndSave: function(featureSet, done) {
-		var 
-			currentFeatures = this.features,
-			self = this;
-
-		if (!featureSet) done();
-		else {
-			async.each(this.features, function(ftId, cb){
-				mongoose.model('Feature').findById(ftId, function(err,ft){
-					ft.contents.pull(self._id);
-					ft.save(cb);
-				})
-			}, 
-			function(err){
-				if (err) done(err);
-				async.each(featureSet, function(newFtId, cb){
-					mongoose.model('Feature').findById(newFtId, function(err, newFt){
-						newFt.contents.addToSet(self._id);
-						newFt.save(cb);
-					})
-				}, function(err){
-					if (err) done(err);
-					self.features = featureSet;
-					self.save(done);
-				});
-			});
-		}
-	},
-	
 	setFeatures: function(featureSet, done) {
 		var 
 			self = this,
@@ -196,6 +167,8 @@ ContentSchema.methods = {
 			self = this,
 			imagesToRemove,
 			imagesToAdd;
+			
+		// console.log('sirTrevorData no updateSirTrevor\n'+sirTrevorData);
 		
 		function getRemovedImages(sirTrevorData){
 			var removedImages = [];
@@ -210,7 +183,10 @@ ContentSchema.methods = {
 		function getAddedImages(sirTrevorData){
 			var addedImages = [];
 			_.each(sirTrevorData, function(item){
-				if ((item.type == 'image') && !_.contains(self.sirTrevorData, item)) {
+				// console.log('item dentro do getAddedImages\n'+item.data);
+				if (!item._id)
+					item._id = item.data._id;
+				if ((item.type == 'image') && !_.contains(self.sirTrevorData, item._id)) {
 					addedImages.push(item);
 				}
 			})
@@ -219,6 +195,9 @@ ContentSchema.methods = {
 		
 		imagesToRemove = getRemovedImages(sirTrevorData);
 		imagesToAdd = getAddedImages(sirTrevorData);
+		
+		// console.log('imagesToAdd\n'+imagesToAdd);
+		// console.log('imagesToRemove\n'+imagesToRemove);
 		
 		async.parallel([
 			function(callback){
@@ -246,9 +225,9 @@ ContentSchema.methods = {
 						});
 				}, callback)
 			}
-		], function(){
+		], function(err){
 			self.sirTrevorData = sirTrevorData;
-			done(self);
+			done(err, self);
 		});
 	},
 

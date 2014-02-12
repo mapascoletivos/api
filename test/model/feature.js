@@ -79,9 +79,12 @@ describe('Content Model', function(){
 				feature1 = ft1;
 				Factory.create('Feature', {creator: user1._id, layers: [user1Layer1._id]}, function(ft2){
 					feature2 = ft2;
-					Factory.create('Content', {creator: user1._id, layer: [user1Layer1._id], features:[feature1, feature2]}, function(ct1){
-						content = ct1;
-						content.setFeaturesAndSave([feature1._id, feature2._id], done);
+					Factory.build('Content', {creator: user1._id, layer: [user1Layer1._id], features:[feature1, feature2]}, function(ct1){
+						ct1.setFeatures([feature1._id, feature2._id], function(err,ctt){
+							should.not.exist(err);
+							content = ctt;
+							done();
+						});
 					});
 				});
 			});
