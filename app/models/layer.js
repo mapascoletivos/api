@@ -29,6 +29,10 @@ var LayerSchema = new Schema({
 	url: String
 });
 
+/**
+ * Hooks
+ */
+
 LayerSchema.pre('remove', function(next) {
 	var self = this;
 
@@ -60,14 +64,6 @@ LayerSchema.methods = {
 
 LayerSchema.statics = {
 
-	/**
-	 * Find layer by id
-	 *
-	 * @param {ObjectId} id
-	 * @param {Function} cb
-	 * @api private
-	 */
-
 	load: function (id, cb) {
 		this.findOne({ _id : id })
 			.populate('creator')
@@ -75,24 +71,17 @@ LayerSchema.statics = {
 			.populate('contents')
 			.exec(cb)
 	},
-	
-	/**
-	 * List layers
-	 *
-	 * @param {Object} options
-	 * @param {Function} cb
-	 * @api private
-	 */
 
 	list: function (options, cb) {
 		var criteria = options.criteria || {}
 
-		this.find(criteria)
+		this
+			.find(criteria)
 			.sort({'createdAt': -1}) // sort by date
 			.limit(options.perPage)
 			.skip(options.perPage * options.page)
 		.exec(cb)
-	}	
+	}
 	
 }
 
