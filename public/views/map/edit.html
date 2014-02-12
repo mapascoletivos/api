@@ -66,13 +66,34 @@
 						<div ng-show="mapObj('layer')">
 							<div id="map-layers" class="map-editor-subcontent">
 								<div class="layers-list">
+									<!--
 									<a href="javascript:void(0);" class="button add-new" ng-click="new()">
 										<span class="lsf">&#xE108;</span>
 										Adicionar nova
 									</a>
-									<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
-									<ul class="obj-list">
-										<li ng-repeat="layer in userLayers | filter:search" ng-click="toggleLayer(layer)" ng-class="{active:hasLayer(layer)}">
+									<ul class="map-editor-subcontent-options">
+										<li><a href="javascript:void(0);">Camadas</a></li>
+										<li><a href="javascript:void(0);">Buscar camadas</a></li>
+									</ul>
+									-->
+									<div class="map-layers" ng-show="layers.length">
+										<p class="tip">Arraste as camadas para alterar a ordem de exibição.</p>
+										<ul class="obj-list" ui-sortable="sortLayer" ng-model="layers">
+											<li ng-repeat="layer in layers" ng-click="focusLayer(layer)" class="sortable">
+												<p class="actions">
+													<a href="javascript:void(0);" class="lsf remove-layer" title="Remover camada" ng-click="toggleLayer(layer)">&#xE12c;</a>
+													<a href="javascript:void(0);" class="lsf sort" title="Mover camada">&#xE120;</a>
+												</p>
+												{{layer.title}}
+											</li>
+										</ul>
+									</div>
+									<input class="filter" type="text" ng-model="search" placeholder="Encontrar camadas" />
+									<ul class="obj-list available-layers">
+										<li ng-repeat="layer in userLayers" class="add" ng-click="toggleLayer(layer)" ng-hide="hasLayer(layer)">
+											<p class="actions">
+												<a href="javascript:void(0);" class="lsf add-button" title="Adicionar camada">&#xE108;</a>
+											</p>
 											{{layer.title}}
 										</li>
 									</ul>

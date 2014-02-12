@@ -11,7 +11,7 @@
 	},
 	"main": "web.js",
 	"scripts": {
-"watch": "watchify client/app.js -o public/app.js -v & ( sleep 3 && NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js)",
+		"watch": "watchify client/app.js -o public/app.js -v & ( sleep 3 && NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js)",
 		"start": "NODE_PATH=./app/controllers NODE_ENV=development; browserify client/app.js | uglifyjs -mt > public/app.js & node web.js",
 		"install": "napa",
 		"test": "make test"
@@ -38,6 +38,7 @@
 		"leaflet": "latest",
 		"mapbox.js": "latest",
 		"jquery": "latest",
+		"jquery-ui-browserify": "latest",
 		"markdown": "latest",
 		"grvtr": "latest"
 	},
@@ -62,6 +63,7 @@
 		"angular-fitvids": "jimmyhillis/angular-fitvids",
 		"angular-ui-utils": "angular-ui/ui-utils",
 		"angular-ui-router": "angular-ui/ui-router",
+		"angular-ui-sortable": "angular-ui/ui-sortable",
 		"angular-modal": "miguelpeixe/angular-modal",
 		"eventable": "madebymany/eventable",
 		"sir-trevor": "madebymany/sir-trevor-js"

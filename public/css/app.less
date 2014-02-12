@@ -501,12 +501,14 @@ input[type=submit] {
 	}
 	.page-header {
 		padding: 20px 20px 0;
+		background: #fff;
 	}
 	.edit-title {
 		font-size: 28px;
 		font-family: "Lato";
 		font-weight: 400;
 		color: #444;
+		margin: 0;
 		&:focus,
 		&:hover {
 			color: #000;
@@ -615,7 +617,6 @@ input[type=submit] {
 		}
 	}
 	#settings {
-		margin-bottom: 65px;
 		.button-delete {
 			width: 100%;
 			padding: 15px 0;
@@ -634,9 +635,14 @@ input[type=submit] {
 	}
 	#editor {
 		border-right: 1px solid #eee;
-		height: 100%;
+		position: absolute;
+		top: 0;
+		bottom: 65px;
+		left: 0;
+		right: 0;
 		overflow: auto;
 		float:right;
+		background: #f5f5f5;
 		h2 {
 			font-size: 12px;
 			font-weight: 800;
@@ -651,6 +657,7 @@ input[type=submit] {
 			padding: 0;
 			border-top: 1px solid #eee;
 			border-bottom: 5px solid #555;
+			background: #fff;
 			li {
 				display: table-cell;
 				width: 1%;
@@ -720,11 +727,20 @@ input[type=submit] {
 			}
 		}
 		.map-editor-subcontent {
+			color: #333;
+			&.with-padding {
+				padding-top: 20px;
+			}
 			h1,h2,h3 {
 				color: #333;
 			}
-			background: #f5f5f5;
-			color: #333;
+			p {
+				margin: 0 20px 20px;
+				&.tip {
+					font-style: italic;
+					color: #999;
+				}
+			}
 			input.filter {
 				display: block;
 				border: 0;
@@ -764,12 +780,21 @@ input[type=submit] {
 			}
 			.obj-list {
 				margin: 0 20px 20px;
-				padding: 0 0 60px;
+				padding: 0;
 				li {
 					background: #fbfbfb;
 					margin: 0 0 1px;
 					padding: 15px;
 					cursor: pointer;
+					&.sortable {
+						cursor: move;
+						&:hover {
+							.actions a.sort {
+								background: @blue;
+								color: #fff;
+							}
+						}
+					}
 					&:hover {
 						background: #fff;
 						box-shadow: 0 0 5px rgba(0,0,0,0.05);
@@ -779,6 +804,25 @@ input[type=submit] {
 					&.active {
 						background: @blue;
 						color: #fff;
+					}
+					.actions {
+						float: right;
+						margin: 0;
+						a {
+							padding: 3px 8px;
+							color: @blue;
+							font-size: 20px;
+							line-height: 20px;
+							font-weight: 200;
+							text-decoration: none;
+							&:hover {
+								background: @blue;
+								color: #fff;
+							}
+							&.sort {
+								cursor: move;
+							}
+						}
 					}
 				}
 			}
@@ -1131,6 +1175,27 @@ input[type=submit] {
 						background: @blue;
 						margin: -1px;
 						border: 1px solid #669bcd;
+					}
+				}
+			}
+		}
+	}
+}
+
+/*
+ * Map editor
+ */
+
+.map-editor-container {
+	#editor {
+		.map-editor-subcontent {
+			.map-layers {
+				padding: 20px 0;
+				background: #666;
+				color: #fff;
+				.obj-list {
+					li {
+						background: #777;
 					}
 				}
 			}

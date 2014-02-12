@@ -74,114 +74,140 @@ exports.MapCtrl = [
 
 			}
 
+			$scope.isEditing = function() {
+				return $location.path().indexOf('edit') !== -1;
+			}
+
 			Map.resource.get({mapId: $stateParams.mapId}, function(map) {
+
+				Page.setTitle(map.title);
 
 				$scope.map = angular.copy(map);
 
-				Layer.resource.query({
-					creatorOnly: true
-				}, function(res) {
+				if($scope.isEditing()) {
 
-					Page.setTitle(map.title);
+					Layer.resource.query({
+						creatorOnly: true
+					}, function(res) {
 
-					$scope.userLayers = res.layers;
+						$scope.userLayers = res.layers;
 
-					$scope.toggleLayer = function(layer) {
+					});
 
-						if(!$scope.map.layers)
-							$scope.map.layers = [];
+				}
 
-						var mapLayers = angular.copy($scope.map.layers);
+				$scope.focusLayer = function(layer) {
 
-						if($scope.hasLayer(layer)) {
+
+
+				};
+
+				$scope.toggleLayer = function(layer) {
+
+					if(!$scope.map.layers)
+						$scope.map.layers = [];
+
+					var mapLayers = angular.copy($scope.map.layers);
+
+					if($scope.hasLayer(layer)) {
+						if($scope.isEditing() && confirm('Tem certeza que gostaria de remover esta camada do seu mapa?'))
 							mapLayers = mapLayers.filter(function(layerId) { return layerId !== layer._id; });
-						} else {
-							mapLayers.push(layer._id);
-						}
+					} else {
+						mapLayers.push(layer._id);
+					}
 
-						$scope.map.layers = mapLayers;
+					$scope.map.layers = mapLayers;
 
-					};
+				};
 
-					$scope.hasLayer = function(layer) {
+				$scope.hasLayer = function(layer) {
 
-						if(!$scope.map.layers)
-							$scope.map.layers = [];
+					if(!$scope.map.layers)
+						$scope.map.layers = [];
 
-						return $scope.map.layers.filter(function(layerId) { return layerId == layer._id; }).length;
+					return $scope.map.layers.filter(function(layerId) { return layerId == layer._id; }).length;
 
-					};
+				};
 
-					// Cache fetched layers
-					var fetchedLayers = {};
+				// Cache fetched layers
+				var fetchedLayers = {};
+
+				var renderLayer = function(layer) {
+
+					$scope.layers.push(layer);
+					$scope.layers = $scope.layers; // update val (push method doesn't apply on angular)
+
+					// Add layer to map and get feature data
+					var layerData = MapService.addLayer(layer);
+
+					angular.forEach(layerData.markers, function(marker) {
+
+						marker
+							.on('click', function() {
+
+								if($location.path().indexOf('edit') == -1) {
+
+									$state.go('singleMap.feature', {
+										featureId: marker.mcFeature._id
+									});
+
+								} else {
+
+									// Do something?
+
+								}
+
+							})
+							.on('mouseover', function() {
+
+								marker.openPopup();
+
+							})
+							.on('mouseout', function() {
+
+								marker.closePopup();
+
+							})
+							.bindPopup('<h3 class="feature-title">' + marker.mcFeature.title + '</h3>');
+
+					});
+
+				};
+
+				$scope.$watch('map.layers', function(layers) {
+
+					MapService.clearAll();
 
 					$scope.layers = [];
 
-					var renderLayer = function(layer) {
+					angular.forEach(layers, function(layerId) {
 
-						$scope.layers.push(layer);
+						var layer,
+							layerData;
 
-						// Add layer to map and get feature data
-						var layerData = MapService.addLayer(layer);
-
-						angular.forEach(layerData.markers, function(marker) {
-
-							marker
-								.on('click', function() {
-
-									if($location.path().indexOf('edit') == -1) {
-
-										$state.go('singleMap.feature', {
-											featureId: marker.mcFeature._id
-										});
-
-									} else {
-
-										// Do something?
-
-									}
-
-								})
-								.on('mouseover', function() {
-
-									marker.openPopup();
-
-								})
-								.on('mouseout', function() {
-
-									marker.closePopup();
-
-								})
-								.bindPopup('<h3 class="feature-title">' + marker.mcFeature.title + '</h3>');
-
-						});
-
-					};
-
-					$scope.$watch('map.layers', function(layers) {
-
-						MapService.clearAll();
-
-						angular.forEach(layers, function(layerId) {
-
-							var layer,
-								layerData;
-
-							if(fetchedLayers[layerId]) {
-								layer = fetchedLayers[layerId];
+						if(fetchedLayers[layerId]) {
+							layer = fetchedLayers[layerId];
+							renderLayer(layer);
+						} else {
+							Layer.resource.get({layerId: layerId}, function(layer) {
+								layer = fetchedLayers[layer._id] = layer;
 								renderLayer(layer);
-							} else {
-								Layer.resource.get({layerId: layerId}, function(layer) {
-									layer = fetchedLayers[layer._id] = layer;
-									renderLayer(layer);
-								});
-							}
-
-						});
+							});
+						}
 
 					});
 
 				});
+
+				$scope.sortLayer = {
+					stop: function() {
+						var newOrder = [];
+						angular.forEach($scope.layers, function(layer) {
+							newOrder.push(layer._id);
+						});
+						$scope.map.layers = newOrder;
+					}
+				}
 
 				$scope.$on('map.save.success', function(event, map) {
 					Page.setTitle(map.title);
