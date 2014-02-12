@@ -84,26 +84,38 @@ exports.show = function(req, res){
  */
 
 exports.update = function(req, res){
+	
+	// console.log('Content body no PUT\n'+req.body);
+	
 	var 
 		content = req.content,
-		newFeaturesArray = req.body.features;
+		updatedSirTrevor = req.body.sirTrevorData,
+		updatedFeatures = req.body.features;
+	
+	// console.log('updatedSirTrevor no controller PUT\n'+updatedSirTrevor.length);
 
+	console.log('o content no update\n'+content);
+
+	delete req.body['creator'];
+	delete req.body.layer;
 	delete req.body.features;
 
 	content = extend(content, req.body)
-	// console.log('alô')
-	content.updateSirTrevor(req.body.sirTrevorData, function(err, ct){
-		// console.log('atualizou sirTrevor');
+
+	// console.log('esse é o content\n'+content);
+
+	content.updateSirTrevor(updatedSirTrevor, function(err, ct){
+		// console.log('atualizou sirTrevor, ficou assim\n'+ ct);
 		if (err) res.json(400, err);
 		else
-			ct.setFeatures(req.body.features, function(err, ct){
-				// console.log('atualizou features');	
+			ct.setFeatures(updatedFeatures, function(err, ct){
+				// console.log('atualizou features, ficou assim\n'+ ct);
 				if (err) res.json(400, err);
 				else
-					content.save(function(err){
-						// console.log('vai salvar');
+					ct.save(function(err){
+						// console.log('salvou isso\n'+ct);
 						if (err) res.json(400, err);
-						else res.json(content);
+						else res.json(ct);
 					});
 			});
 	});

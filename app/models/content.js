@@ -73,7 +73,6 @@ ContentSchema.pre('remove', function(next){
 			}, callback);
 		}
 	], next);
-	// ], function(){});
 
 });
 
@@ -133,7 +132,6 @@ ContentSchema.methods = {
 					callback();
 				else
 					async.each(featuresToRemove, function(item, cb){
-						
 						// find feature and remove reference to this content
 						mongoose.model('Feature').findById(item, function(err,ft){
 							ft.contents.pull(self._id);
@@ -168,11 +166,17 @@ ContentSchema.methods = {
 			imagesToRemove,
 			imagesToAdd;
 			
-		// console.log('sirTrevorData no updateSirTrevor\n'+sirTrevorData);
+		// console.log('self\n'+self);
+		console.log('sirTrevorData no updateSirTrevor\n'+sirTrevorData.length);
+		console.log('self.sirTrevorData\n'+this.sirTrevorData);		
 		
 		function getRemovedImages(sirTrevorData){
 			var removedImages = [];
+			console.log('entrou no getRemovedImages');
 			_.each(self.sirTrevorData, function(item){
+				console.log('item dentro do getRemoveImages\n'+item.data);
+				if (!item._id)
+					item._id = item.data._id;
 				if ((item.type == 'image') && !_.contains(sirTrevorData, item)) {
 					removedImages.push(item);
 				}
@@ -183,7 +187,7 @@ ContentSchema.methods = {
 		function getAddedImages(sirTrevorData){
 			var addedImages = [];
 			_.each(sirTrevorData, function(item){
-				// console.log('item dentro do getAddedImages\n'+item.data);
+				console.log('item dentro do getAddedImages\n'+item.data);
 				if (!item._id)
 					item._id = item.data._id;
 				if ((item.type == 'image') && !_.contains(self.sirTrevorData, item._id)) {
@@ -196,8 +200,8 @@ ContentSchema.methods = {
 		imagesToRemove = getRemovedImages(sirTrevorData);
 		imagesToAdd = getAddedImages(sirTrevorData);
 		
-		// console.log('imagesToAdd\n'+imagesToAdd);
-		// console.log('imagesToRemove\n'+imagesToRemove);
+		console.log('imagesToAdd\n'+imagesToAdd);
+		console.log('imagesToRemove\n'+imagesToRemove);
 		
 		async.parallel([
 			function(callback){
@@ -205,6 +209,7 @@ ContentSchema.methods = {
 					callback();
 				else
 					async.each(imagesToRemove, function(item, cb){
+						console.log('should remove item\n'+item);
 						mongoose.model('Image').findById(item.data._id).remove(cb)
 					}, callback);
 			},

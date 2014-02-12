@@ -548,9 +548,352 @@ describe('Content', function(){
 	 * Update Content
 	 */
 	describe('PUT /contents', function(){
+		context('not logged in', function(){
+			var 
+				content;
+				
+			before(function(done){
+				Factory.create('Content', {creator: user1, layer: layer1}, function(ct){
+					content = ct;
+					done();
+				});
+			});
+			
+			it('should redirect to /login', function (done) {
+				request(app)
+					.put(apiPrefix + '/contents/'+content._id)
+					.send(content)
+					.expect('Content-Type', /plain/)
+					.expect(302)
+					.expect('Location', '/login')
+					.expect(/Moved Temporarily/)
+					.end(done)
+			});
+		});
+
+		context('when logged in', function(){
+			describe('add 2 images and 2 features to a content', function(){
+				var
+					content,
+					image1,
+					image2,
+					feature1,
+					feature2;
+				
+				before(function(done){
+					async.parallel([
+						function(callback){
+							Factory.create('Image', {sourcefile: imageFile}, function(img1){
+								image1 = img1;
+								img1.uploadImageAndSave(imageFile, 'url', callback);
+							})
+						},
+						function(callback){
+							Factory.create('Image', {sourcefile: imageFile}, function(img2){
+								image2 = img2;
+								img2.uploadImageAndSave(imageFile, 'url', callback);
+							})
+						},
+						function(callback){
+							Factory.create('Feature', {creator: user1._id, layers: [layer1]}, function(ft1){
+								feature1 = ft1;
+								callback();
+							});
+						},
+						function(callback){
+							Factory.create('Feature', {creator: user1._id, layers: [layer1]}, function(ft2){
+								feature2 = ft2;
+								callback();
+							});
+						}
+					], function(err){
+							Factory.create('Content', {creator: user1, layer: layer1}, function(cnt){
+								content = cnt;
+								done();
+							});
+					});
+				});	
+
+				it('should the updated content as JSON', function(done){
+					
+					content.sirTrevorData = [{
+						data: image1,
+						type: "image"
+					},{
+						data: image2,
+						type: "image"
+					}];
+					
+					content.features = [feature1._id, feature2._id];
+					
+					// console.log('PUT content\n'+content);
+					
+					loggedAgent
+						.put(apiPrefix + '/contents/'+content._id)
+						.send(content)
+						.expect('Content-Type', /json/)
+						.expect(200)
+						.end(function(err,res){
+							// console.log('response after post content\n' + res.body);
+							
+							// verifies response body
+							res.body.creator.should.eql(user1._id.toHexString());
+							res.body.layer._id.should.eql(layer1._id.toHexString());
+							res.body.features.length.should.eql(2);
+							res.body.features.should.include(feature1._id.toHexString());
+							res.body.features.should.include(feature2._id.toHexString());
+							res.body.sirTrevorData.length.should.eql(2);
+							res.body.sirTrevorData[0].data._id.should.eql(image1._id.toHexString());
+							res.body.sirTrevorData[1].data._id.should.eql(image2._id.toHexString());
+							res.body.title.should.eql(content.title);
+
+							// verifies saved objects
+							async.parallel([
+								function(callback){
+									
+									// the content
+									Content.findById(res.body._id, function(err, ct){
+										should.not.exist(err);
+										should.exist(ct);
+										ct.creator.should.eql(user1._id);
+										ct.layer.should.eql(layer1._id);
+										ct.features.length.should.eql(2);
+										ct.features.should.include(feature1._id);
+										ct.features.should.include(feature2._id);
+										ct.sirTrevorData.length.should.eql(2);
+										ct.sirTrevorData[0].data._id.should.eql(image1._id.toHexString());
+										ct.sirTrevorData[1].data._id.should.eql(image2._id.toHexString());
+										callback();
+									})
+								},
+								function(callback){
+									// the features
+									async.parallel([
+										function(cb){
+											Feature.findById(res.body.features[0], function(err, ft){
+												// console.log('the feature in db\n'+ft);
+												should.not.exist(err);
+												should.exist(ft);
+												ft.creator.should.eql(user1._id);
+												ft.layers.should.include(layer1._id);
+												ft.contents.length.should.eql(1);
+												ft.contents.should.include(content._id);
+												cb();
+											});
+										},
+										function(cb){
+											Feature.findById(res.body.features[1], function(err, ft){
+												// console.log('the feature in db\n'+ft);
+												should.not.exist(err);
+												should.exist(ft);
+												ft.creator.should.eql(user1._id);
+												ft.layers.should.include(layer1._id);
+												ft.contents.length.should.eql(1);
+												ft.contents.should.include(content._id);
+												cb();
+											});
+										},
+										function(callback){
+											Image.findById(res.body.sirTrevorData[0].data._id, function(err, img){
+												// console.log('the image in db\n'+img);
+												should.not.exist(err);
+												should.exist(img);
+												img.content.should.eql(content._id);
+												callback();
+											});
+										},
+										function(callback){
+											Image.findById(res.body.sirTrevorData[1].data._id, function(err, img){
+												// console.log('the image in db\n'+img);
+												should.not.exist(err);
+												should.exist(img);
+												img.content.should.eql(content._id);
+												callback();
+											});
+										}
+									], callback);
+								}], done);
+						});
+					});
+			});
+			
+			describe('remove a image from content', function(){
+				var
+					content,
+					image1,
+					image2,
+					feature1,
+					feature2;
+				
+				before(function(done){
+					async.parallel([
+						function(callback){
+							Factory.create('Image', {sourcefile: imageFile}, function(img1){
+								image1 = img1;
+								image1.uploadImageAndSave(imageFile, 'url', callback);
+							})
+						},
+						function(callback){
+							Factory.create('Image', {sourcefile: imageFile}, function(img2){
+								image2 = img2;
+								image1.uploadImageAndSave(imageFile, 'url', callback);
+							})
+						},
+						function(callback){
+							Factory.create('Feature', {creator: user1._id, layers: [layer1]}, function(ft1){
+								feature1 = ft1;
+								callback();
+							});
+						},
+						function(callback){
+							Factory.create('Feature', {creator: user1._id, layers: [layer1]}, function(ft2){
+								feature2 = ft2;
+								callback();
+							});
+						}
+					], function(err){
+							Factory.create('Content', {creator: user1, layer: layer1}, function(cnt){
+								var sirTrevorData = [{
+									data: image1,
+									type: "image"
+								},{
+									data: image2,
+									type: "image"
+								}];
+
+								var theFeatures = [feature1._id, feature2._id];
+								console.log('preparou o content');
+								cnt.updateSirTrevor(sirTrevorData, function(err, cnt1){
+									should.not.exist(err);
+									console.log('Content depois do sirTrevor no build\n'+cnt1);
+									cnt1.setFeatures(theFeatures, function(err, cnt2){
+										should.not.exist(err);
+										cnt2.save(function(err){
+											// reload content
+											Content.findById(cnt2._id, function(err, cnt3){
+												console.log('o content no DB\n'+cnt);
+												content = cnt3;
+											})
+											done();
+										});
+									});
+								});
+							});
+					});
+				});
+
+					it('should the updated content as JSON', function(done){
+
+						content.sirTrevorData = [{
+							data: image2,
+							type: "image"
+						}];
+
+						content.features = [feature1._id, feature2._id];
+
+						console.log('PUT content\n'+content);
+
+						loggedAgent
+							.put(apiPrefix + '/contents/'+content._id)
+							.send(content)
+							.expect('Content-Type', /json/)
+							.expect(200)
+							.end(function(err,res){
+								console.log('response after post content\n' + res.body.sirTrevorData.length);
+
+								// verifies response body
+								res.body.creator.should.eql(user1._id.toHexString());
+								res.body.layer._id.should.eql(layer1._id.toHexString());
+								res.body.features.length.should.eql(2);
+								res.body.features.should.include(feature1._id.toHexString());
+								res.body.features.should.include(feature2._id.toHexString());
+								res.body.sirTrevorData.length.should.eql(1);
+								res.body.sirTrevorData[0].data._id.should.eql(image2._id.toHexString());
+								res.body.title.should.eql(content.title);
+
+								// verifies saved objects
+								async.parallel([
+									function(callback){
+
+										// the content
+										Content.findById(res.body._id, function(err, ct){
+											should.not.exist(err);
+											should.exist(ct);
+											ct.creator.should.eql(user1._id);
+											ct.layer.should.eql(layer1._id);
+											ct.features.length.should.eql(2);
+											ct.features.should.include(feature1._id);
+											ct.features.should.include(feature2._id);
+											ct.sirTrevorData.length.should.eql(1);
+											ct.sirTrevorData[0].data._id.should.eql(image2._id.toHexString());
+											callback();
+										})
+									},
+									function(callback){
+										// the features
+										async.parallel([
+											function(cb){
+												Feature.findById(res.body.features[0], function(err, ft){
+													// console.log('the feature in db\n'+ft);
+													should.not.exist(err);
+													should.exist(ft);
+													ft.creator.should.eql(user1._id);
+													ft.layers.should.include(layer1._id);
+													ft.contents.length.should.eql(1);
+													ft.contents.should.include(content._id);
+													cb();
+												});
+											},
+											function(cb){
+												Feature.findById(res.body.features[1], function(err, ft){
+													// console.log('the feature in db\n'+ft);
+													should.not.exist(err);
+													should.exist(ft);
+													ft.creator.should.eql(user1._id);
+													ft.layers.should.include(layer1._id);
+													ft.contents.length.should.eql(1);
+													ft.contents.should.include(content._id);
+													cb();
+												});
+											},
+											function(callback){
+												Image.findById(res.body.sirTrevorData[0].data._id, function(err, img){
+													// console.log('the image in db\n'+img);
+													should.not.exist(err);
+													should.exist(img);
+													img.content.should.eql(content._id);
+													callback();
+												});
+											},
+											function(callback){
+												Image.findById(image1._id, function(err, img){
+													// console.log('the image in db\n'+img);
+													should.not.exist(err);
+													should.not.exist(img);
+													callback();
+												});
+											}
+										], callback);
+									}], done);
+							});
+				});
+			});
+			describe('remove a feature from content', function(){});
+			describe('remove all features and images from content', function(){});
+			
+		});
+	});
+	
+	/**
+	 * Delete Content
+	 */
+	describe('DEL /contents', function(){
 	
 	
 	});
+	
+	
+	
 	
 });
 
