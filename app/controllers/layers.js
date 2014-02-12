@@ -37,20 +37,29 @@ exports.index = function(req, res){
 			$or: [ {creator: req.user} , {visibility: 'Visible'} ]
 		}
 	}
-
+	
 	if(req.param('creatorOnly'))
 		options.criteria = { creator: req.user }
+		
+	if (req.param('search'))
+		options.criteria = {
+			$and: [
+				options.criteria,
+				{ title: { $regex: req.param('search'), $options: 'i' }}
+			]
+		}
 
-	Layer.list(options, function(err, layers) {
-		if (err) return res.json(400, err);
-		Layer.count(options.criteria).exec(function (err, count) {
-			if (!err) {
-				res.json({options: options, layersTotal: count, layers: layers});
-			} else {
-				res.json(400, err)
-			} 
-		})
-	})
+	// if (!req.param('search')) {
+		Layer.list(options, function(err, layers) {
+			if (err) return res.json(400, err);
+			Layer.count(options.criteria).exec(function (err, count) {
+				if (!err) {
+					res.json({options: options, layersTotal: count, layers: layers});
+				} else {
+					res.json(400, err)
+				} 
+			});
+		});
 }
 
 /**
