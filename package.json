@@ -62,7 +62,7 @@
 		"angular-fitvids": "jimmyhillis/angular-fitvids",
 		"angular-ui-utils": "angular-ui/ui-utils",
 		"angular-ui-router": "angular-ui/ui-router",
-		"angular-modal": "btford/angular-modal",
+		"angular-modal": "miguelpeixe/angular-modal",
 		"eventable": "madebymany/eventable",
 		"sir-trevor": "madebymany/sir-trevor-js"
 	},
