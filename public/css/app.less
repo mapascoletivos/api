@@ -1196,6 +1196,18 @@ input[type=submit] {
 				.obj-list {
 					li {
 						background: #777;
+						&:hover {
+							background: #888;
+						}
+						.actions {
+							a {
+								color: @light-blue;
+								&:hover {
+									background: @light-blue;
+									color: #fff;
+								}
+							}
+						}
 					}
 				}
 			}

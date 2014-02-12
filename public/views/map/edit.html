@@ -81,8 +81,8 @@
 										<ul class="obj-list" ui-sortable="sortLayer" ng-model="layers">
 											<li ng-repeat="layer in layers" ng-click="focusLayer(layer)" class="sortable">
 												<p class="actions">
+													<a href="/layers/{{layer._id}}" target="_blank" class="lsf view-layer" title="Ver camada">&#xE13a;</a>
 													<a href="javascript:void(0);" class="lsf remove-layer" title="Remover camada" ng-click="toggleLayer(layer)">&#xE12c;</a>
-													<a href="javascript:void(0);" class="lsf sort" title="Mover camada">&#xE120;</a>
 												</p>
 												{{layer.title}}
 											</li>
@@ -90,9 +90,10 @@
 									</div>
 									<input class="filter" type="text" ng-model="search" placeholder="Encontrar camadas" />
 									<ul class="obj-list available-layers">
-										<li ng-repeat="layer in userLayers" class="add" ng-click="toggleLayer(layer)" ng-hide="hasLayer(layer)">
+										<li ng-repeat="layer in userLayers" class="add" ng-hide="hasLayer(layer)">
 											<p class="actions">
-												<a href="javascript:void(0);" class="lsf add-button" title="Adicionar camada">&#xE108;</a>
+												<a href="/layers/{{layer._id}}" target="_blank" class="lsf view-layer" title="Ver camada">&#xE13a;</a>
+												<a href="javascript:void(0);" class="lsf add-button" ng-click="toggleLayer(layer)" title="Adicionar camada">&#xE108;</a>
 											</p>
 											{{layer.title}}
 										</li>
