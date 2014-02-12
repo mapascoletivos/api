@@ -57,7 +57,7 @@ exports.create = function (req, res) {
 		
 		var image = new Image();
 
-		baseUrl = req.protocol + "://" + req.get('host') + '/uploads/images/large_';
+		baseUrl = req.protocol + "://" + req.get('host') + '/uploads/images/img_';
 
 		image.uploadImageAndSave(req.files.attachment.file, baseUrl, function(err){
 			if (err) return res.json(400, err);

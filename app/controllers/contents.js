@@ -28,19 +28,19 @@ exports.load = function(req, res, next, id){
  */
 
 exports.create = function (req, res) {
-	
-	var 
-		newFeaturesArray = req.body.features;
 
-	// clear fields from body that should be handled internally
-	delete req.body['_id'];
-	delete req.body['id'];	
+	// console.log('Content POST\n'+req.body);
+
+	// clear field from body that should be handled internally
 	delete req.body['creator'];
-	delete req.body['features'];
 
 	var 
-		content = new Content(req.body);
-
+		content = new Content(req.body)
+		newFeaturesArray = req.body.features;
+		
+	// console.log('newFeaturesArray\n' + req.body.features);
+	// console.log('sirTrevorData que chegou no create\n' + req.body.sirTrevorData);
+	
 	// associate content to user originating request
 	content.creator = req.user;
 	
@@ -51,9 +51,19 @@ exports.create = function (req, res) {
 			layer.save(function(err){
 				if (err) res.json(400, err);
 				else {
-					content.setFeaturesAndSave(newFeaturesArray, function(err){
+					content.updateSirTrevor(req.body.sirTrevorData, function(err, ct){
+						// console.log('content apos updateSirTrevorData\n'+ct);
 						if (err) res.json(400, err);
-						else res.json(content);
+						else
+							ct.setFeatures(req.body.features, function(err,ct){
+								if (err) res.json(400, err);
+								else
+									content.save(function(err){
+										// console.log('salvou o content assim\n'+content);
+										if (err) res.json(400, err);
+										else res.json(content);
+									});
+							});
 					});
 				}
 			});
@@ -81,13 +91,22 @@ exports.update = function(req, res){
 	delete req.body.features;
 
 	content = extend(content, req.body)
-
-	// content.checkForRemovedImages(req.body.sirTrevorData, function(err){
-		content.setFeaturesAndSave(newFeaturesArray, function(err){
-			if (err) res.json(400, err);
-			else res.json(content);		
-		});		
-	// })
+	// console.log('alô')
+	content.updateSirTrevor(req.body.sirTrevorData, function(err, ct){
+		// console.log('atualizou sirTrevor');
+		if (err) res.json(400, err);
+		else
+			ct.setFeatures(req.body.features, function(err, ct){
+				// console.log('atualizou features');	
+				if (err) res.json(400, err);
+				else
+					content.save(function(err){
+						// console.log('vai salvar');
+						if (err) res.json(400, err);
+						else res.json(content);
+					});
+			});
+	});
 
 }
 

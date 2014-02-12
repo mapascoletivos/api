@@ -45,7 +45,7 @@ describe('Content Model', function(){
 
 
 
-	describe('.setFeaturesAndSave()', function(){
+	describe('.setFeatures()', function(){
 		var
 			feature1,
 			feature2,
@@ -65,22 +65,25 @@ describe('Content Model', function(){
 		});
 
 		it('should set association in both sides', function(done){
-			content.setFeaturesAndSave([feature1._id, feature2._id], function(err){
+			content.setFeatures([feature1._id, feature2._id], function(err, ct){
 				should.not.exist(err);
-				Content.findById(content._id, function(err, ct){
+				ct.save(function(err){
 					should.not.exist(err);
-					ct.features.should.include(feature1._id);
-					ct.features.should.include(feature2._id);
-					Feature.findById(feature1._id, function(err, ft1){
+					Content.findById(content._id, function(err, ct){
 						should.not.exist(err);
-						ft1.contents.should.include(content._id);
-						Feature.findById(feature2._id, function(err, ft2){
+						ct.features.should.include(feature1._id);
+						ct.features.should.include(feature2._id);
+						Feature.findById(feature1._id, function(err, ft1){
 							should.not.exist(err);
-							ft2.contents.should.include(content._id);
-							done();
+							ft1.contents.should.include(content._id);
+							Feature.findById(feature2._id, function(err, ft2){
+								should.not.exist(err);
+								ft2.contents.should.include(content._id);
+								done();
+							});
 						});
 					});
-				});
+				})
 			});
 		});
 	});
