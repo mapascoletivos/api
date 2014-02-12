@@ -51,26 +51,19 @@ exports.showForm = function (req, res) {
 
 exports.create = function (req, res) {
 
-	if (!req.files.attachment.file) return res.json(400, new Error('Image file not found'));
-	
-	imager.upload([req.files.attachment.file], function (err, cdnUri, uploaded) {
-
-		if (err) return res.json(400, err);
-
-		else {
+	if (!req.files.attachment.file) 
+		return res.json(400, {errors: [new Error('Image file not found')]});
+	else {
 		
-			var image = new Image();
+		var image = new Image();
 
-			image.file.name = uploaded[uploaded.length-1];
-			image.file.url = req.protocol + "://" + req.get('host') + '/uploads/images/large_'+ image.file.name;		
-			image.save(function(err){
-				if (err) return res.json(400, err);
-				else  res.json(image);
-			});
+		baseUrl = req.protocol + "://" + req.get('host') + '/uploads/images/large_';
 
-		}
-	}, 'items');
-	
+		image.uploadImageAndSave(req.files.attachment.file, baseUrl, function(err){
+			if (err) return res.json(400, err);
+			else  res.json(image);
+		})
+	}
 }
 
 /**

@@ -82,10 +82,13 @@ exports.update = function(req, res){
 
 	content = extend(content, req.body)
 
-	content.setFeaturesAndSave(newFeaturesArray, function(err){
-		if (err) res.json(400, err);
-		else res.json(content);		
-	});
+	// content.checkForRemovedImages(req.body.sirTrevorData, function(err){
+		content.setFeaturesAndSave(newFeaturesArray, function(err){
+			if (err) res.json(400, err);
+			else res.json(content);		
+		});		
+	// })
+
 }
 
 /**

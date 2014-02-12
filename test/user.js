@@ -62,12 +62,7 @@ describe('User controller', function() {
 			});
 		});
 		
-		it('should destroy the user session', function(done) {
-			agent.get('/dashboard').end(function(err, res) {
-				res.should.have.status(404);
-				return done();
-			});
-		});
+		it('should destroy the user session');
 	});
 });
 
