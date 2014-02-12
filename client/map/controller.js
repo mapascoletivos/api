@@ -76,8 +76,6 @@ exports.MapCtrl = [
 
 			Map.resource.get({mapId: $stateParams.mapId}, function(map) {
 
-				console.log(map);
-
 				$scope.map = angular.copy(map);
 
 				Layer.resource.query({

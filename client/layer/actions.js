@@ -17,33 +17,25 @@ exports.LayerActionsCtrl = [
 	'LayerShare',
 	function($rootScope, $scope, $q, $location, Message, Session, Layer, LayerShare) {
 
-		$scope.share = function(layer) {
-			LayerShare.activate({
-				layer: layer,
-				social: {
-					facebook: 'http://facebook.com/share.php?u=' + 'http://google.com/',
-					twitter: 'http://twitter.com/share?url=' + 'http://google.com/'
-				},
-				socialWindow: function(url, type) {
-					window.open(url, type, "width=550,height=300,resizable=1");
-				},
-				close: function() {
-					LayerShare.deactivate();
-				}
-			});
-
-			$scope.$on('$destroy', function() {
-				LayerShare.deactivate();
-			});
-		};
-
-		$scope.templates = {
-			list: '/views/layer/list-item.html'
-		};
-
 		$scope.getUrl = function(layer) {
 
+		};
 
+		/*
+		 * Permission control
+		 */
+		$scope.canEdit = function(layer) {
+
+			if(!layer || !Session.user)
+				return false;
+
+			if(typeof layer.creator == 'string' && layer.creator == Session.user._id) {
+				return true;
+			} else if(typeof layer.creator == 'object' && layer.creator._id == Session.user._id) {
+				return true;
+			}
+
+			return false;
 
 		};
 
@@ -97,6 +89,30 @@ exports.LayerActionsCtrl = [
 				});
 			}
 
+		};
+
+		$scope.share = function(layer) {
+			LayerShare.activate({
+				layer: layer,
+				social: {
+					facebook: 'http://facebook.com/share.php?u=' + 'http://google.com/',
+					twitter: 'http://twitter.com/share?url=' + 'http://google.com/'
+				},
+				socialWindow: function(url, type) {
+					window.open(url, type, "width=550,height=300,resizable=1");
+				},
+				close: function() {
+					LayerShare.deactivate();
+				}
+			});
+
+			$scope.$on('$destroy', function() {
+				LayerShare.deactivate();
+			});
+		};
+
+		$scope.templates = {
+			list: '/views/layer/list-item.html'
 		};
 
 	}
