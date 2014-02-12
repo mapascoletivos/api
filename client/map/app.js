@@ -2,6 +2,7 @@
 
 require('angular/angular');
 require('angular-modal/modal');
+require('angular-ui-sortable/src/sortable');
 
 /* 
  * Map module
@@ -9,6 +10,7 @@ require('angular-modal/modal');
 angular
 	.module('mapasColetivos.map', [
 		'btford.modal',
+		'ui.sortable',
 		'mapasColetivos.leaflet',
 		'mapasColetivos.layer'
 	])

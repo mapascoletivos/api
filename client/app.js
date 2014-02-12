@@ -1,5 +1,6 @@
 'use strict';
 
+require('jquery-ui-browserify');
 require('angular/angular');
 require('angular-route/angular-route');
 require('angular-ui-router/release/angular-ui-router');
