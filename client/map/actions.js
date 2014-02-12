@@ -19,6 +19,10 @@ exports.MapActionsCtrl = [
 
 		$scope.getUrl = function(map) {
 
+			var url = window.location.protocol + '//' + window.location.host + '/maps/' + map._id;
+
+			return url;
+
 		};
 
 		/*
@@ -95,8 +99,8 @@ exports.MapActionsCtrl = [
 			MapShare.activate({
 				map: map,
 				social: {
-					facebook: 'http://facebook.com/share.php?u=' + 'http://google.com/',
-					twitter: 'http://twitter.com/share?url=' + 'http://google.com/'
+					facebook: 'http://facebook.com/share.php?u=' + $scope.getUrl(map),
+					twitter: 'http://twitter.com/share?url=' + $scope.getUrl(map)
 				},
 				socialWindow: function(url, type) {
 					window.open(url, type, "width=550,height=300,resizable=1");

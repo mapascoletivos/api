@@ -19,6 +19,10 @@ exports.LayerActionsCtrl = [
 
 		$scope.getUrl = function(layer) {
 
+			var url = window.location.protocol + '//' + window.location.host + '/layers/' + layer._id;
+
+			return url;
+
 		};
 
 		/*
@@ -95,8 +99,8 @@ exports.LayerActionsCtrl = [
 			LayerShare.activate({
 				layer: layer,
 				social: {
-					facebook: 'http://facebook.com/share.php?u=' + 'http://google.com/',
-					twitter: 'http://twitter.com/share?url=' + 'http://google.com/'
+					facebook: 'http://facebook.com/share.php?u=' + $scope.getUrl(layer),
+					twitter: 'http://twitter.com/share?url=' + $scope.getUrl(layer)
 				},
 				socialWindow: function(url, type) {
 					window.open(url, type, "width=550,height=300,resizable=1");
