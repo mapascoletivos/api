@@ -12,7 +12,7 @@
 	"main": "web.js",
 	"scripts": {
 		"watch": "NODE_PATH=./app/controllers NODE_ENV=development; watchify client/app.js -o public/app.js -v & ./node_modules/.bin/nodemon web.js",
-		"start": "browserify client/app.js | uglifyjs -mt > public/app.js",
+		"start": "NODE_PATH=./app/controllers NODE_ENV=development; browserify client/app.js | uglifyjs -mt > public/app.js & node web.js",
 		"install": "napa",
 		"test": "make test"
 	},
