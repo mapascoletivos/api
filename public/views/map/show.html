@@ -35,16 +35,14 @@
 			</div>
 		</div>
 	</div>
-	<div class="map-container">
+	<div class="map-container" ng-controller="FeatureCtrl">
 		<div id="map"></div>
 	</div>
 	<div id="map-sidebar">
 		<div class="map-layers">
-			<h2>Camadas</h2>
 			<ul class="layer-list">
 				<li ng-repeat="layer in layers">
-					<h3 ng-click="toggleLayer(layer)">{{layer.title}}</h3>
-					<ul class="layer-contents">
+					<ul class="layer-contents" ng-controller="ContentCtrl">
 						<li ng-repeat="content in layer.contents">
 							<h4><a href="/maps/{{map._id}}/content/{{content._id}}">{{content.title}}</a></h4>
 						</li>

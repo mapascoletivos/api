@@ -93,7 +93,7 @@ exports.FeatureCtrl = [
 			var contents = Feature.getContents(feature);
 
 			$scope.sharedData.contents(contents);
-			unhookContents = $rootScope.$on('layerContentsReady', function() {
+			unhookContents = $rootScope.$on('contents.ready', function() {
 				$scope.sharedData.contents(contents);
 			});
 
