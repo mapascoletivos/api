@@ -90,6 +90,9 @@ exports.LayerCtrl = [
 				// Set layer shared data using service (resolving promise)
 				layerDefer.resolve(layer);
 
+				// Set feature shared data
+				Feature.set(layer.features);
+
 				// Set content shared data
 				Content.set(layer.contents);
 
@@ -108,6 +111,8 @@ exports.LayerCtrl = [
 				 * Edit functions
 				 */
 				if($location.path().indexOf('edit') !== -1) {
+
+					Layer.edit(layer);
 
 					if($scope.layer.title == 'Untitled') {
 						$scope.layer.title = '';

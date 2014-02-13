@@ -10,12 +10,20 @@ exports.ContentEditCtrl = [
 	'$scope',
 	'$rootScope',
 	'Content',
+	'Layer',
 	'MessageService',
 	'SirTrevor',
 	'MapService',
-	function($scope, $rootScope, Content, Message, SirTrevor, MapService) {
+	function($scope, $rootScope, Content, Layer, Message, SirTrevor, MapService) {
 
-		var original = false;
+		var original,
+			layer;
+
+		$scope.$layer = Layer;
+
+		$scope.$watch('$layer.edit()', function(editing) {
+			layer = editing;
+		});
 
 		$scope.$content = Content;
 
@@ -105,7 +113,7 @@ exports.ContentEditCtrl = [
 					Content.set($scope.contents);
 
 					// Update editing content to saved data
-					Content.editing(angular.copy(content));
+					Content.edit(angular.copy(content));
 
 					Message.message({
 						status: 'ok',
