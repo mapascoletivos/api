@@ -19,23 +19,7 @@ exports.MapCtrl = [
 	'SessionService',
 	function($scope, $location, $state, $stateParams, Page, Map, Layer, MapService, Message, Session) {
 
-		/*
-		 * Permission control
-		 */
-		$scope.canEdit = function(map) {
-
-			if(!map || !Session.user)
-				return false;
-
-			if(typeof map.creator == 'string' && map.creator == Session.user._id) {
-				return true;
-			} else if(typeof map.creator == 'object' && map.creator._id == Session.user._id) {
-				return true;
-			}
-
-			return false;
-
-		};
+		$scope.user = Session.user;
 
 		// New layer
 		if($location.path() == '/maps/new') {
@@ -91,10 +75,37 @@ exports.MapCtrl = [
 					}, function(res) {
 
 						$scope.userLayers = res.layers;
+						$scope.availableLayers = angular.copy($scope.userLayers);
 
 					});
 
 				}
+
+				$scope.layerSearch = '';
+
+				$scope.$watch('layerSearch', function(text) {
+
+					if(text) {
+
+						Layer.resource.query({
+							search: text
+						}, function(res) {
+
+							if(res.layers) {
+
+								$scope.availableLayers = res.layers;
+
+							}
+
+						});
+
+					} else {
+
+						$scope.availableLayers = angular.copy($scope.userLayers);
+
+					}
+
+				});
 
 				$scope.focusLayer = function(layer) {
 
