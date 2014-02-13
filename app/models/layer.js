@@ -66,7 +66,7 @@ LayerSchema.statics = {
 
 	load: function (id, cb) {
 		this.findOne({ _id : id })
-			.populate('creator')
+			.populate('creator', 'name email')
 			.populate('features')
 			.populate('contents')
 			.exec(cb)
