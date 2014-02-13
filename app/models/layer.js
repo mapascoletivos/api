@@ -77,6 +77,7 @@ LayerSchema.statics = {
 
 		this
 			.find(criteria)
+			.populate('creator')
 			.sort({'createdAt': -1}) // sort by date
 			.limit(options.perPage)
 			.skip(options.perPage * options.page)

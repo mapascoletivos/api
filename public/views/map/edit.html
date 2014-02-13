@@ -1,4 +1,4 @@
-<div class="map-editor-container" ng-controller="MapActionsCtrl">
+<div class="map-editor-container">
 	<div class="editor-container">
 		<div id="editor">
 			<div class="editor-content">
@@ -29,7 +29,7 @@
 								</a>
 							</li>
 						</ul>
-						<div ng-show="mapObj('settings')">
+						<div ng-show="mapObj('settings')" ng-controller="MapActionsCtrl">
 							<div id="settings">
 								<table class="options-table">
 									<tr>
@@ -85,19 +85,22 @@
 													<a href="javascript:void(0);" class="lsf remove-layer" title="Remover camada" ng-click="toggleLayer(layer)">&#xE12c;</a>
 												</p>
 												{{layer.title}}
+												<span class="author" ng-show="layer.creator._id != user._id">por {{layer.creator.name}}</span>
 											</li>
 										</ul>
 									</div>
-									<input class="filter" type="text" ng-model="search" placeholder="Encontrar camadas" />
-									<ul class="obj-list available-layers">
-										<li ng-repeat="layer in userLayers" class="add" ng-hide="hasLayer(layer)">
+									<input class="filter" type="text" ng-model="layerSearch" placeholder="Encontrar camadas" />
+									<ul class="obj-list available-layers" ng-show="availableLayers.length">
+										<li ng-repeat="layer in availableLayers | filter:layerSearch" class="add" ng-hide="hasLayer(layer)">
 											<p class="actions">
 												<a href="/layers/{{layer._id}}" target="_blank" class="lsf view-layer" title="Ver camada">&#xE13a;</a>
 												<a href="javascript:void(0);" class="lsf add-button" ng-click="toggleLayer(layer)" title="Adicionar camada">&#xE108;</a>
 											</p>
 											{{layer.title}}
+											<span class="author" ng-show="layer.creator._id != user._id">por {{layer.creator.name}}</span>
 										</li>
 									</ul>
+									<p class="tip" ng-hide="availableLayers.length">Nenhuma camada foi encontrada</p>
 								</div>
 							</div>
 						</div>
@@ -105,7 +108,7 @@
 				</div>
 			</div>
 		</div>
-		<form class="primary-actions" ng-submit="save()">
+		<form class="primary-actions" ng-controller="MapActionsCtrl" ng-submit="save(map)">
 			<a href="javascript:void(0);" class="button button-secondary" ng-click="close()">
 				<span ng-hide="map.isDraft">Ver mapa</span>
 				<span ng-show="map.isDraft">Cancelar</span>
