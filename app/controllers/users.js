@@ -68,10 +68,9 @@ exports.create = function (req, res) {
   user.provider = 'local';
   user.save(function (err) {
     if (err) {
-      return res.render('users/signup', {
+      return res.json({
         errors: utils.errors(err.errors),
-        user: user,
-        title: 'Sign up'
+        user: user
       });
     }
 
