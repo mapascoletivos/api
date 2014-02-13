@@ -8,34 +8,19 @@ require('angular-resource/angular-resource');
  */
 exports.LayerCtrl = [
 	'$scope',
+	'$rootScope',
 	'$location',
 	'$stateParams',
 	'$q',
 	'Page',
 	'Layer',
+	'Feature',
+	'Content',
 	'LayerSharedData',
 	'MessageService',
 	'SessionService',
 	'MapService',
-	function($scope, $location, $stateParams, $q, Page, Layer, LayerSharedData, Message, Session, MapService) {
-
-		/*
-		 * Permission control
-		 */
-		$scope.canEdit = function(layer) {
-
-			if(!layer || !Session.user)
-				return false;
-
-			if(typeof layer.creator == 'string' && layer.creator == Session.user._id) {
-				return true;
-			} else if(typeof layer.creator == 'object' && layer.creator._id == Session.user._id) {
-				return true;
-			}
-
-			return false;
-
-		};
+	function($scope, $rootScope, $location, $stateParams, $q, Page, Layer, Feature, Content, LayerSharedData, Message, Session, MapService) {
 
 		// New layer
 		if($location.path() == '/layers/new') {
@@ -51,9 +36,6 @@ exports.LayerCtrl = [
 
 		// Single layer
 		} else if($stateParams.layerId) {
-
-			var layerDefer = $q.defer();
-			LayerSharedData.layer(layerDefer.promise);
 
 			$scope.activeObj = 'settings';
 
@@ -85,7 +67,14 @@ exports.LayerCtrl = [
 				$location.path('/dashboard/layers').replace();
 			});
 
+			var layerDefer = $q.defer();
+			LayerSharedData.layer(layerDefer.promise);
+
 			Layer.resource.get({layerId: $stateParams.layerId}, function(layer) {
+
+				$scope.layer = layer;
+
+				$rootScope.$broadcast('layer.data.ready', layer);
 
 				Page.setTitle(layer.title);
 
@@ -101,8 +90,10 @@ exports.LayerCtrl = [
 				// Set layer shared data using service (resolving promise)
 				layerDefer.resolve(layer);
 
-				$scope.layer = layer;
+				// Set content shared data
+				Content.set(layer.contents);
 
+				/*
 				// Store shared data on scope
 				$scope.sharedData = LayerSharedData;
 
@@ -111,6 +102,7 @@ exports.LayerCtrl = [
 				$scope.$watch('sharedData.activeSidebar()', function(active) {
 					$scope.activeSidebar = active;
 				});
+				*/
 
 				/*
 				 * Edit functions

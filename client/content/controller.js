@@ -20,10 +20,23 @@ exports.ContentCtrl = [
 		
 		$scope.sharedData = LayerSharedData;
 
-		$scope.contents = [];
+		$scope.$content = Content;
+
+		$scope.$watch('$content.get()', function(contents) {
+			$scope.contents = contents;
+		});
 
 		$scope.renderBlock = function(block) {
 			return SirTrevor.renderBlock(block);
+		}
+
+		var viewState = function() {
+			if($stateParams.contentId) {
+				var content = $scope.contents.filter(function(c) { return c._id == $stateParams.contentId; })[0];
+				$scope.view(content);
+				return true;
+			}
+			return false;
 		}
 
 		var viewing = false;
@@ -35,11 +48,11 @@ exports.ContentCtrl = [
 
 			viewing = true;
 
-			$scope.sharedData.activeSidebar(true);
+			//$scope.sharedData.activeSidebar(true);
 
 			var features = Content.getFeatures(content);
 			if(features) {
-				$scope.sharedData.features(features);
+				//$scope.sharedData.features(features);
 			}
 
 			$scope.content = content;
@@ -49,76 +62,54 @@ exports.ContentCtrl = [
 
 		$scope.close = function() {
 
-			$scope.sharedData.features($scope.layer.features);
+			//$scope.sharedData.features($scope.layer.features);
 			$scope.content = false;
-			$scope.sharedData.activeSidebar(false);
+			//$scope.sharedData.activeSidebar(false);
 			MapService.fitMarkerLayer();
 
 			viewing = false;
 
 		}
 
-		$scope.sharedData.layer().then(function(layer) {
+		$scope.$on('layer.data.ready', function(event, layer) {
 
-			var viewState = function() {
-				if($stateParams.contentId) {
-					var content = layer.contents.filter(function(c) { return c._id == $stateParams.contentId; })[0];
-					$scope.view(content);
-					return true;
-				}
-				return false;
-			}
+			$scope.contents = layer.contents;
+
+		});
+
+		$scope.$watch('contents', function(contents) {
 
 			viewState();
 
-			$rootScope.$on('$stateChangeSuccess', function() {
-
-				if(!viewState() && viewing) {
-					$scope.close();
-				}
-
-			});
-
-			$scope.layer = layer;
-
-			$scope.sharedData.contents(layer.contents);
-
-			$rootScope.$broadcast('layerContentsReady');
-
-			$scope.$watch('sharedData.contents()', function(contents) {
-				$scope.contents = contents;
-			});
-
-			$scope.new = function() {
-
-				$scope.sharedData.editingContent({});
-
-			};
-
-			$scope.edit = function(contentId) {
-
-				$scope.sharedData.editingContent(angular.copy($scope.contents.filter(function(c) { return c._id == contentId; })[0]));
-
-				setTimeout(function() {
-					window.dispatchEvent(new Event('resize'));
-					document.getElementById('content-edit-body').scrollTop = 0;
-				}, 100);
-
-			};
-
-			$scope.$on('layerObjectChange', $scope.close);
-			$scope.$on('$stateChangeStart', $scope.close);
-
 		});
 
-		$scope.$on('closedContent', function() {
+		$scope.new = function() {
 
-			// Fix map size after 200ms (animation safe)
+			Content.edit({});
+
+		};
+
+		$scope.edit = function(contentId) {
+
+			Content.edit(angular.copy($scope.contents.filter(function(c) { return c._id == contentId; })[0]));
+
 			setTimeout(function() {
-				MapService.fitMarkerLayer();
-			}, 200);
+				window.dispatchEvent(new Event('resize'));
+				document.getElementById('content-edit-body').scrollTop = 0;
+			}, 100);
+
+		};
+
+		$rootScope.$on('$stateChangeSuccess', function() {
+
+			if(!viewState() && viewing) {
+				$scope.close();
+			}
 
 		});
+
+		$scope.$on('layerObjectChange', $scope.close);
+		$scope.$on('$stateChangeStart', $scope.close);
 
 	}
 ];
