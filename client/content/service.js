@@ -9,9 +9,7 @@ require('angular/angular');
 exports.Content = [
 	'$resource',
 	'apiPrefix',
-	'LayerSharedData',
-	'Feature',
-	function($resource, apiPrefix, LayerSharedData, Feature) {
+	function($resource, apiPrefix) {
 
 		var contents = [];
 		var editing = false;
@@ -50,15 +48,13 @@ exports.Content = [
 				return editing;
 			},
 			// Get content features method
-			getFeatures: function(content) {
+			getFeatures: function(content, features) {
 
 				if(content.features.length) {
 
-					var layerFeatures = LayerSharedData.features();
+					if(features && features.length) {
 
-					if(layerFeatures && layerFeatures.length) {
-
-						var contentFeatures = layerFeatures.filter(function(feature) {
+						var contentFeatures = features.filter(function(feature) {
 							return content.features.indexOf(feature._id) !== -1;
 						});
 

@@ -6,8 +6,7 @@
 exports.Feature = [
 	'$resource',
 	'apiPrefix',
-	'LayerSharedData',
-	function($resource, apiPrefix, LayerSharedData) {
+	function($resource, apiPrefix) {
 
 		var features = [];
 		var editing = false;
@@ -42,15 +41,13 @@ exports.Feature = [
 
 				return editing;
 			},
-			getContents: function(feature) {
+			getContents: function(feature, contents) {
 
 				if(feature.contents.length) {
 
-					var layerContents = LayerSharedData.contents();
+					if(contents && contents.length) {
 
-					if(layerContents && layerContents.length) {
-
-						var featureContents = layerContents.filter(function(content) {
+						var featureContents = contents.filter(function(content) {
 							return feature.contents.indexOf(content._id) !== -1;
 						});
 

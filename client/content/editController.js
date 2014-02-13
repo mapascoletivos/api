@@ -32,7 +32,7 @@ exports.ContentEditCtrl = [
 		});
 
 		$scope.$watch('$content.edit()', function(editing) {
-			$scope.editing = angular.copy(editing);
+			$scope.editing = editing;
 		});
 
 		$scope.$watch('editing', function(editing) {
@@ -184,8 +184,6 @@ exports.ContentEditCtrl = [
 
 		}
 
-		$scope.$on('$stateChangeStart', $scope.close);
-
 		/*
 		 * Features
 		 */
@@ -243,6 +241,16 @@ exports.ContentEditCtrl = [
 			$scope.editing = angular.copy(original);
 
 		}
+
+		$scope.$on('layerObjectChange', $scope.close);
+		$scope.$on('$stateChangeStart', $scope.close);
+		$scope.$on('layer.saved.success', function() {
+
+			if($scope.editing) {
+				$scope.save(true);
+			}
+
+		});
 
 	}
 ];
