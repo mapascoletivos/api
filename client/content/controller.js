@@ -12,13 +12,10 @@ exports.ContentCtrl = [
 	'$stateParams',
 	'SirTrevor',
 	'Content',
-	'LayerSharedData',
 	'MapService',
-	function($scope, $rootScope, $stateParams, SirTrevor, Content, LayerSharedData, MapService) {
+	function($scope, $rootScope, $stateParams, SirTrevor, Content, MapService) {
 
 		$scope.objType = 'content';
-		
-		$scope.sharedData = LayerSharedData;
 
 		$scope.$content = Content;
 

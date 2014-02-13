@@ -15,13 +15,37 @@ exports.FeatureEditCtrl = [
 	'$scope',
 	'$rootScope',
 	'Feature',
-	'LayerSharedData',
+	'Layer',
 	'MessageService',
 	'GeocodeService',
 	'MapService',
-	function($scope, $rootScope, Feature, LayerSharedData, Message, Geocode, MapService) {
+	function($scope, $rootScope, Feature, Layer, Message, Geocode, MapService) {
 
-		$scope.sharedData = LayerSharedData;
+		var layer;
+
+		$scope.$layer = Layer;
+
+		$scope.$watch('$layer.edit()', function(editing) {
+			layer = editing;
+			var map = MapService.get();
+			if(map)
+				map.on('click', addMarkerOnClick);
+		});
+
+		$scope.$feature = Feature;
+
+		$scope.$watch('$feature.get()', function(features) {
+			$scope.features = features;
+		});
+
+		$scope.$watch('$feature.edit()', function(editing) {
+			$scope.tool = false;
+			$scope.marker = false;
+			$scope._data = {};
+			$scope.editing = editing;
+			$scope.setMarker();
+			$rootScope.$broadcast('editFeature');
+		});
 
 		$scope._data = {};
 
@@ -98,192 +122,163 @@ exports.FeatureEditCtrl = [
 
 		}
 
+		$scope.save = function(silent) {
+
+			if($scope.editing && $scope.editing._id) {
+
+				Feature.resource.update({featureId: $scope.editing._id, layerId: layer._id}, $scope.editing, function(feature) {
+
+					// Replace feature in local features
+					angular.forEach($scope.features, function(feature, i) {
+						if(feature._id == $scope.editing._id)
+							$scope.features[i] = $scope.editing;
+					});
+					Feature.set($scope.features);
+
+					Feature.edit(angular.copy($scope.editing));
+
+					if(silent !== true) {
+						Message.message({
+							status: 'ok',
+							text: 'Feature salva.'
+						});
+						$scope.close();
+					}
+
+				}, function(err) {
+
+					if(err.status == 500)
+						Message.message({
+							status: 'error',
+							text: 'Ocorreu um erro interno. Tente novamente ou entre em contato com nossa equipe'
+						}, false);
+
+				});
+
+			} else {
+
+				var feature = new Feature.resource($scope.editing);
+
+				feature.$save({layerId: layer._id}, function(feature) {
+
+					// Locally push new feature
+					$scope.features.push(feature);
+					Feature.set($scope.features);
+
+					// Update editing feature to saved data
+					Feature.edit(angular.copy(feature));
+
+					Message.message({
+						status: 'ok',
+						text: 'Feature adicionada.'
+					});
+
+				}, function(err) {
+
+					var message = {status: 'error'};
+
+					if(err.status == 400 && err.data.message) {
+						message.text = err.data.message;
+					} else {
+						message.text = 'Ocorreu um erro interno.';
+					}
+
+					Message.message(message, false);
+
+				});
+
+			}
+
+		}
+
+		$scope.delete = function() {
+
+			if(confirm('Você tem certeza que deseja remover esta feature?')) {
+
+				Feature.resource.delete({featureId: $scope.editing._id, layerId: layer._id}, function() {
+
+					Feature.set($scope.features.filter(function(f) {
+						return f._id !== $scope.editing._id;
+					}));
+					Feature.edit(false);
+
+					Message.message({
+						status: 'ok',
+						text: 'Feature removida.'
+					});
+
+				}, function(err) {
+
+					var message = {status: 'error'};
+
+					if(err.status == 400 && err.data.message) {
+						message.text = err.data.message;
+					} else {
+						message.text = 'Ocorreu um erro interno.';
+					}
+
+					Message.message(message, false);
+				});
+
+			}
+
+		}
+
 		/*
-		 * Get layer shared data
+		 * Tools
 		 */
-		$scope.sharedData.layer().then(function(layer) {
 
-			var map = MapService.get();
+		$scope.tool = false;
 
-			map.on('click', addMarkerOnClick);
-
-			/*
-			 * Watch editing feature
-			 */
-			$scope.$watch('sharedData.editingFeature()', function(editing) {
-
+		$scope.setTool = function(tool) {
+			if(tool == $scope.tool)
 				$scope.tool = false;
-				$scope.marker = false;
-				$scope._data = {};
-				$rootScope.$broadcast('editFeature');
-				$scope.editing = editing;
-				$scope.setMarker();
+			else
+				$scope.tool = tool;
+		}
 
-			});
+		$scope.geocode = function() {
 
-			$scope.$watch('sharedData.features()', function(features) {
-				$scope.features = features;
-			});
+			Geocode.get($scope._data.geocode)
+				.success(function(res) {
+					$scope._data.geocodeResults = res;
+				})
+				.error(function(err) {
+					$scope._data.geocodeResults = [];
+				});
 
-			$scope.save = function(silent) {
+		}
 
-				if($scope.editing && $scope.editing._id) {
+		$scope.setNominatimFeature = function(feature) {
 
-					Feature.resource.update({featureId: $scope.editing._id, layerId: layer._id}, $scope.editing, function(feature) {
+			$scope.editing.geometry = {};
 
-						// Replace feature in local features
-						angular.forEach($scope.features, function(feature, i) {
-							if(feature._id == $scope.editing._id)
-								$scope.features[i] = $scope.editing;
-						});
-						$scope.sharedData.features($scope.features);
+			$scope.editing.geometry.coordinates = [
+				parseFloat(feature.lat),
+				parseFloat(feature.lon)
+			];
 
-						$scope.sharedData.editingFeature(angular.copy($scope.editing));
+			$scope.setMarker();
 
-						if(silent !== true) {
-							Message.message({
-								status: 'ok',
-								text: 'Feature salva.'
-							});
-							$scope.close();
-						}
+		}
 
-					}, function(err) {
-
-						if(err.status == 500)
-							Message.message({
-								status: 'error',
-								text: 'Ocorreu um erro interno. Tente novamente ou entre em contato com nossa equipe'
-							}, false);
-
-					});
-
-				} else {
-
-					var feature = new Feature.resource($scope.editing);
-
-					feature.$save({layerId: layer._id}, function(feature) {
-
-						// Locally push new feature
-						$scope.features.push(feature);
-						$scope.sharedData.features($scope.features);
-
-						// Update editing feature to saved data
-						$scope.sharedData.editingFeature(angular.copy(feature));
-
-						Message.message({
-							status: 'ok',
-							text: 'Feature adicionada.'
-						});
-
-					}, function(err) {
-
-						var message = {status: 'error'};
-
-						if(err.status == 400 && err.data.message) {
-							message.text = err.data.message;
-						} else {
-							message.text = 'Ocorreu um erro interno.';
-						}
-
-						Message.message(message, false);
-
-					});
-
-				}
-
-			}
-
-			$scope.delete = function() {
-
-				if(confirm('Você tem certeza que deseja remover esta feature?')) {
-
-					Feature.resource.delete({featureId: $scope.editing._id, layerId: layer._id}, function() {
-
-						$scope.sharedData.features($scope.features.filter(function(f) {
-							return f._id !== $scope.editing._id;
-						}));
-						LayerSharedData.editingFeature(false);
-
-						Message.message({
-							status: 'ok',
-							text: 'Feature removida.'
-						});
-
-					}, function(err) {
-
-						var message = {status: 'error'};
-
-						if(err.status == 400 && err.data.message) {
-							message.text = err.data.message;
-						} else {
-							message.text = 'Ocorreu um erro interno.';
-						}
-
-						Message.message(message, false);
-					});
-
-				}
-
-			}
-
-			/*
-			 * Tools
-			 */
+		$scope.close = function() {
 
 			$scope.tool = false;
+			$scope.marker = false;
+			$scope._data = {};
+			Feature.edit(false);
+			$rootScope.$broadcast('closedFeature');
 
-			$scope.setTool = function(tool) {
-				if(tool == $scope.tool)
-					$scope.tool = false;
-				else
-					$scope.tool = tool;
+		}
+
+		$scope.$on('layerObjectChange', $scope.close);
+		$scope.$on('$stateChangeStart', $scope.close);
+		$scope.$on('layer.saved.success', function() {
+
+			if($scope.editing) {
+				$scope.save(true);
 			}
-
-			$scope.geocode = function() {
-
-				Geocode.get($scope._data.geocode)
-					.success(function(res) {
-						$scope._data.geocodeResults = res;
-					})
-					.error(function(err) {
-						$scope._data.geocodeResults = [];
-					});
-
-			}
-
-			$scope.setNominatimFeature = function(feature) {
-
-				$scope.editing.geometry = {};
-
-				$scope.editing.geometry.coordinates = [
-					parseFloat(feature.lat),
-					parseFloat(feature.lon)
-				];
-
-				$scope.setMarker();
-
-			}
-
-			$scope.close = function() {
-
-				$scope.tool = false;
-				$scope.marker = false;
-				$scope._data = {};
-				$scope.sharedData.editingFeature(false);
-				$rootScope.$broadcast('closedFeature');
-
-			}
-
-			$scope.$on('layerObjectChange', $scope.close);
-			$scope.$on('$stateChangeStart', $scope.close);
-			$scope.$on('layerSaved', function() {
-
-				if($scope.sharedData.editingFeature()) {
-					$scope.save(true);
-				}
-
-			});
 
 		});
 
