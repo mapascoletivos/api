@@ -12,15 +12,21 @@ exports.ContentCtrl = [
 	'$stateParams',
 	'SirTrevor',
 	'Content',
+	'Feature',
 	'MapService',
-	function($scope, $rootScope, $stateParams, SirTrevor, Content, MapService) {
+	function($scope, $rootScope, $stateParams, SirTrevor, Content, Feature, MapService) {
 
 		$scope.objType = 'content';
 
 		$scope.$content = Content;
 
+		var triggerOnce = true;
 		$scope.$watch('$content.get()', function(contents) {
 			$scope.contents = contents;
+			if($scope.contents && $scope.contents.length) {
+				triggerOnce = false;
+				viewState();
+			}
 		});
 
 		$scope.renderBlock = function(block) {
@@ -38,47 +44,38 @@ exports.ContentCtrl = [
 
 		var viewing = false;
 
+		var contents,
+			features;
+
 		$scope.view = function(content) {
 
 			if(!content)
 				return false;
 
+			contents = Content.get();
+			features = Feature.get();
+
 			viewing = true;
 
-			//$scope.sharedData.activeSidebar(true);
-
-			var features = Content.getFeatures(content);
-			if(features) {
-				//$scope.sharedData.features(features);
+			var contentFeatures = Content.getFeatures(content, angular.copy(features));
+			if(contentFeatures) {
+				Feature.set(contentFeatures);
 			}
 
 			$scope.content = content;
-			$scope.content.featureObjs = features;
+			$scope.content.featureObjs = contentFeatures;
 
 		}
 
 		$scope.close = function() {
 
-			//$scope.sharedData.features($scope.layer.features);
+			Feature.set(features);
 			$scope.content = false;
-			//$scope.sharedData.activeSidebar(false);
 			MapService.fitMarkerLayer();
 
 			viewing = false;
 
 		}
-
-		$scope.$on('layer.data.ready', function(event, layer) {
-
-			$scope.contents = layer.contents;
-
-		});
-
-		$scope.$watch('contents', function(contents) {
-
-			viewState();
-
-		});
 
 		$scope.new = function() {
 

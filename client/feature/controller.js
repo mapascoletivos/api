@@ -15,18 +15,24 @@ exports.FeatureCtrl = [
 	'$stateParams',
 	'$location',
 	'Feature',
-	'LayerSharedData',
+	'Content',
 	'MapService',
-	function($scope, $rootScope, $state, $stateParams, $location, Feature, LayerSharedData, MapService) {
+	function($scope, $rootScope, $state, $stateParams, $location, Feature, Content, MapService) {
 
 		$scope.objType = 'feature';
 
 		$scope.$feature = Feature;
 
+		var triggerOnce = true;
 		$scope.$watch('$feature.get()', function(features) {
 			$scope.features = features;
 			populateMap();
-			viewState();
+			if($scope.features && $scope.features.length) {
+				if(triggerOnce) {
+					viewState();
+					triggerOnce = false;
+				}
+			}
 		});
 
 		var mapFeatures;
@@ -82,19 +88,22 @@ exports.FeatureCtrl = [
 
 		var unhookContents;
 
+		var contents,
+			features;
+
 		$scope.view = function(feature) {
+
+			contents = Content.get();
+			features = Feature.get();
 
 			$scope.close(false);
 
-			//$scope.sharedData.features([feature]);
-
 			viewing = true;
-
-			//$scope.sharedData.activeSidebar(true);
 
 			$scope.feature = feature;
 
-			var contents = Feature.getContents(feature);
+			Content.set(Feature.getContents(feature, angular.copy(contents)));
+			Feature.set([feature]);
 
 			//$scope.sharedData.contents(contents);
 			unhookContents = $rootScope.$on('contents.ready', function() {
@@ -105,11 +114,10 @@ exports.FeatureCtrl = [
 
 		$scope.close = function(fit) {
 
-			//$scope.sharedData.features($scope.layer.features);
-			//$scope.sharedData.contents($scope.layer.contents);
-			//$scope.feature = false;
+			$scope.feature = false;
 
-			//$scope.sharedData.activeSidebar(false);
+			Content.set(contents);
+			Feature.set(features);
 
 			if(fit !== false)
 				MapService.fitMarkerLayer();
