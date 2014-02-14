@@ -6,8 +6,11 @@
 exports.Feature = [
 	'$resource',
 	'apiPrefix',
-	'LayerSharedData',
-	function($resource, apiPrefix, LayerSharedData) {
+	function($resource, apiPrefix) {
+
+		var features = [],
+			filter = false,
+			editing = false;
 
 		return {
 			resource: $resource(apiPrefix + '/features/:featureId', {'_csrf': window.token}, {
@@ -23,15 +26,29 @@ exports.Feature = [
 					method: 'PUT'
 				}
 			}),
-			getContents: function(feature) {
+			// Object sharing between controllers methods
+			set: function(val) {
+				features = val;
+			},
+			add: function(val) {
+				features.push(val);
+			},
+			get: function() {
+				return features;
+			},
+			edit: function(content) {
+				if(typeof content !== 'undefined')
+					editing = content;
+
+				return editing;
+			},
+			getContents: function(feature, contents) {
 
 				if(feature.contents.length) {
 
-					var layerContents = LayerSharedData.contents();
+					if(contents && contents.length) {
 
-					if(layerContents && layerContents.length) {
-
-						var featureContents = layerContents.filter(function(content) {
+						var featureContents = contents.filter(function(content) {
 							return feature.contents.indexOf(content._id) !== -1;
 						});
 
