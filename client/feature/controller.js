@@ -23,16 +23,19 @@ exports.FeatureCtrl = [
 
 		$scope.$feature = Feature;
 
-		var triggerOnce = true;
-		$scope.$watch('$feature.get()', function(features) {
-			$scope.features = features;
-			populateMap();
-			if($scope.features && $scope.features.length) {
-				if(triggerOnce) {
+		$rootScope.$on('data.ready', function() {
+
+			var triggerView = true;
+
+			$scope.$watch('$feature.get()', function(features) {
+				$scope.features = features;
+				populateMap();
+				if(triggerView) {
 					viewState();
-					triggerOnce = false;
+					triggerView = false;
 				}
-			}
+			});
+
 		});
 
 		var mapFeatures;

@@ -20,13 +20,18 @@ exports.ContentCtrl = [
 
 		$scope.$content = Content;
 
-		var triggerOnce = true;
-		$scope.$watch('$content.get()', function(contents) {
-			$scope.contents = contents;
-			if($scope.contents && $scope.contents.length) {
-				triggerOnce = false;
-				viewState();
-			}
+		$rootScope.$on('data.ready', function() {
+
+			var triggerView = true;
+
+			$scope.$watch('$content.get()', function(contents) {
+				$scope.contents = contents;
+				if(triggerView) {
+					viewState();
+					triggerView = false;
+				}
+			});
+
 		});
 
 		$scope.renderBlock = function(block) {

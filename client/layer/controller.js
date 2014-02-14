@@ -74,8 +74,6 @@ exports.LayerCtrl = [
 
 				$scope.layer = layer;
 
-				$rootScope.$broadcast('layer.data.ready', layer);
-
 				Page.setTitle(layer.title);
 
 				var map = MapService.init('layer-map', {
@@ -95,6 +93,8 @@ exports.LayerCtrl = [
 
 				// Set content shared data
 				Content.set(layer.contents);
+
+				$rootScope.$broadcast('data.ready', layer);
 
 				/*
 				// Store shared data on scope
