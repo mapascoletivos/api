@@ -1,9 +1,5 @@
 'use strict';
 
-require('angular/angular');
-require('angular-modal/modal');
-require('angular-ui-sortable/src/sortable');
-
 /* 
  * Map module
  */

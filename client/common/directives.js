@@ -1,11 +1,5 @@
 'use strict';
 
-
-require('angular/angular');
-require('angular-sanitize/angular-sanitize');
-require('angular-fitvids/angular-fitvids');
-require('angular-ui-utils/modules/utils');
-
 angular.module('mapasColetivos.directives', [
 	'ngSanitize',
 	'fitVids'

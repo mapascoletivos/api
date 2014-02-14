@@ -1,8 +1,5 @@
 'use strict';
 
-require('angular/angular');
-var grvtr = require('grvtr');
-
 angular.module('mapasColetivos.dashboard', [])
 
 .config([
