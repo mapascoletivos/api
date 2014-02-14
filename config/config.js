@@ -76,7 +76,7 @@ module.exports = {
  },
  production: {
    root: rootPath,
-   db: process.env.MONGOHQ_URL,
+   db: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI,
     facebook: {
      clientID: "ID",
      clientSecret: "SECRET",
