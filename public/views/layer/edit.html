@@ -23,8 +23,8 @@
 									<span class="label" ng-show="layerObj('feature')">
 										Features
 									</span>
-									<span class="feature-length tab-tip" ng-show="sharedData.features().length">
-										{{sharedData.features().length}}
+									<span class="feature-length tab-tip" ng-show="layer.features.length">
+										{{layer.features.length}}
 									</span>
 								</a>
 							</li>
@@ -34,8 +34,8 @@
 									<span class="label" ng-show="layerObj('content')">
 										Conteúdo
 									</span>
-									<span class="content-length tab-tip" ng-show="sharedData.contents().length">
-										{{sharedData.contents().length}}
+									<span class="content-length tab-tip" ng-show="layer.contents.length">
+										{{layer.contents.length}}
 									</span>
 								</a>
 							</li>
@@ -191,7 +191,7 @@
 						<input class="filter" type="text" ng-model="filterFeature" placeholder="Filtrar features da lista" />
 						<a href="javascript:void(0);" ng-click="clearFeatures()" class="clear-selection" ng-show="editing.features">Limpar seleção</a>
 						<ul class="feature-list">
-							<li ng-repeat="feature in sharedData.features() | filter:filterFeature" ng-class="{selected:hasFeature(feature._id)}" ng-click="toggleFeature(feature._id)">{{feature.title}}</li>
+							<li ng-repeat="feature in layer.features | filter:filterFeature" ng-class="{selected:hasFeature(feature._id)}" ng-click="toggleFeature(feature._id)">{{feature.title}}</li>
 						</ul>
 					</div>
 				</div>

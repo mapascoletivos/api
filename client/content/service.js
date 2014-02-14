@@ -1,7 +1,5 @@
 'use strict';
 
-require('angular/angular');
-
 /*
  * Content service
  */
@@ -9,9 +7,10 @@ require('angular/angular');
 exports.Content = [
 	'$resource',
 	'apiPrefix',
-	'LayerSharedData',
-	'Feature',
-	function($resource, apiPrefix, LayerSharedData, Feature) {
+	function($resource, apiPrefix) {
+
+		var contents = [];
+		var editing = false;
 
 		return {
 			resource: $resource(apiPrefix + '/contents/:contentId', {'_csrf': window.token}, {
@@ -30,15 +29,30 @@ exports.Content = [
 					method: 'PUT'
 				}
 			}),
-			getFeatures: function(content) {
+			// Object sharing between controllers methods
+			set: function(val) {
+				contents = val;
+			},
+			add: function(val) {
+				contents.push(val);
+			},
+			get: function() {
+				return contents;
+			},
+			edit: function(content) {
+				if(typeof content !== 'undefined')
+					editing = content;
+
+				return editing;
+			},
+			// Get content features method
+			getFeatures: function(content, features) {
 
 				if(content.features.length) {
 
-					var layerFeatures = LayerSharedData.features();
+					if(features && features.length) {
 
-					if(layerFeatures && layerFeatures.length) {
-
-						var contentFeatures = layerFeatures.filter(function(feature) {
+						var contentFeatures = features.filter(function(feature) {
 							return content.features.indexOf(feature._id) !== -1;
 						});
 

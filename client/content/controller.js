@@ -12,113 +12,105 @@ exports.ContentCtrl = [
 	'$stateParams',
 	'SirTrevor',
 	'Content',
-	'LayerSharedData',
+	'Feature',
 	'MapService',
-	function($scope, $rootScope, $stateParams, SirTrevor, Content, LayerSharedData, MapService) {
+	function($scope, $rootScope, $stateParams, SirTrevor, Content, Feature, MapService) {
 
 		$scope.objType = 'content';
-		
-		$scope.sharedData = LayerSharedData;
 
-		$scope.contents = [];
+		$scope.$content = Content;
+
+		$rootScope.$on('data.ready', function(event, parent) {
+
+			var triggerView = true;
+
+			$scope.$watch('$content.get()', function(contents) {
+				$scope.contents = contents;
+				if(triggerView) {
+					viewState();
+					triggerView = false;
+				}
+			});
+
+		});
 
 		$scope.renderBlock = function(block) {
 			return SirTrevor.renderBlock(block);
 		}
 
+		var viewState = function() {
+			if($stateParams.contentId && $scope.contents) {
+				var content = $scope.contents.filter(function(c) { return c._id == $stateParams.contentId; })[0];
+				$scope.view(content);
+				return true;
+			}
+			return false;
+		}
+
 		var viewing = false;
+
+		var contents,
+			features;
 
 		$scope.view = function(content) {
 
 			if(!content)
 				return false;
 
+			contents = Content.get();
+			features = Feature.get();
+
 			viewing = true;
 
-			$scope.sharedData.activeSidebar(true);
-
-			var features = Content.getFeatures(content);
-			if(features) {
-				$scope.sharedData.features(features);
+			var contentFeatures = Content.getFeatures(content, angular.copy(features));
+			if(contentFeatures) {
+				Feature.set(contentFeatures);
 			}
 
 			$scope.content = content;
-			$scope.content.featureObjs = features;
+			$scope.content.featureObjs = contentFeatures;
 
 		}
 
 		$scope.close = function() {
 
-			$scope.sharedData.features($scope.layer.features);
+			if(typeof features !== 'undefined')
+				Feature.set(features);
+
 			$scope.content = false;
-			$scope.sharedData.activeSidebar(false);
 			MapService.fitMarkerLayer();
 
 			viewing = false;
 
 		}
 
-		$scope.sharedData.layer().then(function(layer) {
+		$scope.new = function() {
 
-			var viewState = function() {
-				if($stateParams.contentId) {
-					var content = layer.contents.filter(function(c) { return c._id == $stateParams.contentId; })[0];
-					$scope.view(content);
-					return true;
-				}
-				return false;
+			Content.edit({});
+
+		};
+
+		$scope.edit = function(contentId) {
+
+			Content.edit(angular.copy($scope.contents.filter(function(c) { return c._id == contentId; })[0]));
+
+			setTimeout(function() {
+				window.dispatchEvent(new Event('resize'));
+				document.getElementById('content-edit-body').scrollTop = 0;
+			}, 100);
+
+		};
+
+		$rootScope.$on('$stateChangeSuccess', function() {
+
+			if(!viewState() && viewing) {
+				$scope.close();
 			}
 
-			viewState();
-
-			$rootScope.$on('$stateChangeSuccess', function() {
-
-				if(!viewState() && viewing) {
-					$scope.close();
-				}
-
-			});
-
-			$scope.layer = layer;
-
-			$scope.sharedData.contents(layer.contents);
-
-			$rootScope.$broadcast('layerContentsReady');
-
-			$scope.$watch('sharedData.contents()', function(contents) {
-				$scope.contents = contents;
-			});
-
-			$scope.new = function() {
-
-				$scope.sharedData.editingContent({});
-
-			};
-
-			$scope.edit = function(contentId) {
-
-				$scope.sharedData.editingContent(angular.copy($scope.contents.filter(function(c) { return c._id == contentId; })[0]));
-
-				setTimeout(function() {
-					window.dispatchEvent(new Event('resize'));
-					document.getElementById('content-edit-body').scrollTop = 0;
-				}, 100);
-
-			};
-
-			$scope.$on('layerObjectChange', $scope.close);
-			$scope.$on('$stateChangeStart', $scope.close);
-
 		});
 
-		$scope.$on('closedContent', function() {
-
-			// Fix map size after 200ms (animation safe)
-			setTimeout(function() {
-				MapService.fitMarkerLayer();
-			}, 200);
-
-		});
+		$scope.$on('layerObjectChange', $scope.close);
+		$scope.$on('$stateChangeStart', $scope.close);
 
 	}
 ];

@@ -1096,13 +1096,15 @@ input[type=submit] {
 		}
 	}
 	.content-editor {
-		float: left;
-		width: 65%;
-		height: 100%;
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 35%;
 		overflow: auto;
-		position: relative;
 		box-sizing: border-box;
 		background: #f9f9f9;
+		z-index: 1000;
 		.content-settings {
 			position: absolute;
 			top: 0;
