@@ -1,7 +1,5 @@
 'use strict';
 
-require('angular/angular');
-
 angular.module('mapasColetivos.pageTitle', [])
 
 .factory('Page', [

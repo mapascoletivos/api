@@ -1,10 +1,5 @@
 'use strict';
 
-require('angular/angular');
-
-window.L = require('leaflet');
-require('mapbox.js');
-
 var featureToMapObj = require('./featureToMapObjService');
 
 /*

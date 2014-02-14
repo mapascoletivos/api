@@ -1,8 +1,5 @@
 'use strict';
 
-require('angular/angular');
-require('angular-resource/angular-resource');
-
 /*
  * Layer service
  */

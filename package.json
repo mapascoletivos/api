@@ -11,9 +11,9 @@
 	},
 	"main": "web.js",
 	"scripts": {
-		"install-client": "./node_modules/.bin/napa && ./node_modules/.bin/browserify client/app.js | ./node_modules/.bin/uglifyjs -mt > public/app.js",
+		"build": "./node_modules/.bin/napa && ./node_modules/.bin/browserify client/vendor.js | ./node_modules/.bin/uglifyjs -mt > public/vendor.js",
 		"watch": "./node_mobules/.bin/watchify client/app.js -o public/app.js -v & ( sleep 3 && NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js)",
-		"start": "NODE_PATH=./app/controllers NODE_ENV=development; node web.js",
+		"start": "NODE_PATH=./app/controllers NODE_ENV=development; ./node_modules/.bin/browserify client/app.js | ./node_modules/.bin/uglifyjs -mt > public/app.js & node web.js",
 		"test": "make test"
 	},
 	"dependencies": {

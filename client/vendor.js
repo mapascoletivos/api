@@ -1,0 +1,21 @@
+window.jQuery = require('jquery');
+window._ = require('underscore');
+window.L = require('leaflet');
+window.grvtr = require('grvtr');
+window.markdown = require("markdown").markdown;
+
+require('jquery-ui-browserify');
+require('angular/angular');
+require('angular-route/angular-route');
+require('angular-ui-router/release/angular-ui-router');
+require('angular-animate/angular-animate');
+require('angular-ui-utils/modules/keypress/keypress');
+require('angular-modal/modal');
+require('angular-ui-sortable/src/sortable');
+require('angular-resource/angular-resource');
+require('mapbox.js');
+require('angular-sanitize/angular-sanitize');
+require('angular-fitvids/angular-fitvids');
+require('angular-ui-utils/modules/utils');
+require('eventable/eventable');
+require('sir-trevor/sir-trevor');

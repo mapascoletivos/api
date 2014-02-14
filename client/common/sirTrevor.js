@@ -1,14 +1,5 @@
 'use strict';
 
-window.jQuery 			= require('jquery');
-window._ 			= require('underscore');
-
-var markdown = require("markdown").markdown;
-
-require('angular/angular');
-require('eventable/eventable');
-require('sir-trevor/sir-trevor');
-
 /*
  * Sir Trevor
  */

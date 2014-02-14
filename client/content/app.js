@@ -1,6 +1,5 @@
 'use strict';
 
-require('angular/angular');
 require('../common/sirTrevor');
 
 angular

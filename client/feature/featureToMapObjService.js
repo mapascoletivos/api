@@ -1,9 +1,5 @@
 'use strict';
 
-require('angular/angular');
-window.L = require('leaflet');
-require('mapbox.js');
-
 module.exports = function(feature, options) {
 
 	if(feature.geometry && feature.geometry.coordinates) {

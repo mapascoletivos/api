@@ -1,8 +1,6 @@
 'use strict';
 
-require('angular/angular');
 require('../common/geocode');
-require('angular-modal/modal');
 
 angular
 	.module('mapasColetivos.layer', [
