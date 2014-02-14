@@ -11,7 +11,7 @@ exports.Layer = [
 		var editing = false;
 
 		return {
-			resource: $resource(apiPrefix + '/layers/:layerId', {'_csrf': window.token}, {
+			resource: $resource(apiPrefix + '/layers/:layerId', {}, {
 				'query': {
 					isArray: false,
 					method: 'GET'

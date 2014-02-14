@@ -5,12 +5,13 @@
 		</div>
 	</div>
 </div>
-<div id="profile-editor">
+<div id="profile-editor" ng-controller="UserCtrl">
 	<div class="container">
-		<form ng-submit="saveProfile()">
+		<form ng-submit="save(user)">
 			<div class="four columns">
 				Nome de usuário <input ng-model="user.name" type="text" />
 				Email <input ng-model="user.email" type="text" />
+				Biografia <input ng-model="user.bio" type="text" />
 			</div>
 			<div class="four columns">
 				<h4>Alteração de senha</h4>
@@ -19,6 +20,7 @@
 				Senha <input type="password" ng-model="user.password" />
 				Repetir senha <input type="password" ng-model="user.password" />
 			</div>
+			<a class="button" ng-click="save(user)">Salvar</a>
 		</form>
 	</div>
 </div>

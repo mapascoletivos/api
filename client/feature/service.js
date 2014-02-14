@@ -13,7 +13,7 @@ exports.Feature = [
 			editing = false;
 
 		return {
-			resource: $resource(apiPrefix + '/features/:featureId', {'_csrf': window.token}, {
+			resource: $resource(apiPrefix + '/features/:featureId', {}, {
 				'save': {
 					method: 'POST',
 					url: apiPrefix + '/layers/:layerId/features'

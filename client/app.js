@@ -24,6 +24,7 @@ require('./common/directives');
  * Apps
  */
 
+require('./user/app');
 require('./feature/app');
 require('./content/app');
 require('./layer/app');
@@ -43,6 +44,7 @@ angular.module('mapasColetivos', [
 	'monospaced.elastic',
 	'ngRoute',
 	'ngAnimate',
+	'mapasColetivos.user',
 	'mapasColetivos.pageTitle',
 	'mapasColetivos.directives',
 	'mapasColetivos.session',

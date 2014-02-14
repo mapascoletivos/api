@@ -13,7 +13,7 @@ exports.Content = [
 		var editing = false;
 
 		return {
-			resource: $resource(apiPrefix + '/contents/:contentId', {'_csrf': window.token}, {
+			resource: $resource(apiPrefix + '/contents/:contentId', {}, {
 				'save': {
 					method: 'POST',
 					url: apiPrefix + '/contents',

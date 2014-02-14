@@ -10,7 +10,7 @@ exports.Map = [
 	function($resource, apiPrefix) {
 
 		return {
-			resource: $resource(apiPrefix + '/maps/:mapId', {'_csrf': window.token}, {
+			resource: $resource(apiPrefix + '/maps/:mapId', {}, {
 				'query': {
 					isArray: false,
 					method: 'GET'

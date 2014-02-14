@@ -36,7 +36,7 @@ module.exports = function (app, passport) {
 	app.get('/signup', users.signup)
 	app.get('/logout', users.logout)
 	app.post('/users', users.create)
-	app.put('/users', auth.requiresLogin, users.update)
+	app.put(apiPrefix + '/users', auth.requiresLogin, users.update)
 	app.post('/users/session',
 		passport.authenticate('local', {
 		failureRedirect: '/login',

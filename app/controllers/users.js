@@ -5,7 +5,9 @@
 
 var mongoose = require('mongoose')
   , User = mongoose.model('User')
-  , utils = require('../../lib/utils');
+  , utils = require('../../lib/utils')
+  , extend = require('util')._extend
+  , _ = require('underscore');
 
 var login = function (req, res) {
   var redirectTo = req.session.returnTo ? req.session.returnTo : '/dashboard';
@@ -105,12 +107,14 @@ exports.update = function (req, res) {
   var 
     user;
 
-  user = extend(req.user, {bio: req.body.bio});
-
-  user.save(function (err) {
-    if (err) res.json({ errors: utils.errors(err.errors)});
-    else res({sucess:true});
+  User.findById(req.user._id, function(err, usr){
+    usr.bio = req.body.bio;
+    usr.save(function(err){
+      if (err) res.json(400, { errors: utils.errors(err.errors)});
+      else res.json({sucess:true});
+    });
   });
+
 }
 
 /**
