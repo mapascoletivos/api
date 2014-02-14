@@ -16,6 +16,21 @@ var login = function (req, res) {
 exports.signin = function (req, res) {}
 
 /**
+ * Find user by id
+ */
+
+exports.user = function (req, res, next, id) {
+  User
+    .findOne({ _id : id })
+    .exec(function (err, user) {
+      if (err) return next(err)
+      if (!user) return next(new Error('Failed to load User ' + id))
+      req.profile = user
+      next()
+    });
+}
+
+/**
  * Auth callback
  */
 
@@ -83,6 +98,22 @@ exports.create = function (req, res) {
 }
 
 /**
+ * Update user
+ */
+
+exports.update = function (req, res) {
+  var 
+    user;
+
+  user = extend(req.user, {bio: req.body.bio});
+
+  user.save(function (err) {
+    if (err) res.json({ errors: utils.errors(err.errors)});
+    else res({sucess:true});
+  });
+}
+
+/**
  *  Show a user profile
  */
 
@@ -102,17 +133,3 @@ exports.dashboard = function (req, res) {
 }
 
 
-/**
- * Find user by id
- */
-
-exports.user = function (req, res, next, id) {
-  User
-    .findOne({ _id : id })
-    .exec(function (err, user) {
-      if (err) return next(err)
-      if (!user) return next(new Error('Failed to load User ' + id))
-      req.profile = user
-      next()
-    });
-}
