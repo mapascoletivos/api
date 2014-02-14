@@ -63,9 +63,12 @@ exports.ContentCtrl = [
 			viewing = true;
 
 			var contentFeatures = Content.getFeatures(content, angular.copy(features));
+
 			if(contentFeatures) {
 				Feature.set(contentFeatures);
 			}
+
+			$rootScope.$broadcast('content.filtering.started', content, contentFeatures);
 
 			$scope.content = content;
 			$scope.content.featureObjs = contentFeatures;
@@ -81,6 +84,8 @@ exports.ContentCtrl = [
 			MapService.fitMarkerLayer();
 
 			viewing = false;
+
+			$rootScope.$broadcast('content.filtering.closed');
 
 		}
 

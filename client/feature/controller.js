@@ -29,7 +29,7 @@ exports.FeatureCtrl = [
 
 			$scope.$watch('$feature.get()', function(features) {
 				$scope.features = features;
-				populateMap();
+				populateMap(true);
 				if(triggerView) {
 					viewState();
 					triggerView = false;
@@ -59,7 +59,7 @@ exports.FeatureCtrl = [
 
 							marker
 								.on('click', function() {
-									$scope.$emit('markerClicked', f);
+									$rootScope.$broadcast('markerClicked', f);
 								})
 								.on('mouseover', function() {
 									marker.openPopup();
@@ -89,8 +89,6 @@ exports.FeatureCtrl = [
 
 		var viewing = false;
 
-		var unhookContents;
-
 		var contents,
 			features;
 
@@ -105,13 +103,12 @@ exports.FeatureCtrl = [
 
 			$scope.feature = feature;
 
-			Content.set(Feature.getContents(feature, angular.copy(contents)));
+			var featureContents = Feature.getContents(feature, angular.copy(contents));
+
+			Content.set(featureContents);
 			Feature.set([feature]);
 
-			//$scope.sharedData.contents(contents);
-			unhookContents = $rootScope.$on('contents.ready', function() {
-				//$scope.sharedData.contents(contents);
-			});
+			$rootScope.$broadcast('feature.filtering.started', feature, featureContents);
 
 		}
 
@@ -130,8 +127,7 @@ exports.FeatureCtrl = [
 
 			viewing = false;
 
-			if(typeof unhookContents == 'function')
-				unhookContents();
+			$rootScope.$broadcast('feature.filtering.closed');
 
 		}
 
@@ -194,17 +190,6 @@ exports.FeatureCtrl = [
 		/*
 		 * View actions
 		 */
-		} else {
-
-			$scope.$on('markerClicked', function(event, feature) {
-
-				$state.go('.feature', {
-					featureId: feature._id
-				});
-
-
-			});
-
 		}
 
 	}

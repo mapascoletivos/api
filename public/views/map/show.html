@@ -1,4 +1,4 @@
-<div class="map-view">
+<div class="map-view" ng-controller="FeatureCtrl">
 	<div class="page-header">
 		<div class="container">
 			<div class="four columns row">
@@ -35,14 +35,35 @@
 			</div>
 		</div>
 	</div>
-	<div class="map-container" ng-controller="FeatureCtrl">
+	<div class="map-container">
 		<div id="map"></div>
 	</div>
-	<div id="map-sidebar">
-		<div class="map-layers">
+	<div id="map-sidebar" ng-controller="ContentCtrl">
+		<div id="feature-info" class="single-feature" ng-show="feature">
+			<a href="/maps/{{map._id}}">Fechar</a>
+			<h2>{{feature.title}}</h2>
+			<p>{{feature.description}}</p>
+		</div>
+		<div class="single-post" ng-show="content">
+			<a href="/maps/{{map._id}}">Fechar</a>
+			<h2>{{content.title}}</h2>
+			<div class="content-meta">
+				<ul class="features" ng-show="content.featureObjs.length">
+					<li ng-repeat="feature in content.featureObjs">
+						<a href="/maps/{{map._id}}/feature/{{feature._id}}">{{feature.title}}</a>
+					</li>
+				</ul>
+			</div>
+			<div class="content-body">
+				<div ng-repeat="block in content.sirTrevorData">
+					<div dynamic="renderBlock(block)"></div>
+				</div>
+			</div>
+		</div>
+		<div class="map-layers" ng-hide="content">
 			<ul class="layer-list">
 				<li ng-repeat="layer in layers">
-					<ul class="layer-contents" ng-controller="ContentCtrl">
+					<ul class="layer-contents">
 						<li ng-repeat="content in layer.contents">
 							<h4><a href="/maps/{{map._id}}/content/{{content._id}}">{{content.title}}</a></h4>
 						</li>

@@ -151,6 +151,8 @@ exports.MapCtrl = [
 					// Add layer to map and get feature data
 					var layerData = MapService.addLayer(layer);
 
+					layer._mcData = layerData;
+
 					angular.forEach(layerData.markers, function(marker) {
 
 						marker
@@ -201,6 +203,34 @@ exports.MapCtrl = [
 					$scope.layers = ordered;
 				};
 
+				$scope.hideAllLayers = function() {
+
+					angular.forEach($scope.layers, function(layer) {
+						$scope.hideLayer(layer._mcData.markerLayer);
+					});
+
+				};
+
+				$scope.hideLayer = function(layer) {
+
+					MapService.get().removeLayer(layer);
+
+				};
+
+				$scope.showAllLayers = function() {
+
+					angular.forEach($scope.layers, function(layer) {
+						$scope.showLayer(layer._mcData.markerLayer);
+					});
+
+				};
+
+				$scope.showLayer = function(layer) {
+
+					MapService.get().showLayer(layer);
+
+				};
+
 				$scope.setupMapContent = function() {
 					var contents = [];
 					var features = [];
@@ -215,6 +245,14 @@ exports.MapCtrl = [
 					Content.set(contents);
 					Feature.set(features);
 					$rootScope.$broadcast('data.ready', $scope.map);
+
+					$scope.$on('content.filtering.started', $scope.hideAllLayers);
+
+					$scope.$on('feature.filtering.started', $scope.hideAllLayers);
+
+					$scope.$on('content.filtering.closed', $scope.showAllLayers);
+
+					$scope.$on('feature.filtering.closed', $scope.showAllLayers);
 				}
 
 				$scope.$watch('map.layers', function(layers) {
@@ -281,6 +319,14 @@ exports.MapCtrl = [
 						Page.setTitle('Novo mapa');
 					}
 				}
+
+				$scope.$on('markerClicked', function(event, feature) {
+
+					$state.go('singleMap.feature', {
+						featureId: feature._id
+					});
+
+				});
 
 			});
 
