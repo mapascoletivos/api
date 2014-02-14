@@ -10,6 +10,7 @@ exports.LayerCtrl = [
 	'$scope',
 	'$rootScope',
 	'$location',
+	'$state',
 	'$stateParams',
 	'$q',
 	'Page',
@@ -19,7 +20,7 @@ exports.LayerCtrl = [
 	'MessageService',
 	'SessionService',
 	'MapService',
-	function($scope, $rootScope, $location, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, MapService) {
+	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, MapService) {
 
 		// New layer
 		if($location.path() == '/layers/new') {
@@ -117,6 +118,16 @@ exports.LayerCtrl = [
 
 					$scope.$on('$stateChangeStart', function() {
 						Layer.deleteDraft(layer);
+					});
+
+				} else {
+
+					$scope.$on('markerClicked', function(event, feature) {
+
+						$state.go('singleLayer.feature', {
+							featureId: feature._id
+						});
+
 					});
 
 				}
