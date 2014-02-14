@@ -4,6 +4,7 @@
  * User module
  */
 angular
+	.module('mapasColetivos.user', [])
 	.config([
 		'$stateProvider',
 		function($stateProvider) {
@@ -15,15 +16,14 @@ angular
 					templateUrl: '/views/user/show.html'
 				})
 				.state('user.layers', {
-					url: '/user/:userName/layers',
+					url: '/layers',
 					templateUrl: '/views/user/layers.html'
-				});
+				})
 				.state('user.maps', {
-					url: '/user/:userName/maps',
+					url: '/maps',
 					templateUrl: '/views/user/maps.html'
 				});
 		}
 	])
-	.module('mapasColetivos.user', [])
 	.factory('User', require('./service').User)
 	.controller('UserCtrl', require('./controller').UserCtrl);
