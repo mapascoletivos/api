@@ -13,6 +13,9 @@ exports.User = [
 			resource: $resource(apiPrefix + '/users', {}, {
 				'update': {
 					method: 'PUT'
+				},
+				'updatePwd': {
+					method: 'PUT'
 				}
 			})
 		}

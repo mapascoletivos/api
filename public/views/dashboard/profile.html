@@ -8,19 +8,22 @@
 <div id="profile-editor" ng-controller="UserCtrl">
 	<div class="container">
 		<form ng-submit="save(user)">
-			<div class="four columns">
-				Nome de usuário <input ng-model="user.name" type="text" />
-				Email <input ng-model="user.email" type="text" />
-				Biografia <input ng-model="user.bio" type="text" />
+			<div class="row">
+				<div class="four columns">
+					Nome de usuário <input ng-model="user.name" type="text" />
+					Email <input ng-model="user.email" type="text" />
+					Biografia <textarea ng-model="user.bio" type="text"></textarea>
+					<a class="button" ng-click="save(user)">Salvar</a>
+				</div>
+				<div class="four columns">
+					<h4>Alteração de senha</h4>
+					Senha antiga <input type="password" ng-model="chPwd.userPwd" />
+					<h5>Senha nova</h5>
+					Senha <input type="password" ng-model="chPwd.newPwd" />
+					Repetir senha <input type="password" ng-model="chPwd.validatePwd" />
+					<a class="button" ng-click="changePassword(user, chPwd)">Salvar</a>
+				</div>
 			</div>
-			<div class="four columns">
-				<h4>Alteração de senha</h4>
-				Senha antiga <input type="password" ng-model="user.password" />
-				<h5>Senha nova</h5>
-				Senha <input type="password" ng-model="user.password" />
-				Repetir senha <input type="password" ng-model="user.password" />
-			</div>
-			<a class="button" ng-click="save(user)">Salvar</a>
 		</form>
 	</div>
 </div>

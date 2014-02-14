@@ -29,5 +29,13 @@ exports.UserCtrl = [
 
 		}
 
+		$scope.changePassword = function(chPwd, user) {
+
+			console.log(chPwd);
+
+			console.log(user);
+
+		}
+
 	}
 ];
