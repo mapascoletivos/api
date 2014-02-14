@@ -16,7 +16,6 @@ require('./core/dashboard');
  * Common modules
  */
 
-require('angular-elastic/elastic');
 require('./common/leaflet');
 require('./common/directives');
 
@@ -44,10 +43,7 @@ angular.module('mapasColetivos', [
 	'monospaced.elastic',
 	'ngRoute',
 	'ngAnimate',
-<<<<<<< HEAD
 	'mapasColetivos.user',
-=======
->>>>>>> 2365aacb18991fc85eac8138400f8951af814cf1
 	'mapasColetivos.pageTitle',
 	'mapasColetivos.directives',
 	'mapasColetivos.session',

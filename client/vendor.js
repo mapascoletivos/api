@@ -7,6 +7,7 @@ window.markdown = require("markdown").markdown;
 require('jquery-ui-browserify');
 require('angular/angular');
 require('angular-route/angular-route');
+require('angular-elastic/elastic');
 require('angular-ui-router/release/angular-ui-router');
 require('angular-animate/angular-animate');
 require('angular-ui-utils/modules/keypress/keypress');
