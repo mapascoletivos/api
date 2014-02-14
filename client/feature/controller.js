@@ -119,8 +119,11 @@ exports.FeatureCtrl = [
 
 			$scope.feature = false;
 
-			Content.set(contents);
-			Feature.set(features);
+			if(typeof features !== 'undefined')
+				Feature.set(features);
+
+			if(typeof contents !== 'undefined')
+				Content.set(contents);
 
 			if(fit !== false)
 				MapService.fitMarkerLayer();
@@ -195,7 +198,7 @@ exports.FeatureCtrl = [
 
 			$scope.$on('markerClicked', function(event, feature) {
 
-				$state.go('singleLayer.feature', {
+				$state.go('.feature', {
 					featureId: feature._id
 				});
 

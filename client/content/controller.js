@@ -20,7 +20,7 @@ exports.ContentCtrl = [
 
 		$scope.$content = Content;
 
-		$rootScope.$on('data.ready', function() {
+		$rootScope.$on('data.ready', function(event, parent) {
 
 			var triggerView = true;
 
@@ -39,7 +39,7 @@ exports.ContentCtrl = [
 		}
 
 		var viewState = function() {
-			if($stateParams.contentId) {
+			if($stateParams.contentId && $scope.contents) {
 				var content = $scope.contents.filter(function(c) { return c._id == $stateParams.contentId; })[0];
 				$scope.view(content);
 				return true;
@@ -74,7 +74,9 @@ exports.ContentCtrl = [
 
 		$scope.close = function() {
 
-			Feature.set(features);
+			if(typeof features !== 'undefined')
+				Feature.set(features);
+
 			$scope.content = false;
 			MapService.fitMarkerLayer();
 
