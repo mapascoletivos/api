@@ -8,8 +8,9 @@ exports.Feature = [
 	'apiPrefix',
 	function($resource, apiPrefix) {
 
-		var features = [];
-		var editing = false;
+		var features = [],
+			filter = false,
+			editing = false;
 
 		return {
 			resource: $resource(apiPrefix + '/features/:featureId', {'_csrf': window.token}, {

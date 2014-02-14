@@ -16,11 +16,10 @@ exports.LayerCtrl = [
 	'Layer',
 	'Feature',
 	'Content',
-	'LayerSharedData',
 	'MessageService',
 	'SessionService',
 	'MapService',
-	function($scope, $rootScope, $location, $stateParams, $q, Page, Layer, Feature, Content, LayerSharedData, Message, Session, MapService) {
+	function($scope, $rootScope, $location, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, MapService) {
 
 		// New layer
 		if($location.path() == '/layers/new') {
@@ -57,8 +56,8 @@ exports.LayerCtrl = [
 
 			$scope.$watch('activeObj', function(active) {
 
-				LayerSharedData.editingFeature(false);
-				LayerSharedData.editingContent(false);
+				Feature.edit(false);
+				Content.edit(false);
 				$scope.$broadcast('layerObjectChange', active);
 
 			});
@@ -66,9 +65,6 @@ exports.LayerCtrl = [
 			$scope.$on('layer.delete.success', function() {
 				$location.path('/dashboard/layers').replace();
 			});
-
-			var layerDefer = $q.defer();
-			LayerSharedData.layer(layerDefer.promise);
 
 			Layer.resource.get({layerId: $stateParams.layerId}, function(layer) {
 
@@ -85,9 +81,6 @@ exports.LayerCtrl = [
 					MapService.fitMarkerLayer();
 				}
 
-				// Set layer shared data using service (resolving promise)
-				layerDefer.resolve(layer);
-
 				// Set feature shared data
 				Feature.set(layer.features);
 
@@ -95,17 +88,6 @@ exports.LayerCtrl = [
 				Content.set(layer.contents);
 
 				$rootScope.$broadcast('data.ready', layer);
-
-				/*
-				// Store shared data on scope
-				$scope.sharedData = LayerSharedData;
-
-				// Watch active sidebar on layer parent scope
-				$scope.activeSidebar = false;
-				$scope.$watch('sharedData.activeSidebar()', function(active) {
-					$scope.activeSidebar = active;
-				});
-				*/
 
 				/*
 				 * Edit functions

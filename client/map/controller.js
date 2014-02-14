@@ -8,16 +8,19 @@ require('angular/angular');
 
 exports.MapCtrl = [
 	'$scope',
+	'$rootScope',
 	'$location',
 	'$state',
 	'$stateParams',
 	'Page',
 	'Map',
 	'Layer',
+	'Content',
+	'Feature',
 	'MapService',
 	'MessageService',
 	'SessionService',
-	function($scope, $location, $state, $stateParams, Page, Map, Layer, MapService, Message, Session) {
+	function($scope, $rootScope, $location, $state, $stateParams, Page, Map, Layer, Content, Feature, MapService, Message, Session) {
 
 		$scope.user = Session.user;
 
@@ -184,6 +187,7 @@ exports.MapCtrl = [
 
 					// Fix ordering
 					if($scope.layers.length === $scope.map.layers.length) {
+						$scope.setupMapContent();
 						$scope.fixLayerOrdering();
 					}
 
@@ -196,6 +200,22 @@ exports.MapCtrl = [
 					});
 					$scope.layers = ordered;
 				};
+
+				$scope.setupMapContent = function() {
+					var contents = [];
+					var features = [];
+					angular.forEach($scope.layers, function(layer) {
+						angular.forEach(layer.features, function(lF) {
+							features.push(lF);
+						});
+						angular.forEach(layer.contents, function(lC) {
+							contents.push(lC);
+						});
+					});
+					Content.set(contents);
+					Feature.set(features);
+					$rootScope.$broadcast('data.ready', $scope.map);
+				}
 
 				$scope.$watch('map.layers', function(layers) {
 
