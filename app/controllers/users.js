@@ -107,6 +107,7 @@ exports.update = function (req, res) {
   var 
     user;
 
+<<<<<<< HEAD
   User.findById(req.user._id, function(err, usr){
     usr.bio = req.body.bio;
     usr.save(function(err){
@@ -115,6 +116,14 @@ exports.update = function (req, res) {
     });
   });
 
+=======
+  user = extend(req.user, {bio: req.body.bio});
+
+  user.save(function (err) {
+    if (err) res.json({ errors: utils.errors(err.errors)});
+    else res({sucess:true});
+  });
+>>>>>>> 2365aacb18991fc85eac8138400f8951af814cf1
 }
 
 /**
