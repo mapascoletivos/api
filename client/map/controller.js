@@ -227,7 +227,7 @@ exports.MapCtrl = [
 
 				$scope.showLayer = function(layer) {
 
-					MapService.get().showLayer(layer);
+					MapService.get().addLayer(layer);
 
 				};
 
