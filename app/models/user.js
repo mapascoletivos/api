@@ -16,6 +16,7 @@ var UserSchema = new Schema({
 	name: { type: String, default: '' },
 	username: { type: String, default: '' },
 	email: { type: String, default: '' },
+	bio: {type: String, default: '' },
 	provider: { type: String, default: '' },
 	hashed_password: { type: String, default: '' },
 	salt: { type: String, default: '' },
