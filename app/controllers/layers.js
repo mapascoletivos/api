@@ -40,7 +40,14 @@ exports.index = function(req, res){
 	
 	if(req.param('creatorOnly'))
 		options.criteria = { creator: req.user }
-		
+
+	if(req.param('userId')) {
+		if(!req.user || req.user._id != req.param('userId'))
+			options.criteria = { $and: [ {creator: req.param('userId')}, {visibility: 'Visible'} ] };
+		else
+			options.criteria = { creator: req.param('userId') };
+	}
+
 	if (req.param('search'))
 		options.criteria = {
 			$and: [
@@ -49,17 +56,16 @@ exports.index = function(req, res){
 			]
 		}
 
-	// if (!req.param('search')) {
-		Layer.list(options, function(err, layers) {
-			if (err) return res.json(400, err);
-			Layer.count(options.criteria).exec(function (err, count) {
-				if (!err) {
-					res.json({options: options, layersTotal: count, layers: layers});
-				} else {
-					res.json(400, err)
-				} 
-			});
+	Layer.list(options, function(err, layers) {
+		if (err) return res.json(400, err);
+		Layer.count(options.criteria).exec(function (err, count) {
+			if (!err) {
+				res.json({options: options, layersTotal: count, layers: layers});
+			} else {
+				res.json(400, err)
+			} 
 		});
+	});
 }
 
 /**

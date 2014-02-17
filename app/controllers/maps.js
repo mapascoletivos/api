@@ -37,9 +37,16 @@ exports.index = function(req, res){
 	if(req.param('creatorOnly'))
 		options.criteria = { creator: req.user }
 
+	if(req.param('userId')) {
+		if(!req.user || req.user._id != req.param('userId'))
+			options.criteria = { $and: [ {creator: req.param('userId')}, {visibility: 'Visible'} ] };
+		else
+			options.criteria = { creator: req.param('userId') };
+	}
+
 	Map.list(options, function(err, maps) {
 		if (err) return res.json(400, err);
-		Map.count().exec(function (err, count) {
+		Map.count(options.criteria).exec(function (err, count) {
 			if (err) res.json(400, err);
 			res.json({options: options, mapsTotal: count, maps: maps});
 		})

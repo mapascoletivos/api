@@ -24,11 +24,11 @@ exports.index = function (req, res) {
 }
 
 exports.app = function(req, res) {
-	if(req.isAuthenticated()) {
+	//if(req.isAuthenticated()) {
 		res.render('layouts/default', {
 			title: 'Mapas Coletivos'
 		})
-	}
+	//}
 }
 
 /**

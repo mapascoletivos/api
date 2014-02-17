@@ -9,7 +9,7 @@
 					<span class="user-name">{{user.name}}</span>
 				</h1>
 				<ul class="profile-actions header-actions">
-					<li ng-class="{active: !currentState}">
+					<li ng-class="{active: currentState === 'user'}">
 						<a href="/user/{{user._id}}">
 							<span class="lsf">&#xE137;</span>
 							Sobre
@@ -28,8 +28,6 @@
 						</a>
 					</li>
 				</ul>
-			</div>
-			<div class="five columns">
 			</div>
 		</div>
 	</div>

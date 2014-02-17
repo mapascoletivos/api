@@ -3,11 +3,14 @@
 exports.UserCtrl = [
 	'$scope',
 	'$rootScope',
+	'$state',
 	'$stateParams',
 	'User',
+	'Layer',
+	'Map',
 	'Page',
 	'MessageService',
-	function($scope, $rootScope, $stateParams, User, Page, Message) {
+	function($scope, $rootScope, $state, $stateParams, User, Layer, Map, Page, Message) {
 
 		$scope.save = function(user) {
 
@@ -39,6 +42,9 @@ exports.UserCtrl = [
 
 		}
 
+		/* 
+		 * Profile page
+		 */
 		if($stateParams.userId) {
 
 			User.resource.get({
@@ -56,7 +62,33 @@ exports.UserCtrl = [
 					text: 'Ocorreu um erro.'
 				});
 
-			})
+			});
+
+			Layer.resource.query({
+				userId: $stateParams.userId
+			}, function(res) {
+				$scope.totalLayer = res.layersTotal;
+				$scope.layers = res.layers;
+			});
+
+			Map.resource.query({
+				userId: $stateParams.userId
+			}, function(res) {
+				$scope.totalMap = res.mapsTotal;
+				$scope.maps = res.maps;
+			});
+
+			var stateFunctions = function() {
+				$scope.currentState = $state.current.name.replace('user.', '');
+			}
+
+			$rootScope.$on('$viewContentLoaded', function() {
+				stateFunctions();
+			});
+
+			$rootScope.$on('$stateChangeSuccess', function() {
+				stateFunctions();
+			});
 
 		}
 
