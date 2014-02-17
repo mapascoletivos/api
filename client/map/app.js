@@ -16,32 +16,32 @@ angular
 
 			$stateProvider
 				.state('dashboard.maps', {
-					url: '/maps',
+					url: 'maps/',
 					templateUrl: '/views/dashboard/maps.html'
 				})
 				.state('maps', {
-					url: '/maps',
+					url: '/maps/',
 					controller: 'MapCtrl',
 					templateUrl: '/views/map/index.html'
 				})
 				.state('newMap', {
-					url: '/maps/new',
+					url: '/maps/new/',
 					controller: 'MapCtrl',
 					templateUrl: '/views/map/index.html'
 				})
 				.state('singleMap', {
-					url: '/maps/:mapId',
+					url: '/maps/:mapId/',
 					controller: 'MapCtrl',
 					templateUrl: '/views/map/show.html'
 				})
 				.state('singleMap.content', {
-					url: '/content/:contentId'
+					url: 'content/:contentId/'
 				})
 				.state('singleMap.feature', {
-					url: '/feature/:featureId'
+					url: 'feature/:featureId/'
 				})
 				.state('editMap', {
-					url: '/maps/:mapId/edit',
+					url: '/maps/:mapId/edit/',
 					controller: 'MapCtrl',
 					templateUrl: '/views/map/edit.html'
 				});

@@ -19,6 +19,8 @@ exports.LayerCtrl = [
 	'MapService',
 	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, MapService) {
 
+		$scope.$layer = Layer;
+
 		// New layer
 		if($location.path() == '/layers/new') {
 
@@ -154,6 +156,15 @@ exports.LayerCtrl = [
 			});
 
 		}
+
+		$scope.$on('layer.page.next', function(event, res) {
+			if(res.layers.length) {
+				angular.forEach(res.layers, function(layer) {
+					$scope.layers.push(layer);
+				});
+				$scope.layers = $scope.layers; // trigger digest
+			}
+		});
 
 	}
 ];

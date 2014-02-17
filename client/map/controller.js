@@ -20,9 +20,9 @@ exports.MapCtrl = [
 	'SessionService',
 	function($scope, $rootScope, $location, $state, $stateParams, Page, Map, Layer, Content, Feature, MapService, Message, Session) {
 
-		$scope.user = Session.user;
+		$scope.$map = Map;
 
-		// New layer
+		// New map
 		if($location.path() == '/maps/new') {
 
 			var draft = new Map.resource({
@@ -337,6 +337,15 @@ exports.MapCtrl = [
 			});
 
 		}
+
+		$scope.$on('map.page.next', function(event, res) {
+			if(res.maps.length) {
+				angular.forEach(res.maps, function(map) {
+					$scope.maps.push(map);
+				});
+				$scope.maps = $scope.maps; // trigger digest
+			}
+		});
 
 	}
 ];

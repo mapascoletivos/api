@@ -71,6 +71,7 @@
 		"angular-ui-router": "angular-ui/ui-router",
 		"angular-ui-sortable": "angular-ui/ui-sortable",
 		"angular-modal": "miguelpeixe/angular-modal",
+		"ngInfiniteScroll": "BinaryMuse/ngInfiniteScroll-bower",
 		"eventable": "madebymany/eventable",
 		"sir-trevor": "madebymany/sir-trevor-js"
 	},

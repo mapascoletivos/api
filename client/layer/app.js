@@ -6,6 +6,7 @@ angular
 	.module('mapasColetivos.layer', [
 		'ngResource',
 		'btford.modal',
+		'infinite-scroll',
 		'mapasColetivos.geocode',
 		'mapasColetivos.feature',
 		'mapasColetivos.content'
@@ -16,32 +17,32 @@ angular
 
 			$stateProvider
 				.state('dashboard.layers', {
-					url: '/layers',
+					url: 'layers/',
 					templateUrl: '/views/dashboard/layers.html'
 				})
 				.state('layers', {
-					url: '/layers',
+					url: '/layers/',
 					controller: 'LayerCtrl',
 					templateUrl: '/views/layer/index.html'
 				})
 				.state('newLayer', {
-					url: '/layers/new',
+					url: '/layers/new/',
 					controller: 'LayerCtrl',
 					templateUrl: '/views/layer/index.html'
 				})
 				.state('singleLayer', {
-					url: '/layers/:layerId',
+					url: '/layers/:layerId/',
 					controller: 'LayerCtrl',
 					templateUrl: '/views/layer/show.html'
 				})
 				.state('singleLayer.content', {
-					url: '/content/:contentId'
+					url: 'content/:contentId/'
 				})
 				.state('singleLayer.feature', {
-					url: '/feature/:featureId'
+					url: 'feature/:featureId/'
 				})
 				.state('editLayer', {
-					url: '/layers/:layerId/edit',
+					url: '/layers/:layerId/edit/',
 					controller: 'LayerCtrl',
 					templateUrl: '/views/layer/edit.html'
 				});

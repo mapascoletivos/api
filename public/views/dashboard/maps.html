@@ -3,12 +3,17 @@
 		<div class="twelve columns">
 			<h2>Mapas</h2>
 			<input class="filter" type="text" ng-model="search" placeholder="Busque por seus mapas" />
-			<p>Você tem <strong>{{maps.length}}</strong> mapas cadastrados.</p>
+			<p>Você tem <strong>{{totalMap}}</strong> mapas cadastrados.</p>
 		</div>
 	</div>
 </div>
 <div class="maps-list" ng-show="maps.length" ng-controller="MapActionsCtrl">
-	<div class="container">
+	<div
+		infinite-scroll="$map.nextPage()"
+		infinite-scroll-disabled="$map.busy"
+		infinite-scroll-distance="1"
+		infinite-scroll-immediate-check="false"
+		class="container">
 		<div class="three columns">
 			<div class="default-item new-item row">
 				<h3>

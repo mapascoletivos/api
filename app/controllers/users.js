@@ -121,18 +121,5 @@ exports.update = function (req, res) {
  */
 
 exports.show = function (req, res) {
-  var user = req.profile;
-  res.render('users/show', {
-    title: user.name,
-    user: user
-  });
+  res.json(req.profile);
 }
-
-/**
- *  Show user dashboard
- */
-exports.dashboard = function (req, res) {
-  res.render('users/dashboard',{user: req.session.user}); 
-}
-
-

@@ -7,7 +7,13 @@
 		</div>
 	</div>
 	<div class="container">
-		<div class="content row" ng-controller="LayerActionsCtrl">
+		<div
+			ng-controller="LayerActionsCtrl"
+			infinite-scroll="$layer.nextPage()"
+			infinite-scroll-disabled="$layer.busy"
+			infinite-scroll-distance="1" 
+			infinite-scroll-immediate-check="false"
+			class="content row">
 			<div class="three columns" ng-repeat="layer in layers | filter:search">
 				<div ng-include="templates.list" autoscroll="false"></div>
 			</div>

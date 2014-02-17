@@ -5,21 +5,48 @@
  */
 exports.Layer = [
 	'$resource',
+	'$rootScope',
 	'apiPrefix',
-	function($resource, apiPrefix) {
+	function($resource, $rootScope, apiPrefix) {
 
 		var editing = false;
 
+		var params = {};
+
 		return {
-			resource: $resource(apiPrefix + '/layers/:layerId', {}, {
+			resource: $resource(apiPrefix + '/layers/:layerId', {
+				perPage: 10,
+				page: 1
+			}, {
 				'query': {
 					isArray: false,
-					method: 'GET'
+					method: 'GET',
+					interceptor: {
+						response: function(data) {
+							params = data.config.params;
+							return data.data;
+						}
+					}
 				},
 				'update': {
 					method: 'PUT'
 				}
 			}),
+			busy: false,
+			nextPage: function() {
+				var self = this;
+				if(!self.busy) {
+					self.busy = true;
+					this.resource.query(_.extend(params, {
+						page: params.page + 1
+					}), function(res) {
+						if(res.layers.length) {
+							self.busy = false;
+							$rootScope.$broadcast('layer.page.next', res);
+						}
+					});
+				}
+			},
 			edit: function(layer) {
 				if(typeof layer !== 'undefined')
 					editing = layer;

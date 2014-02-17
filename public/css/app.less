@@ -68,6 +68,14 @@ h1,h2,h3 {
 	font-weight: 600;
 }
 
+a,
+a:visited {
+	color: @blue;
+	&:hover {
+		color: @dark-blue;
+	}
+}
+
 img {
 	max-width: 100%;
 }
@@ -360,7 +368,11 @@ input[type=submit] {
 		font-size: 22px;
 		line-height: 28px;
 		a {
+			color: #333;
 			text-decoration: none;
+			&:hover {
+				color: #111;
+			}
 		}
 	}
 	p {
@@ -415,7 +427,12 @@ input[type=submit] {
 	background: @green;
 	&:hover {
 		background: @light-green;
+		h3 a,
+		a {
+			color: #fff;
+		}
 	}
+	h3 a,
 	a {
 		width: 100%;
 		padding: 40px;
@@ -464,7 +481,46 @@ input[type=submit] {
 				line-height: 36px;
 				margin-top: 10px;
 			}
+			.profile-link {
+				color: @light-blue;
+				display: block;
+				margin-top: 10px;
+				text-decoration: none;
+				font-size: 12px;
+				text-transform: uppercase;
+				font-weight: 600;
+				&:before {
+					content: '[ ';
+				}
+				&:after {
+					content: ' ]';
+				}
+				&:hover {
+					color: @blue;
+				}
+			}
 		}
+	}
+}
+
+/*
+ * Profile page
+ */
+
+.profile-page {
+	.page-header {
+		img {
+			width: 100%;
+			height: auto;
+		}
+		h1 {
+			font-size: 34px;
+		}
+	}
+	.bio {
+		font-size: 16px;
+		line-height: 28px;
+		max-width: 1280px;
 	}
 }
 

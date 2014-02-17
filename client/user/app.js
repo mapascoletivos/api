@@ -11,16 +11,16 @@ angular
 
 			$stateProvider
 				.state('user', {
-					url: '/user/:userName',
+					url: '/user/:userId/',
 					controller: 'UserCtrl',
 					templateUrl: '/views/user/show.html'
 				})
 				.state('user.layers', {
-					url: '/layers',
+					url: 'layers/',
 					templateUrl: '/views/user/layers.html'
 				})
 				.state('user.maps', {
-					url: '/maps',
+					url: 'maps/',
 					templateUrl: '/views/user/maps.html'
 				});
 		}

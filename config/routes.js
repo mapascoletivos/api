@@ -37,12 +37,12 @@ module.exports = function (app, passport) {
 	app.get('/logout', users.logout)
 	app.post('/users', users.create)
 	app.put(apiPrefix + '/users', auth.requiresLogin, users.update)
+	app.get(apiPrefix + '/users/:userId', users.show)
 	app.post('/users/session',
 		passport.authenticate('local', {
 		failureRedirect: '/login',
 		failureFlash: 'Invalid email or password.'
 	}), users.session)
-	app.get('/users/:userId', users.show)
 	
 	// Facebook OAuth routes
 	

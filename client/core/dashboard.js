@@ -8,12 +8,12 @@ angular.module('mapasColetivos.dashboard', [])
 
 		$stateProvider
 			.state('dashboard', {
-				url: '/dashboard',
+				url: '/dashboard/',
 				controller: 'DashboardCtrl',
 				templateUrl: '/views/dashboard/index.html'
 			})
 			.state('dashboard.profile', {
-				url: '/profile',
+				url: 'profile/',
 				templateUrl: '/views/dashboard/profile.html'
 			});
 
@@ -29,9 +29,10 @@ angular.module('mapasColetivos.dashboard', [])
 	'SessionService',
 	'$location',
 	'Page',
+	'User',
 	'Layer',
 	'Map',
-	function($scope, $rootScope, $timeout, $state, $stateParams, SessionService, $location, Page, Layer, Map) {
+	function($scope, $rootScope, $timeout, $state, $stateParams, SessionService, $location, Page, User, Layer, Map) {
 
 		Page.setTitle('Painel de Controle');
 
@@ -40,11 +41,7 @@ angular.module('mapasColetivos.dashboard', [])
 		}
 		$scope.user = SessionService.user;
 
-		$scope.user.grvtr = grvtr.create($scope.user.email, {
-			size: 58,
-			defaultImage: 'mm',
-			rating: 'g'
-		});
+		$scope.user.grvtr = User.gravatar($scope.user.email, 100);
 
 		var stateFunctions = function() {
 			if($state.current.name === 'dashboard') {
@@ -61,16 +58,45 @@ angular.module('mapasColetivos.dashboard', [])
 			stateFunctions();
 		});
 
+		$scope.$layer = Layer;
 		Layer.resource.query({
 			creatorOnly: true
 		}, function(res) {
+			$scope.totalLayer = res.layersTotal;
 			$scope.layers = res.layers;
+
+			/*
+			 * Pagination
+			 */
+			$scope.$on('layer.page.next', function(event, res) {
+				if(res.layers.length) {
+					angular.forEach(res.layers, function(layer) {
+						$scope.layers.push(layer);
+					});
+					$scope.layers = $scope.layers; // trigger digest
+				}
+			});
+
 		});
 
+		$scope.$map = Map;
 		Map.resource.query({
 			creatorOnly: true
 		}, function(res) {
+			$scope.totalMap = res.mapsTotal;
 			$scope.maps = res.maps;
+
+			/*
+			 * Pagination
+			 */
+			$scope.$on('map.page.next', function(event, res) {
+				if(res.maps.length) {
+					angular.forEach(res.maps, function(map) {
+						$scope.maps.push(map);
+					});
+					$scope.maps = $scope.maps; // trigger digest
+				}
+			});
 		});
 
 		$rootScope.$on('map.delete.success', function(event, map) {

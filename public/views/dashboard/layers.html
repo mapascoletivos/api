@@ -3,13 +3,18 @@
 		<div class="twelve columns">
 			<h2>Camadas</h2>
 			<input class="filter" type="text" ng-model="search" placeholder="Busque por suas camadas" />
-			<p>Você tem <strong>{{layers.length}}</strong> camadas cadastradas.</p>
+			<p>Você tem <strong>{{totalLayer}}</strong> camadas cadastradas.</p>
 		</div>
 	</div>
 </div>
 <div class="layers-list" ng-show="layers.length" ng-controller="LayerActionsCtrl">
-	<div class="container">
-		<div class="three columns">
+	<div
+		infinite-scroll="$layer.nextPage()"
+		infinite-scroll-disabled="$layer.busy"
+		infinite-scroll-distance="1"
+		infinite-scroll-immediate-check="false"
+		class="container">
+		<div class="three columns" ng-show="user._id == window.user._id">
 			<div class="default-item new-item row">
 				<h3>
 					<a href="/layers/new">

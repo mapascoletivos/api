@@ -7,7 +7,13 @@
 		</div>
 	</div>
 	<div class="container">
-		<div class="content row" ng-controller="MapActionsCtrl">
+		<div
+			ng-controller="MapActionsCtrl"
+			infinite-scroll="$map.nextPage()"
+			infinite-scroll-disabled="$map.busy"
+			infinite-scroll-distance="1" 
+			infinite-scroll-immediate-check="false"
+			class="content row">
 			<div class="three columns" ng-repeat="map in maps | filter:search">
 				<div ng-include="templates.list" autoscroll="false"></div>
 			</div>
