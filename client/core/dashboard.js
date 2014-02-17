@@ -23,6 +23,7 @@ angular.module('mapasColetivos.dashboard', [])
 .controller('DashboardCtrl', [
 	'$scope',
 	'$rootScope',
+	'$timeout',
 	'$state',
 	'$stateParams',
 	'SessionService',
@@ -30,7 +31,7 @@ angular.module('mapasColetivos.dashboard', [])
 	'Page',
 	'Layer',
 	'Map',
-	function($scope, $rootScope, $state, $stateParams, SessionService, $location, Page, Layer, Map) {
+	function($scope, $rootScope, $timeout, $state, $stateParams, SessionService, $location, Page, Layer, Map) {
 
 		Page.setTitle('Painel de Controle');
 
@@ -46,12 +47,16 @@ angular.module('mapasColetivos.dashboard', [])
 		});
 
 		var stateFunctions = function() {
-			if($state.current.name === 'dashboard')
+			if($state.current.name === 'dashboard') {
 				$location.path('/dashboard/layers').replace();
+			}
 			$scope.currentState = $state.current.name.replace('dashboard.', '');
 		}
 
-		stateFunctions();
+		$rootScope.$on('$viewContentLoaded', function() {
+			stateFunctions();
+		});
+
 		$rootScope.$on('$stateChangeSuccess', function() {
 			stateFunctions();
 		});
