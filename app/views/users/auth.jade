@@ -1,26 +1,22 @@
 extends ../layouts/default-static
 
 block main
-  center
-    h1= title
+	center
+		h1= title
 
 block content
-  center
-    a(href="/auth/facebook" target="_self")
-      img(src="/img/facebook.png")
-    a(href="/auth/github")
-      img(src="/img/github.png" target="_self")
-    a(href="/auth/twitter")
-      img(src="/img/twitter.png" target="_self")
-    a(href="/auth/google")
-      img(src="/img/google.png" target="_self")
-    a(href="/auth/linkedin")
-      img(src="/img/linkedin.png" target="_self")
+	center
+		a(href="/auth/twitter")
+			img(src="/img/twitter.png" target="_self")
+		a(href="/auth/facebook" target="_self")
+			img(src="/img/facebook.png")
+		a(href="/auth/google")
+			img(src="/img/google.png" target="_self")
 
-  center
-    br
-    h2 OR
-    br
+	center
+		br
+		h2 OR
+		br
 
-  .login
-    block auth
+	.login
+		block auth

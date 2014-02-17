@@ -43,6 +43,9 @@ module.exports = function (app, passport) {
 		failureFlash: 'Invalid email or password.'
 	}), users.session)
 	app.get('/users/:userId', users.show)
+	
+	// Facebook OAuth routes
+	
 	app.get('/auth/facebook',
 		passport.authenticate('facebook', {
 			scope: [ 'email', 'user_about_me'],
@@ -52,14 +55,9 @@ module.exports = function (app, passport) {
 		passport.authenticate('facebook', {
 		failureRedirect: '/login'
 	}), users.authCallback)
-	app.get('/auth/github',
-		passport.authenticate('github', {
-		failureRedirect: '/login'
-	}), users.signin)
-	app.get('/auth/github/callback',
-		passport.authenticate('github', {
-		failureRedirect: '/login'
-	}), users.authCallback)
+
+	// Twitter OAuth routes
+
 	app.get('/auth/twitter',
 		passport.authenticate('twitter', {
 		failureRedirect: '/login'
@@ -68,6 +66,10 @@ module.exports = function (app, passport) {
 		passport.authenticate('twitter', {
 		failureRedirect: '/login'
 	}), users.authCallback)
+
+
+	// Google OAuth routes
+
 	app.get('/auth/google',
 		passport.authenticate('google', {
 		failureRedirect: '/login',
@@ -80,25 +82,8 @@ module.exports = function (app, passport) {
 		passport.authenticate('google', {
 		failureRedirect: '/login'
 	}), users.authCallback)
-	app.get('/auth/linkedin',
-		passport.authenticate('linkedin', {
-		failureRedirect: '/login',
-		scope: [
-		'r_emailaddress'
-		]
-	}), users.signin)
-	app.get('/auth/linkedin/callback',
-		passport.authenticate('linkedin', {
-		failureRedirect: '/login'
-	}), users.authCallback)
 
 	app.param('userId', users.user)
-
-
-
-
-
-
 
 	/** 
 	 * Feature routes 
