@@ -22,7 +22,7 @@ exports.LayerCtrl = [
 		$scope.$layer = Layer;
 
 		// New layer
-		if($location.path() == '/layers/new') {
+		if($location.path() == '/layers/new/') {
 
 			var draft = new Layer.resource({
 				title: 'Untitled'

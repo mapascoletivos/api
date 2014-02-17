@@ -23,13 +23,13 @@ exports.MapCtrl = [
 		$scope.$map = Map;
 
 		// New map
-		if($location.path() == '/maps/new') {
+		if($location.path() == '/maps/new/') {
 
 			var draft = new Map.resource({
 				title: 'Untitled'
 			});
 			draft.$save(function(draft) {
-				$location.path('/maps/' + draft._id + '/edit').replace();
+				$location.path('/maps/' + draft._id + '/edit/').replace();
 			}, function(err) {
 				// TODO error handling
 			});
