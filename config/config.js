@@ -8,14 +8,11 @@ var
 	rootPath = path.resolve(__dirname + '../..'),
 	templatePath = path.normalize(__dirname + '/../app/mailer/templates')
 	notifier = {
-		service: 'postmark',
-		APN: false,
-		email: true, // true
-		actions: ['token'],
-		tplPath: templatePath,
-		key: process.env.POSTMARK_KEY || 'POSTMARK_KEY',
-		parseAppId: process.env.PARSE_APP_ID,
-		parseApiKey: process.env.PARSE_MASTER_KEY
+		service: 'postmark', 
+		email: true,
+		actions: ['token', 'token'],
+		tplPath: require('path').normalize(__dirname + '/app/mailer/templates'),
+		key: process.env.POSTMARK_KEY
 	} 
 
 /**

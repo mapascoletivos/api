@@ -21,7 +21,7 @@ var Notify = {
 		var obj = {
 			name: user.name,
 			to: user.email,
-			from: 'ajuda@mapascoletivos.com.br',
+			from: 'notificacoes@mapascoletivos.com.br',
 			subject: 'Recuperação de senha',
 			token: '111111111'
 		}
