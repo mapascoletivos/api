@@ -31,7 +31,10 @@ exports.index = function(req, res){
 	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
 	var options = {
 		perPage: perPage,
-		page: page
+		page: page,
+		criteria: {
+			$or: [ {creator: req.user} , {visibility: 'Visible'} ]
+		}
 	}
 
 	if(req.param('creatorOnly'))
@@ -44,11 +47,19 @@ exports.index = function(req, res){
 			options.criteria = { creator: req.param('userId') };
 	}
 
+	if (req.param('search'))
+		options.criteria = {
+			$and: [
+				options.criteria,
+				{ title: { $regex: req.param('search'), $options: 'i' }}
+			]
+		}
+
 	Map.list(options, function(err, maps) {
 		if (err) return res.json(400, err);
 		Map.count(options.criteria).exec(function (err, count) {
 			if (err) res.json(400, err);
-			res.json({options: options, mapsTotal: count, maps: maps});
+			else res.json({options: options, mapsTotal: count, maps: maps});
 		})
 	})
 }

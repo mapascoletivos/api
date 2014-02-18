@@ -153,6 +153,26 @@ exports.LayerCtrl = [
 
 			Layer.resource.query(function(res) {
 				$scope.layers = res.layers;
+
+				$scope.$watch('search', _.debounce(function(text) {
+
+					if(text) {
+
+						Layer.resource.query({
+							search: text
+						}, function(searchRes) {
+							$scope.layers = searchRes.layers;
+						});
+
+					} else {
+
+						Layer.resource.query(function(res) {
+							$scope.layers = res.layers;
+						});
+
+					}
+
+				}, 300));
 			});
 
 		}

@@ -22,8 +22,11 @@ exports.signin = function (req, res) {}
  */
 
 exports.user = function (req, res, next, id) {
+  var query = { username:id };
+  if(id.match(/^[0-9a-fA-F]{24}$/)) // change query if id string matches object ID regex
+    query = { _id: id };
   User
-    .findOne({ _id : id })
+    .findOne(query)
     .exec(function (err, user) {
       if (err) return next(err)
       if (!user) return next(new Error('Failed to load User ' + id))
