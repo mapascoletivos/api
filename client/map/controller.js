@@ -7,6 +7,7 @@
 exports.MapCtrl = [
 	'$scope',
 	'$rootScope',
+	'$timeout',
 	'$location',
 	'$state',
 	'$stateParams',
@@ -18,7 +19,9 @@ exports.MapCtrl = [
 	'MapService',
 	'MessageService',
 	'SessionService',
-	function($scope, $rootScope, $location, $state, $stateParams, Page, Map, Layer, Content, Feature, MapService, Message, Session) {
+	function($scope, $rootScope, $timeout, $location, $state, $stateParams, Page, Map, Layer, Content, Feature, MapService, Message, Session) {
+
+		$scope.user = Session.user;
 
 		$scope.$map = Map;
 
@@ -84,7 +87,7 @@ exports.MapCtrl = [
 
 				$scope.layerSearch = '';
 
-				$scope.$watch('layerSearch', function(text) {
+				$scope.$watch('layerSearch', _.debounce(function(text) {
 
 					if(text) {
 
@@ -102,11 +105,13 @@ exports.MapCtrl = [
 
 					} else {
 
-						$scope.availableLayers = angular.copy($scope.userLayers);
+						$timeout(function() {
+							$scope.availableLayers = angular.copy($scope.userLayers);
+						}, 100);
 
 					}
 
-				});
+				}, 300));
 
 				$scope.focusLayer = function(layer) {
 
@@ -334,6 +339,29 @@ exports.MapCtrl = [
 
 			Map.resource.query(function(res) {
 				$scope.maps = res.maps;
+
+				$scope.$watch('search', _.debounce(function(text) {
+
+					if(text) {
+
+						Map.resource.query({
+							search: text
+						}, function(searchRes) {
+
+							$scope.maps = searchRes.maps;
+
+						});
+
+					} else {
+
+						Map.resource.query(function(res) {
+							$scope.maps = res.maps;
+						});
+
+					}
+
+				}, 300));
+
 			});
 
 		}

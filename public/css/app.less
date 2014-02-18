@@ -182,7 +182,7 @@ input[type=submit] {
  */
 
 #messages {
-	position: absolute;
+	position: fixed;
 	top: 53px;
 	left: 0;
 	right: 0;
@@ -191,11 +191,11 @@ input[type=submit] {
 	color: #fff;
 	z-index: 9999;
 	.ok {
-		background: green;
+		background: @light-green;
 		padding: 15px 0;
 	}
 	.error {
-		background: red;
+		background: @dark-red;
 		padding: 15px 0;
 	}
 	.close-button {

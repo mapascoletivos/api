@@ -54,6 +54,10 @@ angular.module('mapasColetivos.dashboard', [])
 			stateFunctions();
 		});
 
+		$rootScope.$on('$stateChangeSuccess', function() {
+			stateFunctions();
+		});
+
 		$scope.$layer = Layer;
 		Layer.resource.query({
 			creatorOnly: true

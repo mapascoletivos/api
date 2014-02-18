@@ -64,6 +64,12 @@ exports.UserCtrl = [
 
 			});
 
+			/*
+			 * Layer
+			 */
+
+			$scope.$layer = Layer;
+
 			Layer.resource.query({
 				userId: $stateParams.userId
 			}, function(res) {
@@ -71,12 +77,40 @@ exports.UserCtrl = [
 				$scope.layers = res.layers;
 			});
 
+			$scope.$on('layer.page.next', function(event, res) {
+				if(res.layers.length) {
+					angular.forEach(res.layers, function(layer) {
+						$scope.layers.push(layer);
+					});
+					$scope.layers = $scope.layers; // trigger digest
+				}
+			});
+
+			/*
+			 * Map
+			 */
+
+			$scope.$map = Map;
+
 			Map.resource.query({
 				userId: $stateParams.userId
 			}, function(res) {
 				$scope.totalMap = res.mapsTotal;
 				$scope.maps = res.maps;
 			});
+
+			$scope.$on('map.page.next', function(event, res) {
+				if(res.maps.length) {
+					angular.forEach(res.maps, function(map) {
+						$scope.maps.push(map);
+					});
+					$scope.maps = $scope.maps; // trigger digest
+				}
+			});
+
+			/*
+			 * State management (profile sub content)
+			 */
 
 			var stateFunctions = function() {
 				$scope.currentState = $state.current.name.replace('user.', '');
