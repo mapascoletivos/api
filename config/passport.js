@@ -99,7 +99,7 @@ module.exports = function (passport, config) {
     }
   ))
 
-  // use google strategy
+  // use google login strategy
   passport.use(new GoogleStrategy({
       clientID: config.google.clientID,
       clientSecret: config.google.clientSecret,

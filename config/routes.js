@@ -32,9 +32,12 @@ module.exports = function (app, passport) {
 	/** 
 	 * Users routes 
 	 **/
-	app.get('/login', users.login)
-	app.get('/signup', users.signup)
-	app.get('/logout', users.logout)
+	app.get('/login', users.login);
+	app.get('/forgot', users.forgot);
+	app.post('/forgot', users.sendToken);
+	app.get('/signup', users.signup);
+	app.get('/logout', users.logout);
+	
 	app.post('/users', users.create)
 	app.put(apiPrefix + '/users', auth.requiresLogin, users.update)
 	app.get(apiPrefix + '/users/:userId', users.show)

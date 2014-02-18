@@ -1,0 +1,19 @@
+extends ../layouts/default-static
+
+block main
+	center
+		h1= title
+
+block content
+	form.form-horizontal(action="/forgot", method="post", role="form")
+
+		p.col-sm-offset-2.error= message
+
+		.form-group
+			label.col-sm-2.control-label(for="emailOrUsername") Seu endereço de e-mail ou nome de usuário:
+			.col-sm-10
+				input#email.form-control(name="emailOrUsername")
+
+		.form-group
+			.col-sm-offset-2.col-sm-10
+				button.btn.btn-primary(type='submit') Recuperar senha

@@ -3,18 +3,10 @@
  */
 
 var 
-	// async = require('async'),
-	// _ = require('underscore'),
 	request = require('supertest'),
 	should = require('should'),
 	app = require('../../web'),
 	mongoose = require('mongoose');
-	// Map = mongoose.model('Map');
-	// Layer = mongoose.model('Layer'),
-	// Feature = mongoose.model('Feature'),
-	// Content = mongoose.model('Content'),
-	// User = mongoose.model('User'),
-	// Factory = require('../../lib/factory');
 
 var
 	apiPrefix = '/api/v1';

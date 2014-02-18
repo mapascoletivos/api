@@ -51,6 +51,52 @@ exports.login = function (req, res) {
 }
 
 /**
+ * Show forgot password form
+ */
+
+exports.forgot = function (req, res) {
+  res.render('users/forgot', {
+    title: 'Recuperar senha',
+    message: req.flash('error')
+  });
+}
+
+/**
+ * Send reset password token
+ */
+
+exports.sendToken = function (req, res) {
+	User.findOne({
+		$and: [
+			{ provider: null }, // ignore users authenticating in third parties
+			{
+				$or: [
+				{email: req.body['emailOrUsername']}, 
+				{username: req.body['emailOrUsername']}
+				]
+			}
+		]
+	}, function(err,user){
+		if (err) 
+			res.render('users/forgot', {
+				title: 'Recuperar senha',
+				message: req.flash('error')
+			});
+		else {
+			if (user) 
+				user.sendResetToken();
+
+			res.render('users/forgot', {
+				title: 'Recuperar senha',
+				message: req.flash('error')
+			});
+			
+		}
+	})
+}
+
+
+/**
  * Show sign up form
  */
 

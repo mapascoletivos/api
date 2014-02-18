@@ -6,7 +6,8 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	crypto = require('crypto'),
-	oAuthTypes = ['github', 'twitter', 'facebook', 'google', 'linkedin'];
+	moment = require('moment'),
+	oAuthTypes = ['twitter', 'facebook', 'google'];
 
 /**
  * User schema
@@ -145,6 +146,24 @@ UserSchema.methods = {
     } catch (err) {
       return ''
     }
+  },
+
+  /**
+   * Send reset password token if not using OAuth
+   */
+
+  sendResetToken: function() {
+		var 
+			Token = mongoose.model('Token'),
+			self = this,
+			token;
+			
+		if (self.doesNotRequireValidation){
+			token = new Token({
+				user: self,
+				expiresAt: moment().add('hour', 1).toDate()
+			}).save();
+		} 
   },
 
   /**
