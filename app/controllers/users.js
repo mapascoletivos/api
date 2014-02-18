@@ -157,11 +157,27 @@ exports.update = function (req, res) {
     user;
 
   User.findById(req.user._id, function(err, usr){
-    usr.bio = req.body.bio;
+    
+    // User is not changing password
+    if (!req.body.userPwd) {
+      usr.bio = req.body.bio;
+      usr.username = req.body.username;
+      usr.email = req.body.email;
+    } else {
+      if (!usr.authenticate(req.body.userPwd)) {
+        return res.json(400, { errors: { authentication: "Invalid Password"} });
+      } else {
+        if (req.body.newPwd != req.body.validatePwd) 
+          return res.json(400, { errors: { validation: "Passwords don't mach"} });
+        else
+          usr.password = req.body.newPwd;
+      }
+    }
+
     usr.save(function(err){
       if (err) res.json(400, { errors: utils.errors(err.errors)});
       else res.json({sucess:true});
-    });
+    });    
   });
 }
 

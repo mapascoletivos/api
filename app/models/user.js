@@ -76,11 +76,6 @@ UserSchema.path('email').validate(function (email, fn) {
 		fn(true);
 }, 'Email already exists')
 
-UserSchema.path('username').validate(function (username) {
-	if (this.doesNotRequireValidation()) return true
-	return username.length
-}, 'Username cannot be blank')
-
 UserSchema.path('username').validate(function (username, fn) {
 	var User = mongoose.model('User');
 
