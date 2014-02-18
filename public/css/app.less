@@ -39,8 +39,10 @@
 
 @green: #80d478;
 @light-green: lighten(@green, 10%);
+@dark-green: darken(@green, 10%);
 
 @red: #F05656;
+@light-red: lighten(@red, 10%);
 @dark-red: darken(@red, 10%);
 
 @blue: #77acde;
@@ -248,9 +250,13 @@ input[type=submit] {
 		border-bottom: 1px solid #555;
 		h1 {
 			font-size: 22px;
-			line-height: 58px;
+			line-height: 36px;
 			font-weight: 400;
 			color: #fff;
+			strong {
+				color: #fff;
+				font-size: 200%;
+			}
 			img {
 				float: left;
 				margin-right: 20px;
@@ -303,32 +309,51 @@ input[type=submit] {
 		border-bottom: 1px solid @blue;
 		color: #fff;
 		padding: 30px 0;
+		&.green {
+			background: @light-green;
+			border-bottom: 1px solid @green;
+			.button {
+				background: @green;
+				&:hover {
+					background: @dark-green;
+				}
+			}
+		}
 		h2 {
 			text-transform: uppercase;
 			font-size: 20px;
-			line-height: 22px;
+			line-height: 52px;
 			font-weight: 600;
 			color: #fff;
 			margin: 0 40px 0 0;
 			float: left;
 		}
 		input {
-			height: 22px;
+			height: 52px;
 			line-height: 22px;
 			float: left;
 			background: transparent;
 			border: 0;
 			color: #fff;
 			padding: 0;
-			margin: 0;
+			margin: 2px 0 0;
 		}
 		p {
 			font-weight: 200;
 			margin: 0;
 			font-style: italic;
 			text-align: right;
-			line-height: 22px;
+			line-height: 52px;
 			strong {
+				color: #fff;
+			}
+		}
+		.button {
+			font-size: 12px;
+			float: right;
+			background: @blue;
+			&:hover {
+				background: @dark-blue;
 				color: #fff;
 			}
 		}
@@ -378,6 +403,20 @@ input[type=submit] {
 	p {
 		font-size: 14px;
 		font-weight: 200;
+		color: #666;
+	}
+	p.author {
+		font-size: 12px;
+		line-height: 16px;
+		color: #999;
+		font-weight: 200;
+		a {
+			color: inherit;
+			text-decoration: none;
+			&:hover {
+				color: #666;
+			}
+		}
 	}
 	.actions {
 		position: absolute;
@@ -501,6 +540,16 @@ input[type=submit] {
 			}
 		}
 	}
+	#profile-editor {
+		input,
+		textarea {
+			width: 100%;
+			display: block;
+		}
+		textarea {
+			height: 400px;
+		}
+	}
 }
 
 /*
@@ -515,6 +564,7 @@ input[type=submit] {
 		}
 		h1 {
 			font-size: 34px;
+			margin-bottom: 30px;
 		}
 	}
 	.bio {

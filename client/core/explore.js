@@ -19,9 +19,27 @@ angular.module('mapasColetivos.explore', [])
 .controller('ExploreCtrl', [
 	'$scope',
 	'Page',
-	function($scope, Page) {
+	'Layer',
+	'Map',
+	function($scope, Page, Layer, Map) {
 
-		Page.setTitle('Explore');
+		Page.setTitle('Explore a comunidade');
+
+		Layer.resource.get({
+			perPage: 4
+		}, function(res) {
+
+			$scope.layers = res.layers;
+
+		});
+
+		Map.resource.get({
+			perPage: 4
+		}, function(res) {
+
+			$scope.maps = res.maps;
+
+		});
 
 	}
 ]);

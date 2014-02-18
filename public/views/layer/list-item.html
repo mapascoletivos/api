@@ -1,5 +1,6 @@
 <div class="default-item row" ng-controller="LayerActionsCtrl">
 	<h3><a href="/layers/{{layer._id}}">{{layer.title}}</a></h3>
+	<p class="author" ng-show="!user"><a href="/user/{{layer.creator._id}}">por {{layer.creator.name}}</a></p>
 	<p>{{layer.description}}</p>
 	<div class="actions">
 		<a href="/layers/{{layer._id}}/edit" title="Editar" ng-show="canEdit(layer)">
