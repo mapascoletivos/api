@@ -34,27 +34,48 @@ exports.UserCtrl = [
 
 		}
 
-		$scope.changePassword = function(chPwd, user) {
+		$scope.changePassword = function(user, chPwd) {
 
-			if(!chPwd.newPwd || chPwd.newPwd !== chPwd.validatePwd) {
+			if(typeof chPwd === 'undefined') {
+				return false;
+			}
+
+			if(!chPwd.userPwd) {
+				Message.message({
+					status: 'error',
+					text: 'Você deve inserir sua senha atual.'
+				});
+				return false;
+			}
+
+			if(!chPwd.newPwd) {
+				Message.message({
+					status: 'error',
+					text: 'Você deve inserir uma nova senha.'
+				});
+				return false;
+			}
+
+			if(chPwd.newPwd != chPwd.validatePwd) {
 				Message.message({
 					status: 'error',
 					text: 'As senhas não são compatíveis'
 				})
-			} else {
-				User.resource.update({userId: user._id}, chPwd, function(res) {
-					Message.message({
-						status: 'ok',
-						text: 'Senha alterada com sucesso'
-					});
-				}, function(err) {
-					console.log(err);
-					Message.message({
-						status: 'error',
-						text: 'Ocorreu um erro'
-					});
-				});
+				return false;
 			}
+			
+			User.resource.update({userId: user._id}, chPwd, function(res) {
+				Message.message({
+					status: 'ok',
+					text: 'Senha alterada com sucesso'
+				});
+			}, function(err) {
+				console.log(err);
+				Message.message({
+					status: 'error',
+					text: 'Ocorreu um erro'
+				});
+			});
 
 		}
 
