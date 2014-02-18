@@ -63,7 +63,7 @@ exports.UserCtrl = [
 				})
 				return false;
 			}
-			
+
 			User.resource.update({userId: user._id}, chPwd, function(res) {
 				Message.message({
 					status: 'ok',
