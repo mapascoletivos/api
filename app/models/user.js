@@ -81,6 +81,19 @@ UserSchema.path('username').validate(function (username) {
 	return username.length
 }, 'Username cannot be blank')
 
+UserSchema.path('username').validate(function (username, fn) {
+	var User = mongoose.model('User');
+
+	// Check only when it is a new user or when username field is modified
+	if (this.isNew || this.isModified('username')) {
+		User.find({ username: username }).exec(function (err, users) {
+			fn(!err && users.length === 0)
+		})
+	} else 
+		fn(true);
+}, 'Username already exists')
+
+
 UserSchema.path('hashed_password').validate(function (hashed_password) {
   if (this.doesNotRequireValidation()) return true
   return hashed_password.length
