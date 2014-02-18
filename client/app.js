@@ -1,6 +1,11 @@
 'use strict';
 
 /*
+ * Helpers
+ */
+require('./helpers');
+
+/*
  * Core modules
  */
 
@@ -78,8 +83,7 @@ angular.module('mapasColetivos', [
 		$stateProvider
 			.state('home', {
 				url: '/',
-				controller: 'IndexCtrl',
-				templateUrl: '/home'
+				controller: 'IndexCtrl'
 			});
 
 		$locationProvider.html5Mode(true);

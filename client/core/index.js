@@ -9,7 +9,7 @@ angular.module('mapasColetivos.index', [])
 	function($scope, SessionService, $location) {
 
 		if(SessionService.authenticated) {
-			window.location = '/dashboard';
+			$location.path('/dashboard');
 		}
 
 	}

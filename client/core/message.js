@@ -9,30 +9,37 @@ angular.module('mapasColetivos.messageStatus', [])
 	'$timeout',
 	function($timeout) {
 
-		var message = {
-			status: 'ok',
-			text: false
-		};
+		var messages = [];
 
 		return {
-			message: function(val, timeout) {
+			get: function() {
+				return messages;
+			},
+			close: function(message) {
+				messages = messages.filter(function(m) { return m !== message; });
+			},
+			add: function(val, timeout) {
+
+				var self = this;
 
 				if(typeof val !== 'undefined') {
-					message = val;
+
+					var message = val;
+					messages.push(message);
 
 					if(timeout !== false) {
 						timeout = timeout ? timeout : 3000;
 						$timeout(function() {
-							message = {
-								status: 'ok',
-								text: ''
-							};
+							self.close(message);
 						}, timeout);
 					}
 
 				}
 
 				return message;
+			},
+			message: function(val, timeout) {
+				this.add(val, timeout);
 			}
 		}
 
@@ -46,12 +53,12 @@ angular.module('mapasColetivos.messageStatus', [])
 
 		$scope.service = MessageService;
 
-		$scope.$watch('service.message()', function(message) {
-			$scope.message = message;
+		$scope.$watch('service.get()', function(messages) {
+			$scope.messages = messages;
 		});
 
-		$scope.close = function() {
-			$scope.service.message(false);
+		$scope.close = function(message) {
+			$scope.service.close(message);
 		}
 
 	}

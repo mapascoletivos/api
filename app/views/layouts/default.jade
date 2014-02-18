@@ -4,8 +4,8 @@ html(ng-app="mapasColetivos")
 		body
 			include ../includes/header
 			#messages(ng-controller="MessageCtrl")
-				.message-content.animate-show(ng-show="message.text")
-					a.close-button(ng-click="close()" href="#") Fechar
+				.message-content.animate-show(ng-repeat="message in messages" ng-show="message.text")
+					a.close-button(ng-click="close(message)" href="javascript:void(0);") Fechar
 					p(ng-class="message.status") {{message.text}}
 			.ui-view(autoscroll="false")
 				include content
