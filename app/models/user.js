@@ -157,9 +157,15 @@ UserSchema.methods = {
 			Token = mongoose.model('Token'),
 			self = this,
 			token;
+
 			
 		if (self.doesNotRequireValidation){
+			var seed = crypto.randomBytes(20);
+			var id = crypto.createHash('sha1').update(seed).digest('hex');
+			
+      		console.log('user reset token');
 			token = new Token({
+				_id: id,
 				user: self,
 				expiresAt: moment().add('hour', 1).toDate()
 			}).save();

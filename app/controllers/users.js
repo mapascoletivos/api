@@ -68,7 +68,7 @@ exports.forgot = function (req, res) {
 exports.sendToken = function (req, res) {
 	User.findOne({
 		$and: [
-			{ provider: null }, // ignore users authenticating in third parties
+			{ provider: 'local' }, // ignore users authenticating in third parties
 			{
 				$or: [
 				{email: req.body['emailOrUsername']}, 

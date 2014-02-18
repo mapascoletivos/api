@@ -14,6 +14,7 @@ var
  */
 
 var TokenSchema = new Schema({
+	_id: String,
 	expiresAt: Date,
 	user: { type: Schema.ObjectId, ref: 'User'}
 });
