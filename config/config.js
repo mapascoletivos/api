@@ -10,8 +10,8 @@ var
 	notifier = {
 		service: 'postmark', 
 		email: true,
-		actions: ['token', 'token'],
-		tplPath: require('path').normalize(__dirname + '/app/mailer/templates'),
+		actions: ['token'],
+		tplPath: require('path').normalize(__dirname + '/../app/mailer/templates'),
 		key: process.env.POSTMARK_KEY
 	} 
 
