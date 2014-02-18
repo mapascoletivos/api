@@ -14,7 +14,7 @@ exports.UserCtrl = [
 
 		$scope.save = function(user) {
 
-			User.resource.update({userId: user._id}, user, function(user) {
+			User.resource.update({userId: user._id}, user, function(res) {
 
 				Message.message({
 					status: 'ok',
@@ -36,9 +36,25 @@ exports.UserCtrl = [
 
 		$scope.changePassword = function(chPwd, user) {
 
-			console.log(chPwd);
-
-			console.log(user);
+			if(!chPwd.newPwd || chPwd.newPwd !== chPwd.validatePwd) {
+				Message.message({
+					status: 'error',
+					text: 'As senhas não são compatíveis'
+				})
+			} else {
+				User.resource.update({userId: user._id}, chPwd, function(res) {
+					Message.message({
+						status: 'ok',
+						text: 'Senha alterada com sucesso'
+					});
+				}, function(err) {
+					console.log(err);
+					Message.message({
+						status: 'error',
+						text: 'Ocorreu um erro'
+					});
+				});
+			}
 
 		}
 
