@@ -14,6 +14,7 @@
 		"build": "./node_modules/.bin/napa && ./node_modules/.bin/browserify client/vendor.js | ./node_modules/.bin/uglifyjs -mt > public/vendor.js",
 		"watch": "./node_modules/.bin/watchify client/app.js -o public/app.js -v & ( sleep 3 && NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js)",
 		"start": "NODE_PATH=./app/controllers NODE_ENV=development; ./node_modules/.bin/browserify client/app.js | ./node_modules/.bin/uglifyjs -mt > public/app.js & node web.js",
+		"install": "npm run build",
 		"test": "make test"
 	},
 	"dependencies": {
@@ -47,12 +48,12 @@
 		"jquery-ui-browserify": "latest",
 		"markdown": "latest",
 		"grvtr": "latest",
+		"napa": "latest",
 		"browserify": "latest",
 		"uglify-js": "latest"
 	},
 	"devDependencies": {
 		"watchify": "latest",
-		"napa": "latest",
 		"nodemon": "latest",
 		"mocha": "latest",
 		"should": "latest",

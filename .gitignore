@@ -16,6 +16,7 @@ node_modules
 
 data/
 public/uploads/images/
+public/vendor.js
 public/app.js
 
 config/config.local.js
