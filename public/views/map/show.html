@@ -60,15 +60,20 @@
 				</div>
 			</div>
 		</div>
+		<!--
 		<div class="map-layers" ng-hide="content">
 			<ul class="layer-list">
 				<li ng-repeat="layer in layers">
-					<ul class="layer-contents">
-						<li ng-repeat="content in layer.contents">
-							<h4><a href="/maps/{{map._id}}/content/{{content._id}}">{{content.title}}</a></h4>
-						</li>
-					</ul>
 				</li>
 			</ul>
+		</div>
+		-->
+		<div class="map-contents" ng-hide="content">
+			<ul>
+				<li ng-repeat="content in contents">
+					<h4><a href="/maps/{{map._id}}/content/{{content._id}}">{{content.title}}</a></h4>
+				</li>
+			</ul>
+		</div>
 	</div>
 </div>

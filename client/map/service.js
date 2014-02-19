@@ -13,13 +13,14 @@ exports.Map = [
 		var params = {};
 
 		return {
-			resource: $resource(apiPrefix + '/maps/:mapId', {
-				perPage: 10,
-				page: 1
-			}, {
+			resource: $resource(apiPrefix + '/maps/:mapId', null, {
 				'query': {
 					isArray: false,
 					method: 'GET',
+					params: {
+						perPage: 10,
+						page: 1
+					},
 					interceptor: {
 						response: function(data) {
 							params = data.config.params;

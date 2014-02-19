@@ -11,7 +11,7 @@ angular.module('mapasColetivos.leaflet', [])
 .factory('MapService', [
 	function() {
 
-		var map,
+		var map = false,
 			markerLayer = L.featureGroup(),
 			groups = [],
 			markers = [],

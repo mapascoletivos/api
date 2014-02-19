@@ -14,13 +14,14 @@ exports.Layer = [
 		var params = {};
 
 		return {
-			resource: $resource(apiPrefix + '/layers/:layerId', {
-				perPage: 10,
-				page: 1
-			}, {
+			resource: $resource(apiPrefix + '/layers/:layerId', null, {
 				'query': {
 					isArray: false,
 					method: 'GET',
+					params: {
+						perPage: 10,
+						page: 1
+					},
 					interceptor: {
 						response: function(data) {
 							params = data.config.params;

@@ -263,7 +263,7 @@ exports.FeatureEditCtrl = [
 			$scope.marker = false;
 			$scope._data = {};
 			Feature.edit(false);
-			$rootScope.$broadcast('closedFeature');
+			$rootScope.$broadcast('feature.closed');
 
 		}
 

@@ -19,7 +19,56 @@ exports.LayerCtrl = [
 	'MapService',
 	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, MapService) {
 
-		$scope.$layer = Layer;
+		$scope.$layer = Layer;'use strict';
+
+		var mapFeatures;
+
+		var populateMap = function(features, force) {
+
+			// Repopulate map if feature in scope has changed
+			if(!angular.equals(mapFeatures, features) || force === true) {
+
+				mapFeatures = angular.copy(features);
+
+				MapService.clearMarkers();
+
+				if(features) {
+
+					angular.forEach(features, function(f) {
+
+						var marker = require('../feature/featureToMapObjService')(f);
+
+						if(marker) {
+
+							marker
+								.on('click', function() {
+									$rootScope.$broadcast('marker.clicked', f);
+								})
+								.on('mouseover', function() {
+									marker.openPopup();
+								})
+								.on('mouseout', function() {
+									marker.closePopup();
+								})
+								.bindPopup('<h3 class="feature-title">' + f.title + '</h3>');
+
+
+							MapService.addMarker(marker);
+
+						}
+
+					});
+				}
+			}
+
+			if(features && features.length) {
+				// Fit marker layer after 200ms (animation safe)
+				setTimeout(function() {
+					MapService.fitMarkerLayer();
+				}, 200);
+			}
+
+		}
 
 		// New layer
 		if($location.path() == '/layers/new/') {
@@ -84,6 +133,22 @@ exports.LayerCtrl = [
 				// Set feature shared data
 				Feature.set(layer.features);
 
+				var features;
+
+				$scope.$on('features.updated', function(event, f) {
+					features = f;
+					populateMap(f, true);
+				});
+
+				$scope.$on('layerObjectChange', function(event, active) {
+					populateMap(features, true);
+				});
+
+				// Force repopulate map on feature close
+				$scope.$on('feature.closed', function() {
+					populateMap(features, true);
+				});
+
 				// Set content shared data
 				Content.set(layer.contents);
 
@@ -121,7 +186,7 @@ exports.LayerCtrl = [
 
 				} else {
 
-					$scope.$on('markerClicked', function(event, feature) {
+					$scope.$on('marker.clicked', function(event, feature) {
 
 						$state.go('singleLayer.feature', {
 							featureId: feature._id
@@ -187,4 +252,5 @@ exports.LayerCtrl = [
 		});
 
 	}
+
 ];
