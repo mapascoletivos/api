@@ -19,7 +19,7 @@ exports.LayerCtrl = [
 	'MapService',
 	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, MapService) {
 
-		$scope.$layer = Layer;'use strict';
+		$scope.$layer = Layer;
 
 		var mapFeatures;
 

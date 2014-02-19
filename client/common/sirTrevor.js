@@ -56,21 +56,23 @@ angular.module('mapasColetivos.sirTrevor', [])
 			},
 			renderBlock: function(block) {
 				var rendered = '';
-				switch(block.type) {
-					case 'text':
-						rendered += '<div class="text">' + markdown.toHTML(block.data.text) + '</div>';
-						break;
-					case 'list':
-						rendered += '<div class="list">' + markdown.toHTML(block.data.text) + '</div>';
-						break;
-					case 'image':
-						rendered += '<div class="image"><img src="' + block.data.file.url + '" /></div>';
-						break;
-					case 'video':
-						rendered += '<div class="video" fit-vids>' + videoProviders[block.data.source].html
-							.replace('{{protocol}}', window.location.protocol)
-							.replace('{{remote_id}}', block.data.remote_id) + '</div>';
-						break;
+				if(typeof block !== 'undefined' && block) {
+					switch(block.type) {
+						case 'text':
+							rendered += '<div class="text">' + markdown.toHTML(block.data.text) + '</div>';
+							break;
+						case 'list':
+							rendered += '<div class="list">' + markdown.toHTML(block.data.text) + '</div>';
+							break;
+						case 'image':
+							rendered += '<div class="image"><img src="' + block.data.file.url + '" /></div>';
+							break;
+						case 'video':
+							rendered += '<div class="video" fit-vids>' + videoProviders[block.data.source].html
+								.replace('{{protocol}}', window.location.protocol)
+								.replace('{{remote_id}}', block.data.remote_id) + '</div>';
+							break;
+					}
 				}
 				return rendered;
 			}

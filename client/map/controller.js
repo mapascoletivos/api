@@ -289,10 +289,10 @@ exports.MapCtrl = [
 
 				$scope.setupMapContent = function() {
 					var contents = [];
-					$scope.features = [];
+					var features = [];
 					angular.forEach($scope.layers, function(layer) {
 						angular.forEach(layer.features, function(lF) {
-							$scope.features.push(lF);
+							features.push(lF);
 						});
 						angular.forEach(layer.contents, function(lC) {
 							lC.layer = layer;
@@ -300,7 +300,7 @@ exports.MapCtrl = [
 						});
 					});
 					Content.set(contents);
-					Feature.set($scope.features);
+					Feature.set(features);
 					$rootScope.$broadcast('data.ready', $scope.map);
 
 					$scope.$on('features.updated', function(event, features) {
