@@ -28,6 +28,14 @@
 									</span>
 								</a>
 							</li>
+							<li ng-class="mapObj('mapOptions')" ng-click="setMapObj('mapOptions')">
+								<a title="Opções do mapa" href="javascript:void(0);">
+									<span class="lsf">&#xE08b;</span>
+									<span class="label" ng-show="mapObj('mapOptions')">
+										Opções do mapa
+									</span>
+								</a>
+							</li>
 						</ul>
 						<div ng-show="mapObj('settings')" ng-controller="MapActionsCtrl">
 							<div id="settings">
@@ -66,16 +74,6 @@
 						<div ng-show="mapObj('layer')">
 							<div id="map-layers" class="map-editor-subcontent">
 								<div class="layers-list">
-									<!--
-									<a href="javascript:void(0);" class="button add-new" ng-click="new()">
-										<span class="lsf">&#xE108;</span>
-										Adicionar nova
-									</a>
-									<ul class="map-editor-subcontent-options">
-										<li><a href="javascript:void(0);">Camadas</a></li>
-										<li><a href="javascript:void(0);">Buscar camadas</a></li>
-									</ul>
-									-->
 									<div class="map-layers" ng-show="layers.length">
 										<p class="tip">Arraste as camadas para alterar a ordem de exibição.</p>
 										<ul class="obj-list" ui-sortable="sortLayer" ng-model="layers">
@@ -89,7 +87,7 @@
 											</li>
 										</ul>
 									</div>
-									<input class="filter" type="text" ng-model="layerSearch" placeholder="Encontrar camadas" />
+									<input class="filter" type="text" ng-model="layerSearch" placeholder="Busque camadas públicas da comunidade" />
 									<ul class="obj-list available-layers" ng-show="availableLayers.length">
 										<li ng-repeat="layer in availableLayers | filter:layerSearch" class="add" ng-hide="hasLayer(layer)">
 											<p class="actions">
@@ -102,6 +100,47 @@
 									</ul>
 									<p class="tip" ng-hide="availableLayers.length">Nenhuma camada foi encontrada</p>
 								</div>
+							</div>
+						</div>
+						<div ng-show="mapObj('mapOptions')">
+							<div id="map-options" class="map-editor-subcontent">
+								<table class="options-table">
+									<tr>
+										<th>Centro</th>
+										<td>
+											<input type="text" ng-model="map.center" disabled />
+											<a class="lsf auto-input" href="javascript:void(0);" ng-click="autoInput.center()" title="Utilizar centro atual">&#xE038;</a>
+										</td>
+									</tr>
+									<tr>
+										<th>Zoom</th>
+										<td>
+											<input type="number" ng-model="map.zoom" />
+											<a class="lsf auto-input" href="javascript:void(0);" ng-click="autoInput.zoom()" title="Utilizar zoom atual">&#xE038;</a>
+										</td>
+									</tr>
+									<tr>
+										<th>Limites de navegação</th>
+										<td>
+											<input type="text" ng-model="map.bounds" disabled />
+											<a class="lsf auto-input" href="javascript:void(0);" ng-click="autoInput.bounds()" title="Utilizar visualização atual">&#xE038;</a>
+										</td>
+									<tr>
+										<th>Zoom máximo</th>
+										<td>
+											<input type="text" ng-model="map.maxZoom" />
+											<a class="lsf auto-input" href="javascript:void(0);" ng-click="autoInput.maxZoom()" title="Utilizar zoom atual">&#xE038;</a>
+										</td>
+									</tr>
+									<tr>
+										<th>Zoom mínimo</th>
+										<td>
+											<input type="text" ng-model="map.minZoom" />
+											<a class="lsf auto-input" href="javascript:void(0);" ng-click="autoInput.minZoom()" title="Utilizar zoom atual">&#xE038;</a>
+										</td>
+									</tr>
+								</table>
+								<a href="javascript:void(0);" class="button" ng-click="autoInput.all()">Travar mapa na visualização atual</a>
 							</div>
 						</div>
 					</div>

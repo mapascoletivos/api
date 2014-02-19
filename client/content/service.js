@@ -32,6 +32,9 @@ exports.Content = [
 			// Object sharing between controllers methods
 			set: function(val) {
 				contents = val;
+				contents = _.sortBy(contents, function(c) {
+					return c.createdAt;
+				}).reverse();
 			},
 			add: function(val) {
 				contents.push(val);

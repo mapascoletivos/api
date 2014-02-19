@@ -44,36 +44,13 @@
 			<h2>{{feature.title}}</h2>
 			<p>{{feature.description}}</p>
 		</div>
-		<div class="single-post" ng-show="content">
-			<a href="/maps/{{map._id}}">Fechar</a>
-			<h2>{{content.title}}</h2>
-			<div class="content-meta">
-				<ul class="features" ng-show="content.featureObjs.length">
-					<li ng-repeat="feature in content.featureObjs">
-						<a href="/maps/{{map._id}}/feature/{{feature._id}}">{{feature.title}}</a>
-					</li>
+		<div id="posts" ng-controller="ContentCtrl" ng-show="contents.length">
+			<div class="single-post" ng-show="content" ng-include="templates.show"></div>
+			<div ng-hide="content">
+				<ul class="content-list">
+					<li ng-repeat="post in contents" ng-include="templates.list"></li>
 				</ul>
 			</div>
-			<div class="content-body">
-				<div ng-repeat="block in content.sirTrevorData">
-					<div dynamic="renderBlock(block)"></div>
-				</div>
-			</div>
-		</div>
-		<!--
-		<div class="map-layers" ng-hide="content">
-			<ul class="layer-list">
-				<li ng-repeat="layer in layers">
-				</li>
-			</ul>
-		</div>
-		-->
-		<div class="map-contents" ng-hide="content">
-			<ul>
-				<li ng-repeat="content in contents">
-					<h4><a href="/maps/{{map._id}}/content/{{content._id}}">{{content.title}}</a></h4>
-				</li>
-			</ul>
 		</div>
 	</div>
 </div>

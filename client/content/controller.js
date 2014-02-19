@@ -18,15 +18,30 @@ exports.ContentCtrl = [
 
 		$scope.$content = Content;
 
+		var contents,
+			features;
+
 		$rootScope.$on('data.ready', function(event, parent) {
 
-			var triggerView = true;
+			contents = Content.get();
+			features = Feature.get();
+
+			var init = true;
 
 			$scope.$watch('$content.get()', function(contents) {
-				$scope.contents = contents;
-				if(triggerView) {
-					viewState();
-					triggerView = false;
+
+				if(typeof contents !== 'undefined' && contents) {
+
+					$scope.contents = contents;
+					$rootScope.$broadcast('contents.updated', contents);
+
+					if(init) {
+
+						viewState();
+						init = false;
+
+					}
+
 				}
 			});
 
@@ -47,16 +62,10 @@ exports.ContentCtrl = [
 
 		var viewing = false;
 
-		var contents,
-			features;
-
 		$scope.view = function(content) {
 
 			if(!content)
 				return false;
-
-			contents = Content.get();
-			features = Feature.get();
 
 			viewing = true;
 
@@ -111,6 +120,11 @@ exports.ContentCtrl = [
 			}
 
 		});
+
+		$scope.templates = {
+			list: '/views/content/list-item.html',
+			show: '/views/content/show.html'
+		};
 
 		$scope.$on('layerObjectChange', $scope.close);
 		$scope.$on('$stateChangeStart', $scope.close);

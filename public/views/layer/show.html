@@ -45,27 +45,10 @@
 			<p>{{feature.description}}</p>
 		</div>
 		<div id="posts" ng-controller="ContentCtrl" ng-show="contents.length">
-			<div class="single-post" ng-show="content">
-				<a href="/layers/{{layer._id}}">Fechar</a>
-				<h2>{{content.title}}</h2>
-				<div class="content-meta">
-					<ul class="features" ng-show="content.featureObjs.length">
-						<li ng-repeat="feature in content.featureObjs">
-							<a href="/layers/{{layer._id}}/feature/{{feature._id}}">{{feature.title}}</a>
-						</li>
-					</ul>
-				</div>
-				<div class="content-body">
-					<div ng-repeat="block in content.sirTrevorData">
-						<div dynamic="renderBlock(block)"></div>
-					</div>
-				</div>
-			</div>
+			<div class="single-post" ng-show="content" ng-include="templates.show"></div>
 			<div ng-hide="content">
 				<ul class="content-list">
-					<li ng-repeat="post in contents">
-						<h3><a href="/layers/{{layer._id}}/content/{{post._id}}">{{post.title}}</a></h3>
-					</li>
+					<li ng-repeat="post in contents" ng-include="templates.list"></li>
 				</ul>
 			</div>
 		</div>

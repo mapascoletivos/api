@@ -611,7 +611,7 @@ input[type=submit] {
 		resize: none;
 	}
 	.page-header {
-		padding: 20px 20px 0;
+		padding: 20px;
 		background: #fff;
 	}
 	.edit-title {
@@ -660,6 +660,7 @@ input[type=submit] {
 				border-bottom: 1px solid #eee;
 				padding: 15px;
 				width: 100%;
+				position: relative;
 				input,
 				textarea {
 					width: 100%;
@@ -696,6 +697,21 @@ input[type=submit] {
 							position: relative;
 							z-index: 2;
 						}
+					}
+				}
+				.auto-input {
+					position: absolute;
+					right:0;
+					top: 0;
+					bottom: 0;
+					padding: 15px;
+					line-height: 27px;
+					font-size: 20px;
+					text-decoration: none;
+					background: @light-blue;
+					color: #fff;
+					&:hover {
+						background: @blue;
 					}
 				}
 			}
@@ -861,7 +877,7 @@ input[type=submit] {
 				margin: 0;
 				background: transparent;
 			}
-			.add-new {
+			.button {
 				display: block;
 				width: auto;
 				margin: 0;
@@ -870,6 +886,8 @@ input[type=submit] {
 				padding: 15px 0;
 				font-weight: 600;
 				background: #666;
+				border-bottom: 1px solid #555;
+				line-height: 22px;
 				&:hover {
 					background: #777;
 				}
@@ -1490,12 +1508,25 @@ input[type=submit] {
 				padding: 10px 0;
 				margin: 0;
 				border-bottom: 1px solid #eee;
-				h3 {
-					font-size: 18px;
-					line-height: 24px;
-					font-weight: 600;
-					a {
-						text-decoration: none;
+				.content.list-item {
+					h3 {
+						font-size: 24px;
+						line-height: 32px;
+						font-weight: 600;
+						a {
+							color: #444;
+							text-decoration: none;
+							&:hover {
+								color: #222;
+							}
+						}
+					}
+					p.author {
+						font-size: 12px;
+						color: #999;
+					}
+					.excerpt {
+						margin-bottom: 20px;
 					}
 				}
 			}

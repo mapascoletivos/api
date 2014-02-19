@@ -119,6 +119,8 @@ exports.LayerCtrl = [
 
 				$scope.layer = layer;
 
+				$scope.baseUrl = '/layers/' + layer._id;
+
 				Page.setTitle(layer.title);
 
 				var map = MapService.init('layer-map', {

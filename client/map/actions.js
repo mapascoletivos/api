@@ -49,11 +49,20 @@ exports.MapActionsCtrl = [
 
 		$scope.save = function(map) {
 
+			if(map.bounds) {
+				map.southWest = map.bounds[0];
+				map.northEast = map.bounds[1];
+			}
+
 			map.isDraft = false;
 
 			var deferred = $q.defer();
 
 			Map.resource.update({mapId: map._id}, map, function(map) {
+				// Send back formatted map bounds
+				if(map.southWest && map.northEast) {
+					map.bounds = [map.southWest, map.northEast];
+				}
 				Message.message({
 					status: 'ok',
 					text: 'Mapa atualizado'

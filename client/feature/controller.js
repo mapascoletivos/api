@@ -21,20 +21,28 @@ exports.FeatureCtrl = [
 
 		$scope.$feature = Feature;
 
+		var contents,
+			features;
+
 		$rootScope.$on('data.ready', function() {
 
-			var triggerView = true;
+			contents = Content.get();
+			features = Feature.get();
+
+			var init = true;
 
 			$scope.$watch('$feature.get()', function(features) {
 
-				if(features) {
+				if(typeof features !== 'undefined' && features) {
 
 					$scope.features = features;
 					$rootScope.$broadcast('features.updated', features);
 
-					if(triggerView) {
+					if(init) {
+
 						viewState();
-						triggerView = false;
+						init = false;
+
 					}
 
 				}
@@ -45,13 +53,7 @@ exports.FeatureCtrl = [
 
 		var viewing = false;
 
-		var contents,
-			features;
-
 		$scope.view = function(feature) {
-
-			contents = Content.get();
-			features = Feature.get();
 
 			$scope.close(false);
 

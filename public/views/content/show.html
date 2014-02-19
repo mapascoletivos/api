@@ -1,0 +1,18 @@
+<div class="single-content">
+	<a href="{{baseUrl}}">Fechar</a>
+	<h2>{{content.title}}</h2>
+	<div class="content-meta">
+		<p class="author" ng-show="map">por {{content.layer.creator.name}}</p>
+		<p class="author" ng-show="map">Camada: {{content.layer.title}}</p>
+		<ul class="features" ng-show="content.featureObjs.length">
+			<li ng-repeat="feature in content.featureObjs">
+				<a href="{{baseUrl}}/feature/{{feature._id}}">{{feature.title}}</a>
+			</li>
+		</ul>
+	</div>
+	<div class="content-body">
+		<div ng-repeat="block in content.sirTrevorData">
+			<div dynamic="renderBlock(block)"></div>
+		</div>
+	</div>
+</div>

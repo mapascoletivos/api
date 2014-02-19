@@ -29,7 +29,9 @@ exports.MapCtrl = [
 		if($location.path() == '/maps/new/') {
 
 			var draft = new Map.resource({
-				title: 'Untitled'
+				title: 'Untitled',
+				center: [0,0],
+				zoom: 2
 			});
 			draft.$save(function(draft) {
 				$location.path('/maps/' + draft._id + '/edit/').replace();
@@ -38,11 +40,6 @@ exports.MapCtrl = [
 			});
 
 		} else if($stateParams.mapId) {
-
-			var map = MapService.init('map', {
-				center: [0,0],
-				zoom: 2
-			});
 
 			$scope.activeObj = 'settings';
 
@@ -71,6 +68,23 @@ exports.MapCtrl = [
 				Page.setTitle(map.title);
 
 				$scope.map = angular.copy(map);
+
+				$scope.baseUrl = '/maps/' + map._id;
+
+				var mapOptions = {
+					center: $scope.map.center,
+					zoom: $scope.map.zoom
+				};
+
+				if(!$scope.isEditing()) {
+					mapOptions = _.extend(mapOptions, {
+						minZoom: $scope.map.minZoom,
+						maxZoom: $scope.map.maxZoom,
+						maxBounds: L.latLngBounds($scope.map.southWest, $scope.map.northEast)
+					});
+				}
+
+				var map = MapService.init('map', mapOptions);
 
 				if($scope.isEditing()) {
 
@@ -231,8 +245,9 @@ exports.MapCtrl = [
 
 					if(map && features.length !== markers.length)
 						map.fitBounds(filteredGroup);
-					else
-						MapService.fitWorld(); // TODO: must be set to map bounds
+					else {
+						map.setView($scope.map.center, $scope.map.zoom);
+					}
 
 				}
 
@@ -280,6 +295,7 @@ exports.MapCtrl = [
 							$scope.features.push(lF);
 						});
 						angular.forEach(layer.contents, function(lC) {
+							lC.layer = layer;
 							contents.push(lC);
 						});
 					});
@@ -323,6 +339,9 @@ exports.MapCtrl = [
 
 				});
 
+				/*
+				 * Sortable config
+				 */
 				$scope.sortLayer = {
 					stop: function() {
 						var newOrder = [];
@@ -332,6 +351,46 @@ exports.MapCtrl = [
 						$scope.map.layers = newOrder;
 					}
 				}
+
+				/*
+				 * Map options auto input methods
+				 */
+
+				$scope.autoInput = {
+					center: function() {
+						var center = MapService.get().getCenter();
+						$scope.map.center = [center.lat, center.lng];
+					},
+					zoom: function() {
+						$scope.map.zoom = MapService.get().getZoom();
+					},
+					bounds: function() {
+						var bounds = MapService.get().getBounds();
+						$scope.map.bounds = [
+							[
+								bounds.getSouth(),
+								bounds.getWest()
+							],
+							[
+								bounds.getNorth(),
+								bounds.getEast()
+							]
+						];
+					},
+					minZoom: function() {
+						$scope.map.minZoom = MapService.get().getZoom();
+					},
+					maxZoom: function() {
+						$scope.map.maxZoom = MapService.get().getZoom();
+					},
+					all: function() {
+						this.center();
+						this.zoom();
+						this.bounds();
+						this.minZoom();
+						this.maxZoom();
+					}
+				};
 
 				$scope.$on('map.save.success', function(event, map) {
 					Page.setTitle(map.title);

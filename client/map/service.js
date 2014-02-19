@@ -28,6 +28,20 @@ exports.Map = [
 						}
 					}
 				},
+				get: {
+					method: 'GET',
+					interceptor: {
+						response: function(data) {
+							var map = data.data;
+
+							if(map.southWest && map.northEast) {
+								map.bounds = [map.southWest, map.northEast];
+							}
+
+							return map;
+						}
+					}
+				},
 				'update': {
 					method: 'PUT'
 				}
