@@ -7,13 +7,17 @@ var
 	path = require('path'),
 	rootPath = path.resolve(__dirname + '../..'),
 	templatePath = path.normalize(__dirname + '/../app/mailer/templates')
-	notifier = {
-		service: 'postmark', 
-		email: true,
-		actions: ['token'],
-		tplPath: require('path').normalize(__dirname + '/../app/mailer/templates'),
-		key: process.env.POSTMARK_KEY
-	} 
+	nodemailer = {
+		host: process.env.SMTP_HOST,
+		port: 465,
+		secureConnection: true,
+		requiresAuth: true,
+		auth: {
+				user: process.env.SMTP_USER,
+				pass: process.env.SMTP_PASSWORD
+		},
+		from: process.env.SMTP_FROM
+	}
 
 /**
 * Expose config
@@ -22,7 +26,8 @@ var
 module.exports = {
 	development: {
 		root: rootPath,
-		notifier: notifier,
+		appUrl: 'http://localhost:3000',
+		nodemailer: nodemailer,
 		db: 'mongodb://localhost/mapascoletivos_dev',
 		facebook: {
 			clientID: "APP_ID",
@@ -42,8 +47,9 @@ module.exports = {
 	},
 	test: {
 		root: rootPath,
+		appUrl: 'http://localhost:3000',
 		db: 'mongodb://localhost/mapascoletivos_test',
-		notifier: notifier,
+		nodemailer: nodemailer,
 		facebook: {
 			clientID: "APP_ID",
 			clientSecret: "APP_SECRET",
@@ -66,8 +72,9 @@ module.exports = {
 	},
 	production: {
 		root: rootPath,
+		appUrl: 'http://mapascoletivos.herokuapp.com',
 		db: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI,
-		notifier: notifier,
+		nodemailer: nodemailer,
 		facebook: {
 			clientID: process.env.FACEBOOK_CLIENT_ID,
 			clientSecret: process.env.FACEBOOK_CLIENT_SECRET,

@@ -1,3 +1,9 @@
+/**
+ * Load environment variables
+ */
+
+var dotenv = require('dotenv');
+dotenv.load();
 
 /**
  * Module dependencies

@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 var 
 	home = require('home'),
 	users = require('users'),
+	token = require('token'),
 	maps = require('maps'),
 	layers = require('layers'),
 	features = require('features'),
@@ -33,8 +34,8 @@ module.exports = function (app, passport) {
 	 * Users routes 
 	 **/
 	app.get('/login', users.login);
-	app.get('/forgot', users.forgot);
-	app.post('/forgot', users.sendToken);
+	app.get('/forgot_password', users.forgotPassword);
+	app.post('/forgot_password', users.newPasswordToken);	
 	app.get('/signup', users.signup);
 	app.get('/logout', users.logout);
 	
@@ -44,10 +45,20 @@ module.exports = function (app, passport) {
 	app.post('/users/session',
 		passport.authenticate('local', {
 		failureRedirect: '/login',
-		failureFlash: 'Invalid email or password.'
+		failureFlash: true
 	}), users.session)
 	
-	// Facebook OAuth routes
+	/** 
+	 * Token route 
+	 **/
+	app.get('/activate_account/:tokenId', token.activateAccount);
+	app.get('/password_reset/:tokenId', token.showPasswordReset);
+	app.post('/password_reset/:tokenId', token.changePassword);	
+	app.param('tokenId', token.load);
+	
+	/** 
+	 * Facebook login routes 
+	 **/
 	
 	app.get('/auth/facebook',
 		passport.authenticate('facebook', {

@@ -18,11 +18,12 @@ var UserSchema = new Schema({
 	username: { type: String, default: '' },
 	email: { type: String, default: '' },
 	bio: {type: String, default: '' },
+	status: {type: String, enum: ['inactive', 'active'], default: 'inactive' },
 	provider: { type: String, default: '' },
 	hashed_password: { type: String, default: '' },
 	salt: { type: String, default: '' },
 	layers: [{type: Schema.ObjectId, ref: 'Layer'}],
-	authToken: { type: String, default: '' },	
+	authToken: { type: String, default: '' }, 
 	facebook: {},
 	twitter: {},
 	github: {},
@@ -90,8 +91,8 @@ UserSchema.path('username').validate(function (username, fn) {
 
 
 UserSchema.path('hashed_password').validate(function (hashed_password) {
-  if (this.doesNotRequireValidation()) return true
-  return hashed_password.length
+	if (this.doesNotRequireValidation()) return true
+	return hashed_password.length
 }, 'Password cannot be blank')
 
 /**
@@ -114,53 +115,53 @@ UserSchema.pre('save', function(next) {
 
 UserSchema.methods = {
 
-  /**
-   * Authenticate - check if the passwords are the same
-   *
-   * @param {String} plainText
-   * @return {Boolean}
-   * @api public
-   */
+	/**
+	 * Authenticate - check if the passwords are the same
+	 *
+	 * @param {String} plainText
+	 * @return {Boolean}
+	 * @api public
+	 */
 
-  authenticate: function (plainText) {
-    return this.encryptPassword(plainText) === this.hashed_password
-  },
+	authenticate: function (plainText) {
+		return this.encryptPassword(plainText) === this.hashed_password
+	},
 
-  /**
-   * Make salt
-   *
-   * @return {String}
-   * @api public
-   */
+	/**
+	 * Make salt
+	 *
+	 * @return {String}
+	 * @api public
+	 */
 
-  makeSalt: function () {
-    return Math.round((new Date().valueOf() * Math.random())) + ''
-  },
+	makeSalt: function () {
+		return Math.round((new Date().valueOf() * Math.random())) + ''
+	},
 
-  /**
-   * Encrypt password
-   *
-   * @param {String} password
-   * @return {String}
-   * @api public
-   */
+	/**
+	 * Encrypt password
+	 *
+	 * @param {String} password
+	 * @return {String}
+	 * @api public
+	 */
 
-  encryptPassword: function (password) {
-    if (!password) return ''
-    var encrypred
-    try {
-      encrypred = crypto.createHmac('sha1', this.salt).update(password).digest('hex')
-      return encrypred
-    } catch (err) {
-      return ''
-    }
-  },
+	encryptPassword: function (password) {
+		if (!password) return ''
+		var encrypred
+		try {
+			encrypred = crypto.createHmac('sha1', this.salt).update(password).digest('hex')
+			return encrypred
+		} catch (err) {
+			return ''
+		}
+	},
 
-  /**
-   * Send reset password token if not using OAuth
-   */
+	/**
+	 * Send reset password token if not using OAuth
+	 */
 
-  sendResetToken: function() {
+	sendResetToken: function() {
 		var 
 			Token = mongoose.model('Token'),
 			self = this,
@@ -171,22 +172,21 @@ UserSchema.methods = {
 			var seed = crypto.randomBytes(20);
 			var id = crypto.createHash('sha1').update(seed).digest('hex');
 			
-      		console.log('user reset token');
 			token = new Token({
 				_id: id,
 				user: self,
 				expiresAt: moment().add('hour', 1).toDate()
 			}).save();
 		} 
-  },
+	},
 
-  /**
-   * Validation is not required if using OAuth
-   */
+	/**
+	 * Validation is not required if using OAuth
+	 */
 
-  doesNotRequireValidation: function() {
-    return ~oAuthTypes.indexOf(this.provider);
-  }
+	doesNotRequireValidation: function() {
+		return ~oAuthTypes.indexOf(this.provider);
+	}
 }
 
 
