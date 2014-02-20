@@ -16,6 +16,7 @@ var
 var MapSchema = new Schema({
 	title: { type: String, required: true },
 	description: String,
+	categories: [{type: Schema.ObjectId, ref: 'Category'}],
 	creator: {type: Schema.ObjectId, ref: 'User'},
 	layers: [{type: Schema.ObjectId, ref: 'Layer'}],
 	createdAt: {type: Date, default: Date.now},
@@ -29,7 +30,8 @@ var MapSchema = new Schema({
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
 	layout:{ type: String, enum: ['Scroll', 'Timeline'], default: 'Scroll'},
 	tags: [String],
-	isDraft: {type: Boolean, default: true}
+	isDraft: {type: Boolean, default: true},
+	oldId: Number // used in old MC import
 });
 
 
