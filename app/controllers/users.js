@@ -144,6 +144,11 @@ exports.session = login;
 exports.create = function (req, res) {
 	var user = new User(req.body);
 	user.provider = 'local';
+
+	// make user active in development environment
+	if (process.env.NODE_ENV == 'development')		
+		user.status = 'active';
+
 	user.save(function (err) {
 		if (err) {
 			return res.json({
@@ -151,14 +156,21 @@ exports.create = function (req, res) {
 				user: user
 			});
 		}
-		
-		mailer.welcome(user, function(err){
-			if (err)
-				req.flash('error', 'Erro ao enviar o e-mail de ativação.');
-			else
-				req.flash('info', 'Um link de ativação de usuário foi enviado para seu e-mail.');
+
+		// don't send email in development environment
+		if (process.env.NODE_ENV == 'development') {
 			return res.redirect('/login');
-		});
+		} else {
+			mailer.welcome(user, function(err){
+				if (err)
+					req.flash('error', 'Erro ao enviar o e-mail de ativação.');
+				else
+					req.flash('info', 'Um link de ativação de usuário foi enviado para seu e-mail.');
+				return res.redirect('/login');
+			});	
+		}
+		
+		
 	})
 }
 
@@ -189,7 +201,7 @@ exports.update = function (req, res) {
 		}
 
 		usr.save(function(err){
-			if (err) res.json(400, { errors: utils.errors(err.errors)});
+			if (err) res.json(400, { messages: utils.errors(err.errors)});
 			else res.json({sucess:true});
 		});		 
 	});
