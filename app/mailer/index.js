@@ -4,11 +4,9 @@
 
 var 
 	mongoose = require('mongoose'),
-	Notifier = require('notifier'),
 	env = process.env.NODE_ENV || 'development',
 	config = require('../../config/config')[env],
 	moment = require('moment'),
-	notifier = new Notifier(config.notifier),
 	nodemailer = require('nodemailer'),
 	jade = require('jade'),
 	tplPath = require('path').normalize(__dirname + '/../mailer/templates'),
