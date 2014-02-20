@@ -72,15 +72,15 @@ exports.MapCtrl = [
 				$scope.baseUrl = '/maps/' + map._id;
 
 				var mapOptions = {
-					center: $scope.map.center,
-					zoom: $scope.map.zoom
+					center: $scope.map.center ? $scope.map.center : [0,0],
+					zoom: $scope.map.zoom ? $scope.map.zoom : 2
 				};
 
 				if(!$scope.isEditing()) {
 					mapOptions = _.extend(mapOptions, {
-						minZoom: $scope.map.minZoom,
-						maxZoom: $scope.map.maxZoom,
-						maxBounds: L.latLngBounds($scope.map.southWest, $scope.map.northEast)
+						minZoom: $scope.map.minZoom ? $scope.map.minZoom : undefined,
+						maxZoom: $scope.map.maxZoom ? $scope.map.maxZoom : undefined,
+						maxBounds: $scope.map.southWest.length ? L.latLngBounds($scope.map.southWest, $scope.map.northEast) : undefined
 					});
 				}
 
