@@ -61,7 +61,7 @@ exports.FeatureCtrl = [
 
 			$scope.feature = feature;
 
-			var featureContents = Feature.getContents(feature, angular.copy(contents));
+			var featureContents = Feature.getContents(feature, contents);
 
 			Content.set(featureContents);
 			Feature.set([feature]);
@@ -74,10 +74,10 @@ exports.FeatureCtrl = [
 
 			$scope.feature = false;
 
-			if(typeof features !== 'undefined')
+			if(typeof features !== 'undefined' && Feature.get() !== features)
 				Feature.set(features);
 
-			if(typeof contents !== 'undefined')
+			if(typeof contents !== 'undefined' && Content.get() !== contents)
 				Content.set(contents);
 
 			if(fit !== false)

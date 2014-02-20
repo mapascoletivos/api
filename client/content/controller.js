@@ -69,7 +69,7 @@ exports.ContentCtrl = [
 
 			viewing = true;
 
-			var contentFeatures = Content.getFeatures(content, angular.copy(features));
+			var contentFeatures = Content.getFeatures(content, features);
 
 			if(contentFeatures) {
 				Feature.set(contentFeatures);
