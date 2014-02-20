@@ -21,6 +21,6 @@ Clone locally: `git clone git@github.com:oeco/mapascoletivos.git`
 
 Install: `npm install`
 
-Populate with random data: `make populate` 
+Copy `.env.example` to `.env` and fill authentication credentials for third party services, like SMTP, Facebook, Twitter, Google. 
 
-Test: `npm test`
+Run: `npm run install`.
