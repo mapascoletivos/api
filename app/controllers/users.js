@@ -83,7 +83,7 @@ exports.newPasswordToken = function (req, res) {
 		]
 	}, function(err,user){
 		if (err) 
-			res.render('users/password_reset', {
+			res.render('users/forgot_password', {
 				title: 'Recuperar senha',
 				message: req.flash('error')
 			});
@@ -100,7 +100,8 @@ exports.newPasswordToken = function (req, res) {
 					}
 				});
 			} else {
-				res.render('users/password_reset', {
+				req.flash('error', 'Usuário não encontrado.');
+				res.render('users/forgot_password', {
 					title: 'Recuperar senha',
 					message: req.flash('error')
 				});				
