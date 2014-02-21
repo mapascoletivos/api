@@ -53,7 +53,7 @@
 **/
 
 html {
-	margin-top: 52px;
+	margin-top: 53px;
 }
 
 body {
@@ -151,6 +151,7 @@ input.no-canvas {
 #mast-header {
 	background: #ebf6ff;
 	padding: 10px 0;
+	height: 32px;
 	border-bottom: 1px solid darken(#ebf6ff, 5%);
 	position: fixed;
 	top: 0;
@@ -180,8 +181,16 @@ input.no-canvas {
 			margin: 0 0 0 1px;
 			padding: 0;
 			a {
+				color: @dark-blue;
+				text-decoration: none;
 				font-size: 12px;
+				line-height: 32px;
 				padding: 10px 15px;
+				text-transform: uppercase;
+				font-weight: 600;
+				&:hover {
+					color: #333;
+				}
 			}
 		}
 	}
@@ -271,10 +280,11 @@ input.no-canvas {
 		padding: 40px 0;
 		border-bottom: 1px solid #555;
 		h1 {
-			font-size: 22px;
-			line-height: 36px;
+			font-size: 42px;
+			line-height: 54px;
 			font-weight: 400;
 			color: #fff;
+			display: inline;
 			strong {
 				color: #fff;
 				font-size: 200%;
@@ -284,6 +294,17 @@ input.no-canvas {
 				margin-right: 20px;
 				border: 2px solid #555;
 			}
+		}
+		input {
+			height: 54px;
+			display: inline-block;
+			background: transparent;
+			border: 0;
+			margin: 0 0 0 40px;
+			color: #fff;
+			font-size: 20px;
+			padding: 0;
+			width: 400px;
 		}
 		.header-actions {
 			display: block;
@@ -396,6 +417,13 @@ input.no-canvas {
 			color: #f0f0f0;
 			font-style: italic;
 		}
+	}
+}
+
+.explore-page .page-header {
+	h1 {
+		font-size: 22px;
+		line-height: 34px;
 	}
 }
 

@@ -9,11 +9,11 @@ header#mast-header
 				ul#mast-nav
 					- if (req.isAuthenticated())
 						li
-							a.button(href="/explore", title="Explorar") Explorar
+							a(href="/explore", title="Explorar") Explorar
 						li
-							a.button(href="/dashboard", title="Dashboard") Dashboard
+							a(href="/dashboard", title="Dashboard") Dashboard
 						li
-							a.button(href="/logout", title="logout" target="_self") Logout
+							a(href="/logout", title="logout" target="_self") Logout
 					- else
 						li
 							a.button.light-button(href="/explore", title="Explorar") Explorar
