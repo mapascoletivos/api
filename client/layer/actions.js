@@ -47,6 +47,26 @@ exports.LayerActionsCtrl = [
 
 		};
 
+		$scope.addContributor = function(email, layer) {
+
+			layer.contributors.push({
+				email: email
+			});
+
+			$scope.newContributor = '';
+
+			$rootScope.$broadcast('layer.contributor.added', layer);
+
+		}
+
+		$scope.removeContributor = function(contributor, layer) {
+
+			layer.contributors = layer.contributors.filter(function(c) { return c.email !== contributor.email; });
+
+			$rootScope.$broadcast('layer.contributor.removed', layer);
+
+		}
+
 		$scope.save = function(layer) {
 
 			layer.isDraft = false;

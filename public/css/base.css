@@ -152,7 +152,6 @@
 	input[type="password"]:focus,
 	input[type="email"]:focus,
 	textarea:focus {
-		border: 1px solid #aaa;
  		color: #444;
 	textarea {
 		min-height: 60px; }

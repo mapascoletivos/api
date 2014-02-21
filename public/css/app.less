@@ -136,6 +136,11 @@ input[type=submit] {
 	}
 }
 
+input,
+textarea {
+	outline: none;
+}
+
 textarea.no-canvas,
 input.no-canvas {
 	display: block;
@@ -411,6 +416,9 @@ input.no-canvas {
 		color: #fff;
 		padding: 0;
 		margin: 2px 0 0;
+		&:focus {
+			color: #fff;
+		}
 	}
 	p {
 		font-weight: 200;
@@ -801,6 +809,42 @@ input.no-canvas {
 						background: @blue;
 					}
 				}
+				.multiple-selection-cell {
+					input {
+						margin: 0 0 10px;
+					}
+				}
+				.multiple-selection {
+					margin: 10px 0 0;
+					padding: 0;
+					li {
+						font-size: 12px;
+						background: #fff;
+						border: 1px solid #f0f0f0;
+						line-height: 12px;
+						padding: 5px 25px 5px 5px;
+						float: left;
+						margin: 0 5px 5px 0;
+						position: relative;
+						.lsf {
+							position: absolute;
+							top: 0;
+							right: 0;
+							bottom: 0;
+							font-size: 14px;
+							line-height: 24px;
+							margin: 0;
+							padding: 0 5px;
+							color: @red;
+							font-weight: 200;
+							text-decoration: none;
+							&:hover {
+								background: @red;
+								color: #fff;
+							}
+						}
+					}
+				}
 			}
 		}
 		.primary-actions {
@@ -1141,6 +1185,7 @@ input.no-canvas {
 					height: 75px;
 					border-bottom: 1px solid #eee;
 					background: #fff;
+					color: #333;
 					&:hover {
 						color: #f0f0f0;
 						background: @blue;

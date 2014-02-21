@@ -117,6 +117,32 @@ exports.LayerCtrl = [
 
 			Layer.resource.get({layerId: $stateParams.layerId}, function(layer) {
 
+				if(!layer.contributors)
+					layer.contributors = [
+						{
+							email: 'miguel@cardume.art.br'
+						},
+						{
+							email: 'vitorgeorge@gmail.com'
+						},
+						{
+							email: 'vjpixel@gmail.com'
+						},
+						{
+							email: 'gufalei@gmail.com'
+						}
+					];
+
+				/*
+				$scope.$on('layer.contributor.added', function(event, layer) {
+					$scope.layer.contributors = layer.contributors;
+				});
+
+				$scope.$on('layer.contributor.removed', function(event, layer) {
+					$scope.layer.contributors = layer.contributors;
+				});
+				*/
+
 				$scope.layer = layer;
 
 				$scope.baseUrl = '/layers/' + layer._id;
@@ -152,7 +178,7 @@ exports.LayerCtrl = [
 				});
 
 				$scope.$on('layerObjectChange', function(event, active) {
-					populateMap(features, true);
+					populateMap(layer.features, true);
 				});
 
 				// Set content shared data

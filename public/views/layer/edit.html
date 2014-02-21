@@ -53,6 +53,17 @@
 										<td><input type="text" ng-model="layer.tags" placeholder="Separe as tags por vírgula" /></td>
 									</tr>
 									<tr>
+										<th>Colaboradores</th>
+										<td>
+											<input type="text" placeholder="Insira o email de um usuário cadastrado" ng-model="newContributor" ui-keypress="{'enter':'addContributor(newContributor, layer)'}" />
+											<ul ng-show="layer.contributors.length" class="contributor-list multiple-selection">
+												<li ng-repeat="contributor in layer.contributors">
+													{{contributor.email}}
+													<a href="javascript:void(0);" title="Remover colaborador" ng-click="removeContributor(contributor, layer)" class="lsf remove">&#xE10f;</span>
+												</li>
+											</ul>
+										</td>
+									<tr>
 										<th>Privacidade</th>
 										<td>
 											<ul class="radio-list">
