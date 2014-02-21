@@ -1,26 +1,34 @@
 doctype html
-html
+html.landing
 	include ../includes/head
-	body.landing
+	body
 		header#mast-header.row
-			nav(class="navbar" role="navigation")
-				.container
-					.five.columns
-						h1
-							a(class="brand" href="/") Mapas Coletivos
-								img(alt="Mapas Coletivos" src="/img/logo-big.png")
-						h2 Narrativas Colaborativas
-					.seven.columns
-						ul#mast-nav
-							- if (req.isAuthenticated())
-								li
-									a.button(href="/explore", title="Explorar") Explorar
-								li
-									a.button(href="/dashboard", title="Dashboard") Dashboard
-								li
-									a.button(href="/logout", title="logout") Logout
-							- else
-								li
-									a.button.light-button(href="/explore", title="Explorar") Explorar
-								li 
-									a.button.login(href="/login") Entrar
+			.container
+				.five.columns
+					h1
+						a(class="brand" href="/") Mapas Coletivos
+							img(alt="Mapas Coletivos" src="/img/logo-big.png")
+					h2 Narrativas Colaborativas
+				.seven.columns
+					ul#mast-nav
+						- if (req.isAuthenticated())
+							li
+								a.button(href="/explore", title="Explorar") Explorar
+							li
+								a.button(href="/dashboard", title="Dashboard") Dashboard
+							li
+								a.button(href="/logout", title="logout") Logout
+						- else
+							li
+								a.button.light-button(href="/explore", title="Explorar") Explorar
+							li 
+								a.button.login(href="/login") Entrar
+		section#highlight.row.anti-row
+			.container
+				.five.columns.signup-call
+					.signup-call-content
+						h2 Conte histórias em mapas
+						p Crie narrativas e compartilhe suas histórias
+						div.actions
+							a.button(href="/explore", title="Explorar a comunidade") Explore a comunidade
+							a.button(href="/signup", title="Cadastre-se na comunidade") Cadatre-se a comece a criar mapas

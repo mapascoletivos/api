@@ -96,6 +96,7 @@ img {
 }
 
 a.button,
+a:visited.button,
 .button,
 button,
 input[type=submit] {
@@ -171,7 +172,7 @@ input.no-canvas {
 		float: right;
 		text-transform: uppercase;
 		font-size: 18px;
-		color: #000;
+		color: @light-blue;
 	}
 	#mast-nav {
 		float: right;
@@ -195,11 +196,40 @@ input.no-canvas {
 		}
 	}
 }
-.landing #mast-header {
-	padding: 60px 0;
-	#mast-nav li a {
-		font-size: 14px;
-		padding: 20px;
+.landing {
+	margin: 0;
+	#mast-header {
+		height: auto;
+		position: static;
+		padding: 60px 0;
+		border-bottom: 5px solid #333;
+		#mast-nav li a {
+			font-size: 14px;
+			padding: 20px;
+			color: #fff;
+			line-height: 14px;
+		}
+	}
+	#highlight {
+		padding: 60px;
+		background: url(/img/belomonte.jpg);
+		background-size: cover;
+		.signup-call {
+			float: right;
+			.signup-call-content {
+				background: rgba(0,0,0,0.8);
+				padding: 40px;
+				color: #f0f0f0;
+				h2 {
+					color: #fff;
+				}
+				.button {
+					display: block;
+					border-bottom: 1px solid @dark-green;
+					text-align: center;
+				}
+			}
+		}
 	}
 }
 
@@ -347,76 +377,76 @@ input.no-canvas {
 			}
 		}
 	}
-	.page-subheader {
-		background: @light-blue;
-		border-bottom: 1px solid @blue;
-		color: #fff;
-		padding: 30px 0;
-		&.green {
-			background: @light-green;
-			border-bottom: 1px solid @green;
-			.button {
-				background: @green;
-				&:hover {
-					background: @dark-green;
-				}
-			}
-		}
-		h2 {
-			text-transform: uppercase;
-			font-size: 20px;
-			line-height: 52px;
-			font-weight: 600;
-			color: #fff;
-			margin: 0 40px 0 0;
-			float: left;
-		}
-		input {
-			height: 52px;
-			line-height: 22px;
-			float: left;
-			background: transparent;
-			border: 0;
-			color: #fff;
-			padding: 0;
-			margin: 2px 0 0;
-		}
-		p {
-			font-weight: 200;
-			margin: 0;
-			font-style: italic;
-			text-align: right;
-			line-height: 52px;
-			strong {
-				color: #fff;
-			}
-		}
+}
+.page-subheader {
+	background: @light-blue;
+	border-bottom: 1px solid @blue;
+	color: #fff;
+	padding: 30px 0;
+	&.green {
+		background: @light-green;
+		border-bottom: 1px solid @green;
 		.button {
-			font-size: 12px;
-			float: right;
-			margin-left: 1px;
-			background: @blue;
+			background: @green;
 			&:hover {
-				background: @dark-blue;
-				color: #fff;
+				background: @dark-green;
 			}
 		}
-		::-webkit-input-placeholder {
-			color: #f0f0f0;
-			font-style: italic;
+	}
+	h2 {
+		text-transform: uppercase;
+		font-size: 20px;
+		line-height: 52px;
+		font-weight: 600;
+		color: #fff;
+		margin: 0 40px 0 0;
+		float: left;
+	}
+	input {
+		height: 52px;
+		line-height: 22px;
+		float: left;
+		background: transparent;
+		border: 0;
+		color: #fff;
+		padding: 0;
+		margin: 2px 0 0;
+	}
+	p {
+		font-weight: 200;
+		margin: 0;
+		font-style: italic;
+		text-align: right;
+		line-height: 52px;
+		strong {
+			color: #fff;
 		}
-		::-moz-placeholder {
-			color: #f0f0f0;
-			font-style: italic;
+	}
+	.button {
+		font-size: 12px;
+		float: right;
+		margin-left: 1px;
+		background: @blue;
+		&:hover {
+			background: @dark-blue;
+			color: #fff;
 		}
-		::-ms-input-placeholder {
-			color: #f0f0f0;
-			font-style: italic;
-		}
-		input:-moz-placeholder {
-			color: #f0f0f0;
-			font-style: italic;
-		}
+	}
+	::-webkit-input-placeholder {
+		color: #f0f0f0;
+		font-style: italic;
+	}
+	::-moz-placeholder {
+		color: #f0f0f0;
+		font-style: italic;
+	}
+	::-ms-input-placeholder {
+		color: #f0f0f0;
+		font-style: italic;
+	}
+	input:-moz-placeholder {
+		color: #f0f0f0;
+		font-style: italic;
 	}
 }
 
