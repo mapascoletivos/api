@@ -1,14 +1,18 @@
 <div class="single-content">
 	<a href="{{baseUrl}}">Fechar</a>
 	<h2>{{content.title}}</h2>
-	<div class="content-meta">
-		<p class="author" ng-show="map">por {{content.layer.creator.name}}</p>
-		<p class="author" ng-show="map">Camada: {{content.layer.title}}</p>
-		<ul class="features" ng-show="content.featureObjs.length">
-			<li ng-repeat="feature in content.featureObjs">
+	<div class="content-meta clearfix">
+		<p class="author" ng-show="map && content.layer.creator" title="Usuário">
+			<a href="/user/{{content.layer.creator.username}}/">{{content.layer.creator.name}}</a>
+		</p>
+		<p class="layer" ng-show="map" title="Camada">
+			<a href="/layers/{{content.layer._id}}/">{{content.layer.title}}</a>
+		</p>
+		<p class="features" ng-show="content.featureObjs.length" title="Features">
+			<span class="feature" ng-repeat="feature in content.featureObjs">
 				<a href="{{baseUrl}}/feature/{{feature._id}}">{{feature.title}}</a>
-			</li>
-		</ul>
+			</span>
+		</p>
 	</div>
 	<div class="content-body">
 		<div ng-repeat="block in content.sirTrevorData">

@@ -4,7 +4,7 @@
 			<div class="four columns row">
 				<div id="map-info" class="map-info">
 					<h1>{{map.title}}</h1>
-					<p class="author">by {{map.creator.name}}</p>
+					<p class="author">por <a href="/user/{{map.creator.username}}/">{{map.creator.name}}</a></p>
 				</div>
 			</div>
 		</div>
@@ -39,17 +39,22 @@
 		<div id="map"></div>
 	</div>
 	<div id="map-sidebar" ng-controller="ContentCtrl">
-		<div id="feature-info" class="single-feature" ng-show="feature">
-			<a href="/maps/{{map._id}}">Fechar</a>
-			<h2>{{feature.title}}</h2>
-			<p>{{feature.description}}</p>
-		</div>
-		<div id="posts" ng-controller="ContentCtrl" ng-show="contents.length">
-			<div class="single-post" ng-show="content" ng-include="templates.show"></div>
-			<div ng-hide="content">
-				<ul class="content-list">
-					<li ng-repeat="post in contents" ng-include="templates.list"></li>
-				</ul>
+		<div class="map-sidebar-content">
+			<div id="map-info" class="sidebar-block main-info" ng-show="map.description && !feature && !content">
+				<p>{{map.description}}</p>
+			</div>
+			<div id="feature-info" class="single-feature sidebar-block" ng-show="feature">
+				<a href="/maps/{{map._id}}">Fechar</a>
+				<h2>{{feature.title}}</h2>
+				<p>{{feature.description}}</p>
+			</div>
+			<div id="posts" ng-controller="ContentCtrl" ng-show="contents.length">
+				<div class="single-post sidebar-block active" ng-show="content" ng-include="templates.show"></div>
+				<div ng-hide="content">
+					<ul class="content-list">
+						<li class="sidebar-block" ng-repeat="post in contents" ng-include="templates.list"></li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>

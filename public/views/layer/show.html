@@ -4,7 +4,7 @@
 			<div class="four columns row">
 				<div id="layer-info" class="map-info">
 					<h1>{{layer.title}}</h1>
-					<p class="author">by {{layer.creator.name}}</p>
+					<p class="author">por <a href="/user/{{layer.creator.username}}/">{{layer.creator.name}}</a></p>
 				</div>
 			</div>
 		</div>
@@ -38,18 +38,23 @@
 	<div class="map-container" ng-class="{shrink: activeSidebar}">
 		<div id="layer-map"></div>
 	</div>
-	<div id="map-sidebar" ng-class="{active: activeSidebar}">
-		<div id="feature-info" ng-show="feature">
-			<a href="/layers/{{layer._id}}">Fechar</a>
-			<h2>{{feature.title}}</h2>
-			<p>{{feature.description}}</p>
-		</div>
-		<div id="posts" ng-controller="ContentCtrl" ng-show="contents.length">
-			<div class="single-post" ng-show="content" ng-include="templates.show"></div>
-			<div ng-hide="content">
-				<ul class="content-list">
-					<li ng-repeat="post in contents" ng-include="templates.list"></li>
-				</ul>
+	<div id="map-sidebar" ng-class="{active: activeSidebar}" ng-controller="ContentCtrl">
+		<div class="map-sidebar-content">
+			<div id="layer-info" class="sidebar-block main-info" ng-show="layer.description && !feature && !content">
+				<p>{{layer.description}}</p>
+			</div>
+			<div id="feature-info" ng-show="feature" class="sidebar-block">
+				<a href="/layers/{{layer._id}}">Fechar</a>
+				<h2>{{feature.title}}</h2>
+				<p>{{feature.description}}</p>
+			</div>
+			<div id="posts" ng-show="contents.length">
+				<div class="single-post sidebar-block active" ng-show="content" ng-include="templates.show"></div>
+				<div ng-hide="content">
+					<ul class="content-list">
+						<li class="sidebar-block" ng-repeat="post in contents" ng-include="templates.list"></li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>

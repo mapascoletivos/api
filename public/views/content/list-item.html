@@ -1,7 +1,15 @@
 <div class="content list-item">
 	<h3><a href="{{baseUrl}}/content/{{post._id}}">{{post.title}}</a></h3>
-	<p class="author" ng-show="map">por {{post.layer.creator.name}}</p>
-	<p class="author" ng-show="map">Camada: {{post.layer.title}}</p>
+	<div class="content-meta clearfix">
+		<div class="clearfix">
+			<p class="author" ng-show="map && post.layer.creator">
+				<a href="/user/{{post.layer.creator.username}}/">{{post.layer.creator.name}}</a>
+			</p>
+			<p class="layer" ng-show="map">
+				<a href="/layers/{{post.layer._id}}/">{{post.layer.title}}</a>
+			</p>
+		</div>
+	</div>
 	<div class="excerpt" dynamic="renderBlock(post.sirTrevorData[0])"></div>
 	<p class="readmore"><a href="{{baseUrl}}/content/{{post._id}}">Leia mais</a></p>
 </div>

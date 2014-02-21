@@ -109,7 +109,7 @@ MapSchema.statics = {
 
 	load: function (id, cb) {
 		this.findOne({ _id : id })
-			.populate('creator')
+			.populate('creator', 'name username email')
 			.exec(cb)
 	},
 	

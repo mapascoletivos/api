@@ -1416,20 +1416,31 @@ input[type=submit] {
 		}
 	}
 	.map-info {
-		background: rgba(255,255,255,0.8);
+		background: #666;
 		padding: 20px;
-		margin-top: 20px;
+		margin-top: 30px;
 		float: left;
+		color: #f0f0f0;
+		h1 {
+			color: #f0f0f0;
+		}
 		p.author {
 			margin: 0;
 			font-size: 12px;
 			font-style: italic;
-			color: #666;
+			color: #999;
+			a {
+				color: #999;
+				text-decoration: none;
+				&:hover {
+					color: #f0f0f0;
+				}
+			}
 		}
 	}
 	.map-controls {
 		position: absolute;
-		bottom: 20px;
+		bottom: 30px;
 		left: 0;
 		right: 0;
 		z-index: 10;
@@ -1467,9 +1478,8 @@ input[type=submit] {
 	}
 	.map-container {
 		position: absolute;
+		width: 66.666%;
 		top: 0;
-		left: 0;
-		right: 30%;
 		bottom: 0;
 		z-index: 1;
 		transition: right .2s ease-in-out;
@@ -1478,56 +1488,82 @@ input[type=submit] {
 			transition: right .2s ease-in-out;
 		}
 		.leaflet-container {
-			width: 100%;
+			position: absolute;
+			width: 200%;
+			left: -50%;
 			height: 100%;
+			top: 0;
+			bottom: 0;
 		}
 	}
 	#map-sidebar {
 		position: absolute;
 		z-index: 2;
-		top: 0;
-		right: 0;
-		left: 70%;
-		bottom: 0;
-		overflow: auto;
-		transition: left .2s ease-in-out;
-		background: #fefefe;
-		&.active {
-			transition: left .2s ease-in-out;
-			left: 60%;
+		top: 20px;
+		right: 20px;
+		left: 66.666%;
+		bottom: 20px;
+		transition: background .2s ease-in-out;
+		::-webkit-scrollbar-thumb {
+			background: transparent; 
+			transition: background .2s ease-in-out;
 		}
-		#feature-info {
-			padding: 20px;
+		&:hover {
+			background: rgba(0,0,0,0.1);
+			::-webkit-scrollbar-thumb {
+				background: #999;
+				transition: background .2s ease-in-out;
+			}
 		}
-		#posts {
+		.map-sidebar-content {
+			position: absolute;
+			left: 10px;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			padding-top: 10px;
+			overflow: auto;
+		}
+		.sidebar-block {
 			max-width: 600px;
+			background: rgba(255,255,255,0.9);
 			padding: 20px;
+			margin: 0 10px 10px 0;
+			&:hover,
+			&.active {
+				background: #fefefe;
+			}
+		}
+		.main-info {
+			font-size: 18px;
+			line-height: 28px;
+			background: #666;
+			color: #f0f0f0;
+			&:hover {
+				background: #666;
+			}
+			p {
+				margin: 0;
+			}
 		}
 		.content-list {
-			li {
-				padding: 10px 0;
-				margin: 0;
-				border-bottom: 1px solid #eee;
-				.content.list-item {
-					h3 {
-						font-size: 24px;
-						line-height: 32px;
-						font-weight: 600;
-						a {
-							color: #444;
-							text-decoration: none;
-							&:hover {
-								color: #222;
-							}
+			margin: 0;
+			padding: 0;
+			.content.list-item {
+				h3 {
+					font-size: 24px;
+					line-height: 32px;
+					font-weight: 600;
+					a {
+						color: #444;
+						text-decoration: none;
+						&:hover {
+							color: #222;
 						}
 					}
-					p.author {
-						font-size: 12px;
-						color: #999;
-					}
-					.excerpt {
-						margin-bottom: 20px;
-					}
+				}
+				.excerpt {
+					margin-bottom: 20px;
 				}
 			}
 		}
@@ -1535,36 +1571,6 @@ input[type=submit] {
 			h2 {
 				font-weight: 600;
 				margin: 0 0 20px;
-			}
-			.content-meta {
-				.features {
-					&:before {
-						font-family: "LigatureSymbols";
-						content: '\E103';
-						font-size: 20px;
-						display: block;
-						float: left;
-						margin: 0 10px 0 0;
-						color: @blue;
-					}
-					li {
-						font-size: 12px;
-						line-height: 20px;
-						display: inline-block;
-						font-weight: 600;
-						a {
-							text-decoration: none;
-							display: block;
-							background: #f9f9f9;
-							padding: 3px 8px;
-							margin-right: 1px;
-							&:hover {
-								background: @blue;
-								color: #fff;
-							}
-						}
-					}
-				}
 			}
 			.content-body {
 				font-size: 16px;
@@ -1584,6 +1590,45 @@ input[type=submit] {
 				img {
 					display: block;
 					margin-bottom: 20px;
+				}
+			}
+		}
+		.content-meta {
+			p {
+				font-size: 12px;
+				color: #999;
+				float: left;
+				margin: 0 10px 10px 0;
+				line-height: 20px;
+				&:before {
+					font-family: "LigatureSymbols";
+					font-size: 20px;
+					display: block;
+					float: left;
+					margin: 0 10px 0 0;
+					color: @blue;
+				}
+				&.features {
+					&:before {
+						content: '\E103';
+					}
+				}
+				&.author {
+					&:before {
+						content: '\E137';
+					}
+				}
+				&.layer {
+					&:before {
+						content: '\E129';
+					}
+				}
+				a {
+					color: #999;
+					text-decoration: none;
+					&:hover {
+						color: #333;
+					}
 				}
 			}
 		}
