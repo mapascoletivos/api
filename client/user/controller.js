@@ -6,11 +6,13 @@ exports.UserCtrl = [
 	'$state',
 	'$stateParams',
 	'User',
+	'ChangePwd',
+	'ChangeEmail',
 	'Layer',
 	'Map',
 	'Page',
 	'MessageService',
-	function($scope, $rootScope, $state, $stateParams, User, Layer, Map, Page, Message) {
+	function($scope, $rootScope, $state, $stateParams, User, ChangePwd, ChangeEmail, Layer, Map, Page, Message) {
 
 		$scope.save = function(user) {
 
@@ -33,6 +35,34 @@ exports.UserCtrl = [
 			});
 
 		}
+
+		$scope.openPwdModal = function(user) {
+			ChangePwd.activate({
+				user: user
+			});
+
+			$scope.$on('$destroy', function() {
+				ChangePwd.deactivate();
+			});
+		};
+
+		$scope.closePwdModal = function() {
+			ChangePwd.deactivate();
+		};
+
+		$scope.openEmailModal = function(user) {
+			ChangeEmail.activate({
+				user: user
+			});
+
+			$scope.$on('$destroy', function() {
+				ChangeEmail.deactivate();
+			});
+		};
+
+		$scope.closeEmailModal = function() {
+			ChangeEmail.deactivate();
+		};
 
 		$scope.changePassword = function(user, chPwd) {
 
@@ -65,6 +95,33 @@ exports.UserCtrl = [
 			}
 
 			User.resource.update({userId: user._id}, chPwd, function(res) {
+				Message.message({
+					status: 'ok',
+					text: 'Senha alterada com sucesso'
+				});
+			}, function(err) {
+				console.log(err);
+				Message.message({
+					status: 'error',
+					text: 'Ocorreu um erro'
+				});
+			});
+
+		}
+
+		$scope.changeEmail = function(user) {
+
+			if(!user.newEmail) {
+				Message.message({
+					status: 'error',
+					text: 'Você deve inserir um email.'
+				});
+				return false;
+			}
+
+			User.resource.update({userId: user._id}, {
+				email: user.newEmail
+			}, function(res) {
 				Message.message({
 					status: 'ok',
 					text: 'Senha alterada com sucesso'

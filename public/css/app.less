@@ -65,7 +65,7 @@ body {
 	height: 100%;
 }
 
-h1,h2,h3 {
+h1,h2,h3,h4,h5 {
 	font-family: "Lato", sans-serif;
 	font-weight: 600;
 }
@@ -120,12 +120,29 @@ input[type=submit] {
 			background: @dark-red;
 		}
 	}
+	&.button-blue {
+		background: @blue;
+		color: rgba(255,255,255,0.8);
+		&:hover {
+			background: @dark-blue;
+		}
+	}
 	&.button-light {
 		opacity: .6;
 	}
 	&:hover {
 		background: @light-green;
 	}
+}
+
+textarea.no-canvas,
+input.no-canvas {
+	display: block;
+	width: 100%;
+	padding: 0;
+	background: transparent;
+	border: 0;
+	resize: none;
 }
 
 /*
@@ -189,7 +206,7 @@ input[type=submit] {
 	text-align: center;
 	font-size: 14px;
 	color: #fff;
-	z-index: 9999;
+	z-index: 999999;
 	p {
 		margin: 0;
 	}
@@ -356,6 +373,7 @@ input[type=submit] {
 		.button {
 			font-size: 12px;
 			float: right;
+			margin-left: 1px;
 			background: @blue;
 			&:hover {
 				background: @dark-blue;
@@ -551,8 +569,28 @@ input[type=submit] {
 			width: 100%;
 			display: block;
 		}
-		textarea {
-			height: 400px;
+		.label {
+			font-size: 12px;
+			text-transform: uppercase;
+			color: #999;
+			font-weight: 800;
+			margin: 0 0 10px;
+		}
+		.user-name {
+			font-size: 18px;
+			color: #333;
+			border-bottom: 1px solid #f0f0f0;
+		}
+		.user-bio {
+			font-size: 14px;
+			color: #333;
+		}
+		.button {
+			display: block;
+			width: 100%;
+			padding-left: 0;
+			padding-right: 0;
+			text-align: center;
 		}
 	}
 }
@@ -600,15 +638,6 @@ input[type=submit] {
 	::-webkit-scrollbar-thumb {
 	    border-radius: 0;
 	    background: #ddd; 
-	}
-	textarea.no-canvas,
-	input.no-canvas {
-		display: block;
-		width: 100%;
-		padding: 0;
-		background: transparent;
-		border: 0;
-		resize: none;
 	}
 	.page-header {
 		padding: 20px;
@@ -1742,7 +1771,7 @@ input[type=submit] {
 	left: 0;
 	bottom: 0;
 	right: 0;
-	z-index: 999999;
+	z-index: 99999;
 	background: rgba(0,0,0,0.5);
 	.modal-container {
 		position: fixed;
@@ -1763,6 +1792,17 @@ input[type=submit] {
 			padding: 40px;
 			background: #fff;
 			position: relative;
+			input {
+				display: block;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.button {
+				width: 100%;
+				padding-left: 0;
+				padding-right: 0;
+				text-align: center;
+			}
 			.close-button {
 				position: absolute;
 				top: 7px;

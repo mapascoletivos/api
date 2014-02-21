@@ -1,33 +1,28 @@
-<div class="page-subheader anti-row row">
-	<div class="container">
-		<div class="twelve columns">
-			<h2>Perfil</h2>
+<div ng-controller="UserCtrl">
+	<div class="page-subheader anti-row row">
+		<div class="container">
+			<div class="twelve columns">
+				<h2>Perfil</h2>
+				<a class="button" href="javascript:void(0);" ng-click="openPwdModal(user)">Alterar senha</a>
+				<a class="button" href="javascript:void(0);" ng-click="openEmailModal(user)">Alterar email</a>
+			</div>
 		</div>
 	</div>
-</div>
-<div id="profile-editor" ng-controller="UserCtrl">
-	<div class="container">
-		<form ng-submit="save(user)">
-			<div class="row">
-				<div class="six columns">
-					<div class="profile-edit-form">
-						Nome de usuário <input ng-model="user.name" type="text" />
-						Email <input ng-model="user.email" type="text" />
-						Biografia <textarea ng-model="user.bio" type="text"></textarea>
-						<a class="button" ng-click="save(user)">Salvar</a>
+	<div id="profile-editor">
+		<div class="container">
+			<form ng-submit="save(user)">
+				<div class="row">
+					<div class="seven columns">
+						<div class="profile-edit-form">
+							<p class="label">Nome de usuário</p>
+							<textarea class="no-canvas user-name" ng-model="user.name" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+							<p class="label">Biografia</p>
+							<textarea class="no-canvas user-bio" ng-model="user.bio" placeholder="Fale um pouco sobre você" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+							<p><a class="button" ng-click="save(user)">Salvar perfil</a></p>
+						</div>
 					</div>
 				</div>
-				<div class="six columns">
-					<div class="change-pwd-form">
-						<h4>Alteração de senha</h4>
-						Senha antiga <input type="password" ng-model="chPwd.userPwd" />
-						<h5>Senha nova</h5>
-						Senha <input type="password" ng-model="chPwd.newPwd" />
-						Repetir senha <input type="password" ng-model="chPwd.validatePwd" />
-						<a class="button" ng-click="changePassword(user, chPwd)">Salvar</a>
-					</div>
-				</div>
-			</div>
-		</form>
+			</form>
+		</div>
 	</div>
 </div>

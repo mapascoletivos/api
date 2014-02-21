@@ -4,7 +4,9 @@
  * User module
  */
 angular
-	.module('mapasColetivos.user', [])
+	.module('mapasColetivos.user', [
+		'btford.modal'
+	])
 	.config([
 		'$stateProvider',
 		function($stateProvider) {
@@ -26,4 +28,6 @@ angular
 		}
 	])
 	.factory('User', require('./service').User)
+	.factory('ChangePwd', require('./changePwd').changePwd)
+	.factory('ChangeEmail', require('./changeEmail').changeEmail)
 	.controller('UserCtrl', require('./controller').UserCtrl);
