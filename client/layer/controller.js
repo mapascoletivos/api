@@ -132,22 +132,26 @@ exports.LayerCtrl = [
 					MapService.fitMarkerLayer();
 				}
 
-				// Set feature shared data
-				Feature.set(layer.features);
+				// Init features
+				Feature.set(angular.copy(layer.features));
+				populateMap(layer.features, true);
 
-				var features;
+				var viewingContent = false;
+				$scope.$on('content.filtering.started', function(event, c, cF) {
+					viewingContent = true;
+					if(cF.length) {
+						populateMap(cF);
+					}
+				});
 
-				$scope.$on('features.updated', function(event, f) {
-					features = f;
-					populateMap(f, true);
+				$scope.$on('content.filtering.closed', function() {
+					if(viewingContent) {
+						populateMap(layer.features);
+						viewingContent = false;
+					}
 				});
 
 				$scope.$on('layerObjectChange', function(event, active) {
-					populateMap(features, true);
-				});
-
-				// Force repopulate map on feature close
-				$scope.$on('feature.closed', function() {
 					populateMap(features, true);
 				});
 

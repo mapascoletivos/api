@@ -64,10 +64,10 @@ exports.ContentCtrl = [
 
 		$scope.view = function(content) {
 
+			viewing = true;
+
 			if(!content)
 				return false;
-
-			viewing = true;
 
 			var contentFeatures = Content.getFeatures(content, features);
 
@@ -88,7 +88,6 @@ exports.ContentCtrl = [
 				Feature.set(features);
 
 			$scope.content = false;
-			MapService.fitMarkerLayer();
 
 			viewing = false;
 

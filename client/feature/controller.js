@@ -55,7 +55,7 @@ exports.FeatureCtrl = [
 
 		$scope.view = function(feature) {
 
-			$scope.close(false);
+			$scope.close();
 
 			viewing = true;
 
@@ -64,13 +64,13 @@ exports.FeatureCtrl = [
 			var featureContents = Feature.getContents(feature, contents);
 
 			Content.set(featureContents);
-			Feature.set([feature]);
+			//Feature.set([feature]);
 
 			$rootScope.$broadcast('feature.filtering.started', feature, featureContents);
 
 		}
 
-		$scope.close = function(fit) {
+		$scope.close = function() {
 
 			$scope.feature = false;
 
@@ -79,9 +79,6 @@ exports.FeatureCtrl = [
 
 			if(typeof contents !== 'undefined' && Content.get() !== contents)
 				Content.set(contents);
-
-			if(fit !== false)
-				MapService.fitMarkerLayer();
 
 			viewing = false;
 
