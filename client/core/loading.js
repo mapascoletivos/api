@@ -15,8 +15,8 @@ angular.module('mapasColetivos.loadingStatus', [])
 .directive('loadingStatusMessage', function() {
 	return {
 		link: function($scope, $element, attrs) {
-			var show = function() {
-				$element.addClass('active');
+			var show = function(event, message) {
+				$element.addClass('active').find('.loading-message').html(message);
 			};
 			var hide = function() {
 				$element.removeClass('active');
@@ -33,21 +33,28 @@ angular.module('mapasColetivos.loadingStatus', [])
 	'$rootScope',
 	'$timeout',
 	function($q, $rootScope, $timeout) {
+		var loadingMessage = 'Carregando...';
 		var activeRequests = 0;
 		var started = function() {
 			if(activeRequests==0) {
-				$rootScope.$broadcast('loadingStatusActive');
+				$rootScope.$broadcast('loadingStatusActive', loadingMessage);
 			}    
 			activeRequests++;
 		};
 		var ended = function() {
 			activeRequests--;
 			if(activeRequests==0) {
-				$rootScope.$broadcast('loadingStatusInactive');
+				$rootScope.$broadcast('loadingStatusInactive', loadingMessage);
 			}
 		};
 		return {
 			request: function(config) {
+
+				if(config.loadingMessage)
+					loadingMessage = config.loadingMessage;
+				else
+					loadingMessage = 'Carregando...';
+
 				started();
 				return config || $q.when(config);
 			},

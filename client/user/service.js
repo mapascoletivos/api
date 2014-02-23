@@ -25,6 +25,7 @@ exports.User = [
 			resource: $resource(apiPrefix + '/users/:userId', {}, {
 				'get': {
 					method: 'GET',
+					loadingMessage: 'Carregando usuário',
 					interceptor: {
 						response: function(data) {
 							var res = data.data;
@@ -37,10 +38,12 @@ exports.User = [
 				},
 				'update': {
 					method: 'PUT',
+					loadingMessage: 'Atualizando usuário',
 					url: apiPrefix + '/users'
 				},
 				'updatePwd': {
-					method: 'PUT'
+					method: 'PUT',
+					loadingMessage: 'Alterando senha'
 				}
 			}),
 			gravatar: gravatar

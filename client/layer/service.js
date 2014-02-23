@@ -18,6 +18,7 @@ exports.Layer = [
 				'query': {
 					isArray: false,
 					method: 'GET',
+					loadingMessage: 'Carregando camadas',
 					params: {
 						perPage: 10,
 						page: 1
@@ -30,7 +31,16 @@ exports.Layer = [
 					}
 				},
 				'update': {
-					method: 'PUT'
+					method: 'PUT',
+					loadingMessage: 'Atualizando camada'
+				},
+				'get': {
+					method: 'GET',
+					loadingMessage: 'Carregando camada'
+				},
+				'delete': {
+					method: 'DEL',
+					loadingMessage: 'Removendo camada'
 				}
 			}),
 			busy: false,

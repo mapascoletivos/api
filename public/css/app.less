@@ -275,29 +275,49 @@ input.no-canvas {
 	}
 }
 
-.loading-message {
+#loading {
 	position: fixed;
 	top: -100%;
 	bottom: 100%;
 	left: 0;
 	right: 0;
-	background: rgba(255,255,255,0.8);
+	background: transparent;
 	z-index: 99999;
 	opacity: 0;
-	pointer-events: none;
-	padding-top: 10%;
-	font-size: 20px;
+	font-size: 16px;
 	text-transform: uppercase;
 	font-weight: 200;
 	text-align: center;
-	transition: all .5s ease-in-out;
+	transition: background .5s ease-in-out;
 	overflow: hidden;
 	&.active {
+		background: rgba(0,0,0,0.8);
 		top: 52px;
 		bottom: 0;
 		opacity: 1;
-		transition: all .2s ease-in-out;
-		pointer-events: auto;
+		transition: background .2s ease-in-out;
+		.loading-message {
+			opacity: 1;
+			transition: opacity .2s ease-in-out;
+		}
+	}
+	.loading-message {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		padding: 40px;
+		background: #fff;
+		-webkit-transform: translateX(-50%) translateY(-50%);
+		-moz-transform: translateX(-50%) translateY(-50%);
+		-ms-transform: translateX(-50%) translateY(-50%);
+		transform: translateX(-50%) translateY(-50%);
+		transition: opacity .2s ease-in-out;
+		opacity: 0;
+		&:before {
+			content: url('/img/loading.gif');
+			display: block;
+			margin-bottom: 40px;
+		}	
 	}
 }
 

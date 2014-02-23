@@ -17,6 +17,7 @@ exports.Map = [
 				'query': {
 					isArray: false,
 					method: 'GET',
+					loadingMessage: 'Carregando mapas',
 					params: {
 						perPage: 10,
 						page: 1
@@ -28,8 +29,9 @@ exports.Map = [
 						}
 					}
 				},
-				get: {
+				'get': {
 					method: 'GET',
+					loadingMessage: 'Carregando mapa',
 					interceptor: {
 						response: function(data) {
 							var map = data.data;
@@ -43,7 +45,8 @@ exports.Map = [
 					}
 				},
 				'update': {
-					method: 'PUT'
+					method: 'PUT',
+					loadingMessage: 'Atualizando mapa'
 				}
 			}),
 			busy: false,

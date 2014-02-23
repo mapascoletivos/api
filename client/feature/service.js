@@ -14,16 +14,28 @@ exports.Feature = [
 
 		return {
 			resource: $resource(apiPrefix + '/features/:featureId', {}, {
+				'query': {
+					method: 'GET',
+					isArray: false,
+					loadingMessage: 'Carregando locais'
+				},
+				'get': {
+					method: 'GET',
+					loadingMessage: 'Carregando local'
+				},
 				'save': {
 					method: 'POST',
+					loadingMessage: 'Criando local',
 					url: apiPrefix + '/layers/:layerId/features'
 				},
 				'delete': {
 					method: 'DELETE',
+					loadingMessage: 'Removendo local',
 					url: apiPrefix + '/layers/:layerId/features/:featureId'
 				},
 				'update': {
-					method: 'PUT'
+					method: 'PUT',
+					loadingMessage: 'Atualizando local'
 				}
 			}),
 			// Object sharing between controllers methods

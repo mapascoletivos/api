@@ -14,8 +14,18 @@ exports.Content = [
 
 		return {
 			resource: $resource(apiPrefix + '/contents/:contentId', {}, {
+				'query': {
+					method: 'GET',
+					isArray: false,
+					loadingMessage: 'Carregando conteúdos'
+				},
+				'get': {
+					method: 'GET',
+					loadingMessage: 'Carregando conteúdo'
+				},
 				'save': {
 					method: 'POST',
+					loadingMessage: 'Criando conteúdo',
 					url: apiPrefix + '/contents',
 					params: {
 						layer: '@id'
@@ -23,10 +33,12 @@ exports.Content = [
 				},
 				'delete': {
 					method: 'DELETE',
+					loadingMessage: 'Removendo conteúdo',
 					url: apiPrefix + '/contents/:contentId'
 				},
 				'update': {
-					method: 'PUT'
+					method: 'PUT',
+					loadingMessage: 'Atualizando conteúdo'
 				}
 			}),
 			// Object sharing between controllers methods
