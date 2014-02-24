@@ -133,16 +133,6 @@ exports.LayerCtrl = [
 						}
 					];
 
-				/*
-				$scope.$on('layer.contributor.added', function(event, layer) {
-					$scope.layer.contributors = layer.contributors;
-				});
-
-				$scope.$on('layer.contributor.removed', function(event, layer) {
-					$scope.layer.contributors = layer.contributors;
-				});
-				*/
-
 				$scope.layer = layer;
 
 				$scope.baseUrl = '/layers/' + layer._id;

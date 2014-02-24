@@ -292,6 +292,7 @@ exports.MapCtrl = [
 					var features = [];
 					angular.forEach($scope.layers, function(layer) {
 						angular.forEach(layer.features, function(lF) {
+							lF.layer = layer;
 							features.push(lF);
 						});
 						angular.forEach(layer.contents, function(lC) {
