@@ -53,6 +53,18 @@ exports.FeatureCtrl = [
 
 		var viewing = false;
 
+		var focused = false;
+
+		$scope.focus = function(feature) {
+
+			setTimeout(function() {
+				MapService.get().setView(feature.geometry.coordinates, MapService.get().getMaxZoom());
+				focused = true;
+			}, 100);
+
+
+		}
+
 		$scope.view = function(feature) {
 
 			$scope.close();
@@ -64,7 +76,6 @@ exports.FeatureCtrl = [
 			var featureContents = Feature.getContents(feature, contents);
 
 			Content.set(featureContents);
-			//Feature.set([feature]);
 
 			$rootScope.$broadcast('feature.filtering.started', feature, featureContents);
 
@@ -82,9 +93,19 @@ exports.FeatureCtrl = [
 
 			viewing = false;
 
+			if(focused) {
+				focused = false;
+				MapService.fitMarkerLayer();
+			}
+
 			$rootScope.$broadcast('feature.filtering.closed');
 
 		}
+
+		$scope.templates = {
+			list: '/views/feature/list-item.html',
+			show: '/views/feature/show.html'
+		};
 
 		/*
 		 * Manage view state

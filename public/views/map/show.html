@@ -41,6 +41,7 @@
 	<div id="map-sidebar" ng-controller="ContentCtrl">
 		<div class="map-sidebar-content">
 			<div id="map-info" class="sidebar-block main-info" ng-show="map.description && !feature && !content">
+				<p class="label">Sobre este mapa</p>
 				<p>{{map.description}}</p>
 			</div>
 			<div id="feature-info" class="single-feature sidebar-block" ng-show="feature">
@@ -51,10 +52,21 @@
 			<div id="posts" ng-controller="ContentCtrl" ng-show="contents.length">
 				<div class="single-post sidebar-block active" ng-show="content" ng-include="templates.show"></div>
 				<div ng-hide="content">
+					<div class="sidebar-block label-block">
+						<h3>Conteúdo do mapa</h3>
+					</div>
 					<ul class="content-list">
 						<li class="sidebar-block" ng-repeat="post in contents" ng-include="templates.list"></li>
 					</ul>
 				</div>
+			</div>
+			<div id="features" ng-show="!contents.length && !feature" ng-controller="FeatureCtrl">
+				<div class="sidebar-block label-block">
+					<h3>Locais</h3>
+				</div>
+				<ul class="feature-list">
+					<li class="sidebar-block" ng-repeat="feature in features" ng-include="templates.list"></li>
+				</ul>
 			</div>
 		</div>
 	</div>

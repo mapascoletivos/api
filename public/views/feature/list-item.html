@@ -1,0 +1,17 @@
+<div class="feature list-item">
+	<h3><a href="{{baseUrl}}/feature/{{feature._id}}" ng-click="focus(feature)">{{feature.title}}</a></h3>
+	<div class="meta clearfix">
+		<div class="clearfix">
+			<p class="author" ng-show="map && feature.layer.creator">
+				<a href="/user/{{feature.layer.creator.username}}/">{{feature.layer.creator.name}}</a>
+			</p>
+			<p class="layer" ng-show="map">
+				<a href="/layers/{{feature.layer._id}}/">{{feature.layer.title}}</a>
+			</p>
+		</div>
+	</div>
+	<div class="excerpt">
+		<p>{{feature.description}}</p>
+	</div>
+	<p class="readmore"><a href="{{baseUrl}}/feature/{{feature._id}}">Leia mais</a></p>
+</div>
