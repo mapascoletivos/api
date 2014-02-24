@@ -10,6 +10,7 @@ var
 	Map = mongoose.model('Map'),
 	Layer = mongoose.model('Layer'),
 	Feature = mongoose.model('Feature'),
+	Content = mongoose.model('Content'),
 	mysql = require('mysql'),
 	async = require('async');
 
@@ -35,102 +36,102 @@ var clearDb = function(callback) {
 
 var importUsers = function(mysqlConnection, callback) {
 	mysqlConnection.query('SELECT * from mapascol_ushahidi.users', function(err, rows, fields) {
-	  if (err) throw err;
+		if (err) throw err;
 
-	  async.each(rows, function(row, cb){
-		  User.findOne({email: row['email']}, function(err, usr){
+		async.each(rows, function(row, cb){
+			User.findOne({email: row['email']}, function(err, usr){
 
-		  	// Create new user if it don't exist
-		  	if (!usr) 
-		  		usr = new User();
-	  		
-	  		usr.oldId = row['id'];
-	  		usr.name = row['name'];
-	  		usr.email = row['email'];
-	  		usr.username = row['username'];
-	  		// usr.hashed_password = row['password'];
-	  		usr.password = 'a';
-	  		usr.status = 'active';
-	  		usr.logins = row['logins'];
-	  		if (row['last_login']) {
-	  			usr.lastLogin = new Date();
-	  			usr.lastLogin.setTime(row['last_login'] + '000');
-	  		}
-	  		usr.updatedAt = row['updated'];
-	  		usr.localization = row['localization'];
-	  		usr.bio = row['bio'];
-	  		usr.web = row['web'];
+				// Create new user if it don't exist
+				if (!usr) 
+					usr = new User();
+				
+				usr.oldId = row['id'];
+				usr.name = row['name'];
+				usr.email = row['email'];
+				usr.username = row['username'];
+				// usr.hashed_password = row['password'];
+				usr.password = 'a';
+				usr.status = 'active';
+				usr.logins = row['logins'];
+				if (row['last_login']) {
+					usr.lastLogin = new Date();
+					usr.lastLogin.setTime(row['last_login'] + '000');
+				}
+				usr.updatedAt = row['updated'];
+				usr.localization = row['localization'];
+				usr.bio = row['bio'];
+				usr.web = row['web'];
 
-		  	usr.save(function(err){
-		  		cb(err);
-		  	});
-		  });
-		  
-	  }, function(errors){
-	  	callback(errors);
-	  });
+				usr.save(function(err){
+					cb(err);
+				});
+			});
+			
+		}, function(errors){
+			callback(errors);
+		});
 	});
 } 
 
 var importCategories = function(mysqlConnection, callback) {
 	mysqlConnection.query('SELECT * from mapascol_ushahidi.category', function(err, rows, fields) {
-	  if (err) throw err;
+		if (err) throw err;
 
-	  async.each(rows, function(row, cb){
+		async.each(rows, function(row, cb){
 
-	  	var category = new Category();
+			var category = new Category();
 
-  		category.oldId = row['id'];
-  		category.title = row['category_title'];
-  		category.description = row['category_description'];
-  		category.color = row['category_color'];
-  		category.save(cb);
-		  
-	  }, function(errors){
-	  	callback(errors);
-	  });
+			category.oldId = row['id'];
+			category.title = row['category_title'];
+			category.description = row['category_description'];
+			category.color = row['category_color'];
+			category.save(cb);
+			
+		}, function(errors){
+			callback(errors);
+		});
 	});
 }
 
 var importMaps = function(mysqlConnection, callback) {
 	mysqlConnection.query('SELECT * from mapascol_ushahidi.incident', function(err, rows, fields) {
-	  if (err) throw err;
+		if (err) throw err;
 
-	  async.each(rows, function(row, cb){
+		async.each(rows, function(row, cb){
 
-	  	var map = new Map();
+			var map = new Map();
 
-  		map.oldId = row['id'];
-  		map.title = row['incident_title'];
-  		map.description = row['incident_description'];
-  		map.updatedAt = row['incident_date'];
-  		map.createdAt = row['incident_dateadd'];
-  		map.center = [row['incident_default_lat'], row['incident_default_lon']];
-  		map.zoom = row['incident_default_zoom'];
-	  	map.isDraft = false;
+			map.oldId = row['id'];
+			map.title = row['incident_title'];
+			map.description = row['incident_description'];
+			map.updatedAt = row['incident_date'];
+			map.createdAt = row['incident_dateadd'];
+			map.center = [row['incident_default_lat'], row['incident_default_lon']];
+			map.zoom = row['incident_default_zoom'];
+			map.isDraft = false;
 
-  		User.findOne({oldId: row['owner_id']}, function(err, user){
-  			if (err) cb(err);
-  			if (!user) console.log('usuário não encontrado!!!');
+			User.findOne({oldId: row['owner_id']}, function(err, user){
+				if (err) cb(err);
+				if (!user) console.log('usuário não encontrado!!!');
 
-  			map.creator = user;
+				map.creator = user;
 
-  			// find categories
-  			mysqlConnection.query('SELECT * from mapascol_ushahidi.incident_category where incident_id='+map.oldId, function(err, catRows, fields) {
-  				async.each(catRows, function(catRow, done){
+				// find categories
+				mysqlConnection.query('SELECT * from mapascol_ushahidi.incident_category where incident_id='+map.oldId, function(err, catRows, fields) {
+					async.each(catRows, function(catRow, done){
 						Category.findOne({oldId: catRow.category_id}, function(err, cat){
-  						if (cat)
-  							map.categories.push(cat);
-  						done(err);
-  					});
-  				}, function(errs){
-  					map.save(cb);
-  				});
-  			});
-  		})
-	  }, function(errors){
-	  	callback(errors);
-	  });
+							if (cat)
+								map.categories.push(cat);
+							done(err);
+						});
+					}, function(errs){
+						map.save(cb);
+					});
+				});
+			})
+		}, function(errors){
+			callback(errors);
+		});
 	});
 }
 
@@ -196,49 +197,140 @@ var importLayers = function(mysqlConnection, callback){
 
 var importContents = function(connection, callback ) {
 
-	var parseLink = function(url) {
-    var 
-    	youtubeRegex = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
-    	vimeoRegex = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/
-    	imageRegex = /\.(?:jpe?g|png|gif|JPE?G|PNG|GIF)$/,
-    	urlRegex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;    
+	var 
+		youtubeRegex = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
+		vimeoRegex = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/
+		imageRegex = /\.(?:jpe?g|png|gif|JPE?G|PNG|GIF)$/,
+		urlRegex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;    
 
-    var 
-    	youtubeId = url.match(youtubeRegex),
-    	vimeoId = url.match(vimeoRegex),
-    	imageFile = url.match(imageRegex),
-    	anUrl = url.match(urlRegex);
 
-    if (youtubeId && youtubeId[7].length==11){
-      console.log('youtube: '+ youtubeId[7]);
-      return youtubeId[7];
-    } else if (vimeoId ) {
-      console.log('vimeo: '+ vimeoId);
-    	return vimeoId;    	
-    } else if (imageFile && url.length <= 21) {
-      console.log('image: '+ url);
-      return url;
-    } else if (anUrl) {
-      console.log('url: '+ url);
-      return url;
-    } else {
-    	console.log('text: ' + url);
-    	return url;
-    }
+	var buildSirTrevorData = function(medias, doneParseMedias) {
+
+		var 
+			sirTrevorData = [];
+		
+		// parse medias
+		async.eachSeries(medias, function(media, doneParseMedia){
+
+			// check media type
+			switch (media['media_type']) {
+				
+				// image
+				case 1:
+					sirTrevorData.push({
+						type: "image",
+						data: {
+							file: {
+								name: media['media_link'],
+								url: '/uploads/images/' + media['media_link']
+							} 
+						}
+					});
+					break;
+				// video
+				case 2:
+					var 
+						youtubeId = media['media_link'].match(youtubeRegex),
+						vimeoId = media['media_link'].match(vimeoRegex);
+
+					if (youtubeId && youtubeId[7].length==11){
+						sirTrevorData.push({
+							type: "video",
+							data: {
+								remote_id: youtubeId[7],
+								source: "youtube" 
+							}
+						});
+					} else if (vimeoId) {
+						sirTrevorData.push({
+							type: "video",
+							data: {
+								remote_id: vimeoId,
+								source: "vimeo" 
+							}
+						});
+					} 
+					break;
+
+				// link
+				case 4:
+					sirTrevorData.push({
+						type: "text",
+						data: {
+							text: "["+media['media_link']+"]("+media['media_link']+")"
+						}
+					});
+					break;
+			}
+			doneParseMedia();
+		}, function(){
+			doneParseMedias(sirTrevorData);
+		});
 	}
 
-	console.log('antes da conexão')
 
-	connection.query('SELECT * from mapascol_ushahidi.media', function(err, rows, fields){
+	// Get locations ids
+	connection.query('SELECT distinct location_id from mapascol_ushahidi.media', function(err, locations, fields){
+		
+		async.each(locations, function(location, doneFeature){
+		
+			// Get media associated to each location
+			connection.query('SELECT * from mapascol_ushahidi.media WHERE location_id='+location['location_id'], function(err, medias, fields){
 
-		async.each(rows, function(row, cb){
+				if (medias.length == 0) {
+					doneFeature();
+				}
 
-			var media_link = parseLink(row['media_link']);
-			// console.log(media_link);
-			cb();
+				// Retrieve associated feature
+				Feature.findOne({oldId: location['location_id']}, function(err, feature){
+					
+					if ( (err) || (!feature)) {
+						doneFeature();
 
-		}, callback)
+					} else {
 
+						Layer.findById(feature.layers[0], function(err, layer){
+
+							var
+								content = new Content();
+
+							// sir trevor
+							// content.sirTrevorData = buildSirTrevorData(medias);
+							// content.sirTrevor = JSON.stringify(content.sirTrevorData);
+
+							buildSirTrevorData(medias, function(sirTrevorData){
+
+								content.sirTrevorData = sirTrevorData;
+								content.sirTrevor = JSON.stringify(sirTrevorData);
+
+
+								content.createdAt = feature.createdAt;
+								content.updatedAt = feature.updatedAt;
+								content.title = feature.title;
+
+								// relationships
+								content.layer = layer;
+								layer.contents.addToSet(content);
+								content.features.addToSet(feature);
+								feature.contents.addToSet(content);
+
+								content.save(function(err){
+									if (err) console.log(err);
+									feature.save(function(err){
+										if (err) console.log(err);
+										layer.save(function(err){
+											if (err) console.log(err);
+											doneFeature();
+										});
+									});
+								});
+							})
+						});
+
+					}
+				})
+			})
+		}, callback);
 	});
 }
 
@@ -291,7 +383,8 @@ var importFeatures = function(mysqlConnection, callback){
 										title: row['location_name'],
 										description: row['location_description'],
 										geometry: { type: 'Point', coordinates: [row['latitude'], row['longitude']]},
-										createdAt: row['location_date']
+										createdAt: row['location_date'],
+										oldId: row['id']
 									})
 
 									layer.features.addToSet(feature);
@@ -316,21 +409,13 @@ var importFeatures = function(mysqlConnection, callback){
 exports.import = function(req,res){
 
 	connection = mysql.createConnection({
-	  host     : process.env.MC_MYSQL_HOST,
-	  user     : process.env.MC_MYSQL_USER,
-	  password : process.env.MC_MYSQL_PASSWORD,
-	  database : process.env.MC_MYSQL_DATABASE
+		host     : process.env.MC_MYSQL_HOST,
+		user     : process.env.MC_MYSQL_USER,
+		password : process.env.MC_MYSQL_PASSWORD,
+		database : process.env.MC_MYSQL_DATABASE
 	});
 
 	connection.connect();
-
-	console.log('vai começar a importação');
-
-	importContents(connection, function(err) {
-		console.log(err);
-		connection.end();
-	});
-
 
 	// clearDb(function(err){
 	// 	importUsers(connection, function(err) {
@@ -352,7 +437,10 @@ exports.import = function(req,res){
 	// 							if (err) {
 	// 								console.log(err);
 	// 							}
-	// 							res.render('home/import');
+								importContents(connection, function(err) {
+									res.render('home/import');
+									connection.end();
+								});
 	// 						});
 	// 					}
 	// 				});

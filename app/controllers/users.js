@@ -187,6 +187,7 @@ exports.update = function (req, res) {
 		// User is not changing password
 		if (!req.body.userPwd) {
 			usr.bio = req.body.bio;
+			usr.name = req.body.name;
 			usr.username = req.body.username;
 			usr.email = req.body.email;
 		} else {
