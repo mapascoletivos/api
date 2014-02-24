@@ -16,6 +16,7 @@ var
 var LayerSchema = new Schema({
 	title: { type: String, required: true },
 	description: String,
+	color: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
 	maps: [{type: Schema.ObjectId, ref: 'Map'}],
 	features: [{type: Schema.ObjectId, ref: 'Feature'}],
@@ -26,7 +27,8 @@ var LayerSchema = new Schema({
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
 	isDraft: {type: Boolean, default: true},
 	type: { type: String, enum: ['FeatureLayer', 'TileLayer'], default: 'FeatureLayer'},
-	url: String
+	url: String,
+	oldId: Number
 });
 
 /**

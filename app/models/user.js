@@ -15,12 +15,17 @@ var mongoose = require('mongoose'),
 
 var UserSchema = new Schema({
 	name: { type: String, default: '' },
-	username: { type: String, default: '' },
 	email: { type: String, default: '' },
+	username: { type: String, default: '' },
+	hashed_password: { type: String, default: '' },
+	logins: Number,
+	lastLogin: Date,
+	updatedAt: Date,
+	localization: String,
 	bio: {type: String, default: '' },
+	web: String,
 	status: {type: String, enum: ['inactive', 'active'], default: 'inactive' },
 	provider: { type: String, default: '' },
-	hashed_password: { type: String, default: '' },
 	salt: { type: String, default: '' },
 	layers: [{type: Schema.ObjectId, ref: 'Layer'}],
 	authToken: { type: String, default: '' }, 
@@ -28,7 +33,8 @@ var UserSchema = new Schema({
 	twitter: {},
 	github: {},
 	google: {},
-	linkedin: {}
+	linkedin: {},
+	oldId: Number // to store id used in old Mapas Coletivos
 });
 
 /**

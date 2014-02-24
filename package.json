@@ -22,6 +22,7 @@
 		"moment": "latest",
 		"express": "latest",
 		"express-namespace": "latest",
+		"mysql": "latest",
 		"mongoose": "latest",
 		"mongoose-user": "latest",
 		"mongoose-schema-extend": "latest",
