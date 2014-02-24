@@ -44,13 +44,22 @@
 				<p class="label">Sobre esta camada</p>
 				<p>{{layer.description}}</p>
 			</div>
-			<div id="feature-info" ng-show="feature" class="sidebar-block">
-				<a href="/layers/{{layer._id}}">Fechar</a>
-				<h2>{{feature.title}}</h2>
-				<p>{{feature.description}}</p>
+			<div ng-show="feature">
+				<div class="sidebar-block label-block">
+					<h3>Local <a class="close" href="{{baseUrl}}">Voltar para o mapa</a></h3>
+				</div>
+				<div id="feature-info" class="single-feature sidebar-block">
+					<h2>{{feature.title}}</h2>
+					<p>{{feature.description}}</p>
+				</div>
 			</div>
 			<div id="posts" ng-show="contents.length">
-				<div class="single-post sidebar-block active" ng-show="content" ng-include="templates.show"></div>
+				<div ng-show="content">
+					<div class="sidebar-block label-block">
+						<h3>Conteúdo <a class="close" href="{{baseUrl}}">Voltar para o mapa</a></h3>
+					</div>
+					<div class="single-post sidebar-block active" ng-include="templates.show"></div>
+				</div>
 				<div ng-hide="content">
 					<div class="sidebar-block label-block">
 						<h3>Conteúdo da camada</h3>
