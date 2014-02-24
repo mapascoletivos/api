@@ -189,6 +189,60 @@ var importLayers = function(mysqlConnection, callback){
 	});
 }
 
+
+/**
+ * Get media for feature
+ */
+
+var importContents = function(connection, callback ) {
+
+	var parseLink = function(url) {
+    var 
+    	youtubeRegex = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
+    	vimeoRegex = /https?:\/\/(?:www\.)?vimeo.com\/(?:channels\/|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/
+    	imageRegex = /\.(?:jpe?g|png|gif|JPE?G|PNG|GIF)$/,
+    	urlRegex = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;    
+
+    var 
+    	youtubeId = url.match(youtubeRegex),
+    	vimeoId = url.match(vimeoRegex),
+    	imageFile = url.match(imageRegex),
+    	anUrl = url.match(urlRegex);
+
+    if (youtubeId && youtubeId[7].length==11){
+      console.log('youtube: '+ youtubeId[7]);
+      return youtubeId[7];
+    } else if (vimeoId ) {
+      console.log('vimeo: '+ vimeoId);
+    	return vimeoId;    	
+    } else if (imageFile && url.length <= 21) {
+      console.log('image: '+ url);
+      return url;
+    } else if (anUrl) {
+      console.log('url: '+ url);
+      return url;
+    } else {
+    	console.log('text: ' + url);
+    	return url;
+    }
+	}
+
+	console.log('antes da conexão')
+
+	connection.query('SELECT * from mapascol_ushahidi.media', function(err, rows, fields){
+
+		async.each(rows, function(row, cb){
+
+			var media_link = parseLink(row['media_link']);
+			// console.log(media_link);
+			cb();
+
+		}, callback)
+
+	});
+}
+
+
 /**
  * Import features
  */
@@ -223,15 +277,9 @@ var importFeatures = function(mysqlConnection, callback){
 							}
 							else {
 
-								// Layer not found, create a new on
+								// Layer not found
 								if (!layer) {
-									// console.log('Layer not found for id='+row['layer_id']+' and creator='+user.name);
-									// layer = new Layer({
-									// 	oldId: row['layer_id'],
-									// 	title: layerTable[row['layer_id']].name,
-									// 	isDraft: false,
-									// 	creator: user
-									// })
+
 									console.log('Layer não encontrado: ' + row['layer_id']);
 									cb();
 								} else {
@@ -255,13 +303,10 @@ var importFeatures = function(mysqlConnection, callback){
 										feature.save(cb);
 									});
 								}
-
-								
 							}
-						})
-
+						});
 					}
-				})
+				});
 			}
 		},callback)
 		
@@ -279,33 +324,41 @@ exports.import = function(req,res){
 
 	connection.connect();
 
-	clearDb(function(err){
-		importUsers(connection, function(err) {
-			if (err) {
-				console.log(err);
-				res.render('home/import');
-			} else
-				importMaps(connection, function(err){
-					if (err) {
-						console.log(err);
-						res.render('home/import');
-					}
-					importLayers(connection, function(err){
-						if (err) {
-							console.log(err);
-							res.render('home/import');
-						} else {
-							importFeatures(connection, function(err){
-								if (err) {
-									console.log(err);
-								}
-								res.render('home/import');
-							});
-						}
-					});
+	console.log('vai começar a importação');
 
-			});
-		});
+	importContents(connection, function(err) {
+		console.log(err);
+		connection.end();
 	});
+
+
+	// clearDb(function(err){
+	// 	importUsers(connection, function(err) {
+	// 		if (err) {
+	// 			console.log(err);
+	// 			res.render('home/import');
+	// 		} else
+	// 			importMaps(connection, function(err){
+	// 				if (err) {
+	// 					console.log(err);
+	// 					res.render('home/import');
+	// 				}
+	// 				importLayers(connection, function(err){
+	// 					if (err) {
+	// 						console.log(err);
+	// 						res.render('home/import');
+	// 					} else {
+	// 						importFeatures(connection, function(err){
+	// 							if (err) {
+	// 								console.log(err);
+	// 							}
+	// 							res.render('home/import');
+	// 						});
+	// 					}
+	// 				});
+
+	// 		});
+	// 	});
+	// });
 
 }
