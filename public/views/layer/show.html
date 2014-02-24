@@ -44,14 +44,11 @@
 				<p class="label">Sobre esta camada</p>
 				<p>{{layer.description}}</p>
 			</div>
-			<div ng-show="feature">
+			<div ng-show="feature" ng-controller="FeatureCtrl">
 				<div class="sidebar-block label-block">
 					<h3>Local <a class="close" href="{{baseUrl}}">Voltar para o mapa</a></h3>
 				</div>
-				<div id="feature-info" class="single-feature sidebar-block">
-					<h2>{{feature.title}}</h2>
-					<p>{{feature.description}}</p>
-				</div>
+				<div id="feature-info" class="single-feature sidebar-block" ng-include="templates.show"></div>
 			</div>
 			<div id="posts" ng-show="contents.length">
 				<div ng-show="content">
@@ -69,7 +66,7 @@
 					</ul>
 				</div>
 			</div>
-			<div id="features" ng-show="!contents.length && !feature" ng-controller="FeatureCtrl">
+			<div id="features" ng-show="!contents.length && !feature && features.length" ng-controller="FeatureCtrl">
 				<div class="sidebar-block label-block">
 					<h3>Locais</h3>
 				</div>
