@@ -130,6 +130,9 @@ module.exports = function (app, passport) {
 	app.del(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.destroy);
 	app.put(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.update);
 	app.get(apiPrefix + '/layers/:layerId', layers.show);
+	app.put(apiPrefix + '/layers/:layerId/contributors/add', [auth.requiresLogin, auth.layer.requireOwnership], layers.addContributor);
+	app.del(apiPrefix + '/layers/:layerId/contributors/remove', [auth.requiresLogin, auth.layer.requireOwnership], layers.removeContributor);
+
 
 	/**
 	 * Map routes

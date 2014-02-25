@@ -18,6 +18,7 @@ var LayerSchema = new Schema({
 	description: String,
 	color: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
+	contributors: [{type: Schema.ObjectId, ref: 'User'}],
 	maps: [{type: Schema.ObjectId, ref: 'Map'}],
 	features: [{type: Schema.ObjectId, ref: 'Feature'}],
 	contents: [{type: Schema.ObjectId, ref: 'Content'}],
@@ -69,6 +70,7 @@ LayerSchema.statics = {
 	load: function (id, cb) {
 		this.findOne({ _id : id })
 			.populate('creator', 'name username email')
+			.populate('contributors', 'name username email')
 			.populate('features')
 			.populate('contents')
 			.exec(cb)

@@ -185,3 +185,45 @@ exports.removeFeature = function (req, res) {
 	}
 
 }
+
+
+/**
+ * Add a contributor to layer
+ */
+
+exports.addContributor = function (req, res) {
+	var 
+		contributorEmail = req.body.email,
+		layer = req.layer;
+
+	User.findOne({email: contributorEmail}, function(err, user){
+		if (err) {
+			res.json(400, { messages: utils.errors(err.errors || err) })
+		} else if (!user) {
+			res.json(400, { messages: [{type:'error', message: 'User unknown'}] })
+		} else {
+			layer.contributors.addToSet(user);
+			layer.save(function(err){
+				res.json({ layer: layer, messages: [{type:'info', message: 'Contributor added successfully'}] })
+			})
+		}
+	})
+}
+
+/**
+ * Remove feature from layer
+ */
+
+exports.removeContributor = function (req, res) {
+	var 
+		contributorId = req.body.contributorId,
+		layer = req.layer;
+
+	Layer.update({_id: layer._id}, {$pull: {contributors: {id: contributorId}}}, function(err){
+		if (err) {
+			res.json(400, { messages: utils.errors(err.errors || err) })
+		} else {
+			res.json({ layer: layer, messages: [{type:'info', message: 'Contributor removed successfully'}] })
+		}
+	});
+}

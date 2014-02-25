@@ -29,3 +29,22 @@ exports.feature = {
 		next();
 	}
 }
+
+/**
+ *  Layer authorization 
+ **/
+
+exports.layer = {
+	requireOwnership: function (req, res, next) {
+		if (req.layer.creator.id != req.user.id) {
+			return res.json(403, { 
+				messages: [{
+					status: 'error',
+					text: 'Layer ownership is needed.'
+				}]
+			});
+		} else {
+			next();
+		}
+	}
+}
