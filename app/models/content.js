@@ -32,6 +32,8 @@ var ContentSchema = new Schema({
  * Hooks
  */
 
+// TODO add and remove images properly
+
 // ContentSchema.pre('remove', function(next){
 // 	var self = this;
 
