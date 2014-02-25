@@ -27,43 +27,29 @@ exports.LayerActionsCtrl = [
 		 * Permission control
 		 */
 		$scope.canEdit = function(layer) {
-
-			if(!layer || !Session.user)
-				return false;
-
-			if(typeof layer.creator == 'string' && layer.creator == Session.user._id) {
-				return true;
-			} else if(typeof layer.creator == 'object' && layer.creator._id == Session.user._id) {
-				return true;
-			}
-
-			return false;
-
+			return Layer.canEdit(layer);
+		};
+		$scope.canDelete = function(layer) {
+			return Layer.canDelete(layer);
 		};
 
 		$scope.edit = function(layer) {
 
-			$location.path('/layers/' + layer._id + '/edit');
+			$location.path('/layers/' + layer._id + '/edit/');
 
 		};
 
 		$scope.addContributor = function(email, layer) {
 
-			console.log(layer);
-
 			Layer.resource.addContributor({layerId: layer._id, email: email}, function(res) {
-
-				console.log(res);
 
 				layer.contributors = res.layer.contributors;
 
 				$rootScope.$broadcast('layer.contributor.added', layer);
 
-			}, function(err) {
-				console.log(err);
-			});
+				$scope.newContributor = '';
 
-			$scope.newContributor = '';
+			});
 
 		}
 

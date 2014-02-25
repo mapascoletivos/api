@@ -127,9 +127,9 @@ module.exports = function (app, passport) {
 	app.param('layerId', layers.load);
 	app.get(apiPrefix + '/layers', layers.index);
 	app.post(apiPrefix + '/layers', auth.requiresLogin, layers.create);
-	app.del(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.destroy);
-	app.put(apiPrefix + '/layers/:layerId', auth.requiresLogin, layers.update);
 	app.get(apiPrefix + '/layers/:layerId', layers.show);
+	app.del(apiPrefix + '/layers/:layerId', [auth.requiresLogin, auth.layer.requireOwnership], layers.destroy);
+	app.put(apiPrefix + '/layers/:layerId', [auth.requiresLogin, auth.layer.requireOwnership], layers.update);
 	app.put(apiPrefix + '/layers/:layerId/contributors/add', [auth.requiresLogin, auth.layer.requireOwnership], layers.addContributor);
 	app.del(apiPrefix + '/layers/:layerId/contributors/remove', [auth.requiresLogin, auth.layer.requireOwnership], layers.removeContributor);
 
