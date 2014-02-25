@@ -20,6 +20,8 @@ exports.LayerCtrl = [
 	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, MapService) {
 
 		$scope.$layer = Layer;
+		$scope.$feature = Feature;
+		$scope.$content = Content;
 
 		var mapFeatures;
 
@@ -177,6 +179,19 @@ exports.LayerCtrl = [
 					}
 
 					Layer.edit(layer);
+
+					$scope.$watch('$feature.get()', function(features) {
+						$scope.layer.features = features;
+					});
+
+					$scope.$watch('$feature.edit()', function(editingFeature) {
+						if(!editingFeature)
+							populateMap(layer.features, true);
+					});
+
+					$scope.$watch('$content.get()', function(contents) {
+						$scope.layer.contents = contents;
+					});
 
 					if($scope.layer.title == 'Untitled') {
 						$scope.layer.title = '';

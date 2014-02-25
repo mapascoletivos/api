@@ -242,7 +242,7 @@ exports.ContentEditCtrl = [
 
 		$scope.$on('layerObjectChange', $scope.close);
 		$scope.$on('$stateChangeStart', $scope.close);
-		$scope.$on('layer.saved.success', function() {
+		$scope.$on('layer.save.success', function() {
 
 			if($scope.editing) {
 				$scope.save(true);

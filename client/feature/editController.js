@@ -38,8 +38,12 @@ exports.FeatureEditCtrl = [
 			$scope.marker = false;
 			$scope._data = {};
 			$scope.editing = editing;
-			$scope.setMarker();
-			$rootScope.$broadcast('editFeature');
+			if(editing) {
+				$scope.setMarker();
+				$rootScope.$broadcast('feature.edit.start');
+			} else {
+				$rootScope.$broadcast('feature.edit.stop');
+			}
 		});
 
 		$scope._data = {};
@@ -130,23 +134,15 @@ exports.FeatureEditCtrl = [
 					});
 					Feature.set($scope.features);
 
-					Feature.edit(angular.copy($scope.editing));
-
 					if(silent !== true) {
 						Message.message({
 							status: 'ok',
 							text: 'Feature salva.'
 						});
-						$scope.close();
+						Feature.edit(false);
+					} else {
+						Feature.edit(angular.copy($scope.editing));
 					}
-
-				}, function(err) {
-
-					if(err.status == 500)
-						Message.message({
-							status: 'error',
-							text: 'Ocorreu um erro interno. Tente novamente ou entre em contato com nossa equipe'
-						}, false);
 
 				});
 
@@ -168,18 +164,6 @@ exports.FeatureEditCtrl = [
 						text: 'Feature adicionada.'
 					});
 
-				}, function(err) {
-
-					var message = {status: 'error'};
-
-					if(err.status == 400 && err.data.message) {
-						message.text = err.data.message;
-					} else {
-						message.text = 'Ocorreu um erro interno.';
-					}
-
-					Message.message(message, false);
-
 				});
 
 			}
@@ -190,29 +174,19 @@ exports.FeatureEditCtrl = [
 
 			if(confirm('Você tem certeza que deseja remover esta feature?')) {
 
-				Feature.resource.delete({featureId: $scope.editing._id, layerId: layer._id}, function() {
+				Feature.resource.delete({featureId: $scope.editing._id, layerId: layer._id}, function(res) {
 
 					Feature.set($scope.features.filter(function(f) {
 						return f._id !== $scope.editing._id;
 					}));
-					Feature.edit(false);
 
 					Message.message({
 						status: 'ok',
 						text: 'Feature removida.'
 					});
+					
+					Feature.edit(false);
 
-				}, function(err) {
-
-					var message = {status: 'error'};
-
-					if(err.status == 400 && err.data.message) {
-						message.text = err.data.message;
-					} else {
-						message.text = 'Ocorreu um erro interno.';
-					}
-
-					Message.message(message, false);
 				});
 
 			}
@@ -257,19 +231,7 @@ exports.FeatureEditCtrl = [
 
 		}
 
-		$scope.close = function() {
-
-			$scope.tool = false;
-			$scope.marker = false;
-			$scope._data = {};
-			Feature.edit(false);
-			$rootScope.$broadcast('feature.closed');
-
-		}
-
-		$scope.$on('layerObjectChange', $scope.close);
-		$scope.$on('$stateChangeStart', $scope.close);
-		$scope.$on('layer.saved.success', function() {
+		$scope.$on('layer.save.success', function() {
 
 			if($scope.editing) {
 				$scope.save(true);

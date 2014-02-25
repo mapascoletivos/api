@@ -26,6 +26,14 @@ exports.ContentCtrl = [
 			contents = Content.get();
 			features = Feature.get();
 
+			$scope.$watch('features.updated', function(features) {
+				features = features;
+			});
+
+			$scope.$watch('contents.updated', function(contents) {
+				contents = contents;
+			});
+
 			var init = true;
 
 			$scope.$watch('$content.get()', function(contents) {
@@ -125,7 +133,6 @@ exports.ContentCtrl = [
 			show: '/views/content/show.html'
 		};
 
-		$scope.$on('layerObjectChange', $scope.close);
 		$scope.$on('$stateChangeStart', $scope.close);
 
 	}
