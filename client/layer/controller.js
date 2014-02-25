@@ -118,20 +118,7 @@ exports.LayerCtrl = [
 			Layer.resource.get({layerId: $stateParams.layerId}, function(layer) {
 
 				if(!layer.contributors)
-					layer.contributors = [
-						{
-							email: 'miguel@cardume.art.br'
-						},
-						{
-							email: 'vitorgeorge@gmail.com'
-						},
-						{
-							email: 'vjpixel@gmail.com'
-						},
-						{
-							email: 'gufalei@gmail.com'
-						}
-					];
+					layer.contributors = [];
 
 				$scope.layer = layer;
 

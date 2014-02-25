@@ -47,6 +47,10 @@ exports.Map = [
 				'update': {
 					method: 'PUT',
 					loadingMessage: 'Atualizando mapa'
+				},
+				'delete': {
+					method: 'DELETE',
+					loadingMessage: 'Removendo mapa'
 				}
 			}),
 			busy: false,

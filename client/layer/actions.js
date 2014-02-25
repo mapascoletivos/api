@@ -49,19 +49,29 @@ exports.LayerActionsCtrl = [
 
 		$scope.addContributor = function(email, layer) {
 
-			layer.contributors.push({
-				email: email
+			console.log(layer);
+
+			Layer.resource.addContributor({layerId: layer._id, email: email}, function(res) {
+
+				console.log(res);
+
+				layer.contributors = res.layer.contributors;
+
+				$rootScope.$broadcast('layer.contributor.added', layer);
+
+			}, function(err) {
+				console.log(err);
 			});
 
 			$scope.newContributor = '';
-
-			$rootScope.$broadcast('layer.contributor.added', layer);
 
 		}
 
 		$scope.removeContributor = function(contributor, layer) {
 
-			layer.contributors = layer.contributors.filter(function(c) { return c.email !== contributor.email; });
+			Layer.resource.removeContributor({layerId: layer._id, contributorId: contributor._id}, function(res) {
+				console.log(res);
+			});
 
 			$rootScope.$broadcast('layer.contributor.removed', layer);
 

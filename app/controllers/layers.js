@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'), 
 	Layer = mongoose.model('Layer'),
 	Feature = mongoose.model('Feature'),
+	User = mongoose.model('User'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend,
 	_ = require('underscore');
@@ -200,11 +201,11 @@ exports.addContributor = function (req, res) {
 		if (err) {
 			res.json(400, { messages: utils.errors(err.errors || err) })
 		} else if (!user) {
-			res.json(400, { messages: [{type:'error', message: 'User unknown'}] })
+			res.json(400, { messages: [{status:'error', text: 'User unknown'}] })
 		} else {
 			layer.contributors.addToSet(user);
 			layer.save(function(err){
-				res.json({ layer: layer, messages: [{type:'info', message: 'Contributor added successfully'}] })
+				res.json({ layer: layer, messages: [{status:'ok', text: 'Contributor added successfully'}] })
 			})
 		}
 	})
@@ -223,7 +224,7 @@ exports.removeContributor = function (req, res) {
 		if (err) {
 			res.json(400, { messages: utils.errors(err.errors || err) })
 		} else {
-			res.json({ layer: layer, messages: [{type:'info', message: 'Contributor removed successfully'}] })
+			res.json({ layer: layer, messages: [{status:'ok', text: 'Contributor removed successfully'}] })
 		}
 	});
 }

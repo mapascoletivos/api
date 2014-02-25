@@ -39,8 +39,26 @@ exports.Layer = [
 					loadingMessage: 'Carregando camada'
 				},
 				'delete': {
-					method: 'DEL',
+					method: 'DELETE',
 					loadingMessage: 'Removendo camada'
+				},
+				'addContributor': {
+					url: apiPrefix + '/layers/:layerId/contributors/add',
+					method: 'PUT',
+					loadingMessage: 'Adicionando colaborador',
+					params: {
+						layerId: '@layerId',
+						email: '@email'
+					}
+				},
+				'removeContributor': {
+					url: apiPrefix + '/layers/:layerId/contributors/remove',
+					method: 'DELETE',
+					loadingMessage: 'Removendo colaborador',
+					params: {
+						layerId: '@layerId',
+						contributorId: '@contributorId'
+					}
 				}
 			}),
 			busy: false,
