@@ -16,11 +16,20 @@ var mongoose = require('mongoose'),
 
 exports.load = function(req, res, next, id){
 	Content.load(id, function (err, content) {
-		if (err) return next(err)
-			if (!content) return res.json(400, new Error('not found'));
+		if (err) {
+			return next(err)
+		} else if (!content) {
+			return res.json(400, {
+				messages: [{
+					type: 'error',
+					message: 'Content not found.'
+				}]
+			});
+		} else {
 			req.content = content;
-			next()
-		})
+			next();
+		}
+	});
 }
 
 /**
@@ -29,8 +38,6 @@ exports.load = function(req, res, next, id){
 
 exports.create = function (req, res) {
 
-	// console.log('Content POST\n'+req.body);
-
 	// clear field from body that should be handled internally
 	delete req.body['creator'];
 
@@ -38,29 +45,25 @@ exports.create = function (req, res) {
 		content = new Content(req.body)
 		newFeaturesArray = req.body.features;
 		
-	// console.log('newFeaturesArray\n' + req.body.features);
-	// console.log('sirTrevorData que chegou no create\n' + req.body.sirTrevorData);
-	
 	// associate content to user originating request
 	content.creator = req.user;
 	
 	Layer.findById(req.body['layer'], function(err, layer){
-		if (err) res.json(400, err);
+		if (err) res.json(400, utils.errorMessages(err));
 		else {
 			layer.contents.addToSet(content);
 			layer.save(function(err){
-				if (err) res.json(400, err);
+				if (err) res.json(400, utils.errorMessages(err));
 				else {
 					content.updateSirTrevor(req.body.sirTrevorData, function(err, ct){
-						// console.log('content apos updateSirTrevorData\n'+ct);
-						if (err) res.json(400, err);
+						if (err) res.json(400, utils.errorMessages(err));
 						else
 							ct.setFeatures(req.body.features, function(err,ct){
-								if (err) res.json(400, err);
+								if (err) res.json(400, utils.errorMessages(err));
 								else
 									content.save(function(err){
 										// console.log('salvou o content assim\n'+content);
-										if (err) res.json(400, err);
+										if (err) res.json(400, utils.errorMessages(err));
 										else res.json(content);
 									});
 							});
@@ -85,15 +88,11 @@ exports.show = function(req, res){
 
 exports.update = function(req, res){
 	
-	// console.log('Content body no PUT\n'+req.body);
-	
 	var 
 		content = req.content,
 		updatedSirTrevor = req.body.sirTrevorData,
 		updatedFeatures = req.body.features;
 	
-	// console.log('updatedSirTrevor no controller PUT\n'+updatedSirTrevor.length);
-
 	console.log('o content no update\n'+content);
 
 	delete req.body['creator'];
@@ -102,19 +101,14 @@ exports.update = function(req, res){
 
 	content = extend(content, req.body)
 
-	// console.log('esse é o content\n'+content);
-
 	content.updateSirTrevor(updatedSirTrevor, function(err, ct){
-		// console.log('atualizou sirTrevor, ficou assim\n'+ ct);
-		if (err) res.json(400, err);
+		if (err) res.json(400, utils.errorMessages(err));
 		else
 			ct.setFeatures(updatedFeatures, function(err, ct){
-				// console.log('atualizou features, ficou assim\n'+ ct);
-				if (err) res.json(400, err);
+				if (err) res.json(400, utils.errorMessages(err));
 				else
 					ct.save(function(err){
-						// console.log('salvou isso\n'+ct);
-						if (err) res.json(400, err);
+						if (err) res.json(400, utils.errorMessages(err));
 						else res.json(ct);
 					});
 			});
@@ -137,10 +131,10 @@ exports.destroy = function(req, res){
 	});
 
 	content.remove(function(err) {
-		if (err) res.json(400,err);
+		if (err) res.json(400, utils.errorMessages(err));
 		layer.save(function(err){
-			if (err) res.json(400,err);
-			res.json({success: true});
+			if (err) res.json(400, utils.errorMessages(err));
+			else res.json({messages: [{type: 'info', text: 'Content removed successfully.'}]});
 		});
 	});
 }
