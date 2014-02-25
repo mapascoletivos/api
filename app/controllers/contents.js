@@ -121,7 +121,6 @@ exports.update = function(req, res){
 exports.destroy = function(req, res){
 	var 
 		content = req.content;
-		//layer = content.layer;
 
 	mongoose.model('Layer').findById(content.layer._id, function(err, layer){
 		if (err) res.json(400, utils.errorMessages(err));

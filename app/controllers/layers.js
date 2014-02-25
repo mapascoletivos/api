@@ -197,28 +197,30 @@ exports.addContributor = function (req, res) {
 		contributorEmail = req.body.email,
 		layer = req.layer;
 
-	// TODO Check if user is trying to add itself 
-
-	User.findOne({email: contributorEmail}, function(err, user){
-		if (err) {
-			res.json(400, { messages: utils.errors(err.errors || err) })
-		} else if (!user) {
-			res.json(400, { messages: [{status:'error', text: 'User unknown'}] })
-		} else {
-			layer.contributors.addToSet(user);
-			layer.save(function(err){
-				if (err)
-					res.json(400, { messages: utils.errors(err.errors || err) })
-				else
-					Layer
-						.findById(layer._id)
-						.populate('contributors', 'name username email')
-						.exec(function(err, updatedLayer){
-						res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contributor added successfully'}] })
-					});
-			});
-		}
-	})
+	if (contributorEmail == req.user.email) {
+		res.json(400, { messages: [{status:'error', text: "Can't add creator as contributor."}] })
+	} else {
+		User.findOne({email: contributorEmail}, function(err, user){
+			if (err) {
+				res.json(400, { messages: utils.errors(err.errors || err) })
+			} else if (!user) {
+				res.json(400, { messages: [{status:'error', text: "Can't find "+contributorEmail+"."}] })
+			} else {
+				layer.contributors.addToSet(user);
+				layer.save(function(err){
+					if (err)
+						res.json(400, { messages: utils.errors(err.errors || err) })
+					else
+						Layer
+							.findById(layer._id)
+							.populate('contributors', 'name username email')
+							.exec(function(err, updatedLayer){
+							res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contributor added successfully'}] })
+						});
+				});
+			}
+		})
+	}
 }
 
 /**
@@ -230,21 +232,24 @@ exports.removeContributor = function (req, res) {
 		contributorId = req.query.contributorId,
 		layer = req.layer;
 
+	contributorCount = layer.contributors.length; 
+
 	layer.contributors.pull({_id: contributorId});
 
-	// TODO Check if user is trying to remove inexistent contributor
-
-	layer.save(function(err){		
-		if (err) {
-			res.json(400, utils.errorMessagesutils( err.errors || err) );
-		} else {
-			Layer
-				.findById(layer._id)
-				.populate('contributors', 'name username email')
-				.exec(function(err, updatedLayer){
-				res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contributor removed successfully'}] })
-			})
-		}
-	})
-
+	if (contributorCount == layer.contributors.lentgh) {
+		res.json(400, { messages: [{status:'error', text: "Invalid contributor id."}] })
+	} else {
+		layer.save(function(err){		
+			if (err) {
+				res.json(400, utils.errorMessagesutils( err.errors || err) );
+			} else {
+				Layer
+					.findById(layer._id)
+					.populate('contributors', 'name username email')
+					.exec(function(err, updatedLayer){
+					res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contributor removed successfully'}] })
+				})
+			}
+		})
+	}
 }
