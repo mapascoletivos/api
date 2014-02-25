@@ -120,19 +120,24 @@ exports.update = function(req, res){
 
 exports.destroy = function(req, res){
 	var 
-		content = req.content,
-		layer = content.layer;
+		content = req.content;
+		//layer = content.layer;
 
-	// remove content from belonging layer and feaures
-	layer.contents = _.filter(layer.contents, function(c) { 
-		return !c.equals(content._id); 
-	});
-
-	content.remove(function(err) {
+	mongoose.model('Layer').findById(content.layer._id, function(err, layer){
 		if (err) res.json(400, utils.errorMessages(err));
-		layer.save(function(err){
-			if (err) res.json(400, utils.errorMessages(err));
-			else res.json({messages: [{type: 'ok', text: 'Content removed successfully.'}]});
-		});
-	});
+		else {
+
+			layer.contents.pull({_id: content._id});
+
+			layer.save(function(err){
+				if (err) res.json(400, utils.errorMessages(err));
+				else {
+					content.remove(function(err){
+						if (err) res.json(400, utils.errorMessages(err));
+						else res.json({messages: [{type: 'ok', text: 'Content removed successfully.'}]});
+					})
+				}
+			})
+		}
+	})
 }

@@ -197,6 +197,8 @@ exports.addContributor = function (req, res) {
 		contributorEmail = req.body.email,
 		layer = req.layer;
 
+	// TODO Check if user is trying to add itself 
+
 	User.findOne({email: contributorEmail}, function(err, user){
 		if (err) {
 			res.json(400, { messages: utils.errors(err.errors || err) })
@@ -228,12 +230,9 @@ exports.removeContributor = function (req, res) {
 		contributorId = req.query.contributorId,
 		layer = req.layer;
 
-	console.log(req.query.contributorId);
-	console.log(layer.contributors);
 	layer.contributors.pull({_id: contributorId});
-	layer.markModified('contributors');
-	console.log(layer.contributors);
 
+	// TODO Check if user is trying to remove inexistent contributor
 
 	layer.save(function(err){		
 		if (err) {
