@@ -168,6 +168,14 @@ exports.LayerCtrl = [
 				 */
 				if($location.path().indexOf('edit') !== -1) {
 
+					if(!Layer.canEdit(layer)) {
+						$location.path('/layers/' + layer._id);
+						Message.add({
+							status: 'error',
+							text: 'Sem permissões para editar esta camada'
+						});
+					}
+
 					Layer.edit(layer);
 
 					if($scope.layer.title == 'Untitled') {

@@ -7,7 +7,8 @@ exports.Layer = [
 	'$resource',
 	'$rootScope',
 	'apiPrefix',
-	function($resource, $rootScope, apiPrefix) {
+	'SessionService',
+	function($resource, $rootScope, apiPrefix, Session) {
 
 		var editing = false;
 
@@ -89,6 +90,54 @@ exports.Layer = [
 				if(this.isDraft(layer)) {
 					this.resource.delete({layerId: layer._id}, callback);
 				}
+			},
+			isOwner: function(layer) {
+
+				if(!layer || !Session.user)
+					return false;
+
+				if(typeof layer.creator == 'string' && layer.creator == Session.user._id) {
+					return true;
+				} else if(typeof layer.creator == 'object' && layer.creator._id == Session.user._id) {
+					return true;
+				}
+
+				return false;
+
+			},
+			isContributor: function(layer) {
+
+				if(!layer || !Session.user)
+					return false;
+
+				var is = false;
+
+				if(layer.contributors && layer.contributors.length) {
+					angular.forEach(layer.contributors, function(contributor) {
+						if(typeof contributor == 'string' && contributor == Session.user._id)
+							is = true;
+						else if(typeof contributor == 'object' && contributor._id == Session.user._id)
+							is = true;
+					});
+				}
+
+				return is;
+
+			},
+			canEdit: function(layer) {
+
+				if(this.isOwner(layer) || this.isContributor(layer))
+					return true;
+
+				return false;
+
+			},
+			canDelete: function(layer) {
+
+				if(this.isOwner(layer))
+					return true;
+
+				return false;
 			}
 		};
 
