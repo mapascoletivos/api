@@ -177,13 +177,7 @@ exports.removeFeature = function (req, res) {
 		})
 	}
 
-	// if feature belongs to only one layer, destroy it
-	if(feature.layers.length === 1) {
-		feature.remove(saveLayer);
-	} else {
-		feature.layers = _.filter(feature.layers, function(l) { return !l.equals(layer._id); });
-		feature.save(saveLayer);
-	}
+	feature.remove(saveLayer);
 
 }
 
