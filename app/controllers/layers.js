@@ -39,9 +39,11 @@ exports.index = function(req, res){
 		}
 	}
 	
+	// get only layers created by the user
 	if(req.param('creatorOnly'))
-		options.criteria = { creator: req.user }
+		options.criteria = { $or: [ { creator: req.user }, {contributors: { $in: [req.user._id] } } ] }
 
+	// get visible layers for a user   
 	if(req.param('userId')) {
 		if(!req.user || req.user._id != req.param('userId'))
 			options.criteria = { $and: [ {creator: req.param('userId')}, {visibility: 'Visible'} ] };
@@ -49,13 +51,14 @@ exports.index = function(req, res){
 			options.criteria = { creator: req.param('userId') };
 	}
 
-	if (req.param('search'))
+	if (req.param('search')) {
 		options.criteria = {
 			$and: [
 				options.criteria,
 				{ title: { $regex: req.param('search'), $options: 'i' }}
 			]
 		}
+	}
 
 	Layer.list(options, function(err, layers) {
 		if (err) return res.json(400, err);
