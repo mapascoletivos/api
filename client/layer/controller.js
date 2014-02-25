@@ -87,32 +87,6 @@ exports.LayerCtrl = [
 		// Single layer
 		} else if($stateParams.layerId) {
 
-			$scope.activeObj = 'settings';
-
-			$scope.layerObj = function(objType) {
-				if($scope.activeObj == objType)
-					return 'active';
-
-				return false;
-			}
-
-			$scope.setLayerObj = function(obj) {
-
-				$scope.activeObj = obj;
-				setTimeout(function() {
-					window.dispatchEvent(new Event('resize'));
-				}, 100);
-
-			}
-
-			$scope.$watch('activeObj', function(active) {
-
-				Feature.edit(false);
-				Content.edit(false);
-				$scope.$broadcast('layerObjectChange', active);
-
-			});
-
 			$scope.$on('layer.delete.success', function() {
 				$location.path('/dashboard/layers').replace();
 			});
@@ -177,6 +151,36 @@ exports.LayerCtrl = [
 							text: 'Sem permissões para editar esta camada'
 						});
 					}
+
+					if(Layer.isOwner(layer)) {
+						$scope.activeObj = 'settings';
+					} else {
+						$scope.activeObj = 'feature';
+					}
+
+					$scope.layerObj = function(objType) {
+						if($scope.activeObj == objType)
+							return 'active';
+
+						return false;
+					}
+
+					$scope.setLayerObj = function(obj) {
+
+						$scope.activeObj = obj;
+						setTimeout(function() {
+							window.dispatchEvent(new Event('resize'));
+						}, 100);
+
+					}
+
+					$scope.$watch('activeObj', function(active) {
+
+						Feature.edit(false);
+						Content.edit(false);
+						$scope.$broadcast('layerObjectChange', active);
+
+					});
 
 					Layer.edit(layer);
 

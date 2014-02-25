@@ -32,6 +32,12 @@ exports.LayerActionsCtrl = [
 		$scope.canDelete = function(layer) {
 			return Layer.canDelete(layer);
 		};
+		$scope.isOwner = function(layer) {
+			return Layer.isOwner(layer);
+		};
+		$scope.isContributor = function(layer) {
+			return Layer.isContributor(layer);
+		};
 
 		$scope.edit = function(layer) {
 

@@ -4,12 +4,18 @@
 			<div class="editor-content">
 				<div class="page-header layer-head">
 					<h2>Camada</h2>
-					<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					<div ng-show="isOwner(layer)">
+						<textarea class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Título da camada" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+					</div>
+					<div ng-hide="isOwner(layer)">
+						<h3>{{layer.title}}</h3>
+						<p ng-show="layer.description">{{layer.description}}</p>
+					</div>
 				</div>
 				<div class="content">
 					<div id="layer-edit">
 						<ul class="map-editor-tabs layer-objects-nav">
-							<li ng-class="layerObj('settings')" ng-click="setLayerObj('settings')">
+							<li ng-class="layerObj('settings')" ng-show="isOwner(layer)" ng-click="setLayerObj('settings')">
 								<a title="Configurações" href="javascript:void(0);">
 									<span class="lsf">&#xE055;</span>
 									<span class="label" ng-show="layerObj('settings')">
@@ -40,7 +46,7 @@
 								</a>
 							</li>
 						</ul>
-						<div ng-show="layerObj('settings')">
+						<div ng-show="layerObj('settings') && isOwner(layer)">
 							<div id="settings">
 								<table class="options-table">
 									<tr>
@@ -124,7 +130,7 @@
 				<span ng-hide="layer.isDraft">Ver camada</span>
 				<span ng-show="layer.isDraft">Cancelar</span>
 			</a>
-			<a href="javascript:void(0);" class="button" ng-click="save(layer)">
+			<a href="javascript:void(0);" class="button" ng-click="save(layer)" ng-show="isOwner(layer)">
 				<span ng-hide="layer.isDraft">Salvar alterações</span>
 				<span ng-show="layer.isDraft">Publicar camada</span>
 			</a>
