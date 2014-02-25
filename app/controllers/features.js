@@ -16,10 +16,19 @@ var
 
 exports.load = function(req, res, next, id){
 	Feature.load(id, function (err, feature) {
-		if (err) return next(err)
-		if (!feature) return res.json(400, new Error('not found'));
-		req.feature = feature
-		next()
+		if (err) {
+			return next(err)
+		} else if (!feature) {
+			return res.json(400, {
+				messages: [{
+					type: 'error',
+					message: 'Feature not found.'
+				}]
+			});
+		} else {
+			req.feature = feature;
+			next();
+		}
 	})
 }
 
@@ -34,15 +43,18 @@ exports.create = function (req, res) {
 	
 	// save feature
 	feature.save(function (err) {
-		if (err) res.json(400, err);
-		var layer = feature.layer;
-		layer.features.push(feature);
-		
-		// save layer
-		layer.save(function(err){
-			if (err) res.json(400, err);
-			res.json(feature);
-		});
+		if (err) {
+			res.json(400, err);
+		} else {
+			var layer = feature.layer;
+			layer.features.addToSet(feature);
+			
+			// save layer
+			layer.save(function(err){
+				if (err) res.json(400, err);
+				res.json(feature);
+			});			
+		}
 	});
 }
 

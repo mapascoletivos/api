@@ -93,8 +93,6 @@ exports.update = function(req, res){
 		updatedSirTrevor = req.body.sirTrevorData,
 		updatedFeatures = req.body.features;
 	
-	console.log('o content no update\n'+content);
-
 	delete req.body['creator'];
 	delete req.body.layer;
 	delete req.body.features;
@@ -134,7 +132,7 @@ exports.destroy = function(req, res){
 		if (err) res.json(400, utils.errorMessages(err));
 		layer.save(function(err){
 			if (err) res.json(400, utils.errorMessages(err));
-			else res.json({messages: [{type: 'info', text: 'Content removed successfully.'}]});
+			else res.json({messages: [{type: 'ok', text: 'Content removed successfully.'}]});
 		});
 	});
 }

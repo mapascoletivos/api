@@ -205,8 +205,16 @@ exports.addContributor = function (req, res) {
 		} else {
 			layer.contributors.addToSet(user);
 			layer.save(function(err){
-				res.json({ layer: layer, messages: [{status:'ok', text: 'Contributor added successfully'}] })
-			})
+				if (err)
+					res.json(400, { messages: utils.errors(err.errors || err) })
+				else
+					Layer
+						.findById(layer._id)
+						.populate('contributors', 'name username email')
+						.exec(function(err, updatedLayer){
+						res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contributor added successfully'}] })
+					});
+			});
 		}
 	})
 }
@@ -217,14 +225,27 @@ exports.addContributor = function (req, res) {
 
 exports.removeContributor = function (req, res) {
 	var 
-		contributorId = req.body.contributorId,
+		contributorId = req.query.contributorId,
 		layer = req.layer;
 
-	Layer.update({_id: layer._id}, {$pull: {contributors: {id: contributorId}}}, function(err){
+	console.log(req.query.contributorId);
+	console.log(layer.contributors);
+	layer.contributors.pull({_id: contributorId});
+	layer.markModified('contributors');
+	console.log(layer.contributors);
+
+
+	layer.save(function(err){		
 		if (err) {
-			res.json(400, { messages: utils.errors(err.errors || err) })
+			res.json(400, utils.errorMessagesutils( err.errors || err) );
 		} else {
-			res.json({ layer: layer, messages: [{status:'ok', text: 'Contributor removed successfully'}] })
+			Layer
+				.findById(layer._id)
+				.populate('contributors', 'name username email')
+				.exec(function(err, updatedLayer){
+				res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contributor removed successfully'}] })
+			})
 		}
-	});
+	})
+
 }
