@@ -106,10 +106,10 @@ exports.LayerActionsCtrl = [
 					if(!layer._id) {
 
 						var newLayer = new Layer.resource(layer);
-						newLayer.$save(function(layer) {
+						newLayer.$save(function(res) {
 							TileLayerEditor.deactivate();
-							$scope.editTileLayer(layer);
-							$rootScope.$broadcast('layer.add.success', layer);
+							$scope.editTileLayer(res.layer);
+							$rootScope.$broadcast('layer.add.success', res.layer);
 						});
 
 					} else {
