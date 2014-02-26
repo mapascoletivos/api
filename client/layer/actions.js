@@ -130,25 +130,9 @@ exports.LayerActionsCtrl = [
 
 			layer.isDraft = false;
 
-			var deferred = $q.defer();
-
-			Layer.resource.update({layerId: layer._id}, layer, function(layer) {
-				Message.message({
-					status: 'ok',
-					text: 'Camada atualizada'
-				});
-				$rootScope.$broadcast('layer.save.success', layer);
-				deferred.resolve(layer);
-			}, function(err){
-				Message.message({
-					status: 'error',
-					text: 'Ocorreu um erro.'
-				});
-				$rootScope.$broadcast('layer.save.error', err);
-				deferred.resolve(err);
+			Layer.resource.update({layerId: layer._id}, layer, function(res) {
+				$rootScope.$broadcast('layer.save.success', res.layer);
 			});
-
-			return deferred.promise;
 
 		};
 
@@ -156,17 +140,7 @@ exports.LayerActionsCtrl = [
 
 			if(confirm('Você tem certeza que deseja remover esta camada?')) {
 				Layer.resource.delete({layerId: layer._id}, function(res) {
-					Message.message({
-						status: 'ok',
-						text: 'Camada removida.'
-					});
-					$rootScope.$broadcast('layer.delete.success', layer);
-				}, function(err) {
-					Message.message({
-						status: 'error',
-						text: 'Ocorreu um erro.'
-					});
-					$rootScope.$broadcast('layer.delete.error', err);
+					$rootScope.$broadcast('layer.delete.success');
 				});
 			}
 
