@@ -1,0 +1,42 @@
+<div class="modal tilelayer-modal">
+	<div class="modal-container">
+		<div class="modal-content">
+			<a href="javascript:void(0);" class="close-button lsf" ng-click="close()" title="Fechar">&#xE10f;</a>
+			<h2 ng-hide="layer._id">
+				<span ng-show="layer.properties.service == 'tilelayer'">Nova camada de tiles</span>
+				<span ng-show="layer.properties.service == 'mapbox'">Nova camada do MapBox</span>
+			</h2>
+			<p class="label"><label for="layer_title">Título da camada</label></p>
+			<textarea id="layer_title" class="edit-title no-canvas" type="text" ng-model="layer.title" placeholder="Digite o título da camada" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+			<p class="label"><label for="layer_description">Descrição</label></p>
+			<textarea id="layer_description" class="edit-description no-canvas" type="text" ng-model="layer.description" placeholder="Descreva sua camada" disable-enter-key="$event" placeholder="Descrição" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
+
+			<div ng-show="layer.properties.service == 'tilelayer'">
+				<div class="input-container">
+					<p class="label"><label for="tilelaye_url">URL da camada</label></p>
+					<input id="tilelayer_url" class="layer-url" type="text" ng-model="layer.url" placeholder="Exemplo: http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+				</div>
+			</div>
+			<div ng-show="layer.properties.service == 'mapbox'">
+				<div class="input-container">
+					<p class="label"><label for="mapbox_id">ID do MapBox</label></p>
+					<input id="mapbox_id" class="layer-url" type="text" ng-model="layer.url" placeholder="Exemplo: examples.map-9ijuk24y" />
+				</div>
+			</div>
+			<div class="privacy-settings clearfix">
+				<p class="label">Privacidade</p>
+				<ul class="radio-list">
+					<li ng-class="{active: layer.visibility == 'Visible'}" ng-click="layer.visibility = 'Visible'">
+						<span class="lsf">&#xE134;</span>
+						Público
+					</li>
+					<li ng-class="{active: layer.visibility == 'Private'}" ng-click="layer.visibility = 'Private'">
+						<span class="lsf">&#xE086;</span>
+						Privado
+					</li>
+				</ul>
+			</div>
+			<button ng-click="saveTileLayer(layer)">Enviar</button>
+		</div>
+	</div>
+</div>
