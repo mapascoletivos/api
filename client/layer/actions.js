@@ -140,7 +140,7 @@ exports.LayerActionsCtrl = [
 
 			if(confirm('Você tem certeza que deseja remover esta camada?')) {
 				Layer.resource.delete({layerId: layer._id}, function(res) {
-					$rootScope.$broadcast('layer.delete.success');
+					$rootScope.$broadcast('layer.delete.success', layer);
 				});
 			}
 

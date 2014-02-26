@@ -80,9 +80,7 @@ exports.LayerCtrl = [
 				type: 'FeatureLayer'
 			});
 			draft.$save(function(draft) {
-				$location.path('/layers/' + draft._id + '/edit').replace();
-			}, function(err) {
-				// TODO error handling
+				$location.path('/layers/' + draft.layer._id + '/edit/').replace();
 			});
 
 		// Single layer
@@ -156,6 +154,10 @@ exports.LayerCtrl = [
 				 * Edit functions
 				 */
 				if($location.path().indexOf('edit') !== -1) {
+
+					setTimeout(function() {
+						window.dispatchEvent(new Event('resize'));
+					}, 100);
 
 					$scope.$on('layerObjectChange', function(event, active) {
 						populateMap(layer.features, true);
