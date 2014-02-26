@@ -29,7 +29,9 @@ module.exports = function (passport, config) {
 		},
 		function(email, password, done) {
 			User.findOne({ email: email }, function (err, user) {
-				if (err) { return done(err) }
+				if (err) { 
+					return done(err) 
+				}
 				if (!user) {
 					return done(null, false, { message: 'Unknown user' })
 				}
@@ -43,6 +45,13 @@ module.exports = function (passport, config) {
 							return done(null, false, { message: 'Fail to send new activation email, please contact support' });
 						else
 							return done(null, false, { message: 'User is not active, new activation email sent.' });
+					});
+				} else if (user.status == 'need_password_update') {
+					mailer.passwordUpdate(user, function(err){
+						if (err)
+							return done(null, false, { message: 'Failed to send email for password update, please contact support' });
+						else
+							return done(null, false, { message: 'This account needs a new password, please check you email.' });
 					});
 				} 
 				else

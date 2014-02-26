@@ -71,11 +71,11 @@ exports.showPasswordReset = function(req, res){
 		token = req.token;
 	
 	// invalid route for token
-	if (token.type != 'passwordReset') {
+	if ((token.type != 'password_reset') || (token.type != 'password_update')) {
 		req.flash('error', 'Token inválido.');
 		return res.redirect('/login');
 	} else {
-		res.render('users/password_reset', {user: req.user, token: token})
+		res.render('users/password_change', {user: req.user, token: token})
 	}
 }
 
@@ -83,22 +83,59 @@ exports.showPasswordReset = function(req, res){
  * Change Password
  */
 
-exports.changePassword = function(req, res){
+exports.passwordReset = function(req, res){
 	var
 		token = req.token;
 	
 	// invalid route for token
-	if (token.type != 'passwordReset') {
+	if (token.type != 'password_reset') {
 		req.flash('error', 'Token inválido.');
 		return res.redirect('/login');
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
-				req.flash('error', 'Não foi possível ativar este usuário.')
+				req.flash('error', 'Houve um erro no pedido de alteração de senha.')
 				return res.redirect('/login');
 			}
 			
 			user.password = req.body.password;
+
+			user.save(function(err){
+				// TODO render login form
+				if (err)
+					req.flash('error', 'Não foi possível alterar a senha deste usuário.')
+				else {
+					req.flash('info', 'Senha alterada com sucesso.')
+				}
+
+				return res.redirect('/login');
+			});
+		})
+		
+	}
+}
+
+/**
+ * Update Password
+ */
+
+exports.passwordUpdate = function(req, res){
+	var
+		token = req.token;
+	
+	// invalid route for token
+	if (token.type != 'password_update') {
+		req.flash('error', 'Token inválido.');
+		return res.redirect('/login');
+	} else {
+		mongoose.model('User').findById(token.user, function(err, user){
+			if (err) {
+				req.flash('error', 'Houve um erro no pedido de alteração de senha.')
+				return res.redirect('/login');
+			}
+			
+			user.password = req.body.password;
+			user.status = 'active';
 
 			user.save(function(err){
 				// TODO render login form

@@ -54,7 +54,7 @@ var importUsers = function(mysqlConnection, callback) {
 				usr.username = row['username'];
 				// usr.hashed_password = row['password'];
 				usr.password = 'a';
-				usr.status = 'active';
+				usr.status = 'need_password_update';
 				usr.logins = row['logins'];
 				if (row['last_login']) {
 					usr.lastLogin = new Date();

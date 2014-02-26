@@ -54,7 +54,8 @@ module.exports = function (app, passport) {
 	 **/
 	app.get('/activate_account/:tokenId', token.activateAccount);
 	app.get('/password_reset/:tokenId', token.showPasswordReset);
-	app.post('/password_reset/:tokenId', token.changePassword);	
+	app.post('/password_reset/:tokenId', token.passwordReset);	
+	app.post('/password_update/:tokenId', token.passwordUpdate);	
 	app.param('tokenId', token.load);
 	
 	/** 
