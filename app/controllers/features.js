@@ -21,7 +21,7 @@ exports.load = function(req, res, next, id){
 		} else if (!feature) {
 			return res.json(400, {
 				messages: [{
-					type: 'error',
+					status: 'error',
 					message: 'Feature not found.'
 				}]
 			});
@@ -44,14 +44,14 @@ exports.create = function (req, res) {
 	// save feature
 	feature.save(function (err) {
 		if (err) {
-			res.json(400, err);
+			res.json(400, utils.errorMessages(err.errors || err));
 		} else {
 			var layer = feature.layer;
 			layer.features.addToSet(feature);
 			
 			// save layer
 			layer.save(function(err){
-				if (err) res.json(400, err);
+				if (err) res.json(400, utils.errorMessages(err.errors || err));
 				res.json(feature);
 			});			
 		}
@@ -71,12 +71,12 @@ exports.index = function(req, res){
 	}
 
 	Feature.list(options, function(err, features) {
-		if (err) return res.json(400, err);
+		if (err) return res.json(400, utils.errorMessages(err.errors || err));
 		Feature.count().exec(function (err, count) {
 			if (!err) {
 				res.json({options: options, featuresTotal: count, features: features});
 			} else {
-				res.json(400, err)
+				res.json(400, utils.errorMessages(err.errors || err))
 			}
 		})
 	})
@@ -105,8 +105,8 @@ exports.update = function(req, res){
 	feature = extend(feature, req.body);
 
 	feature.save(function(err) {
-		if (err) res.json(400, err);
-		res.json(feature);
+		if (err) res.json(400, utils.errorMessages(err.errors || err));
+		else res.json(feature);
 	});
 }
 
@@ -131,10 +131,10 @@ exports.addContent = function(req, res){
 
 	// save both
 	content.save(function(err){
-		 if (err) res.json(400, err);
+		 if (err) res.json(400, utils.errorMessages(err.errors || err));
 		feature.save(function(err){
 			if (err) res.json(400,err)
-			else res.json({sucess: true});
+			else res.json({ messages: [{status: 'ok', text: 'Content added successfully.'}] });
 		});
 	});
 
@@ -159,10 +159,10 @@ exports.removeContent = function(req, res){
 	
 	// save both
 	content.save(function(err){
-		 if (err) res.json(400, err);
+		 if (err) res.json(400, utils.errorMessages(err.errors || err));
 		feature.save(function(err){
 			if (err) res.json(400,err)
-			else res.json({success:true});
+			else res.json({ messages: [{status: 'ok', text: 'Content removed successfully.'}] });
 		});
 	});
 }

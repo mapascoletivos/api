@@ -192,17 +192,17 @@ exports.update = function (req, res) {
 			usr.email = req.body.email;
 		} else {
 			if (!usr.authenticate(req.body.userPwd)) {
-				return res.json(400, { errors: { authentication: "Invalid Password"} });
+				return res.json(400, { messages: [{status: 'error', text: 'Invalid password.'}] });
 			} else {
 				if (req.body.newPwd != req.body.validatePwd) 
-					return res.json(400, { errors: { validation: "Passwords don't mach"} });
+					return res.json(400, { messages: [{status: 'error', text: "Passwords don't match." }] });
 				else
 					usr.password = req.body.newPwd;
 			}
 		}
 
 		usr.save(function(err){
-			if (err) res.json(400, { messages: utils.errors(err.errors)});
+			if (err) res.json(400, utils.errorMessages(err.errors || err));
 			else res.json({sucess:true});
 		});		 
 	});

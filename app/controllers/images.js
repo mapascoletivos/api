@@ -19,7 +19,7 @@ var
 exports.load = function (req, res, next, id) {
 	Image.load(id, function (err, image) {
 		if (err) return next(err)
-		if (!image) return res.json(400, new Error('Image not found'));
+		if (!image) return res.json(400, { messages: [{status: 'error', text: 'Image not found.'}] });
 		req.image = image
 		next()
 	});
@@ -60,7 +60,7 @@ exports.create = function (req, res) {
 		baseUrl = req.protocol + "://" + req.get('host') + '/uploads/images/img_';
 
 		image.uploadImageAndSave(req.files.attachment.file, baseUrl, function(err){
-			if (err) return res.json(400, err);
+			if (err) return res.json(400, utils.errorMessages(err.errors || err));
 			else  res.json(image);
 		})
 	}
@@ -72,7 +72,7 @@ exports.create = function (req, res) {
 
 exports.destroy = function (req, res) {
 	req.image.remove(function(err) {
-		if (err) res.json(400,err)
-		else res.json({success: true});
+		if (err) res.json(400, utils.errorMessages(err.errors || err))
+		else res.json({ messages: [{status: 'ok', text: 'Content removed successfully.'}] });
 	});
 }

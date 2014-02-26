@@ -21,7 +21,7 @@ exports.load = function(req, res, next, id){
 		} else if (!content) {
 			return res.json(400, {
 				messages: [{
-					type: 'error',
+					status: 'error',
 					message: 'Content not found.'
 				}]
 			});
@@ -49,21 +49,21 @@ exports.create = function (req, res) {
 	content.creator = req.user;
 	
 	Layer.findById(req.body['layer'], function(err, layer){
-		if (err) res.json(400, utils.errorMessages(err));
+		if (err) res.json(400, utils.errorMessages(err.errors || err));
 		else {
 			layer.contents.addToSet(content);
 			layer.save(function(err){
-				if (err) res.json(400, utils.errorMessages(err));
+				if (err) res.json(400, utils.errorMessages(err.errors || err));
 				else {
 					content.updateSirTrevor(req.body.sirTrevorData, function(err, ct){
-						if (err) res.json(400, utils.errorMessages(err));
+						if (err) res.json(400, utils.errorMessages(err.errors || err));
 						else
 							ct.setFeatures(req.body.features, function(err,ct){
-								if (err) res.json(400, utils.errorMessages(err));
+								if (err) res.json(400, utils.errorMessages(err.errors || err));
 								else
 									content.save(function(err){
 										// console.log('salvou o content assim\n'+content);
-										if (err) res.json(400, utils.errorMessages(err));
+										if (err) res.json(400, utils.errorMessages(err.errors || err));
 										else res.json(content);
 									});
 							});
@@ -100,13 +100,13 @@ exports.update = function(req, res){
 	content = extend(content, req.body)
 
 	content.updateSirTrevor(updatedSirTrevor, function(err, ct){
-		if (err) res.json(400, utils.errorMessages(err));
+		if (err) res.json(400, utils.errorMessages(err.errors || err));
 		else
 			ct.setFeatures(updatedFeatures, function(err, ct){
-				if (err) res.json(400, utils.errorMessages(err));
+				if (err) res.json(400, utils.errorMessages(err.errors || err));
 				else
 					ct.save(function(err){
-						if (err) res.json(400, utils.errorMessages(err));
+						if (err) res.json(400, utils.errorMessages(err.errors || err));
 						else res.json(ct);
 					});
 			});
@@ -123,17 +123,17 @@ exports.destroy = function(req, res){
 		content = req.content;
 
 	mongoose.model('Layer').findById(content.layer._id, function(err, layer){
-		if (err) res.json(400, utils.errorMessages(err));
+		if (err) res.json(400, utils.errorMessages(err.errors || err));
 		else {
 
 			layer.contents.pull({_id: content._id});
 
 			layer.save(function(err){
-				if (err) res.json(400, utils.errorMessages(err));
+				if (err) res.json(400, utils.errorMessages(err.errors || err));
 				else {
 					content.remove(function(err){
-						if (err) res.json(400, utils.errorMessages(err));
-						else res.json({messages: [{type: 'ok', text: 'Content removed successfully.'}]});
+						if (err) res.json(400, utils.errorMessages(err.errors || err));
+						else res.json({messages: [{status: 'ok', text: 'Content removed successfully.'}]});
 					})
 				}
 			})

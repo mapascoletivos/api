@@ -16,7 +16,7 @@ var
 exports.load = function(req, res, next, id){
 	Map.load(id, function (err, map) {
 		if (err) return next(err)
-		if (!map) return res.json(400, new Error('not found'));
+		if (!map) return res.json(400, { messages: [{status: 'error', text: 'Map not found.'}] });
 		req.map = map
 		next()
 	});
@@ -56,9 +56,9 @@ exports.index = function(req, res){
 		}
 
 	Map.list(options, function(err, maps) {
-		if (err) return res.json(400, err);
+		if (err) return res.json(400, utils.errorMessages(err.errors || err));
 		Map.count(options.criteria).exec(function (err, count) {
-			if (err) res.json(400, err);
+			if (err) res.json(400, utils.errorMessages(err.errors || err));
 			else res.json({options: options, mapsTotal: count, maps: maps});
 		})
 	})
@@ -85,7 +85,7 @@ exports.create = function (req, res) {
 
 	// save map
 	map.setLayersAndSave(req.body.layers, function (err) {
-		if (err) res.json(400, err);
+		if (err) res.json(400, utils.errorMessages(err.errors || err));
 		else res.json(map);
 	});
 }
@@ -108,7 +108,7 @@ exports.update = function(req, res){
 	map = extend(map, req.body);
 
 	map.setLayersAndSave(newLayerSet, function(err) {
-		if (err) res.json(400, err);
+		if (err) res.json(400, utils.errorMessages(err.errors || err));
 		else res.json(map);
 	})
 }
@@ -120,7 +120,7 @@ exports.update = function(req, res){
 exports.destroy = function(req, res){
 	var map = req.map
 	map.remove(function(err){
-		if (err) res.json(400, err);
-		else res.json({success: true});
+		if (err) res.json(400, utils.errorMessages(err.errors || err));
+		else res.json({ messages: [{status: 'ok', text: 'Content removed successfully.'}] });
 	});
 }
