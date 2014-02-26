@@ -4,9 +4,7 @@
 
 ## The new platform
 
-We are planning this platform to have all resources of the older, plus improved collaboration. We will launch this new platform replacing the other in http://www.mapascoletivos.com.br. The data of the platform is here:
-
-* [mapascoletivos-20141001.zip](https://dl.dropboxusercontent.com/u/3291375/mapascoletivos/mapascoletivos-20141001.zip)
+We are planning this platform to have all resources of the older, plus improved collaboration. We will launch this new platform replacing the other in http://www.mapascoletivos.com.br.
 
 ## Development
 
