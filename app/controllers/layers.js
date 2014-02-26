@@ -94,12 +94,12 @@ exports.create = function (req, res) {
 
 		return res.json(400, { messages: [{status: 'error', text: 'Layer type missing.'}] })
 
-	} else if (type == 'Tile') {
+	} else if (type == 'TileLayer') {
 
 		layer.url = req.body.url;
-		layer.tileLayerProperties = req.body.tileLayerProperties;
+		layer.properties = req.body.properties;
 
-	} else if (type == 'Content') {
+	} else if (type == 'FeatureLayer') {
 
 		layer.features = req.body.features;
 		layer.contents = req.body.contents;

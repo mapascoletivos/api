@@ -32,7 +32,7 @@ var LayerSchema = new Schema({
 
 	// Tile Layer Attributes 
 	url: String,
-	tileLayerProperties: {}
+	properties: {}
 
 });
 

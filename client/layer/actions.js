@@ -13,7 +13,9 @@ exports.LayerActionsCtrl = [
 	'SessionService',
 	'Layer',
 	'LayerShare',
-	function($rootScope, $scope, $q, $location, Message, Session, Layer, LayerShare) {
+	'NewLayer',
+	'TileLayerEditor',
+	function($rootScope, $scope, $q, $location, Message, Session, Layer, LayerShare, NewLayerBox, TileLayerEditor) {
 
 		$scope.getUrl = function(layer) {
 
@@ -41,7 +43,10 @@ exports.LayerActionsCtrl = [
 
 		$scope.edit = function(layer) {
 
-			$location.path('/layers/' + layer._id + '/edit/');
+			if(layer.type == 'TileLayer')
+				$scope.editTileLayer(layer);
+			else
+				$location.path('/layers/' + layer._id + '/edit/');
 
 		};
 
@@ -66,6 +71,58 @@ exports.LayerActionsCtrl = [
 			});
 
 			$rootScope.$broadcast('layer.contributor.removed', layer);
+
+		}
+
+		$scope.new = function() {
+
+			NewLayerBox.activate({
+				newLayer: function(type, service) {
+					this.close();
+					if(type == 'TileLayer') {
+						var layer = {
+							type: 'TileLayer',
+							visibility: 'Private',
+							properties: {
+								service: service
+							}
+						}
+						$scope.editTileLayer(layer);
+					} else {
+						$location.path('/layers/new/');
+					}
+				},
+				close: function() {
+					NewLayerBox.deactivate();
+				}
+			});
+
+		}
+
+		$scope.editTileLayer = function(layer) {
+
+			TileLayerEditor.activate({
+				saveTileLayer: function(layer) {
+					if(!layer._id) {
+
+						var newLayer = new Layer.resource(layer);
+						newLayer.$save(function(layer) {
+							TileLayerEditor.deactivate();
+							$scope.editTileLayer(layer);
+							$rootScope.$broadcast('layer.add.success', layer);
+						});
+
+					} else {
+
+						$scope.save(layer);
+
+					}
+				},
+				close: function() {
+					TileLayerEditor.deactivate();
+				},
+				layer: layer
+			});
 
 		}
 

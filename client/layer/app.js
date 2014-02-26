@@ -50,5 +50,7 @@ angular
 	])
 	.factory('Layer', require('./service.js').Layer)
 	.factory('LayerShare', require('./share').shareService)
+	.factory('NewLayer', require('./new').newLayerService)
+	.factory('TileLayerEditor', require('./tilelayer').tileLayerService)
 	.controller('LayerActionsCtrl', require('./actions').LayerActionsCtrl)
 	.controller('LayerCtrl', require('./controller').LayerCtrl);

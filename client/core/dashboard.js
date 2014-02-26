@@ -103,6 +103,10 @@ angular.module('mapasColetivos.dashboard', [])
 			$scope.maps = $scope.maps.filter(function(m) { return map._id != m._id; });
 		});
 
+		$rootScope.$on('layer.add.success', function(event, layer) {
+			$scope.layers = [layer].concat($scope.layers);
+		});
+
 		$rootScope.$on('layer.delete.success', function(event, layer) {
 			$scope.layers = $scope.layers.filter(function(m) { return layer._id != m._id; });
 		});

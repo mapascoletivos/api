@@ -170,41 +170,45 @@ exports.MapCtrl = [
 					// Add layer to map and get feature data
 					var layerData = MapService.addLayer(layer);
 
-					layer._mcData = layerData;
+					if(layer.type == 'FeatureLayer') {
 
-					angular.forEach(layerData.markers, function(marker) {
+						layer._mcData = layerData;
 
-						markers.push(marker);
+						angular.forEach(layerData.markers, function(marker) {
 
-						marker
-							.on('click', function() {
+							markers.push(marker);
 
-								if(!$scope.isEditing()) {
+							marker
+								.on('click', function() {
 
-									$state.go('singleMap.feature', {
-										featureId: marker.mcFeature._id
-									});
+									if(!$scope.isEditing()) {
 
-								} else {
+										$state.go('singleMap.feature', {
+											featureId: marker.mcFeature._id
+										});
 
-									// Do something?
+									} else {
 
-								}
+										// Do something?
 
-							})
-							.on('mouseover', function() {
+									}
 
-								marker.openPopup();
+								})
+								.on('mouseover', function() {
 
-							})
-							.on('mouseout', function() {
+									marker.openPopup();
 
-								marker.closePopup();
+								})
+								.on('mouseout', function() {
 
-							})
-							.bindPopup('<h3 class="feature-title">' + marker.mcFeature.title + '</h3>');
+									marker.closePopup();
 
-					});
+								})
+								.bindPopup('<h3 class="feature-title">' + marker.mcFeature.title + '</h3>');
+
+						});
+
+					}
 
 					$scope.layers.push(layer);
 
@@ -225,21 +229,25 @@ exports.MapCtrl = [
 
 					angular.forEach($scope.layers, function(layer) {
 
-						var markerLayer = layer._mcData.markerLayer;
-						var markers = layer._mcData.markers;
+						if(layer.type == 'FeatureLayer') {
 
-						angular.forEach(markers, function(marker) {
+							var markerLayer = layer._mcData.markerLayer;
+							var markers = layer._mcData.markers;
 
-							if(!features.filter(function(f) { return marker.mcFeature._id == f._id; }).length)
-								markerLayer.removeLayer(marker);
-							else {
-								if(!markerLayer.hasLayer(marker))
-									markerLayer.addLayer(marker);
+							angular.forEach(markers, function(marker) {
 
-								filteredGroup.addLayer(marker);
-							}
+								if(!features.filter(function(f) { return marker.mcFeature._id == f._id; }).length)
+									markerLayer.removeLayer(marker);
+								else {
+									if(!markerLayer.hasLayer(marker))
+										markerLayer.addLayer(marker);
 
-						});
+									filteredGroup.addLayer(marker);
+								}
+
+							});
+
+						}
 
 					});
 

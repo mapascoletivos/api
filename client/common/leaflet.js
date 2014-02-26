@@ -16,7 +16,7 @@ angular.module('mapasColetivos.leaflet', [])
 			groups = [],
 			markers = [],
 			hiddenMarkers = [],
-			baseTile = 'http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png';
+			baseLayer = L.tileLayer('http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png');
 
 		var featureToMapObj = require('../feature/featureToMapObjService');
 
@@ -25,7 +25,7 @@ angular.module('mapasColetivos.leaflet', [])
 				this.destroy();
 				map = L.mapbox.map(id, null, config);
 				map.whenReady(function() {
-					map.addLayer(L.tileLayer(baseTile));
+					map.addLayer(baseLayer);
 					map.addLayer(markerLayer);
 				});
 				return map;
@@ -87,22 +87,56 @@ angular.module('mapasColetivos.leaflet', [])
 				return map;
 			},
 			addLayer: function(layer) {
-				var self = this;
-				var markers = [];
-				var markerLayer = L.featureGroup();
-				markerLayer.mcLayer = layer;
-				groups.push(markerLayer);
-				angular.forEach(layer.features, function(f) {
-					var marker = featureToMapObj(f);
-					marker.mcFeature = f;
-					markers.push(marker);
-					markerLayer.addLayer(marker);
-				});
-				markerLayer.addTo(map);
-				return {
-					markerLayer: markerLayer,
-					markers: markers
-				};
+				if(layer.type == 'TileLayer') {
+					this.addTileLayer(layer.url);
+				} else {
+					var self = this;
+					var markers = [];
+					var markerLayer = L.featureGroup();
+					markerLayer.mcLayer = layer;
+					groups.push(markerLayer);
+					angular.forEach(layer.features, function(f) {
+						var marker = featureToMapObj(f);
+						marker.mcFeature = f;
+						markers.push(marker);
+						markerLayer.addLayer(marker);
+					});
+					markerLayer.addTo(map);
+					return {
+						markerLayer: markerLayer,
+						markers: markers
+					};
+				}
+			},
+			addTileLayer: function(url) {
+				if(url.indexOf('http://') !== -1) {
+					return L.tileLayer(url).addTo(map);
+				} else {
+					var gridLayer = L.mapbox.gridLayer(url).addTo(map);
+					L.mapbox.gridControl(gridLayer).addTo(map);
+					return L.mapbox.tileLayer(url).addTo(map);
+				}
+			},
+			renderTileJSON: function(tilejson) {
+				if(tilejson.center) {
+					map.setView([tilejson.center[1], tilejson.center[0]], tilejson.center[2]);
+				}
+				if(tilejson.bounds) {
+					var bounds = L.latLngBounds(
+						L.latLng(tilejson.bounds[1], tilejson.bounds[2]),
+						L.latLng(tilejson.bounds[3], tilejson.bounds[0])
+					);
+					map.setMaxBounds(bounds);
+				}
+				if(tilejson.maxZoom) {
+					map.options.maxZoom = tilejson.maxZoom;
+				}
+				if(tilejson.minZoom) {
+					map.options.minZoom = tilejson.minZoom;
+				}
+			},
+			removeBaseLayer: function() {
+				map.removeLayer(baseLayer);
 			},
 			clearGroups: function() {
 				if(groups.length) {

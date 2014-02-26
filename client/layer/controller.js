@@ -76,7 +76,8 @@ exports.LayerCtrl = [
 		if($location.path() == '/layers/new/') {
 
 			var draft = new Layer.resource({
-				title: 'Untitled'
+				title: 'Untitled',
+				type: 'FeatureLayer'
 			});
 			draft.$save(function(draft) {
 				$location.path('/layers/' + draft._id + '/edit').replace();
@@ -93,9 +94,6 @@ exports.LayerCtrl = [
 
 			Layer.resource.get({layerId: $stateParams.layerId}, function(layer) {
 
-				if(!layer.contributors)
-					layer.contributors = [];
-
 				$scope.layer = layer;
 
 				$scope.baseUrl = '/layers/' + layer._id;
@@ -107,42 +105,61 @@ exports.LayerCtrl = [
 					zoom: 2
 				});
 
-				$scope.fitMarkerLayer = function() {
-					MapService.fitMarkerLayer();
-				}
+				if(layer.type == 'TileLayer') {
 
-				// Init features
-				Feature.set(angular.copy(layer.features));
-				populateMap(layer.features, true);
+					MapService.removeBaseLayer();
 
-				var viewingContent = false;
-				$scope.$on('content.filtering.started', function(event, c, cF) {
-					viewingContent = true;
-					if(cF.length) {
-						populateMap(cF);
+					var tilelayer = MapService.addTileLayer(layer.url);
+
+					if(layer.properties.service == 'mapbox') {
+						tilelayer.on('load', _.once(function() {
+							MapService.renderTileJSON(tilelayer.getTileJSON());
+						}));
 					}
-				});
 
-				$scope.$on('content.filtering.closed', function() {
-					if(viewingContent) {
-						populateMap(layer.features);
-						viewingContent = false;
+				} else {
+
+					if(!layer.contributors)
+						layer.contributors = [];
+
+					$scope.fitMarkerLayer = function() {
+						MapService.fitMarkerLayer();
 					}
-				});
 
-				$scope.$on('layerObjectChange', function(event, active) {
+					// Init features
+					Feature.set(angular.copy(layer.features));
 					populateMap(layer.features, true);
-				});
 
-				// Set content shared data
-				Content.set(layer.contents);
+					var viewingContent = false;
+					$scope.$on('content.filtering.started', function(event, c, cF) {
+						viewingContent = true;
+						if(cF.length) {
+							populateMap(cF);
+						}
+					});
 
-				$rootScope.$broadcast('data.ready', layer);
+					$scope.$on('content.filtering.closed', function() {
+						if(viewingContent) {
+							populateMap(layer.features);
+							viewingContent = false;
+						}
+					});
+
+					// Set content shared data
+					Content.set(layer.contents);
+
+					$rootScope.$broadcast('data.ready', layer);
+
+				}
 
 				/*
 				 * Edit functions
 				 */
 				if($location.path().indexOf('edit') !== -1) {
+
+					$scope.$on('layerObjectChange', function(event, active) {
+						populateMap(layer.features, true);
+					});
 
 					if(!Layer.canEdit(layer)) {
 						$location.path('/layers/' + layer._id);
@@ -245,6 +262,10 @@ exports.LayerCtrl = [
 
 			$scope.$on('$destroy', function() {
 				MapService.destroy();
+				$scope.features = [];
+				$scope.contents = [];
+				Feature.set([]);
+				Content.set([]);
 			});
 
 		// All layers

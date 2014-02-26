@@ -3,7 +3,7 @@
 	<p class="author" ng-show="!user"><a href="/user/{{layer.creator.username}}">por {{layer.creator.name}}</a></p>
 	<p>{{layer.description}}</p>
 	<div class="actions">
-		<a href="/layers/{{layer._id}}/edit" title="Editar" ng-show="canEdit(layer)">
+		<a href="javascript:void(0);" ng-click="edit(layer)" title="Editar" ng-show="canEdit(layer)">
 			<span class="lsf">&#xE09f;</span>
 			<span class="label">Editar</span>
 		</a>
