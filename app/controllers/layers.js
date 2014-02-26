@@ -158,7 +158,7 @@ exports.destroy = function(req, res){
 	var layer = req.layer
 	layer.remove(function(err){
 		if(err) {
-			res.json(400, err);
+			res.json(400, utils.errorMessages(err.errors || err));
 		} else {
 			res.json({ messages: [{status: 'ok', text: 'Layer removed successfully.'}] });
 		}
