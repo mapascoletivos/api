@@ -29,6 +29,9 @@ var clearDb = function(callback) {
 			Map.remove(cb);
 		},
 		function(cb) {
+			Feature.remove(cb);
+		},
+		function(cb) {
 			Layer.remove(cb);
 		}
 	], callback);
@@ -51,7 +54,7 @@ var importUsers = function(mysqlConnection, callback) {
 				usr.username = row['username'];
 				// usr.hashed_password = row['password'];
 				usr.password = 'a';
-				usr.status = 'active';
+				usr.status = 'need_password_update';
 				usr.logins = row['logins'];
 				if (row['last_login']) {
 					usr.lastLogin = new Date();
@@ -272,11 +275,15 @@ var importContents = function(connection, callback ) {
 	// Get locations ids
 	connection.query('SELECT distinct location_id from mapascol_ushahidi.media', function(err, locations, fields){
 		
-		async.each(locations, function(location, doneFeature){
+
+		async.eachSeries(locations, function(location, doneFeature){
+
+			console.log('location\n'+JSON.stringify(location));
 		
 			// Get media associated to each location
 			connection.query('SELECT * from mapascol_ushahidi.media WHERE location_id='+location['location_id'], function(err, medias, fields){
 
+				console.log('location\n'+JSON.stringify(medias));
 				if (medias.length == 0) {
 					doneFeature();
 				}
@@ -408,45 +415,63 @@ var importFeatures = function(mysqlConnection, callback){
 
 exports.import = function(req,res){
 
-	connection = mysql.createConnection({
-		host     : process.env.MC_MYSQL_HOST,
-		user     : process.env.MC_MYSQL_USER,
-		password : process.env.MC_MYSQL_PASSWORD,
-		database : process.env.MC_MYSQL_DATABASE
-	});
+	if ((req.query.password) && (req.query.password == process.env.IMPORT_PASSWORD)) {
+		connection = mysql.createConnection({
+			host     : process.env.MC_MYSQL_HOST,
+			user     : process.env.MC_MYSQL_USER,
+			password : process.env.MC_MYSQL_PASSWORD,
+			database : process.env.MC_MYSQL_DATABASE
+		});
 
-	connection.connect();
+		connection.connect();
 
-	// clearDb(function(err){
-	// 	importUsers(connection, function(err) {
-	// 		if (err) {
-	// 			console.log(err);
-	// 			res.render('home/import');
-	// 		} else
-	// 			importMaps(connection, function(err){
-	// 				if (err) {
-	// 					console.log(err);
-	// 					res.render('home/import');
-	// 				}
-	// 				importLayers(connection, function(err){
-	// 					if (err) {
-	// 						console.log(err);
-	// 						res.render('home/import');
-	// 					} else {
-	// 						importFeatures(connection, function(err){
-	// 							if (err) {
-	// 								console.log(err);
-	// 							}
-								importContents(connection, function(err) {
-									res.render('home/import');
+		clearDb(function(err){
+			importUsers(connection, function(err) {
+				if (err) {
+					console.log(err);
+					connection.end();
+					return res.render('home/import');
+				} 
+
+				importMaps(connection, function(err){
+					if (err) {
+						console.log(err);
+						connection.end();
+						return res.render('home/import');
+					}
+					
+					importLayers(connection, function(err){
+						if (err) {
+							console.log(err);
+							connection.end();
+							return res.render('home/import');
+						} 
+
+						importFeatures(connection, function(err){
+							if (err) {
+								console.log(err);
+								connection.end();
+								return res.render('home/import');
+							}
+							
+							importContents(connection, function(err) {
+								if (err) {
+									console.log(err);
 									connection.end();
-								});
-	// 						});
-	// 					}
-	// 				});
+									return res.render('home/import');
+								}
 
-	// 		});
-	// 	});
-	// });
+								res.render('home/import');
+								connection.end();
+							});
+						});
+					});
+				});
+			});
+		});
+	} else {
+		res.render('home/import');
+	}
+
 
 }
