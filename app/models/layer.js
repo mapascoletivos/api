@@ -5,8 +5,8 @@
 
 var 
 	mongoose = require('mongoose'),
-	extend = require('mongoose-schema-extend'),
-	Schema = mongoose.Schema
+	Schema = mongoose.Schema,
+	util = require("util"),
 	async = require('async');
 
 /**
@@ -16,20 +16,24 @@ var
 var LayerSchema = new Schema({
 	title: { type: String, required: true },
 	description: String,
-	color: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
-	contributors: [{type: Schema.ObjectId, ref: 'User'}],
 	maps: [{type: Schema.ObjectId, ref: 'Map'}],
-	features: [{type: Schema.ObjectId, ref: 'Feature'}],
-	contents: [{type: Schema.ObjectId, ref: 'Content'}],
 	createdAt: {type: Date, default: Date.now},
 	updateAt: {type: Date, default: Date.now},
-	tags: [String],
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
-	isDraft: {type: Boolean, default: true},
 	type: { type: String, enum: ['FeatureLayer', 'TileLayer'], default: 'FeatureLayer'},
+
+	// Content Layer Attributes
+	contributors: [{type: Schema.ObjectId, ref: 'User'}],
+	features: [{type: Schema.ObjectId, ref: 'Feature'}],
+	contents: [{type: Schema.ObjectId, ref: 'Content'}],
+	isDraft: {type: Boolean, default: true},
+	oldId: Number,
+
+	// Tile Layer Attributes 
 	url: String,
-	oldId: Number
+	tileLayerProperties: {}
+
 });
 
 /**
@@ -89,5 +93,6 @@ LayerSchema.statics = {
 	}
 	
 }
+
 
 mongoose.model('Layer', LayerSchema)

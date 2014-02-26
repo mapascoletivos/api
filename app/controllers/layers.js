@@ -9,6 +9,7 @@ var mongoose = require('mongoose'),
 	User = mongoose.model('User'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend,
+	utils = require('../../lib/utils'),
 	_ = require('underscore');
 	
 /**
@@ -17,8 +18,8 @@ var mongoose = require('mongoose'),
 
 exports.load = function(req, res, next, id){
 	Layer.load(id, function (err, layer) {
-		if (err) return res.json(400, new Error('not found'));
-		if (!layer) res.json(400, new Error('not found'));
+		if (err) return res.json(400, { messages: [{type: 'error', text: 'Error loading layer.'}] });
+		if (!layer) res.json(400, { messages: [{type: 'error', text: 'Layer not found.'}] });
 		req.layer = layer
 		next()
 	})
@@ -66,7 +67,7 @@ exports.index = function(req, res){
 			if (!err) {
 				res.json({options: options, layersTotal: count, layers: layers});
 			} else {
-				res.json(400, err)
+				res.json(400, utils.errorMessages(err))
 			} 
 		});
 	});
@@ -85,14 +86,39 @@ exports.show = function(req, res){
  */
 
 exports.create = function (req, res) {
-	var layer = new Layer(req.body);
+	var 
+		layer = new Layer(),
+		type = req.body.type;
+
+	if (!type) {
+
+		return res.json(400, { messages: [{type: 'error', text: 'Layer type missing.'}] })
+
+	} else if (type == 'Tile') {
+
+		layer.url = req.body.url;
+		layer.tileLayerProperties = req.body.tileLayerProperties;
+
+	} else if (type == 'Content') {
+
+		layer.features = req.body.features;
+		layer.contents = req.body.contents;
+		layer.contents = req.body.isDraft; 
+
+	}
+
+	layer.type = type;
+	layer.title = req.body.title;
+	layer.description = req.body.description;
 	layer.creator = req.user;
-	
+	layer.maps = req.body.maps;
+	layer.visibility = req.body.visibility;
+
 	layer.save(function (err) {
 		if (!err) {
 			res.json(layer);
 		} else {
-			res.json(400, err)
+			res.json(400, utils.errorMessages(err))
 		}
 	})
 }
@@ -104,6 +130,7 @@ exports.create = function (req, res) {
 exports.update = function(req, res){
 	var layer = req.layer;
 
+	// do not update features or contents at this route
 	delete req.body['features'];
 	delete req.body['contents'];
 	delete req.body['__v'];
@@ -114,7 +141,7 @@ exports.update = function(req, res){
 		if (!err) {
 			res.json(layer)
 		} else {
-			res.json(400, err)
+			res.json(400, utils.errorMessages(err))
 		}
 	})
 }
@@ -129,7 +156,7 @@ exports.destroy = function(req, res){
 		if(err) {
 			res.json(400, err);
 		} else {
-			res.json({success: true});
+			res.json({ messages: [{type: 'ok', text: 'Layer removed successfully.'}] });
 		}
 	})
 }
@@ -154,9 +181,9 @@ exports.addFeature = function (req, res) {
 	}
 
 	feature.save(function(err){
-		 if (err) res.json(400, err);
+		 if (err) res.json(400, utils.errorMessages(err));
 		layer.save(function(err){
-			if (err) res.json(400,err)
+			if (err) res.json(400,utils.errorMessages(err))
 			else res.json(feature);
 		})
 	})
@@ -172,10 +199,10 @@ exports.removeFeature = function (req, res) {
 		layer = req.layer;
 
 	var saveLayer = function(err) {
-		if (err) res.json(400, err);
+		if (err) res.json(400, utils.errorMessages(err));
 		layer.features = _.filter(layer.features, function(f) { return !f._id.equals(feature._id); });
 		layer.save(function(err) {
-			if (err) res.json(400,err);
+			if (err) res.json(400,utils.errorMessages(err));
 			else res.json(feature);
 		})
 	}
@@ -199,7 +226,7 @@ exports.addContributor = function (req, res) {
 	} else {
 		User.findOne({email: contributorEmail}, function(err, user){
 			if (err) {
-				res.json(400, { messages: utils.errors(err.errors || err) })
+				res.json(400, utils.errorMessages(err))
 			} else if (!user) {
 				res.json(400, { messages: [{status:'error', text: "Can't find "+contributorEmail+"."}] })
 			} else {
