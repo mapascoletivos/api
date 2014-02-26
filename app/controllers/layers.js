@@ -116,7 +116,7 @@ exports.create = function (req, res) {
 
 	layer.save(function (err) {
 		if (!err) {
-			res.json(layer);
+			res.json({ layer: layer,  messages: [{status: 'ok', text: 'Layer created successfully.'}] });
 		} else {
 			res.json(400, utils.errorMessages(err.errors || err))
 		}
@@ -143,7 +143,7 @@ exports.update = function(req, res){
 
 	layer.save(function(err) {
 		if (!err) {
-			res.json(layer)
+			res.json({ layer: layer,  messages: [{status: 'ok', text: 'Layer updated successfully.'}] })
 		} else {
 			res.json(400, utils.errorMessages(err.errors || err))
 		}
