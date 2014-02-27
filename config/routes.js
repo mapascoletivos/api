@@ -117,8 +117,8 @@ module.exports = function (app, passport) {
 	// new feature should be associated to a layer
 	app.get(apiPrefix + '/features', features.index);
 	app.get(apiPrefix + '/features/:featureId', features.show);
-	app.post(apiPrefix + '/layers/:layerId/features', [auth.requiresLogin, auth.feature.requireOwnership] , features.create);	
-	app.put(apiPrefix + '/features/:featureId', [auth.requiresLogin, auth.feature.requireOwnership], features.update);
+	app.post(apiPrefix + '/layers/:layerId/features', [auth.requiresLogin, auth.feature.canEdit] , features.create);	
+	app.put(apiPrefix + '/features/:featureId', [auth.requiresLogin, auth.feature.canEdit], features.update);
 	
 	/** 
 	 * Content routes 
@@ -170,7 +170,7 @@ module.exports = function (app, passport) {
 	
 	// layer x feature
 	app.put(apiPrefix + '/layers/:layerId/features/:featureId', auth.requiresLogin, layers.addFeature);
-	app.del(apiPrefix + '/layers/:layerId/features/:featureId', auth.requiresLogin, layers.removeFeature);
+	app.del(apiPrefix + '/layers/:layerId/features/:featureId', [auth.requiresLogin, auth.feature.canEdit], layers.removeFeature);
 	
 	// feature x content
 	app.put(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, features.addContent);
