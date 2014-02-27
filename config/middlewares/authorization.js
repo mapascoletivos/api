@@ -17,9 +17,54 @@ exports.requiresLogin = function (req, res, next) {
  */
 
 exports.feature = {
-	canEdit: function (req, res, next) {
 
-		var hasContributor = function(layer, user) {
+
+	canEditOrDelete: function(req, res, next) {
+
+		var checkPermission = function(layer, feature, user){
+
+			layerCreatorId = (layer.creator._id || layer.creator).toHexString(); 
+			featureCreatorId = (feature.creator._id || feature.creator).toHexString();
+			userId = user._id.toHexString();
+
+			// is layer or feature creator
+			if ((featureCreatorId == userId) || (layerCreatorId == userId)) {
+				next();
+			} else {
+				return res.json(403, {
+					messages: [{
+						status: 'error',
+						text: 'Você não tem permissão para fazer isso.'
+					}]
+				});
+			}
+		}
+
+		if (!req.layer) {
+			Layer.findById(req.query.layerId, function(err, layer){
+				if (err) {
+					return res.json(403, {
+						messages: [{
+							status: 'error',
+							text: 'Camada não encontrada.'
+						}]
+					});
+				} else {
+					checkPermission(layer, req.feature, req.user);
+				}
+			});
+		} else {
+			checkPermission(req.layer, req.feature, req.user);
+		}
+
+
+	},
+
+
+	canCreate: function(req, res, next) {
+
+		var isContributor = function(layer, user) {
+			console.log(layer);
 			return _.find(layer.contributors, function(c) {
 				if(!c._id) {
 					return c == user._id.toHexString();
@@ -31,34 +76,23 @@ exports.feature = {
 
 		var isCreator = function(layer, user) {
 			if(layer.creator._id) {
-				return user._id == layer.creator._id;
+				return user._id.toHexString() == layer.creator._id.toHexString();
 			} else {
-				return user._id == layer.creator;
+				return user._id.toHexString() == layer.creator;
 			}
 		}
 
-		var checkPermission = function() {
-			if (typeof hasContributor(req.layer, req.user) == 'undefined' && !isCreator(req.layer, req.user)) {
-				return res.json(403, {
-					messages: [{
-						status: 'error',
-						text: 'Você não tem permissão para fazer isso.'
-					}]
-				});
-			} else {
-				next();
-			}
-		}
-
-		if(req.method == 'PUT' || req.method == 'DELETE')
-			Layer.findById(req.query.layerId, function(err, layer) {
-				req.layer = layer;
-				console.log(req.layer);
-				checkPermission();
+		// is layer creator or contributor
+		if (typeof isContributor(req.layer, req.user) == 'undefined' && !isCreator(req.layer, req.user)) {
+			return res.json(403, {
+				messages: [{
+					status: 'error',
+					text: 'Você não tem permissão para fazer isso.'
+				}]
 			});
-		else
-			checkPermission();
-
+		} else {
+			next();
+		}
 	}
 }
 
