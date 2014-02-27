@@ -1,7 +1,7 @@
 <div class="default-item row" ng-controller="MapActionsCtrl">
 	<h3><a href="/maps/{{map._id}}">{{map.title}}</a></h3>
 	<p class="author" ng-show="!user"><a href="/user/{{map.creator.username}}">{{map.creator.name}}</a></p>
-	<p>{{map.description}}</p>
+	<p ng-show="map.description" dynamic="map.description"></p>
 	<div class="actions">
 		<a href="/maps/{{map._id}}/edit" title="Editar" ng-show="canEdit(map)">
 			<span class="lsf">&#xE09f;</span>

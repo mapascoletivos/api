@@ -36,7 +36,7 @@
 			<div class="map-sidebar-content">
 				<div id="map-info" class="sidebar-block main-info" ng-show="map.description && !feature && !content">
 					<p class="label">Sobre este mapa</p>
-					<p>{{map.description}}</p>
+					<p dynamic="map.description"></p>
 				</div>
 				<div ng-show="feature" ng-controller="FeatureCtrl">
 					<div class="sidebar-block label-block">
