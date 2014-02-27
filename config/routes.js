@@ -31,6 +31,12 @@ module.exports = function (app, passport) {
 
 	app.get('/', home.index);
 
+	/*
+	 * Institutional routes
+	 */
+	app.get('/about', home.about);
+	app.get('/terms-of-use', home.terms);
+
 	/** 
 	 * Users routes 
 	 **/
