@@ -5,9 +5,9 @@ block auth
     input(type='hidden', name='_csrf', value="#{csrf_token}")
 
     .form-group
-      label.col-sm-2.control-label(for='name') Full name
+      label.col-sm-2.control-label(for='name') Nome completo
       .col-sm-10
-        input#name.form-control(type='text', name="name", placeholder='Full name', value=user.name)
+        input#name.form-control(type='text', name="name", placeholder='Nome completo', value=user.name)
 
     .form-group
       label.col-sm-2.control-label(for='email') Email
@@ -15,17 +15,17 @@ block auth
         input#email.form-control(type='text', name="email", placeholder='Email', value=user.email)
 
     .form-group
-      label.col-sm-2.control-label(for='username') Username
+      label.col-sm-2.control-label(for='username') Nome de usuário
       .col-sm-10
-        input#username.form-control(type='text', name="username", placeholder='Username', value=user.username)
+        input#username.form-control(type='text', name="username", placeholder='Nome de usuário', value=user.username)
 
     .form-group
-      label.col-sm-2.control-label(for='password') Password
+      label.col-sm-2.control-label(for='password') Senha
       .col-sm-10
-        input#password.form-control(type='password', name="password", placeholder='Password')
+        input#password.form-control(type='password', name="password", placeholder='Senha')
 
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        button.btn.btn-primary(type='submit') Sign up
-        | &nbsp; or &nbsp;
-        a.show-login(href="/login" target="_self") Log in
+    input.btn.btn-primary(type='submit' value="Cadastrar")
+
+    .form-group.action-group
+      a.show-signup(href="/login" target="_self") Fazer login
+      a(href="/forgot_password" target="_self") Recuperar senha

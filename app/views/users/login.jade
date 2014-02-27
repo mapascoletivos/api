@@ -12,15 +12,12 @@ block auth
         input#email.form-control(type="email", placeholder="Email", name="email")
 
     .form-group
-      label.col-sm-2.control-label(for="password") Password
+      label.col-sm-2.control-label(for="password") Senha
       .col-sm-10
-        input#password.form-control(type="password", placeholder="Password", name="password")
+        input#password.form-control(type="password", placeholder="Senha", name="password")
 
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        button.btn.btn-primary(type='submit') Log in
-        | &nbsp; or &nbsp;
-        a.show-signup(href="/signup" target="_self") Sign up
+    input.btn.btn-primary(type='submit' value="Entrar")
 
-  a(href="/forgot_password" target="_self") Recuperar senha
-
+    .form-group.action-group
+      a.show-signup(href="/signup" target="_self") Cadastre-se
+      a(href="/forgot_password" target="_self") Recuperar senha

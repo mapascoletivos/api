@@ -18,18 +18,10 @@ exports.UserCtrl = [
 
 			User.resource.update({userId: user._id}, user, function(res) {
 
-				Message.message({
-					status: 'ok',
-					text: 'Usuário atualizado.'
-				});
 				$rootScope.$broadcast('user.save.success', user);
 
 			}, function(err) {
 
-				Message.message({
-					status: 'error',
-					text: 'Ocorreu um erro.'
-				});
 				$rootScope.$broadcast('user.save.error', err);
 
 			});
@@ -94,18 +86,7 @@ exports.UserCtrl = [
 				return false;
 			}
 
-			User.resource.update({userId: user._id}, chPwd, function(res) {
-				Message.message({
-					status: 'ok',
-					text: 'Senha alterada com sucesso'
-				});
-			}, function(err) {
-				console.log(err);
-				Message.message({
-					status: 'error',
-					text: 'Ocorreu um erro'
-				});
-			});
+			User.resource.update({userId: user._id}, chPwd);
 
 		}
 
@@ -121,17 +102,6 @@ exports.UserCtrl = [
 
 			User.resource.update({userId: user._id}, {
 				email: user.newEmail
-			}, function(res) {
-				Message.message({
-					status: 'ok',
-					text: 'Senha alterada com sucesso'
-				});
-			}, function(err) {
-				console.log(err);
-				Message.message({
-					status: 'error',
-					text: 'Ocorreu um erro'
-				});
 			});
 
 		}

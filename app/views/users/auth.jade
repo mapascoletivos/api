@@ -2,24 +2,20 @@ extends ../layouts/default-static
 
 block main
 
-	include ../includes/messages
-
-	center
-		h1= title
 
 block content
-	center
-		a(href="/auth/twitter" target="_self")
-			img(src="/img/twitter.png")
-		a(href="/auth/facebook" target="_self")
-			img(src="/img/facebook.png")
-		a(href="/auth/google" target="_self")
-			img(src="/img/google.png")
-
-	center
-		br
-		h2 OR
-		br
-
-	.login
-		block auth
+	section#login
+		.login-content
+			h1=title
+			include ../includes/messages
+			.login-form
+				block auth
+			.social-login
+				<h2>Conecte-se via</h2>
+				.social-networks
+					a(href="/auth/twitter" target="_self" class="lsf twitter" title="Twitter")
+						&#xE12f;
+					a(href="/auth/facebook" target="_self" class="lsf facebook" title="Facebook")
+						&#xE047;
+					a(href="/auth/google" target="_self" class="lsf google" title="Google")
+						&#xE05a;
