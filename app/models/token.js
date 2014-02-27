@@ -16,10 +16,11 @@ var
 
 var TokenSchema = new Schema({
 	_id: String,
-	type: {type: String, enum: ['activateAccount', 'password_reset', 'password_update']},
+	type: {type: String, enum: ['activateAccount', 'password_reset', 'password_update', 'email_change']},
 	createdAt: {type: Date, default: Date.now},
 	expiresAt: Date,
-	user: { type: Schema.ObjectId, ref: 'User'}
+	user: { type: Schema.ObjectId, ref: 'User'},
+	data: {}
 });
 
 /**

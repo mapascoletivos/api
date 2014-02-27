@@ -137,8 +137,45 @@ var Notify = {
 				});
 			}
 		});
+	},
 
+	changeEmail: function(user, newEmail, callback){
+		var
+			Token = mongoose.model('Token'),
+			token = new Token({
+				type: 'email_change',
+				user: user,
+				expiresAt: moment().add('day', 1).toDate(),
+				data: { email: newEmail}
+			});
 
+		token.save(function(err){
+			if (err) {
+				callback(err);
+			} else {
+				jade.renderFile(tplPath + '/email_change.jade', { user: user, token: token, appUrl: config.appUrl }, function(err, file) {
+					if (err) {
+						callback(err);
+					} else {
+						var 
+							options = _.extend(mailConfig, {
+								subject: 'Confirmação de alteração de email',
+								to: newEmail, 
+								html: file
+							});
+
+						transport.sendMail(options, function(err, response){
+							if (err) {
+								callback(err);
+							} else {
+								console.log("Message sent: " + response.message);
+								callback();
+							}
+						});
+					}
+				});
+			}
+		});		
 	}
 }
 

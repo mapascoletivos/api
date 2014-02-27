@@ -1,0 +1,11 @@
+p Olá, #{locals.user.name}
+
+p Você solicitou alteração de e-mail no Mapas Coletivos.
+
+p 
+	| Clique 
+	a(href='#{locals.appUrl}/email_change/#{locals.token._id}') aqui
+	|  para passar a utilizar este endereço.
+
+p
+	| Até logo!

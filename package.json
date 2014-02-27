@@ -27,6 +27,7 @@
 		"mongoose-user": "latest",
 		"mongoose-schema-extend": "latest",
 		"crypto": "latest",
+		"validator": "latest",
 		"nodemailer": "latest",
 		"passport": "latest",
 		"passport-local": "latest",

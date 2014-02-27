@@ -7,6 +7,7 @@ var
 	mongoose = require('mongoose'),
 	User = mongoose.model('User'),
 	mailer = require('../mailer'),
+	validator = require('validator'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend,
 	_ = require('underscore');
@@ -90,7 +91,6 @@ exports.newPasswordToken = function (req, res) {
 		else {
 			if (user) {
 				mailer.passwordReset(user, function(err){
-					console.log(err);
 					if (err) {
 						req.flash('error', 'Houve um erro ao enviar e-mail para mudança de senha');
 						return res.redirect('users/forgot_password');
@@ -145,9 +145,10 @@ exports.create = function (req, res) {
 	var user = new User(req.body);
 	user.provider = 'local';
 
-	// make user active in development environment
-	if (process.env.NODE_ENV == 'development')		
-		user.status = 'active';
+	// uncomment these lines if you want to enable email confirmation at dev environment
+	// if (process.env.NODE_ENV == 'development')		
+	// 	user.status = 'active';
+
 
 	user.save(function (err) {
 		if (err) {
@@ -157,15 +158,17 @@ exports.create = function (req, res) {
 			});
 		}
 
-		// don't send email in development environment
-		if (process.env.NODE_ENV == 'development') {
+		// Don't send email if user is active
+		if (user.status == 'active') {
 			return res.redirect('/login');
 		} else {
 			mailer.welcome(user, function(err){
-				if (err)
+				if (err) {
 					req.flash('error', 'Erro ao enviar o e-mail de ativação.');
-				else
+				}
+				else {
 					req.flash('info', 'Um link de ativação de usuário foi enviado para seu e-mail.');
+				}
 				return res.redirect('/login');
 			});	
 		}
@@ -179,32 +182,45 @@ exports.create = function (req, res) {
  */
 
 exports.update = function (req, res) {
-	var 
-		user;
 
-	User.findById(req.user._id, function(err, usr){
+	User.findById(req.user._id, function(err, user){
 		
-		// User is not changing password
-		if (!req.body.userPwd) {
-			usr.bio = req.body.bio;
-			usr.name = req.body.name;
-			usr.username = req.body.username;
-			usr.email = req.body.email;
-		} else {
-			if (!usr.authenticate(req.body.userPwd)) {
+		// User is changing password
+		if (req.body.userPwd) {
+			if (!user.authenticate(req.body.userPwd)) {
 				return res.json(400, { messages: [{status: 'error', text: 'Invalid password.'}] });
 			} else {
 				if (req.body.newPwd != req.body.validatePwd) 
 					return res.json(400, { messages: [{status: 'error', text: "Passwords don't match." }] });
 				else
-					usr.password = req.body.newPwd;
+					user.password = req.body.newPwd;
 			}
+
+		// User is changing e-mail
+		} else if ((req.body.email) && (req.body.email != user.email)) {
+			if (validator.isEmail(req.body.email)) {
+				mailer.changeEmail(user, req.body.email, function(err){
+					if (err) {
+						console.log(err)
+						return res.json(400, { messages: [{status: 'error', text: "Error while trying to changing email."}] });
+					} else {
+						return res.json({ messages: [{status: 'ok', text: 'An email was sent to confirm new e-mail address.'}] });
+					}
+				});
+			} else {
+				return res.json(400, { messages: [{status: 'error', text: "Endereço de e-mail inválido."}] });			
+			}
+		} else {
+			user.bio = req.body.bio;
+			user.name = req.body.name;
+			user.username = req.body.username;
+			user.email = req.body.email;
+			user.save(function(err){
+				if (err) res.json(400, utils.errorMessages(err.errors || err));
+				else res.json({ messages: [{status: 'ok', text: 'User profile info updated successfully.'}] });
+			});		 
 		}
 
-		usr.save(function(err){
-			if (err) res.json(400, utils.errorMessages(err.errors || err));
-			else res.json({sucess:true});
-		});		 
 	});
 }
 

@@ -151,3 +151,41 @@ exports.passwordUpdate = function(req, res){
 		
 	}
 }
+
+/**
+ * Update Password
+ */
+
+exports.emailChange = function(req, res){
+	var
+		token = req.token;
+	
+
+	console.log('tá chegando');
+	// invalid route for token
+	if (token.type != 'email_change') {
+		req.flash('error', 'Token inválido.');
+		return res.redirect('/login');
+	} else {
+		mongoose.model('User').findById(token.user, function(err, user){
+			if (err) {
+				req.flash('error', 'Houve um erro no pedido de alteração de e-mail.')
+				return res.redirect('/login');
+			}
+			
+			user.email = token.data.email;
+
+			user.save(function(err){
+				// TODO render login form
+				if (err)
+					req.flash('error', 'Não foi possível alterar o seu e-mail, contate o suporte.')
+				else {
+					req.flash('info', 'E-mail alterado com sucesso.')
+				}
+
+				return res.redirect('/login');
+			});
+		})
+		
+	}
+}
