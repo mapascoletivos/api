@@ -14,7 +14,8 @@ angular.module('mapasColetivos.leaflet', [])
 			groups = [],
 			markers = [],
 			hiddenMarkers = [],
-			baseLayer = L.tileLayer('http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png');
+			baseLayer = L.tileLayer('http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png'),
+			legendControl = L.mapbox.legendControl();
 
 		var featureToMapObj = require('../feature/featureToMapObjService');
 
@@ -25,6 +26,7 @@ angular.module('mapasColetivos.leaflet', [])
 				map.whenReady(function() {
 					map.addLayer(baseLayer);
 					map.addLayer(markerLayer);
+					map.addControl(legendControl);
 				});
 				return map;
 			},
@@ -86,7 +88,11 @@ angular.module('mapasColetivos.leaflet', [])
 			},
 			addLayer: function(layer) {
 				if(layer.type == 'TileLayer') {
-					this.addTileLayer(layer.url);
+					var layer = this.addTileLayer(layer.url);
+					layer.on('load', _.once(function() {
+						legendControl.addLegend(layer._tilejson.legend);
+					}));
+					groups.push(layer);
 				} else {
 					var self = this;
 					var markers = [];
@@ -110,12 +116,16 @@ angular.module('mapasColetivos.leaflet', [])
 				if(url.indexOf('http://') !== -1) {
 					return L.tileLayer(url).addTo(map);
 				} else {
-					var gridLayer = L.mapbox.gridLayer(url).addTo(map);
-					L.mapbox.gridControl(gridLayer).addTo(map);
-					return L.mapbox.tileLayer(url).addTo(map);
+					var layer = L.mapbox.tileLayer(url);
+					layer.gridLayer = L.mapbox.gridLayer(url).addTo(map);
+					layer.gridControl = L.mapbox.gridControl(layer.gridLayer).addTo(map);
+					return layer.addTo(map);
 				}
 			},
 			renderTileJSON: function(tilejson) {
+				if(tilejson.legend) {
+					legendControl.addLegend(tilejson.legend);
+				}
 				if(tilejson.center) {
 					map.setView([tilejson.center[1], tilejson.center[0]], tilejson.center[2]);
 				}
@@ -137,13 +147,22 @@ angular.module('mapasColetivos.leaflet', [])
 				map.removeLayer(baseLayer);
 			},
 			clearGroups: function() {
+				var self = this;
 				if(groups.length) {
 					angular.forEach(groups, function(group) {
-						if(map.hasLayer(group))
-							map.removeLayer(group);
+						if(map.hasLayer(group)) {
+							self.removeLayer(group);
+						}
 					});
 				}
 				groups = []
+			},
+			removeLayer: function(layer) {
+				map.removeLayer(layer);
+				if(layer._tilejson) {
+					layer.gridControl.removeFrom(map);
+					map.removeLayer(layer.gridLayer);
+				}
 			},
 			clearAll: function() {
 				this.clearMarkers();
@@ -152,6 +171,7 @@ angular.module('mapasColetivos.leaflet', [])
 			destroy: function() {
 				this.clearAll();
 				baseLayer = L.tileLayer('http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png');
+				legendControl = L.mapbox.legendControl();
 				if(map instanceof L.Map)
 					map.remove();
 				map = null;

@@ -1670,7 +1670,8 @@ input.no-canvas {
 }
 
 .leaflet-popup-content {
-	margin: 10px;
+	margin: 0;
+	padding: 10px;
 	h3 {
 		font-size: 14px;
 		font-weight: 600;
@@ -1682,6 +1683,10 @@ input.no-canvas {
 		margin: 0;
 		color: #999;
 	}
+}
+
+.mapbox-control-info-right .map-info-container {
+	border-radius: 0 13px 13px 0;
 }
 
 /*
@@ -1714,6 +1719,33 @@ input.no-canvas {
 		padding: 20px;
 		float: left;
 		color: #f0f0f0;
+		position: relative;
+		max-width: 300px;
+		&.withBackButton {
+			padding-left: 60px;
+		}
+		.back {
+			position: absolute;
+			background: #444;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			font-size: 25px;
+			width: 15px;
+			line-height: 100%;
+			padding: 0 15px;
+			color: #999;
+			text-decoration: none;
+			&:hover {
+				background: #555;
+				color: #fff;
+			}
+			span {
+				position: absolute;
+				top: 50%;
+				margin-top: -12.5px;
+			}
+		}
 		h1 {
 			color: #f0f0f0;
 		}
@@ -1794,6 +1826,29 @@ input.no-canvas {
 				.leaflet-right {
 					right: 20px;
 				}
+				.leaflet-top.leaflet-left {
+					top: 45%;
+				}
+				.leaflet-control {
+					box-shadow: none;
+					-webkit-box-shadow: none;
+					border-color: #333;
+					border-radius: 0;
+				}
+				.leaflet-bar a {
+					box-shadow: none;
+					-webkit-box-shadow: none;
+					background: #444;
+					border-color: #333;
+					color: #999;
+					border-radius: 0;
+					opacity: 1;
+					font-size: 18px;
+					&:hover {
+						background: #555;
+						color: #f0f0f0;
+					}
+				}
 			}
 			.leaflet-popup-content-wrapper, .map-legends, .map-tooltip {
 				border-radius: 0;
@@ -1808,6 +1863,9 @@ input.no-canvas {
 				left: -50%;
 				height: 100%;
 				.leaflet-control-container {
+					.leaflet-left {
+						left: 26%;
+					}
 					.leaflet-right {
 						right: 26%;
 						margin-left: 20px;
@@ -1822,7 +1880,7 @@ input.no-canvas {
 		top: 20px;
 		right: 20px;
 		left: 66.666%;
-		bottom: 20px;
+		bottom: 30px;
 		transition: background .2s ease-in-out;
 		::-webkit-scrollbar-thumb {
 			background: transparent; 
@@ -2106,6 +2164,8 @@ input.no-canvas {
 		max-width: 550px;
 		min-width: 330px;
 		height: auto;
+		max-height: 70%;
+		overflow: auto;
 		z-index: 2000;
 		-webkit-transform: translateX(-50%) translateY(-50%);
 		-moz-transform: translateX(-50%) translateY(-50%);

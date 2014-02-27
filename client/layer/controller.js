@@ -16,9 +16,10 @@ exports.LayerCtrl = [
 	'Content',
 	'MessageService',
 	'SessionService',
+	'LoadingService',
 	'MapService',
 	'MapView',
-	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, MapService, MapView) {
+	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, Loading, MapService, MapView) {
 
 		$scope.$layer = Layer;
 		$scope.$feature = Feature;
@@ -116,9 +117,14 @@ exports.LayerCtrl = [
 
 					var tilelayer = MapService.addTileLayer(layer.url);
 
+					Loading.show('Carregando camada');
+
 					if(layer.properties.service == 'mapbox') {
 						tilelayer.on('load', _.once(function() {
 							MapService.renderTileJSON(tilelayer.getTileJSON());
+							$rootScope.$apply(function() {
+								Loading.hide();
+							});
 						}));
 					}
 

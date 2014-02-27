@@ -12,6 +12,8 @@ angular.module('mapasColetivos.mapView', [])
 
 		var sidebar = true;
 
+		var backLink = false;
+
 		return {
 			sidebar: function(enable) {
 				if(typeof enable !== 'undefined') {
@@ -23,6 +25,14 @@ angular.module('mapasColetivos.mapView', [])
 				}
 
 				return sidebar;
+			},
+			backLink: function(url) {
+				if(typeof url !== 'undefined') {
+					backLink = url;
+					console.log(backLink);
+				}
+
+				return backLink;
 			}
 		}
 
@@ -31,10 +41,28 @@ angular.module('mapasColetivos.mapView', [])
 
 .controller('MapViewCtrl', [
 	'$scope',
+	'$rootScope',
+	'$location',
 	'MapView',
-	function($scope, MapView) {
+	function($scope, $rootScope, $location, MapView) {
 
 		$scope.mapView = MapView;
+
+		$rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
+
+			if(from.name.indexOf('singleMap') == -1 && from.name.indexOf('singleLayer') == -1) {
+				MapView.backLink(window.mcHistory[window.mcHistory.length-2]);
+			}
+
+		});
+
+		$scope.mapView.goBack = function() {
+
+			if(MapView.backLink()) {
+				$location.path(MapView.backLink());
+			}
+
+		}
 
 	}
 ]);

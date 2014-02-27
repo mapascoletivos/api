@@ -1,6 +1,7 @@
 <div class="map-view layer-view" ng-controller="MapViewCtrl" ng-class="{withSidebar: mapView.sidebar()}">
 	<div class="page-header">
-		<div id="layer-info" class="map-info">
+		<div id="layer-info" class="map-info" ng-class="{withBackButton: mapView.backLink()}">
+			<a class="back lsf" title="Voltar" href="javascript:void(0);" ng-click="mapView.goBack()" ng-show="mapView.backLink()"><span>&#xE133;</span></a>
 			<h1>{{layer.title}}</h1>
 			<p class="author">por <a href="/user/{{layer.creator.username}}/">{{layer.creator.name}}</a></p>
 		</div>

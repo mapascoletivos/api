@@ -145,4 +145,19 @@ angular.module('mapasColetivos', [
 		});
 
 	}
+])
+
+.run([
+	'$rootScope',
+	function($rootScope) {
+
+		/*
+		 * Store nav history
+		 */
+		window.mcHistory = [];
+		$rootScope.$on('$stateChangeSuccess', function() {
+			window.mcHistory.push(window.location.pathname);
+		});
+
+	}
 ]);

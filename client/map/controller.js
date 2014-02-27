@@ -17,9 +17,10 @@ exports.MapCtrl = [
 	'Content',
 	'Feature',
 	'MapService',
+	'MapView',
 	'MessageService',
 	'SessionService',
-	function($scope, $rootScope, $timeout, $location, $state, $stateParams, Page, Map, Layer, Content, Feature, MapService, Message, Session) {
+	function($scope, $rootScope, $timeout, $location, $state, $stateParams, Page, Map, Layer, Content, Feature, MapService, MapView, Message, Session) {
 
 		$scope.user = Session.user;
 
@@ -64,6 +65,8 @@ exports.MapCtrl = [
 			}
 
 			Map.resource.get({mapId: $stateParams.mapId}, function(map) {
+
+				MapView.sidebar(true);
 
 				Page.setTitle(map.title);
 

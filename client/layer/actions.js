@@ -97,6 +97,10 @@ exports.LayerActionsCtrl = [
 				}
 			});
 
+			$rootScope.$on('$stateChangeStart', _.once(function() {
+				NewLayerBox.deactivate();
+			}));
+
 		}
 
 		$scope.editTileLayer = function(layer) {
