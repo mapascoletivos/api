@@ -15,9 +15,9 @@ html.landing
 							li
 								a.button(href="/explore", title="Explorar") Explorar
 							li
-								a.button(href="/dashboard", title="Dashboard") Dashboard
+								a.button(href="/dashboard", title="Painel de controle") Painel de controle
 							li
-								a.button(href="/logout", title="logout") Logout
+								a.button(href="/logout", title="Sair") Sair
 						- else
 							li
 								a.button.light-button(href="/explore", title="Explorar") Explorar
@@ -25,10 +25,24 @@ html.landing
 								a.button.login(href="/login") Entrar
 		section#highlight.row.anti-row
 			.container
-				.five.columns.signup-call
-					.signup-call-content
-						h2 Conte histórias em mapas
-						p Crie narrativas e compartilhe suas histórias
-						div.actions
-							a.button(href="/explore", title="Explorar a comunidade") Explore a comunidade
-							a.button(href="/signup", title="Cadastre-se na comunidade") Cadatre-se a comece a criar mapas
+				.four.columns
+					.highlight-block.publish
+						img.icon(src="/img/icon_publish.png" alt="Publique seus dados")
+						h2 Publique seus dados
+						p.block-text Faça camadas com MapBox e Stamen ou criando pontos no mapa
+						p.more
+							a.button(href="#") Saiba mais
+				.four.columns
+					.highlight-block.publish
+						img.icon(src="/img/icon_story.png" alt="Conte suas histórias")
+						h2 Conte suas histórias
+						p.block-text Publique relatos, fotos e vídeos geolocalizados
+						p.more
+							a.button(href="#") Saiba mais
+				.four.columns
+					.highlight-block.publish
+						img.icon(src="/img/icon_view.png" alt="Visualize")
+						h2 Visualize
+						p.block-text Crie seus mapas misturando camadas públicas de dados e histórias
+						p.more
+							a.button(href="#") Saiba mais
