@@ -176,6 +176,46 @@ var Notify = {
 				});
 			}
 		});		
+	},
+	migrateAccount: function(user, newPassword, callback){
+		var
+			Token = mongoose.model('Token'),
+			token = new Token({
+				type: 'migrate_account',
+				user: user,
+				expiresAt: moment().add('day', 1).toDate(),
+				data: { password: newPassword}
+			});
+
+
+		token.save(function(err){
+			if (err) {
+				callback(err);
+			} else {
+				jade.renderFile(tplPath + '/migrate_account.jade', { user: user, token: token, appUrl: config.appUrl }, function(err, file) {
+					if (err) {
+						console.log(err);
+						callback(err);
+					} else {
+						var 
+							options = _.extend(mailConfig, {
+								subject: 'Migração de conta',
+								to: user.email, 
+								html: file
+							});
+
+						transport.sendMail(options, function(err, response){
+							if (err) {
+								callback(err);
+							} else {
+								console.log("Message sent: " + response.message);
+								callback();
+							}
+						});
+					}
+				});
+			}
+		});		
 	}
 }
 

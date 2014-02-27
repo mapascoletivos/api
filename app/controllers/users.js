@@ -123,6 +123,68 @@ exports.signup = function (req, res) {
 }
 
 /**
+ * Show migrate form
+ */
+
+exports.showMigrate = function (req, res) {
+	res.render('users/migrate');
+}
+
+/**
+ * Generate migration token
+ */
+
+exports.migrate = function (req, res) {
+	var
+		email = req.body.email,
+		password = req.body.password,
+		errors = [];
+
+	if (!email) {
+		errors.push('Informe um e-mail.');
+	}
+
+	if (!password) {
+		errors.push('Informe uma nova senha');
+	}
+
+	if ((password) && (password.length < 6)) {
+		errors.push('A nova senha deve ter ao menos 6 caracteres.');
+	}
+
+	if (errors.length > 0) {
+		res.render('users/migrate', {
+			errors: errors,
+			email: email
+		});
+	} else {
+		User.findOne({email: email, status: 'to_migrate'}, function(err, user){
+			if (err) {
+				res.render('users/migrate', {
+					errors:  utils.errorMessagesFlash(err.errors),
+					email: email
+				});
+			} else if (!user) {
+				res.render('users/migrate', {
+					errors:  ['Usuário não encontrado ou migração já realizada.'],
+					email: email
+				});
+			} else {
+				mailer.migrateAccount(user, password, function(err){
+					res.render('users/migrate', {
+						info:  ['Um link de confirmação de migração foi enviado ao seu e-mail.'],
+						email: email
+					});
+				})
+			}
+		})
+	}
+
+}
+
+
+
+/**
  * Logout
  */
 
@@ -152,10 +214,8 @@ exports.create = function (req, res) {
 
 	user.save(function (err) {
 		if (err) {
-			return res.json({
-				errors: utils.errors(err.errors),
-				user: user
-			});
+			req.flash('error', utils.errorMessagesFlash(err.errors));
+			return res.redirect('/signup');
 		}
 
 		// Don't send email if user is active

@@ -15,10 +15,11 @@ var
 exports.load = function(req, res, next, id){
 	Token.findById(id, function (err, token) {
 		if (err) return next(err);
-		if (!token) return res.json(400, new Error('not found'));
+		if (!token){
+			return res.render('tokens/index', {errors: ['Token não encontrado.']});	
+		} 
 		if (token.expiresAt < Date.now()) {
-			req.flash('error', 'Este token expirou');
-			return res.redirect('/login');
+			return res.render('tokens/index', {errors: ['Este token expirou.']});	
 		}
 		req.token = token;
 		next()
@@ -35,29 +36,24 @@ exports.activateAccount = function(req, res){
 	
 	// invalid route for token
 	if (token.type != 'activateAccount') {
-		req.flash('error', 'Token inválido.');
-		return res.redirect('/login');
+		return res.render('tokens/index', {errors: ['Token inválido.']});	
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
-				req.flash('error', 'Não foi possível ativar este usuário.')
-				return res.redirect('/login');
+				return res.render('tokens/index', {errors: ['Não foi possível ativar este usuário.']});
 			}
 			
 			user.status = 'active';
 
 			user.save(function(err){
-				// TODO render login form
 				if (err)
-					req.flash('error', 'Não foi possível ativar este usuário.')
+					return res.render('tokens/index', {errors: ['Não foi possível ativar este usuário.']});
 				else {
-					req.flash('info', 'Conta ativada com sucesso.')
+					req.flash('info', 'Conta ativada com sucesso, faça o login agora.')
+					return res.redirect('/login');
 				}
-
-				return res.redirect('/login');
 			});
 		})
-		
 	}
 }
 
@@ -69,11 +65,12 @@ exports.activateAccount = function(req, res){
 exports.showPasswordReset = function(req, res){
 	var
 		token = req.token;
+
+	console.log(token);
 	
 	// invalid route for token
-	if ((token.type != 'password_reset') || (token.type != 'password_update')) {
-		req.flash('error', 'Token inválido.');
-		return res.redirect('/login');
+	if (token.type != 'password_reset') {
+		return res.render('tokens/index', {errors: ['Token inválido.']});
 	} else {
 		res.render('users/password_change', {user: req.user, token: token})
 	}
@@ -89,26 +86,21 @@ exports.passwordReset = function(req, res){
 	
 	// invalid route for token
 	if (token.type != 'password_reset') {
-		req.flash('error', 'Token inválido.');
-		return res.redirect('/login');
+		return res.render('tokens/index', {errors: ['Token inválido.']});
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
-				req.flash('error', 'Houve um erro no pedido de alteração de senha.')
-				return res.redirect('/login');
+				return res.render('tokens/index', {errors: ['Houve um erro no pedido de alteração de senha.']});
 			}
 			
 			user.password = req.body.password;
 
 			user.save(function(err){
-				// TODO render login form
 				if (err)
-					req.flash('error', 'Não foi possível alterar a senha deste usuário.')
+					return res.render('tokens/index', {errors: ['Não foi possível alterar a senha deste usuário.']});
 				else {
-					req.flash('info', 'Senha alterada com sucesso.')
+					return res.render('tokens/index', {info: ['Senha alterada com sucesso.']});
 				}
-
-				return res.redirect('/login');
 			});
 		})
 		
@@ -116,33 +108,30 @@ exports.passwordReset = function(req, res){
 }
 
 /**
- * Update Password
+ * Migrate account
  */
 
-exports.passwordUpdate = function(req, res){
+exports.migrateAccount = function(req, res){
 	var
 		token = req.token;
 	
 	// invalid route for token
-	if (token.type != 'password_update') {
-		req.flash('error', 'Token inválido.');
-		return res.redirect('/login');
+	if (token.type != 'migrate_account') {
+		return res.render('tokens/index', {errors: ['Token inválido.']});
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
-				req.flash('error', 'Houve um erro no pedido de alteração de senha.')
-				return res.redirect('/login');
+				return res.render('tokens/index', {errors: ['Houve um erro na migração da conta.']});
 			}
 			
-			user.password = req.body.password;
+			user.password = token.data.password;
 			user.status = 'active';
 
 			user.save(function(err){
-				// TODO render login form
 				if (err)
-					req.flash('error', 'Não foi possível alterar a senha deste usuário.')
+				return res.render('tokens/index', {errors: ['Não foi possível migrar a conta deste usuário']});
 				else {
-					req.flash('info', 'Senha alterada com sucesso.')
+					req.flash('info', 'Usuário migrado com sucesso.')
 				}
 
 				return res.redirect('/login');
@@ -153,24 +142,26 @@ exports.passwordUpdate = function(req, res){
 }
 
 /**
- * Update Password
+ * Change e-mail
  */
 
 exports.emailChange = function(req, res){
 	var
-		token = req.token;
+		token = req.token,
+		error = [],
+		info = [];
 	
 
 	console.log('tá chegando');
 	// invalid route for token
 	if (token.type != 'email_change') {
-		req.flash('error', 'Token inválido.');
-		return res.redirect('/login');
+		return res.render('tokens/index', {errors: ['Token inválido.']});
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
-				req.flash('error', 'Houve um erro no pedido de alteração de e-mail.')
-				return res.redirect('/login');
+				return res.render('tokens/index', {
+					errors: ['Houve um erro na solicitação de alteração de e-mail.']
+				});
 			}
 			
 			user.email = token.data.email;
@@ -178,14 +169,15 @@ exports.emailChange = function(req, res){
 			user.save(function(err){
 				// TODO render login form
 				if (err)
-					req.flash('error', 'Não foi possível alterar o seu e-mail, contate o suporte.')
+					return res.render('tokens/index', {
+						errors: ['Não foi possível alterar o e-mail deste usuário.']
+					});
 				else {
-					req.flash('info', 'E-mail alterado com sucesso.')
+					return res.render('tokens/index', {
+						info: ['E-mail alterado com sucesso.']
+					});
 				}
-
-				return res.redirect('/login');
 			});
 		})
-		
 	}
 }

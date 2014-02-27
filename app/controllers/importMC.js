@@ -53,8 +53,8 @@ var importUsers = function(mysqlConnection, callback) {
 				usr.email = row['email'];
 				usr.username = row['username'];
 				// usr.hashed_password = row['password'];
-				usr.password = 'a';
-				usr.status = 'need_password_update';
+				usr.password = row['password'];
+				usr.status = 'to_migrate';
 				usr.logins = row['logins'];
 				if (row['last_login']) {
 					usr.lastLogin = new Date();

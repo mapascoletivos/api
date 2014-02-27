@@ -24,7 +24,7 @@ var UserSchema = new Schema({
 	localization: String,
 	bio: {type: String, default: '' },
 	web: String,
-	status: {type: String, enum: ['need_password_update', 'inactive', 'active'], default: 'inactive' },
+	status: {type: String, enum: ['to_migrate', 'inactive', 'active'], default: 'inactive' },
 	provider: { type: String, default: '' },
 	salt: { type: String, default: '' },
 	layers: [{type: Schema.ObjectId, ref: 'Layer'}],

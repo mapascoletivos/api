@@ -1,0 +1,29 @@
+extends ../layouts/default-static
+
+block main
+
+
+block content
+	section#login
+		.login-content
+			h1=title
+			include ../includes/messages
+			.login-form
+					p Preencha as informações para migrar seus mapas para o novo Mapas Coletivos.
+					form.form-horizontal(action="/migrate", method="post", role="form")
+						input(type='hidden', name='_csrf', value="#{csrf_token}")
+
+						p.col-sm-offset-2.error= message
+
+						.form-group
+							label.col-sm-2.control-label(for="email") Email
+							.col-sm-10
+								input#email.form-control(type="email", value="#{email || ''}", placeholder="Email", name="email")
+
+						.form-group
+							label.col-sm-2.control-label(for="password") Nova senha
+							.col-sm-10
+								input#password.form-control(type="password", placeholder="Senha", name="password")
+
+						input.btn.btn-primary(type='submit' value="Migrar conta")
+

@@ -39,6 +39,8 @@ module.exports = function (app, passport) {
 	app.post('/forgot_password', users.newPasswordToken);	
 	app.get('/signup', users.signup);
 	app.get('/logout', users.logout);
+	app.get('/migrate', users.showMigrate);
+	app.post('/migrate', users.migrate);
 	
 	app.post('/users', users.create)
 	app.put(apiPrefix + '/users', auth.requiresLogin, users.update)
@@ -55,7 +57,7 @@ module.exports = function (app, passport) {
 	app.get('/activate_account/:tokenId', token.activateAccount);
 	app.get('/password_reset/:tokenId', token.showPasswordReset);
 	app.post('/password_reset/:tokenId', token.passwordReset);	
-	app.get('/password_update/:tokenId', token.passwordUpdate);	
+	app.get('/migrate_account/:tokenId', token.migrateAccount);	
 	app.get('/email_change/:tokenId', token.emailChange);	
 	app.param('tokenId', token.load);
 	
