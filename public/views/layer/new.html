@@ -5,9 +5,18 @@
 			<h2>Nova camada</h2>
 			<p>Qual tipo de camada você deseja criar?</p>
 			<div class="layer-types-selector">
-				<a href="javascript:void(0);" ng-click="newLayer('FeatureLayer')">Camada de conteúdo</a>
-				<a href="javascript:void(0);" ng-click="newLayer('TileLayer', 'tilelayer')">TileLayer</a>
-				<a href="javascript:void(0);" ng-click="newLayer('TileLayer', 'mapbox')">MapBox</a>
+				<a href="javascript:void(0);" ng-click="newLayer('FeatureLayer')">
+					<span class="img-container"><span class="lsf">&#xE101;</span></span>
+					Camada de histórias
+				</a>
+				<a href="javascript:void(0);" ng-click="newLayer('TileLayer', 'tilelayer')">
+					<span class="img-container"><span class="lsf">&#xE12a;</span></span>
+					TileLayer
+				</a>
+				<a href="javascript:void(0);" ng-click="newLayer('TileLayer', 'mapbox')">
+					<span class="img-container"><img src="/img/mapbox.png"></span>
+					Camada do MapBox
+				</a>
 			</div>
 		</div>
 	</div>
