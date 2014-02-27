@@ -17,7 +17,8 @@ exports.LayerCtrl = [
 	'MessageService',
 	'SessionService',
 	'MapService',
-	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, MapService) {
+	'MapView',
+	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, MapService, MapView) {
 
 		$scope.$layer = Layer;
 		$scope.$feature = Feature;
@@ -103,6 +104,12 @@ exports.LayerCtrl = [
 					zoom: 2
 				});
 
+				if(!layer.description && !layer.features.length && !layer.contents.length) {
+					MapView.sidebar(false);
+				} else {
+					MapView.sidebar(true);
+				}
+
 				if(layer.type == 'TileLayer') {
 
 					MapService.removeBaseLayer();
@@ -147,6 +154,8 @@ exports.LayerCtrl = [
 					Content.set(layer.contents);
 
 					$rootScope.$broadcast('data.ready', layer);
+
+					MapService.get().invalidateSize(true);
 
 				}
 

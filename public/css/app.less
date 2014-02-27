@@ -1697,8 +1697,8 @@ input.no-canvas {
 	.page-header {
 		position: absolute;
 		z-index: 2;
-		top: 0;
-		width: 100%;
+		top: 30px;
+		left: 30px;
 		pointer-events: none;
 		a {
 			pointer-events: auto;
@@ -1710,9 +1710,8 @@ input.no-canvas {
 		}
 	}
 	.map-info {
-		background: #666;
+		background: #333;
 		padding: 20px;
-		margin-top: 30px;
 		float: left;
 		color: #f0f0f0;
 		h1 {
@@ -1735,7 +1734,7 @@ input.no-canvas {
 	.map-controls {
 		position: absolute;
 		bottom: 30px;
-		left: 0;
+		left: 30px;
 		right: 0;
 		z-index: 10;
 		pointer-events: none;
@@ -1748,8 +1747,8 @@ input.no-canvas {
 					position: relative;
 					pointer-events: auto;
 					display: block;
-					background: @blue;
-					border: 1px solid @dark-blue;
+					background: @dark-blue;
+					border: 1px solid @blue;
 					padding: 15px 20px;
 					color: #fff;
 					text-decoration: none;
@@ -1772,29 +1771,47 @@ input.no-canvas {
 	}
 	.map-container {
 		position: absolute;
-		width: 66.666%;
+		width: 100%;
 		top: 0;
 		bottom: 0;
 		z-index: 1;
 		transition: right .2s ease-in-out;
-		&.shrink {
-			right: 40%;
-			transition: right .2s ease-in-out;
-		}
 		.leaflet-container {
+			width: 100%;
 			position: absolute;
-			width: 200%;
-			left: -50%;
-			height: 100%;
 			top: 0;
 			bottom: 0;
 			.leaflet-control-container {
 				.leaflet-top {
 					top: 20px;
 				}
+				.leaflet-bottom {
+					bottom: 20px;
+				}
+				.leaflet-left {
+					left: 20px;
+				}
 				.leaflet-right {
-					right: 26%;
-					margin-left: 20px;
+					right: 20px;
+				}
+			}
+			.leaflet-popup-content-wrapper, .map-legends, .map-tooltip {
+				border-radius: 0;
+			}
+		}
+	}
+	&.withSidebar {
+		.map-container {
+			width: 66.666%;
+			.leaflet-container {
+				width: 200%;
+				left: -50%;
+				height: 100%;
+				.leaflet-control-container {
+					.leaflet-right {
+						right: 26%;
+						margin-left: 20px;
+					}
 				}
 			}
 		}
@@ -1869,10 +1886,10 @@ input.no-canvas {
 		.main-info {
 			font-size: 18px;
 			line-height: 28px;
-			background: #666;
+			background: #333;
 			color: #f0f0f0;
 			&:hover {
-				background: #666;
+				background: #444;
 			}
 			p {
 				margin: 0;

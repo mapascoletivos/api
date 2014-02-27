@@ -23,6 +23,7 @@ require('./core/dashboard');
 
 require('./common/leaflet');
 require('./common/directives');
+require('./common/mapView');
 
 /*
  * Apps
@@ -49,6 +50,7 @@ angular.module('mapasColetivos', [
 	'ngRoute',
 	'ngAnimate',
 	'infinite-scroll',
+	'mapasColetivos.mapView',
 	'mapasColetivos.user',
 	'mapasColetivos.pageTitle',
 	'mapasColetivos.directives',

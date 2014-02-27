@@ -1,7 +1,5 @@
 'use strict';
 
-//L.Icon.Default.imagePath = '/img/leaflet';
-
 /*
  * Leaflet service
  */
@@ -153,6 +151,7 @@ angular.module('mapasColetivos.leaflet', [])
 			},
 			destroy: function() {
 				this.clearAll();
+				baseLayer = L.tileLayer('http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png');
 				if(map instanceof L.Map)
 					map.remove();
 				map = null;
