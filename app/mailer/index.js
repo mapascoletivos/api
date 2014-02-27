@@ -216,7 +216,34 @@ var Notify = {
 				});
 			}
 		});		
+	},
+
+	informContributorPermission: function(layer, creator, contributor, callback){
+
+		jade.renderFile(tplPath + '/inform_contributor_permission.jade', { layer: layer, creator: creator, contributor: contributor, appUrl: config.appUrl }, function(err, file) {
+			if (err) {
+				console.log(err);
+				callback(err);
+			} else {
+				var 
+					options = _.extend(mailConfig, {
+						subject: 'Permissão para edição de camada',
+						to: contributor.email, 
+						html: file
+					});
+
+				transport.sendMail(options, function(err, response){
+					if (err) {
+						callback(err);
+					} else {
+						console.log("Message sent: " + response.message);
+						callback();
+					}
+				});
+			}
+		});
 	}
+
 }
 
 /**

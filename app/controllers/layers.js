@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	Layer = mongoose.model('Layer'),
 	Feature = mongoose.model('Feature'),
 	User = mongoose.model('User'),
+	mailer = require('../mailer'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend,
 	utils = require('../../lib/utils'),
@@ -226,13 +227,13 @@ exports.addContributor = function (req, res) {
 		layer = req.layer;
 
 	if (contributorEmail == req.user.email) {
-		res.json(400, { messages: [{status:'error', text: "Can't add creator as contributor."}] })
+		res.json(400, { messages: [{status:'error', text: "O usuário já é o criador da camada."}] })
 	} else {
 		User.findOne({email: contributorEmail}, function(err, user){
 			if (err) {
 				res.json(400, utils.errorMessages(err.errors || err))
 			} else if (!user) {
-				res.json(400, { messages: [{status:'error', text: "Can't find "+contributorEmail+"."}] })
+				res.json(400, { messages: [{status:'error', text: "Não foi encontrar usuário com email "+contributorEmail+"."}] })
 			} else {
 				layer.contributors.addToSet(user);
 				layer.save(function(err){
@@ -243,7 +244,10 @@ exports.addContributor = function (req, res) {
 							.findById(layer._id)
 							.populate('contributors', 'name username email')
 							.exec(function(err, updatedLayer){
-							res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contributor added successfully'}] })
+								res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contribuidor adicionado com sucesso'}] });
+								mailer.informContributorPermission(layer, req.user, user, function(err){
+									console.log(err);
+								});
 						});
 				});
 			}
