@@ -67,9 +67,6 @@ exports.LayerCtrl = [
 
 			if(features && features.length) {
 				// Fit marker layer after 200ms (animation safe)
-				setTimeout(function() {
-					MapService.fitMarkerLayer();
-				}, 200);
 			}
 
 		}
@@ -140,6 +137,10 @@ exports.LayerCtrl = [
 					// Init features
 					Feature.set(angular.copy(layer.features));
 					populateMap(layer.features, layer, true);
+					
+					setTimeout(function() {
+						MapService.fitMarkerLayer();
+					}, 200);
 
 					var viewingContent = false;
 					$scope.$on('content.filtering.started', function(event, c, cF) {

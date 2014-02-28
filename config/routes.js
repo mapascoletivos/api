@@ -35,6 +35,7 @@ module.exports = function (app, passport) {
 	 * Institutional routes
 	 */
 	app.get('/about', home.about);
+	app.get('/tutorial', home.tutorial);
 	app.get('/terms-of-use', home.terms);
 
 	/** 
