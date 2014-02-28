@@ -72,23 +72,23 @@ module.exports = {
 	},
 	production: {
 		root: rootPath,
-		appUrl: 'http://mapascoletivos.herokuapp.com',
+		appUrl: process.env.APP_DOMAIN,
 		db: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI,
 		nodemailer: nodemailer,
 		facebook: {
 			clientID: process.env.FACEBOOK_CLIENT_ID,
 			clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-			callbackURL: "http://mapascoletivos.herokuapp.com/auth/facebook/callback"
+			callbackURL: process.env.APP_DOMAIN + "/auth/facebook/callback"
 		},
 		twitter: {
 			clientID: process.env.TWITTER_CLIENT_ID,
 			clientSecret: process.env.TWITTER_CLIENT_SECRET,
-			callbackURL: "http://mapascoletivos.herokuapp.com/auth/twitter/callback"
+			callbackURL: process.env.APP_DOMAIN + "/auth/twitter/callback"
 		},
 		google: {
 			clientID: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-			callbackURL: "http://mapascoletivos.herokuapp.com/auth/google/callback"
+			callbackURL: process.env.APP_DOMAIN + "/auth/google/callback"
 		}
 	}
 }
