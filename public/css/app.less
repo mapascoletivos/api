@@ -528,10 +528,92 @@ input.no-canvas {
 .content {
 	.page {
 		font-size: 16px;
-		line-height: 24px;
+		line-height: 28px;
 		.small {
 			font-size: 80%;
 			line-height: 150%;
+		}
+		h2 {
+			color: #666;
+			margin: 0 0 40px;
+			font-size: 28px;
+			border-bottom: 1px solid #eee;
+			padding-bottom: 5px;
+			a {
+				text-decoration: none;
+			}
+		}
+		h3 {
+			font-size: 20px;
+			line-height: 28px;
+			margin: 0 0 20px;
+			a {
+				text-decoration: none;
+			}
+		}
+		ul {
+			margin: 0 20px 20px;
+			list-style: disc;
+			li {
+				padding: 0 0 15px;
+				margin: 0 20px 10px;
+				border-bottom: 1px solid #eee;
+				line-height: inherit;
+			}
+		}
+	}
+}
+
+/*
+ * Tutorial Page
+ */
+
+.content {
+	.page.tutorial-page {
+		::-webkit-scrollbar {
+		    width: 3px;
+		}
+		.table-of-contents {
+			position: fixed;
+			top: 53+135px;
+			padding: 20px;
+			bottom: 0;
+			overflow: auto;
+			width: 30%;
+			left: 0;
+			border-right: 1px solid #eee;
+			border-top: 1px solid #eee;
+			box-sizing: border-box;
+			h3 {
+				margin: -20px -20px 20px;
+				background: @blue;
+				color: #fff;
+				padding: 20px;
+			}
+			h4 {
+				font-size: 18px;
+				line-height: 22px;
+				margin: 0 0 20px;
+				a {
+					color: #222;
+				}
+			}
+			a {
+				color: #555;
+				text-decoration: none;
+				&:hover {
+					color: #333;
+				}
+			}
+		}
+		ul {
+			margin: 0 0 40px;
+			list-style: none;
+			li {
+				margin: -1px 0 0;
+				padding: 15px;
+				border: 1px solid #eee;
+			}
 		}
 	}
 }
