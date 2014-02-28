@@ -81,7 +81,6 @@ LayerSchema.statics = {
 			.exec(function(err, layer){
 				var features = []
 				async.each(layer.features, function(feature, cb){
-					console.log(feature);
 					feature.populate('creator', function(err, feature){
 						features.push(feature);
 						cb();
