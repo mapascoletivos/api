@@ -14,8 +14,10 @@ exports.FeatureCtrl = [
 	'$location',
 	'Feature',
 	'Content',
+	'MessageService',
 	'MapService',
-	function($scope, $rootScope, $state, $stateParams, $location, Feature, Content, MapService) {
+	'SessionService',
+	function($scope, $rootScope, $state, $stateParams, $location, Feature, Content, Message, MapService, Session) {
 
 		$scope.objType = 'feature';
 
@@ -134,8 +136,26 @@ exports.FeatureCtrl = [
 		 */
 		if($location.path().indexOf('edit') !== -1) {
 
-			$scope.$on('marker.clicked', function(event, feature) {
-				$scope.edit(feature._id);
+			$scope.canEdit = function(feature, layer) {
+
+				var featureCreatorId = feature.creator._id ? feature.creator._id : feature.creator;
+
+				// User is feature owner
+				if(featureCreatorId == Session.user._id) {
+					return true;
+				}
+
+				// User is layer owner
+				if(layer.creator._id == Session.user._id) {
+					return true;
+				}
+
+				return false;
+
+			}
+
+			$scope.$on('marker.clicked', function(event, feature, layer) {
+				$scope.edit(feature, layer);
 			});
 
 			$scope.new = function() {
@@ -144,13 +164,24 @@ exports.FeatureCtrl = [
 
 			};
 
-			$scope.edit = function(featureId) {
+			$scope.edit = function(feature, layer) {
 
-				Feature.edit(angular.copy($scope.features.filter(function(f) { return f._id == featureId; })[0]));
+				if($scope.canEdit(feature, layer)) {
 
-				setTimeout(function() {
-					window.dispatchEvent(new Event('resize'));
-				}, 100);
+					Feature.edit(angular.copy(feature));
+
+					setTimeout(function() {
+						window.dispatchEvent(new Event('resize'));
+					}, 100);
+
+				} else {
+
+					Message.add({
+						'status': 'error',
+						'text': 'Você não tem permissão para editar este local'
+					});
+
+				}
 
 			};
 		}

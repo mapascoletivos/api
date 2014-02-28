@@ -53,7 +53,7 @@ exports.create = function (req, res) {
 			layer.save(function(err){
 				if (err) res.json(400, utils.errorMessages(err.errors || err));
 				res.json(feature);
-			});			
+			});
 		}
 	});
 }
