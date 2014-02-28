@@ -417,10 +417,9 @@ exports.import = function(req,res){
 
 	if ((req.query.password) && (req.query.password == process.env.IMPORT_PASSWORD)) {
 		connection = mysql.createConnection({
-			host     : process.env.IMPORT_MYSQL_HOST,
+			database : process.env.IMPORT_MYSQL_DATABASE,
 			user     : process.env.IMPORT_MYSQL_USER,
-			password : process.env.IMPORT_MYSQL_DATABASE,
-			database : process.env.IMPORT_MYSQL_PASSWORD,
+			password : process.env.IMPORT_MYSQL_PASSWORD,
 			insecureAuth: true
 		});
 
