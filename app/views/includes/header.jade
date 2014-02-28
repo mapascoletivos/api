@@ -11,11 +11,17 @@ header#mast-header
 						li
 							a(href="/explore", title="Explorar") Explorar
 						li
-							a(href="/dashboard", title="Dashboard") Painel de controle
+							a(href="/dashboard", title="Dashboard")
+								span.lsf &#xE055;
+								| Painel de controle
 						li
-							a(href="/logout", title="Sair" target="_self") Sair
+							a(href="/logout", title="Sair" target="_self")
+								span.lsf &#xE088;
+								| Sair
 					- else
 						li
 							a(href="/explore", title="Explorar") Explorar
 						li 
-							a.login(href="/login" target="_self") Entrar
+							a.login(href="/login" target="_self")
+								span.lsf &#xE087;
+								| Entrar

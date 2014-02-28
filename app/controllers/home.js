@@ -27,6 +27,10 @@ exports.about = function(req, res) {
 	res.render('home/about');
 }
 
+exports.tutorial = function(req, res) {
+	res.render('home/tutorial');
+}
+
 exports.terms = function(req, res) {
 	res.render('home/terms');
 }
