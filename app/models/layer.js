@@ -79,17 +79,50 @@ LayerSchema.statics = {
 			.populate('features.creator')
 			.populate('contents')
 			.exec(function(err, layer){
-				var features = []
-				async.each(layer.features, function(feature, cb){
-					feature.populate('creator', function(err, feature){
-						features.push(feature);
-						cb();
+				
+				var populateFeaturesCreator = function(features, donePopulateFeatures) {
+					var populatedFeatures = [];
+					async.each(features, function(feature, cb){
+						feature.populate('creator', 'name username email', function(err, feature){
+							populatedFeatures.push(feature);
+							cb();
+						})
+					}, function(err){
+						donePopulateFeatures(err, populatedFeatures);
+					});
+				}
+				
+				var populateContentsCreator = function(contents, donePopulateContents) {
+					var populatedContents = [];
+					async.each(contents, function(content, cb){
+						content.populate('creator', 'name username email', function(err, content){
+							populatedContents.push(content);
+							cb();
+						})
+					}, function(err){
+						donePopulateContents(err, populatedContents);
+					});					
+				}
+				
+				async.parallel([
+						function(cb){
+							populateFeaturesCreator(layer.features, function(err, features){
+								layer.features = features;
+								cb(err)
+							})
+						},
+						function(cb){
+							populateContentsCreator(layer.contents, function(err, contents){
+								layer.contents = contents;
+								cb(err)
+							})
+						}
+					], function(err){
+						doneLoading(err, layer);
 					})
-				}, function(err){
-					layer.features = features;
-					doneLoading(err, layer);
-				});
-			})
+
+				
+			});
 	},
 
 	list: function (options, cb) {
