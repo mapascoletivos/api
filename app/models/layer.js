@@ -71,13 +71,26 @@ LayerSchema.methods = {
 
 LayerSchema.statics = {
 
-	load: function (id, cb) {
+	load: function (id, doneLoading) {
 		this.findOne({ _id : id })
 			.populate('creator', 'name username email')
 			.populate('contributors', 'name username email')
 			.populate('features')
+			.populate('features.creator')
 			.populate('contents')
-			.exec(cb)
+			.exec(function(err, layer){
+				var features = []
+				async.each(layer.features, function(feature, cb){
+					console.log(feature);
+					feature.populate('creator', function(err, feature){
+						features.push(feature);
+						cb();
+					})
+				}, function(err){
+					layer.features = features;
+					doneLoading(err, layer);
+				});
+			})
 	},
 
 	list: function (options, cb) {

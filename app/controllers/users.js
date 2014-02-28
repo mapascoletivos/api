@@ -208,8 +208,8 @@ exports.create = function (req, res) {
 	user.provider = 'local';
 
 	// uncomment these lines if you want to enable email confirmation at dev environment
-	if (process.env.NODE_ENV == 'development')		
-		user.status = 'active';
+	// if (process.env.NODE_ENV == 'development')		
+	// 	user.status = 'active';
 
 
 	user.save(function (err) {

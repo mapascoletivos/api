@@ -64,7 +64,6 @@ exports.feature = {
 	canCreate: function(req, res, next) {
 
 		var isContributor = function(layer, user) {
-			console.log(layer);
 			return _.find(layer.contributors, function(c) {
 				if(!c._id) {
 					return c == user._id.toHexString();
@@ -95,6 +94,94 @@ exports.feature = {
 		}
 	}
 }
+
+/*
+ *  Content authorization 
+ */
+
+exports.content = {
+
+
+	canEditOrDelete: function(req, res, next) {
+
+		var checkPermission = function(layer, content, user){
+
+			layerCreatorId = (layer.creator._id || layer.creator).toHexString(); 
+			contentCreatorId = (content.creator._id || content.creator).toHexString();
+			userId = user._id.toHexString();
+
+			// is layer or content creator
+			if ((contentCreatorId == userId) || (layerCreatorId == userId)) {
+				next();
+			} else {
+				return res.json(403, {
+					messages: [{
+						status: 'error',
+						text: 'Você não tem permissão para fazer isso.'
+					}]
+				});
+			}
+		}
+
+		Layer.findById((req.content.layer || req.body.layer._id || req.body.layer), function(err, layer){
+			if ((err) || (!layer)){
+				return res.json(403, {
+					messages: [{
+						status: 'error',
+						text: 'Erro ao carregar a camada.'
+					}]
+				});
+			} else {
+				checkPermission(layer, req.content, req.user);
+			}
+		});
+	},
+
+
+	canCreate: function(req, res, next) {
+
+		var isContributor = function(layer, user) {
+			return _.find(layer.contributors, function(c) {
+				if(!c._id) {
+					return c == user._id.toHexString();
+				} else {
+					return c._id.toHexString() == user._id.toHexString();
+				}
+			})
+		}
+
+		var isCreator = function(layer, user) {
+			if(layer.creator._id) {
+				return user._id.toHexString() == layer.creator._id.toHexString();
+			} else {
+				return user._id.toHexString() == layer.creator;
+			}
+		}
+		
+		Layer.findById(req.body.layer, function(err, layer){
+			if ((err) || (!layer)){
+				return res.json(403, {
+					messages: [{
+						status: 'error',
+						text: 'Erro ao carregar a camada.'
+					}]
+				});
+			} else if (typeof isContributor(layer, req.user) == 'undefined' && !isCreator(layer, req.user)) {
+				return res.json(403, {
+					messages: [{
+						status: 'error',
+						text: 'Você não tem permissão para fazer isso.'
+					}]
+				});
+			} else {
+				next();
+			}			
+		})
+
+
+	}
+}
+
 
 /**
  *  Layer authorization 
