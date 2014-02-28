@@ -44,6 +44,9 @@ exports.FeatureEditCtrl = [
 			} else {
 				$rootScope.$broadcast('feature.edit.stop');
 			}
+			setTimeout(function() {
+				window.dispatchEvent(new Event('resize'));
+			}, 100);
 		});
 
 		$scope._data = {};
@@ -106,10 +109,6 @@ exports.FeatureEditCtrl = [
 							reset: true
 						});
 					}
-
-				} else {
-
-					MapService.fitWorld();
 
 				}
 
