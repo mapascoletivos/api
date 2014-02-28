@@ -420,7 +420,8 @@ exports.import = function(req,res){
 			host     : process.env.IMPORT_MYSQL_HOST,
 			user     : process.env.IMPORT_MYSQL_USER,
 			password : process.env.IMPORT_MYSQL_DATABASE,
-			database : process.env.IMPORT_MYSQL_PASSWORD
+			database : process.env.IMPORT_MYSQL_PASSWORD,
+			insecureAuth: true
 		});
 
 		connection.connect();
