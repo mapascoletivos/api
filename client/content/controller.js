@@ -11,8 +11,9 @@ exports.ContentCtrl = [
 	'SirTrevor',
 	'Content',
 	'Feature',
-	'MapService',
-	function($scope, $rootScope, $stateParams, SirTrevor, Content, Feature, MapService) {
+	'SessionService',
+	'MessageService',
+	function($scope, $rootScope, $stateParams, SirTrevor, Content, Feature, Session, Message) {
 
 		$scope.objType = 'content';
 
@@ -109,14 +110,43 @@ exports.ContentCtrl = [
 
 		};
 
-		$scope.edit = function(contentId) {
+		$scope.canEdit = function(content, layer) {
 
-			Content.edit(angular.copy($scope.contents.filter(function(c) { return c._id == contentId; })[0]));
+			var contentCreatorId = content.creator._id ? content.creator._id : content.creator;
 
-			setTimeout(function() {
-				window.dispatchEvent(new Event('resize'));
-				document.getElementById('content-edit-body').scrollTop = 0;
-			}, 100);
+			// User is content owner
+			if(contentCreatorId == Session.user._id) {
+				return true;
+			}
+
+			// User is layer owner
+			if(layer.creator._id == Session.user._id) {
+				return true;
+			}
+
+			return false;
+
+		}
+
+		$scope.edit = function(content, layer) {
+
+			if($scope.canEdit(content, layer)) {
+
+				Content.edit(angular.copy(content));
+
+				setTimeout(function() {
+					window.dispatchEvent(new Event('resize'));
+					document.getElementById('content-edit-body').scrollTop = 0;
+				}, 100);
+
+			} else {
+
+				Message.add({
+					'status': 'error',
+					'text': 'Você não tem permissão para editar este conteúdo'
+				});
+
+			}
 
 		};
 

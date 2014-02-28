@@ -254,8 +254,9 @@ input.no-canvas {
 		}
 	}
 	#highlight {
-		padding: 60px;
+		padding: 60px 0 20px;
 		background: url(/img/stardust.png);
+		border-bottom: 5px solid #333;
 		.signup-call {
 			float: right;
 			.signup-call-content {
@@ -274,8 +275,8 @@ input.no-canvas {
 		}
 		.highlight-block {
 			color: #f0f0f0;
-			padding: 20px;
 			text-align: center;
+			margin-bottom: 40px;
 			.icon {
 				width: auto;
 				height: 100px;
@@ -301,6 +302,77 @@ input.no-canvas {
 				text-align: center;
 				&:hover {
 					background: rgba(0,0,0,0.5);
+				}
+			}
+		}
+		.links {
+			padding-bottom: 40px;
+			max-width: 800px;
+			margin: 0 auto;
+			display: table;
+			a {
+				display: table-cell;
+				padding: 20px 25px;
+				background: rgba(0,0,0,0.2);
+				color: #fff;
+				text-align: center;
+				margin-right: -1px;
+				text-decoration: none;
+				font-size: 16px;
+				strong {
+					color: #fff;
+					text-transform: uppercase;
+				}
+				&:hover {
+					background: rgba(0,0,0,0.3);
+				}
+				&.register {
+					background: @dark-green;
+					&:hover {
+						background: @green;
+					}
+				}
+			}
+		}
+	}
+	#featured-projects {
+		position: relative;
+		background: url(/img/highlight/costacarioca.jpg);
+		background-size: cover;
+		border-bottom: 5px solid #d9e183;
+		h2 {
+			padding: 15px;
+			background: rgba(0,0,0,0.6);
+			margin-top: 20px;
+			margin-bottom: 60px;
+			float: left;
+			color: #fff;
+			font-size: 14px;
+			line-height: 14px;
+			text-transform: uppercase;
+		}
+		.project-info {
+			max-width: 400px;
+			margin: 0 auto;
+			padding: 40px 40px 60px;
+			background: rgba(255,255,255,0.6);
+			text-align: center;
+			h3 {
+				font-size: 36px;
+				line-height: 44px;
+			}
+			.author {
+				font-style: italic;
+				margin-bottom: 40px;
+				font-size: 18px;
+				color: #444;
+			}
+			.button {
+				background: @dark-blue;
+				display: block;
+				text-align: center;
+				&:hover {
+					background: @blue;
 				}
 			}
 		}

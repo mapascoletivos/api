@@ -79,21 +79,6 @@ exports.ContentEditCtrl = [
 						text: 'Conteúdo salvo.'
 					});
 
-				}, function(err) {
-
-					if(err.status == 500)
-						Message.message({
-							status: 'error',
-							text: 'Ocorreu um erro interno. Tente novamente ou entre em contato com nossa equipe'
-						}, false);
-					else {
-						Message.message({
-							status: 'error',
-							text: 'Ocorreu um erro interno. Tente novamente ou entre em contato com nossa equipe'
-						}, false);
-					}
-
-
 				});
 
 			} else {

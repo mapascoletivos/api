@@ -118,8 +118,11 @@
 								</a>
 								<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 								<ul class="obj-list">
-									<li ng-repeat="item in contents | filter:search" ng-click="edit(item._id)">
-										{{item.title}}
+									<li ng-repeat="item in contents | filter:search" ng-class="{disabled: !canEdit(item, layer)}" ng-click="edit(item, layer)">
+										<span class="type lsf">&#xE103;</span>
+										<span class="locked lsf" ng-show="!canEdit(item, layer)">&#xE086;</span>
+										<h4>{{item.title}}</h4>
+										<p class="author" ng-show="layer.contributors.length">por {{item.creator.name}}</p>
 									</li>
 								</ul>
 							</div>
