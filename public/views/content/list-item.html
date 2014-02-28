@@ -2,8 +2,8 @@
 	<h3><a href="{{baseUrl}}/content/{{post._id}}">{{post.title}}</a></h3>
 	<div class="meta clearfix">
 		<div class="clearfix">
-			<p class="author" ng-show="map && post.layer.creator">
-				<a href="/user/{{post.layer.creator.username}}/">{{post.layer.creator.name}}</a>
+			<p class="author">
+				<a href="/user/{{post.creator.username}}/">{{post.creator.name}}</a>
 			</p>
 			<p class="layer" ng-show="map">
 				<a href="/layers/{{post.layer._id}}/">{{post.layer.title}}</a>

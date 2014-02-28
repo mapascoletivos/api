@@ -10,7 +10,6 @@ var mongoose = require('mongoose'),
 	mailer = require('../mailer'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend,
-	utils = require('../../lib/utils'),
 	_ = require('underscore');
 	
 /**

@@ -1,8 +1,8 @@
 <div class="single-feature">
 	<h2>{{feature.title}}</h2>
 	<div class="meta clearfix">
-		<p class="author" ng-show="map && feature.layer.creator" title="Usuário">
-			<a href="/user/{{feature.layer.creator.username}}/">{{feature.layer.creator.name}}</a>
+		<p class="author" title="Usuário">
+			<a href="/user/{{feature.creator.username}}/">{{feature.creator.name}}</a>
 		</p>
 		<p class="layer" ng-show="map" title="Camada">
 			<a href="/layers/{{feature.layer._id}}/">{{feature.layer.title}}</a>
