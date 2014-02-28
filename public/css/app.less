@@ -245,6 +245,34 @@ input.no-canvas {
 		}
 	}
 }
+
+/*
+ * FOOTER
+ */
+
+#colophon {
+	background: #111;
+	font-size: 12px;
+	padding: 20px 0;
+	a {
+		text-decoration: none;
+		color: #999;
+		&:hover {
+			color: #f0f0f0;
+		}
+	}
+	.institutional {
+		float: left;
+		a {
+			display: inline-block;
+			margin-right: 20px;
+		}
+	}
+	.license {
+		float: right;
+	}
+}
+
 .landing {
 	margin: 0;
 	#mast-header {
@@ -397,6 +425,7 @@ input.no-canvas {
 	left: 0;
 	right: 0;
 	overflow: auto;
+	z-index: 2;
 	background: url(/img/stardust.png);
 	.login-content {
 		width: 400px;
@@ -1091,6 +1120,7 @@ input.no-canvas {
 	left: 0;
 	right: 0;
 	bottom: 0;
+	z-index: 2;
 	::-webkit-scrollbar {
 	    width: 5px;
 	}
@@ -1329,7 +1359,7 @@ input.no-canvas {
 					margin: -1px 0 0;
 					position: relative;
 					.tab-tip {
-						background: darken(#669bcd, 5%);
+						background: @dark-blue;
 					}
 					&:before {
 						content: '';

@@ -2,7 +2,7 @@ doctype html
 html.landing
 	include ../includes/head
 	body
-		header#mast-header.row
+		header#mast-header
 			.container
 				.five.columns
 					h1
@@ -23,7 +23,7 @@ html.landing
 								a.button.light-button(href="/explore", title="Explorar") Explorar
 							li 
 								a.button.login(href="/login") Entrar
-		section#highlight.row.anti-row
+		section#highlight
 			.container
 				.four.columns
 					.highlight-block.publish
@@ -43,7 +43,7 @@ html.landing
 			.links
 				a.more(href="/tutorial") Saiba mais sobre a ferramenta
 				a.register(href="/signup") <strong>Cadastre-se</strong> e comece a mapear!
-		section#featured-projects.row.anti-row
+		section#featured-projects
 			.project
 				.container
 					.five.columns
@@ -52,3 +52,4 @@ html.landing
 					h3 Riscos de inundação na costa carioca
 					p.author Gustavo Faleiros
 					.button Veja o mapa
+		include ../includes/footer

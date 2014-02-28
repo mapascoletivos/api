@@ -5,7 +5,8 @@
 
 var 
 	_ = require('underscore'),
-	mongoose = require('mongoose'), 
+	mongoose = require('mongoose'),
+	utils = require('../../lib/utils'),
 	Map = mongoose.model('Map'),
 	extend = require('util')._extend;
 
