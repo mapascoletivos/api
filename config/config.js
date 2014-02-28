@@ -6,7 +6,8 @@
 var   
 	path = require('path'),
 	rootPath = path.resolve(__dirname + '../..'),
-	templatePath = path.normalize(__dirname + '/../app/mailer/templates')
+	templatePath = path.normalize(__dirname + '/../app/mailer/templates'),
+	app_url = process.env.APP_URL,
 	nodemailer = {
 		host: process.env.SMTP_HOST,
 		port: 465,
@@ -72,23 +73,23 @@ module.exports = {
 	},
 	production: {
 		root: rootPath,
-		appUrl: process.env.APP_DOMAIN,
-		db: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI,
+		appUrl: app_url,
+		db: 'mongodb://localhost/mapascoletivos_production',
 		nodemailer: nodemailer,
 		facebook: {
 			clientID: process.env.FACEBOOK_CLIENT_ID,
 			clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-			callbackURL: process.env.APP_DOMAIN + "/auth/facebook/callback"
+			callbackURL: app_url + "/auth/facebook/callback"
 		},
 		twitter: {
 			clientID: process.env.TWITTER_CLIENT_ID,
 			clientSecret: process.env.TWITTER_CLIENT_SECRET,
-			callbackURL: process.env.APP_DOMAIN + "/auth/twitter/callback"
+			callbackURL: app_url + "/auth/twitter/callback"
 		},
 		google: {
 			clientID: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-			callbackURL: process.env.APP_DOMAIN + "/auth/google/callback"
+			callbackURL: app_url + "/auth/google/callback"
 		}
 	}
 }
