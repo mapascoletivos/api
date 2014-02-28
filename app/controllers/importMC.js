@@ -38,7 +38,7 @@ var clearDb = function(callback) {
 }	
 
 var importUsers = function(mysqlConnection, callback) {
-	mysqlConnection.query('SELECT * from mapascol_ushahidi.users', function(err, rows, fields) {
+	mysqlConnection.query('SELECT * from '+process.env.IMPORT_MYSQL_DATABASE+'.users', function(err, rows, fields) {
 		if (err) throw err;
 
 		async.each(rows, function(row, cb){
@@ -77,7 +77,7 @@ var importUsers = function(mysqlConnection, callback) {
 } 
 
 var importCategories = function(mysqlConnection, callback) {
-	mysqlConnection.query('SELECT * from mapascol_ushahidi.category', function(err, rows, fields) {
+	mysqlConnection.query('SELECT * from '+process.env.IMPORT_MYSQL_DATABASE+'.category', function(err, rows, fields) {
 		if (err) throw err;
 
 		async.each(rows, function(row, cb){
@@ -97,7 +97,7 @@ var importCategories = function(mysqlConnection, callback) {
 }
 
 var importMaps = function(mysqlConnection, callback) {
-	mysqlConnection.query('SELECT * from mapascol_ushahidi.incident', function(err, rows, fields) {
+	mysqlConnection.query('SELECT * from '+process.env.IMPORT_MYSQL_DATABASE+'.incident', function(err, rows, fields) {
 		if (err) throw err;
 
 		async.each(rows, function(row, cb){
@@ -120,7 +120,7 @@ var importMaps = function(mysqlConnection, callback) {
 				map.creator = user;
 
 				// find categories
-				mysqlConnection.query('SELECT * from mapascol_ushahidi.incident_category where incident_id='+map.oldId, function(err, catRows, fields) {
+				mysqlConnection.query('SELECT * from '+process.env.IMPORT_MYSQL_DATABASE+'.incident_category where incident_id='+map.oldId, function(err, catRows, fields) {
 					async.each(catRows, function(catRow, done){
 						Category.findOne({oldId: catRow.category_id}, function(err, cat){
 							if (cat)
@@ -143,7 +143,7 @@ var importMaps = function(mysqlConnection, callback) {
  */
 
 var importLayers = function(mysqlConnection, callback){
-	mysqlConnection.query('SELECT * from mapascol_ushahidi.location_layer', function(err, rows, fields) {
+	mysqlConnection.query('SELECT * from '+process.env.IMPORT_MYSQL_DATABASE+'.location_layer', function(err, rows, fields) {
 		
 		async.each(rows, function(row, cb){
 
@@ -273,7 +273,7 @@ var importContents = function(connection, callback ) {
 
 
 	// Get locations ids
-	connection.query('SELECT distinct location_id from mapascol_ushahidi.media', function(err, locations, fields){
+	connection.query('SELECT distinct location_id from '+process.env.IMPORT_MYSQL_DATABASE+'.media', function(err, locations, fields){
 		
 
 		async.eachSeries(locations, function(location, doneFeature){
@@ -281,7 +281,7 @@ var importContents = function(connection, callback ) {
 			console.log('location\n'+JSON.stringify(location));
 		
 			// Get media associated to each location
-			connection.query('SELECT * from mapascol_ushahidi.media WHERE location_id='+location['location_id'], function(err, medias, fields){
+			connection.query('SELECT * from '+process.env.IMPORT_MYSQL_DATABASE+'.media WHERE location_id='+location['location_id'], function(err, medias, fields){
 
 				console.log('location\n'+JSON.stringify(medias));
 				if (medias.length == 0) {
@@ -347,7 +347,7 @@ var importContents = function(connection, callback ) {
  */
 
 var importFeatures = function(mysqlConnection, callback){
-	mysqlConnection.query('SELECT * from mapascol_ushahidi.location', function(err, rows, fields) {
+	mysqlConnection.query('SELECT * from '+process.env.IMPORT_MYSQL_DATABASE+'.location', function(err, rows, fields) {
 
 
 
