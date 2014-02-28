@@ -100,8 +100,11 @@
 									</a>
 									<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 									<ul class="obj-list">
-										<li ng-repeat="feature in features | filter:search" ng-click="edit(feature._id)">
-											{{feature.title}}
+										<li ng-repeat="feature in features | filter:search" ng-class="{disabled: !canEdit(feature, layer)}" ng-click="edit(feature, layer)">
+											<span class="type lsf">&#xE103;</span>
+											<span class="locked lsf" ng-show="!canEdit(feature, layer)">&#xE086;</span>
+											<h4>{{feature.title}}</h4>
+											<p class="author" ng-show="layer.contributors.length">por {{feature.creator.name}}</p>
 										</li>
 									</ul>
 								</div>

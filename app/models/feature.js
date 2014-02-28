@@ -81,7 +81,7 @@ FeatureSchema.statics = {
 
 	load: function (id, cb) {
 		this.findOne({ _id : id })
-			.populate('creator')
+			.populate('creator', 'name username email')
 			.populate('contents')
 			.exec(cb)
 	},
@@ -90,6 +90,7 @@ FeatureSchema.statics = {
 		var criteria = options.criteria || {}
 
 		this.find(criteria)
+			.populate('creator', 'name username email')
 			.sort({'createdAt': -1}) // sort by date
 			.limit(options.perPage)
 			.skip(options.perPage * options.page)

@@ -27,7 +27,7 @@ exports.LayerCtrl = [
 
 		var mapFeatures;
 
-		var populateMap = function(features, force) {
+		var populateMap = function(features, layer, force) {
 
 			// Repopulate map if feature in scope has changed
 			if(!angular.equals(mapFeatures, features) || force === true) {
@@ -46,7 +46,7 @@ exports.LayerCtrl = [
 
 							marker
 								.on('click', function() {
-									$rootScope.$broadcast('marker.clicked', f);
+									$rootScope.$broadcast('marker.clicked', f, layer);
 								})
 								.on('mouseover', function() {
 									marker.openPopup();
@@ -139,19 +139,19 @@ exports.LayerCtrl = [
 
 					// Init features
 					Feature.set(angular.copy(layer.features));
-					populateMap(layer.features, true);
+					populateMap(layer.features, layer, true);
 
 					var viewingContent = false;
 					$scope.$on('content.filtering.started', function(event, c, cF) {
 						viewingContent = true;
 						if(cF.length) {
-							populateMap(cF);
+							populateMap(cF, layer);
 						}
 					});
 
 					$scope.$on('content.filtering.closed', function() {
 						if(viewingContent) {
-							populateMap(layer.features);
+							populateMap(layer.features, layer);
 							viewingContent = false;
 						}
 					});
@@ -175,7 +175,7 @@ exports.LayerCtrl = [
 					}, 100);
 
 					$scope.$on('layerObjectChange', function(event, active) {
-						populateMap(layer.features, true);
+						populateMap(layer.features, layer, true);
 					});
 
 					if(!Layer.canEdit(layer)) {
@@ -224,7 +224,7 @@ exports.LayerCtrl = [
 
 					$scope.$watch('$feature.edit()', function(editingFeature) {
 						if(!editingFeature)
-							populateMap(layer.features, true);
+							populateMap(layer.features, layer, true);
 					});
 
 					$scope.$watch('$content.get()', function(contents) {

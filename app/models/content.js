@@ -263,6 +263,7 @@ ContentSchema.statics = {
 
 	load: function (id, cb) {
 		this.findOne({ _id : id })
+			.populate('creator', 'name username email')
 			.populate('layer')
 			.populate('features')
 			.exec(cb)
@@ -272,6 +273,7 @@ ContentSchema.statics = {
 		var criteria = options.criteria || {}
 
 		this.find(criteria)
+			.populate('creator', 'name username email')
 			.sort({'createdAt': -1}) // sort by date
 			.limit(options.perPage)
 			.skip(options.perPage * options.page)

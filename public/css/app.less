@@ -1252,6 +1252,15 @@ input.no-canvas {
 					margin: 0 0 1px;
 					padding: 15px;
 					cursor: pointer;
+					h4 {
+						font-size: 18px;
+						line-height: 22px;
+						color: #555;
+					}
+					p {
+						margin: 0;
+						font-size: 12px;
+					}
 					&.sortable {
 						cursor: move;
 						&:hover {
@@ -1260,6 +1269,11 @@ input.no-canvas {
 								color: #fff;
 							}
 						}
+					}
+					&.disabled:hover {
+						background: #fbfbfb;
+						cursor: default;
+						box-shadow: 0 0 0;
 					}
 					&:hover {
 						background: #fff;
@@ -1276,6 +1290,19 @@ input.no-canvas {
 						font-size: 11px;
 						font-style: italic;
 						color: #aaa;
+						margin-bottom: 10px;
+					}
+					.locked {
+						float: right;
+						font-size: 24px;
+						padding: 20px 10px;
+						color: #999;
+					}
+					.type {
+						color: @blue;
+						float: left;
+						font-size: 40px;
+						padding: 20px 20px 20px 0;
 					}
 					.actions {
 						float: right;
