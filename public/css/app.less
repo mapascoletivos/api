@@ -599,6 +599,8 @@ input.no-canvas {
 
 .content {
 	.page.tutorial-page {
+		background: #f9f9f9;
+		padding-top: 40px;
 		::-webkit-scrollbar {
 		    width: 3px;
 		}
@@ -610,8 +612,8 @@ input.no-canvas {
 			overflow: auto;
 			width: 30%;
 			left: 0;
-			border-right: 1px solid #eee;
-			border-top: 1px solid #eee;
+			border-right: 1px solid #e0e0e0;
+			border-top: 1px solid #e0e0e0;
 			box-sizing: border-box;
 			h3 {
 				margin: -20px -20px 20px;
@@ -635,13 +637,21 @@ input.no-canvas {
 				}
 			}
 		}
+		img {
+			border: 10px solid #fff;
+			margin-bottom: 20px;
+			display: block;
+		}
 		ul {
 			margin: 0 0 40px;
 			list-style: none;
 			li {
 				margin: -1px 0 0;
 				padding: 15px;
-				border: 1px solid #eee;
+				border: 1px solid #e0e0e0;
+				&:hover {
+					background-color: #fff;
+				}
 			}
 		}
 	}
