@@ -42,7 +42,7 @@
 		"underscore": "latest",
 		"forever": "latest",
 		"less": "latest",
-		"less-middleware": "latest",
+		"less-middleware": "~0.1.15",
 		"lorem-ipsum": "latest",
 		"imager": "latest",
 		"leaflet": "latest",
