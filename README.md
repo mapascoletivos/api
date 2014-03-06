@@ -20,4 +20,4 @@ Install: `npm install`
 
 Copy `.env.example` to `.env` and fill authentication credentials for third party services, like SMTP, Facebook, Twitter, Google. 
 
-Run: `npm run install`.
+Start server: `npm start`, or run in development mode: `npm run watch`.
