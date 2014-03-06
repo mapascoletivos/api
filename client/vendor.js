@@ -20,4 +20,4 @@ require('angular-sanitize/angular-sanitize');
 require('angular-fitvids/angular-fitvids');
 require('angular-ui-utils/modules/utils');
 require('eventable/eventable');
-require('sir-trevor/sir-trevor');
+require('sir-trevor/sir-trevor.min');
