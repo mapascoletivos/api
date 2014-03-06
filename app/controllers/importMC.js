@@ -112,6 +112,7 @@ var importMaps = function(mysqlConnection, callback) {
 			map.center = [row['incident_default_lat'], row['incident_default_lon']];
 			map.zoom = row['incident_default_zoom'];
 			map.isDraft = false;
+			map.visibility = 'Visible';
 
 			User.findOne({oldId: row['owner_id']}, function(err, user){
 				if (err) cb(err);
@@ -153,7 +154,8 @@ var importLayers = function(mysqlConnection, callback){
 					oldId: row['id'],
 					color: row['layer_color'],
 					title: row['layer_name'],
-					isDraft: false
+					isDraft: false,
+					visibility: 'Visible'
 				})
 
 				if (err) {
