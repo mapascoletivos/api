@@ -30,6 +30,7 @@ require('./common/mapView');
  */
 
 require('./user/app');
+require('./import/app');
 require('./feature/app');
 require('./content/app');
 require('./layer/app');
@@ -60,6 +61,7 @@ angular.module('mapasColetivos', [
 	'mapasColetivos.explore',
 	'mapasColetivos.loadingStatus',
 	'mapasColetivos.messageStatus',
+	'mapasColetivos.dataImport',
 	'mapasColetivos.map',
 	'mapasColetivos.layer',
 	'mapasColetivos.feature',
