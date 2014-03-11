@@ -60,7 +60,7 @@ exports.FeatureCtrl = [
 		$scope.focus = function(feature) {
 
 			setTimeout(function() {
-				MapService.get().setView(feature.geometry.coordinates, MapService.get().getMaxZoom());
+				MapService.get().setView(feature.geometry.coordinates.reverse(), MapService.get().getMaxZoom());
 				focused = true;
 			}, 100);
 

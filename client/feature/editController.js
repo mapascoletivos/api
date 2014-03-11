@@ -64,8 +64,8 @@ exports.FeatureEditCtrl = [
 			if(!$scope.marker) {
 				$scope.editing.geometry = {
 					coordinates: [
-						LatLng.lat,
-						LatLng.lng
+						LatLng.lng,
+						LatLng.lat
 					]
 				};
 				$scope.setMarker(false);
@@ -94,8 +94,8 @@ exports.FeatureEditCtrl = [
 							$scope.marker.closePopup();
 							var coordinates = $scope.marker.getLatLng();
 							$scope.editing.geometry.coordinates = [
-								coordinates.lat,
-								coordinates.lng
+								coordinates.lng,
+								coordinates.lat
 							];
 						});
 

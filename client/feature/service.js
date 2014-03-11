@@ -23,6 +23,12 @@ exports.Feature = [
 					method: 'GET',
 					loadingMessage: 'Carregando local'
 				},
+				'import': {
+					method: 'POST',
+					isArray: true,
+					loadingMessage: 'Importando dados',
+					url: apiPrefix + '/layers/:layerId/features/import'
+				},
 				'save': {
 					method: 'POST',
 					loadingMessage: 'Criando local',

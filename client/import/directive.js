@@ -1,15 +1,31 @@
 'use strict';
 
-exports.DataInput = [
+exports.ImportInput = [
 	'$rootScope',
 	function($rootScope) {
 
 		return {
+			restrict: 'A',
 			link: function(scope, element, attrs) {
-				jQuery(element)
+				angular.element(element)
 					.on('change', function() {
-						$rootScope.$broadcast('DataInputChanged', this);
+						$rootScope.$broadcast('import.input.change', this);
 					});
+			}
+		}
+
+	}
+];
+
+exports.ImportInputTrigger = [
+	function() {
+
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs) {
+				angular.element(element).on('click', function() {
+					angular.element('#' + attrs.importInputTrigger).trigger('click');
+				});
 			}
 		}
 

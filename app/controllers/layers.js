@@ -103,7 +103,7 @@ exports.create = function (req, res) {
 
 		layer.features = req.body.features;
 		layer.contents = req.body.contents;
-		layer.contents = req.body.isDraft; 
+		//layer.contents = req.body.isDraft; 
 
 	}
 

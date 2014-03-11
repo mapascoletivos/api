@@ -8,7 +8,8 @@ var
 	mongoose = require('mongoose'), 
 	Feature = mongoose.model('Feature'),
 	utils = require('../../lib/utils'),
-	extend = require('util')._extend;
+	extend = require('util')._extend,
+	async = require('async');
 	
 /**
  * Load
@@ -53,6 +54,44 @@ exports.create = function (req, res) {
 			layer.save(function(err){
 				if (err) res.json(400, utils.errorMessages(err.errors || err));
 				res.json(feature);
+			});
+		}
+	});
+}
+
+/*
+ * Import
+ * (Batch create features)
+ */
+
+exports.import = function(req, res) {
+	var layer = req.layer;
+	async.each(req.body, function(feature, cb) {
+
+		var feature = new Feature(feature);
+		feature.creator = req.user;
+		feature.layer = req.layer;
+
+		// save feature
+		feature.save(function (err) {
+			if (err) {
+				console.log('Feature save: ' + err);
+				cb(err);
+			} else {
+				layer.features.addToSet(feature);
+				cb();
+			}
+		});
+	}, function(err) {
+		if(err) res.json(400, utils.errorMessages(err.errors || err));
+		else {			
+			// save layer
+			layer.save(function(err){
+				if(err) {
+					if(err) res.json(400, utils.errorMessages(err.errors || err));
+				} else {
+					res.json(layer.features);
+				}
 			});
 		}
 	});

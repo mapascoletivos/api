@@ -5,19 +5,13 @@ var readFile = require('./readfile');
 exports.DataImportCtrl = [
 	'$scope',
 	'$rootScope',
-	function($scope, $rootScope) {
+	'$location',
+	'Layer',
+	'Feature',
+	'MessageService',
+	function($scope, $rootScope, $location, Layer, Feature, Message) {
 
-		$scope.selectFile = function(layer) {
-
-			if(!layer._id) {
-				
-			}
-
-			jQuery('#import-data-input').trigger('click');
-
-		}
-
-		$rootScope.$on('DataInputChanged', function(e, node) {
+		$rootScope.$on('import.input.change', function(e, node) {
 			onSubmit(node);
 		});
 
@@ -32,8 +26,37 @@ exports.DataImportCtrl = [
 		}
 
         function onImport(err, gj, warning) {
-        	console.log(gj);
-        	console.log(err);
+        	if(err) {
+        		Message.add({
+        			status: 'error',
+        			text: err.message
+        		});
+        	} else {
+        		if(!Layer.edit()) {
+        			var draft = new Layer.resource({
+						title: 'Untitled',
+						type: 'FeatureLayer'
+					});
+					draft.$save(function(draft) {
+						var features = [];
+						angular.forEach(gj.features, function(feature) {
+							if(feature.properties.name && typeof feature.properties.name == 'string')
+								feature.title = feature.properties.name;
+							if(feature.properties.title && typeof feature.properties.title == 'string')
+								feature.title = feature.properties.title;
+							else
+								feature.title = 'Untitled';
+
+							features.push(feature);
+
+						});
+
+						Feature.resource.import({layerId: draft.layer._id}, features, function() {
+							$location.path('/layers/' + draft.layer._id + '/edit/');
+						});
+					});
+        		}
+        	}
         }
 
 	}

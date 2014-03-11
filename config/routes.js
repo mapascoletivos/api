@@ -119,6 +119,7 @@ module.exports = function (app, passport) {
 	app.get(apiPrefix + '/features', features.index);
 	app.get(apiPrefix + '/features/:featureId', features.show);
 	app.post(apiPrefix + '/layers/:layerId/features', [auth.requiresLogin, auth.feature.canCreate] , features.create);	
+	app.post(apiPrefix + '/layers/:layerId/features/import', [auth.requiresLogin, auth.feature.canCreate] , features.import);
 	app.put(apiPrefix + '/features/:featureId', [auth.requiresLogin, auth.feature.canEditOrDelete], features.update);
 	
 	/** 
