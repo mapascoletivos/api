@@ -1666,6 +1666,29 @@ input.no-canvas {
 				width: 100%;
 				box-sizing: border-box;
 			}
+			table {
+				width: 100%;
+				tr {
+					&:hover {
+						td input {
+							color: #333;
+						}
+					}
+					td {
+						padding: 10px;
+						border: 1px solid #eee;
+						input {
+							background: transparent;
+							border: 0;
+							color: #999;
+							&:focus,
+							&:hover {
+								color: #333;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	.map-container {
@@ -1679,6 +1702,29 @@ input.no-canvas {
 		}
 		.add-marker-tip {
 			display: none;
+		}
+		.new-feature {
+			display: none;
+		}
+		&.new {
+			.new-feature {
+				display: block;
+				position: absolute;
+				top: 0;
+				padding-top: 15%;
+				box-sizing: border-box;
+				left: 0;
+				bottom: 0;
+				right: 0;
+				background: rgba(0,0,0,0.5);
+				text-align: center;
+				color: #fff;
+				z-index: 100;
+				font-size: 20px;
+				font-weight: 600;
+				text-transform: uppercase;
+				text-shadow: 2px 2px 1px rgba(0,0,0,0.2);
+			}
 		}
 		&.editing {
 			.leaflet-container {

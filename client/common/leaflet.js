@@ -10,10 +10,10 @@ angular.module('mapasColetivos.leaflet', [])
 	function() {
 
 		var map = false,
-			markerLayer = L.featureGroup(),
+			featureLayer = L.featureGroup(),
 			groups = [],
-			markers = [],
-			hiddenMarkers = [],
+			features = [],
+			hiddenFeatures = [],
 			baseLayer = L.tileLayer('http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png'),
 			legendControl = L.mapbox.legendControl();
 
@@ -25,7 +25,7 @@ angular.module('mapasColetivos.leaflet', [])
 				map = L.mapbox.map(id, null, config);
 				map.whenReady(function() {
 					map.addLayer(baseLayer);
-					map.addLayer(markerLayer);
+					map.addLayer(featureLayer);
 					map.addControl(legendControl);
 				});
 				return map;
@@ -33,55 +33,55 @@ angular.module('mapasColetivos.leaflet', [])
 			get: function() {
 				return map;
 			},
-			clearMarkers: function() {
-				if(markers.length) {
-					angular.forEach(markers, function(marker) {
-						if(markerLayer.hasLayer(marker))
-							markerLayer.removeLayer(marker);
+			clearFeatures: function() {
+				if(features.length) {
+					angular.forEach(features, function(feature) {
+						if(featureLayer.hasLayer(feature))
+							featureLayer.removeLayer(feature);
 					});
-					markers = [];
+					features = [];
 				}
 			},
-			getMarkerLayer: function() {
-				return markerLayer;
+			getFeatureLayer: function() {
+				return featureLayer;
 			},
-			addMarker: function(marker) {
-				markerLayer.addLayer(marker);
-				markers.push(marker);
+			addFeature: function(feature) {
+				featureLayer.addLayer(feature);
+				features.push(feature);
 			},
-			removeMarker: function(marker) {
-				markers = markers.filter(function(m) { return m !== marker; });
-				markerLayer.removeLayer(marker);
+			removeFeature: function(feature) {
+				features = features.filter(function(f) { return f !== feature; });
+				featureLayer.removeLayer(feature);
 			},
-			hideMarker: function(marker) {
-				if(markers.indexOf(marker) !== -1) {
-					markerLayer.removeLayer(marker);
-					hiddenMarkers.push(marker);
-					markers = markers.filter(function(m) { return m !== marker; });
+			hideFeature: function(feature) {
+				if(features.indexOf(feature) !== -1) {
+					featureLayer.removeLayer(feature);
+					hiddenFeatures.push(feature);
+					features = features.filter(function(f) { return f !== feature; });
 				}
 			},
-			showMarker: function(marker) {
-				if(hiddenMarkers.indexOf(marker) !== -1) {
-					markerLayer.addMarker(marker);
-					markers.push(marker);
-					hiddenMarkers = markers.filter(function(m) { return m !== marker; });
+			showFeature: function(feature) {
+				if(hiddenFeatures.indexOf(feature) !== -1) {
+					featureLayer.addFeature(feature);
+					features.push(feature);
+					hiddenFeatures = features.filter(function(f) { return f !== feature; });
 				}
 			},
-			showAllMarkers: function() {
-				if(hiddenMarkers.length) {
-					angular.forEach(hiddenMarkers, function(hM) {
-						this.showMarker(hM);
+			showAllFeatures: function() {
+				if(hiddenFeatures.length) {
+					angular.forEach(hiddenFeatures, function(hM) {
+						this.showFeature(hM);
 					});
 				}
 			},
 			fitWorld: function() {
 				map.setView([0,0], 2);
 			},
-			fitMarkerLayer: function() {
+			fitFeatureLayer: function() {
 				if(map instanceof L.Map) {
 					map.invalidateSize(false);
-					if(markers.length) {
-						map.fitBounds(markerLayer.getBounds());
+					if(features.length) {
+						map.fitBounds(featureLayer.getBounds());
 					}
 				}
 				return map;
@@ -95,20 +95,20 @@ angular.module('mapasColetivos.leaflet', [])
 					groups.push(layer);
 				} else {
 					var self = this;
-					var markers = [];
-					var markerLayer = L.featureGroup();
-					markerLayer.mcLayer = layer;
-					groups.push(markerLayer);
+					var features = [];
+					var featureLayer = L.featureGroup();
+					featureLayer.mcLayer = layer;
+					groups.push(featureLayer);
 					angular.forEach(layer.features, function(f) {
-						var marker = featureToMapObj(f);
-						marker.mcFeature = f;
-						markers.push(marker);
-						markerLayer.addLayer(marker);
+						var feature = featureToMapObj(f);
+						feature.mcFeature = f;
+						features.push(feature);
+						featureLayer.addLayer(feature);
 					});
-					markerLayer.addTo(map);
+					featureLayer.addTo(map);
 					return {
-						markerLayer: markerLayer,
-						markers: markers
+						featureLayer: featureLayer,
+						features: features
 					};
 				}
 			},
@@ -165,7 +165,7 @@ angular.module('mapasColetivos.leaflet', [])
 				}
 			},
 			clearAll: function() {
-				this.clearMarkers();
+				this.clearFeatures();
 				this.clearGroups();
 			},
 			destroy: function() {

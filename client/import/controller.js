@@ -35,7 +35,8 @@ exports.DataImportCtrl = [
         		if(!Layer.edit()) {
         			var draft = new Layer.resource({
 						title: 'Untitled',
-						type: 'FeatureLayer'
+						type: 'FeatureLayer',
+						isDraft: false
 					});
 					draft.$save(function(draft) {
 						var features = [];

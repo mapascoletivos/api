@@ -141,8 +141,8 @@
 			</a>
 		</form>
 	</div>
-	<div ng-controller="FeatureEditCtrl" class="map-container object-editor" ng-class="{editing: editing}" ng-hide="sharedData.editingContent()">
-		<div id="edit-feature" ng-show="editing" ng-animate="'top-down'">
+	<div ng-controller="FeatureEditCtrl" class="map-container object-editor" ng-class="{editing: editing.geometry.coordinates, new: editing}" ng-hide="sharedData.editingContent()">
+		<div id="edit-feature" ng-show="editing.geometry.coordinates" ng-animate="'top-down'">
 			<form ng-submit="save()">
 				<div class="feature-settings">
 					<h3>Local</h3>
@@ -156,6 +156,7 @@
 				<div class="editing-tools" ng-class="{editing: tool}">
 					<ul class="tools-list">
 						<li class="feature-location-label" ng-class="{active: tool == 'feature-location'}"><a href="javascript:void(0);" title="Buscar uma localização" ng-click="setTool('feature-location')"><span class="lsf">&#xE116;</span></a></li>
+						<li class="feature-data-label" ng-class="{active: tool == 'feature-data'}"><a href="javascript:void(0);" title="Dados do local" ng-click="setTool('feature-data')"><span class="lsf">&#xE127;</span></a></li>
 						<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover esta feature" ng-click="delete()"><span class="lsf">&#xE12c;</span></a></li>
 						<li class="save-label"><a href="javascript:void(0);" title="Salvar alterações desta feature" ng-click="save()"><span class="lsf">&#xE029;</span></a></li>
 					</ul>
@@ -171,12 +172,30 @@
 								</div>
 							</div>
 						</div>
+						<div class="feature-data" ng-show="tool == 'feature-data'">
+							<table>
+								<tr ng-repeat="(key,prop) in editing.properties track by key">
+									<td class="prop-key">{{key}}</td>
+									<td class="prop-value"><input ng-model="editing.properties[key]" /></td>
+								</tr>
+							</table>
+						</div>
 					</div>
 				</div>
 			</form>
 		</div>
 		<div id="layer-map"></div>
-		<div class="add-marker-tip" ng-hide="marker">Clique no mapa para adicionar um marcador</div>
+		<div class="new-feature" ng-hide="!editing || editing.geometry.type">
+			<div class="available-types">
+				<p>Escolha o tipo de geometria que gostaria de adicionar ao seu mapa</p>
+				<ul>
+					<li ng-click="newFeature('Point')">Ponto</li>
+					<li ng-click="newFeature('LineString')">Linha</li>
+					<li ng-click="newFeature('Polygon')">Polígono</li>
+				</ul>
+			</div>
+		</div>
+		<div class="add-marker-tip" ng-show="editing.geometry.type == 'Point' && !editing.geometry.coordinates">Clique no mapa para adicionar um marcador</div>
 	</div>
 	<div ng-controller="ContentEditCtrl" class="content-editor object-editor" ng-show="editing">
 		<form ng-submit="save()">

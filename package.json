@@ -14,7 +14,7 @@
 		"build": "./node_modules/.bin/napa && npm run bundle",
 		"bundle": "./node_modules/.bin/browserify client/vendor.js | ./node_modules/.bin/uglifyjs -mt > public/vendor.js",
 		"watch": "./node_modules/.bin/watchify -t brfs -r topojson client/app.js -o  public/app.js -v & ( sleep 3 && NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js)",
-		"start": "./node_modules/.bin/browserify client/app.js | ./node_modules/.bin/uglifyjs -mt > public/app.js & NODE_PATH=./app/controllers forever start web.js",
+		"start": "./node_modules/.bin/browserify client/app.js | ./node_modules/.bin/uglifyjs -mt > public/app.js & NODE_PATH=./app/controllers npm start web.js",
 		"install": "npm run build",
 		"test": "make test"
 	},
@@ -47,6 +47,7 @@
 		"lorem-ipsum": "latest",
 		"imager": "latest",
 		"leaflet": "latest",
+		"leaflet-draw": "latest",
 		"mapbox.js": "latest",
 		"brfs": "0.0.8",
 		"topojson": "1.4.5",

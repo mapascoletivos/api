@@ -18,13 +18,27 @@ exports.FeatureEditCtrl = [
 
 		var layer;
 
+		var drawControl = new L.Control.Draw();
+
 		$scope.$layer = Layer;
 
 		$scope.$watch('$layer.edit()', function(editing) {
 			layer = editing;
 			var map = MapService.get();
-			if(map)
-				map.on('click', addMarkerOnClick);
+			if(map) {
+
+				map.on('draw:created', function(e) {
+					$scope.marker = e.layer;
+					$scope.editing.geometry = e.layer.toGeoJSON().geometry;
+					$scope.marker.editing.enable();
+					$scope.marker.on('edit', function(e) {
+						$scope.editing.geometry = e.target.toGeoJSON().geometry;
+					});
+					MapService.addFeature($scope.marker);
+					window.dispatchEvent(new Event('resize'));
+				});
+
+			}
 		});
 
 		$scope.$feature = Feature;
@@ -39,7 +53,11 @@ exports.FeatureEditCtrl = [
 			$scope._data = {};
 			$scope.editing = editing;
 			if(editing) {
-				$scope.setMarker();
+				if(editing.geometry && editing.geometry.type == 'Point' && !editing.geometry.coordinates) {
+					MapService.get().on('click', addMarkerOnClick);
+				} else {
+					$scope.setMarker();
+				}
 				$rootScope.$broadcast('feature.edit.start');
 			} else {
 				$rootScope.$broadcast('feature.edit.stop');
@@ -56,6 +74,16 @@ exports.FeatureEditCtrl = [
 		$scope.defaults = {
 			scrollWheelZoom: false
 		};
+
+		$scope.newFeature = function(type) {
+			$scope.editing = {
+				geometry: {
+					type: type
+				}
+			}
+
+			$scope.setMarker(false);
+		}
 
 		var addMarkerOnClick = function(LatLng) {
 
@@ -75,39 +103,69 @@ exports.FeatureEditCtrl = [
 
 		$scope.setMarker = function(focus) {
 
+			var map = MapService.get();
+
 			if($scope.editing) {
 
-				MapService.clearMarkers();
+				MapService.clearFeatures();
 
 				if($scope.editing.geometry) {
 
-					$scope.marker = featureToMapObj($scope.editing, {
-						draggable: true
-					});
+					if($scope.editing.geometry.coordinates) {
 
-					$scope.marker
-						.bindPopup('<p class="tip">Arraste para alterar a localização.</p>')
-						.on('dragstart', function() {
-							$scope.marker.closePopup();
-						})
-						.on('drag', function() {
-							$scope.marker.closePopup();
-							var coordinates = $scope.marker.getLatLng();
-							$scope.editing.geometry.coordinates = [
-								coordinates.lng,
-								coordinates.lat
-							];
-						});
+						$scope.marker = featureToMapObj($scope.editing);
 
-					MapService.addMarker($scope.marker);
+						if($scope.editing.geometry.type == 'Point') {
 
-					$scope.marker.openPopup();
+							$scope.marker
+								.bindPopup('<p class="tip">Arraste para alterar a localização.</p>')
+								.on('dragstart', function() {
+									$scope.marker.closePopup();
+								})
+								.on('drag', function() {
+									$scope.marker.closePopup();
+									var coordinates = $scope.marker.getLatLng();
+									$scope.editing.geometry.coordinates = [
+										coordinates.lng,
+										coordinates.lat
+									];
+								});
 
-					if(focus !== false) {
-						var map = MapService.get();
-						map.setView($scope.marker.getLatLng(), 15, {
-							reset: true
-						});
+							$scope.marker.openPopup();
+
+							if(focus !== false) {
+								map.setView($scope.marker.getLatLng(), 15, {
+									reset: true
+								});
+							}
+
+						} else {
+
+							$scope.marker.editing.enable();
+
+							$scope.marker.on('edit', function(e) {
+								$scope.editing.geometry = e.target.toGeoJSON().geometry;
+							});
+
+							if(focus !== false) {
+								map.fitBounds($scope.marker.getBounds());
+							}
+
+						}
+
+						MapService.addFeature($scope.marker);
+
+					} else {
+
+						switch($scope.editing.geometry.type) {
+							case 'LineString':
+								new L.Draw.Polyline(map, drawControl.options.polyline).enable();
+								break;
+							case 'Polygon':
+								new L.Draw.Polygon(map, drawControl.options.polygon).enable();
+								break;
+						}
+
 					}
 
 				}

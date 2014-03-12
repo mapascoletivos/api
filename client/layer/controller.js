@@ -34,7 +34,7 @@ exports.LayerCtrl = [
 
 				mapFeatures = angular.copy(features);
 
-				MapService.clearMarkers();
+				MapService.clearFeatures();
 
 				if(features) {
 
@@ -44,29 +44,33 @@ exports.LayerCtrl = [
 
 						if(marker) {
 
+							var popup = L.popup().setContent('<h3 class="feature-title">' + f.title + '</h3>');
+
+							var followMousePopup = function(e) {
+								popup.setLatLng(e.latlng);
+							}
+
 							marker
 								.on('click', function() {
 									$rootScope.$broadcast('marker.clicked', f, layer);
 								})
 								.on('mouseover', function() {
 									marker.openPopup();
+									MapService.get().on('mousemove', followMousePopup);
 								})
 								.on('mouseout', function() {
 									marker.closePopup();
+									MapService.get().off('mousemove', followMousePopup);
 								})
-								.bindPopup('<h3 class="feature-title">' + f.title + '</h3>');
+								.bindPopup(popup);
 
 
-							MapService.addMarker(marker);
+							MapService.addFeature(marker);
 
 						}
 
 					});
 				}
-			}
-
-			if(features && features.length) {
-				// Fit marker layer after 200ms (animation safe)
 			}
 
 		}
@@ -131,7 +135,7 @@ exports.LayerCtrl = [
 						layer.contributors = [];
 
 					$scope.fitMarkerLayer = function() {
-						MapService.fitMarkerLayer();
+						MapService.fitFeatureLayer();
 					}
 
 					// Init features
@@ -139,7 +143,7 @@ exports.LayerCtrl = [
 					populateMap(layer.features, layer, true);
 					
 					setTimeout(function() {
-						MapService.fitMarkerLayer();
+						MapService.fitFeatureLayer();
 					}, 200);
 
 					var viewingContent = false;
