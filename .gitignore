@@ -19,6 +19,7 @@ data/
 public/uploads/images/
 public/vendor.js
 public/app.js
+public/css/app.css
 
 config/config.local.js
 
