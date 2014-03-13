@@ -62,8 +62,9 @@ module.exports = function (app, passport) {
 	 * Token route 
 	 **/
 	app.get('/activate_account/:tokenId', token.activateAccount);
-	app.get('/password_reset/:tokenId', token.showPasswordReset);
-	app.post('/password_reset/:tokenId', token.passwordReset);	
+	app.get('/new_password/:tokenId', token.newPasswordForm);
+	app.post('/password_reset/:tokenId', token.newPassword);	
+	app.post('/password_needed/:tokenId', token.newPassword);	
 	app.get('/migrate_account/:tokenId', token.migrateAccount);	
 	app.get('/email_change/:tokenId', token.emailChange);	
 	app.param('tokenId', token.load);
@@ -81,18 +82,6 @@ module.exports = function (app, passport) {
 		passport.authenticate('facebook', {
 		failureRedirect: '/login'
 	}), users.authCallback)
-
-	// Twitter OAuth routes
-
-	app.get('/auth/twitter',
-		passport.authenticate('twitter', {
-		failureRedirect: '/login'
-	}), users.signin)
-	app.get('/auth/twitter/callback',
-		passport.authenticate('twitter', {
-		failureRedirect: '/login'
-	}), users.authCallback)
-
 
 	// Google OAuth routes
 

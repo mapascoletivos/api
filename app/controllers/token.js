@@ -44,6 +44,7 @@ exports.activateAccount = function(req, res){
 			}
 			
 			user.status = 'active';
+			user.needsEmailConfirmation = false;
 
 			user.save(function(err){
 				if (err)
@@ -59,33 +60,33 @@ exports.activateAccount = function(req, res){
 
 
 /**
- * Password Reset form
+ * New password form
  */
 
-exports.showPasswordReset = function(req, res){
+exports.newPasswordForm = function(req, res){
 	var
 		token = req.token;
 
 	console.log(token);
 	
 	// invalid route for token
-	if (token.type != 'password_reset') {
+	if ((token.type != 'password_reset') && (token.type != 'password_needed')) {
 		return res.render('tokens/index', {errors: ['Token inválido.']});
 	} else {
-		res.render('users/password_change', {user: req.user, token: token})
+		res.render('users/new_password', {user: req.user, token: token})
 	}
 }
 
 /**
- * Change Password
+ * Set new password
  */
 
-exports.passwordReset = function(req, res){
+exports.newPassword = function(req, res){
 	var
 		token = req.token;
 	
 	// invalid route for token
-	if (token.type != 'password_reset') {
+	if ((token.type != 'password_reset') && (token.type != 'password_needed')) {
 		return res.render('tokens/index', {errors: ['Token inválido.']});
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){

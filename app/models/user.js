@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	crypto = require('crypto'),
 	moment = require('moment'),
-	oAuthTypes = ['twitter', 'facebook', 'google'];
+	oAuthTypes = ['facebook', 'google'];
 
 /**
  * User schema
@@ -25,15 +25,12 @@ var UserSchema = new Schema({
 	bio: {type: String, default: '' },
 	web: String,
 	status: {type: String, enum: ['to_migrate', 'inactive', 'active'], default: 'inactive' },
-	provider: { type: String, default: '' },
 	salt: { type: String, default: '' },
 	layers: [{type: Schema.ObjectId, ref: 'Layer'}],
 	authToken: { type: String, default: '' }, 
+	needsEmailConfirmation: {type: Boolean, default: true},	
 	facebook: {},
-	twitter: {},
-	github: {},
 	google: {},
-	linkedin: {},
 	oldId: Number // to store id used in old Mapas Coletivos
 });
 
@@ -95,25 +92,19 @@ UserSchema.path('username').validate(function (username, fn) {
 		fn(true);
 }, 'Username already exists')
 
-
-UserSchema.path('hashed_password').validate(function (hashed_password) {
-	if (this.doesNotRequireValidation()) return true
-	return hashed_password.length
-}, 'Password cannot be blank')
-
 /**
  * Pre-save hook
  */
 
-UserSchema.pre('save', function(next) {
-	if (!this.isNew) return next();
+// UserSchema.pre('save', function(next) {
+// 	if (!this.isNew) return next();
 
-	if (!validatePresenceOf(this.password)
-		&& !this.doesNotRequireValidation())
-		next(new Error('Invalid password'));
-	else
-		next();
-})
+// 	if (!validatePresenceOf(this.password)
+// 		&& !this.doesNotRequireValidation())
+// 		next(new Error('Invalid password'));
+// 	else
+// 		next();
+// })
 
 /**
  * Methods

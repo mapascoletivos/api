@@ -101,11 +101,11 @@ var Notify = {
 		});
 	},
 
-	passwordUpdate: function(user, callback) {
+	passwordNeeded: function(user, callback) {
 		var
 			Token = mongoose.model('Token'),
 			token = new Token({
-				type: 'password_update',
+				type: 'password_needed',
 				user: user,
 				expiresAt: moment().add('day', 1).toDate()
 			});
@@ -114,13 +114,13 @@ var Notify = {
 			if (err) {
 				callback(err);
 			} else {
-				jade.renderFile(tplPath + '/password_update.jade', { user: user, token: token, appUrl: config.appUrl }, function(err, file) {
+				jade.renderFile(tplPath + '/password_needed.jade', { user: user, token: token, appUrl: config.appUrl }, function(err, file) {
 					if (err) {
 						callback(err);
 					} else {
 						var 
 							options = _.extend(mailConfig, {
-								subject: 'Atualização de senha',
+								subject: 'Definição de senha',
 								to: user.email, 
 								html: file
 							});

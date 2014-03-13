@@ -73,14 +73,9 @@ exports.forgotPassword = function (req, res) {
 
 exports.newPasswordToken = function (req, res) {
 	User.findOne({
-		$and: [
-			{ provider: 'local' }, // ignore users authenticating in third parties
-			{
-				$or: [
-				{email: req.body['emailOrUsername']}, 
-				{username: req.body['emailOrUsername']}
-				]
-			}
+		$or: [
+		{email: req.body['emailOrUsername']}, 
+		{username: req.body['emailOrUsername']}
 		]
 	}, function(err,user){
 		if (err) 
