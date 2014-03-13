@@ -33,18 +33,28 @@ module.exports = function (passport, config) {
 					return done(err) 
 				}
 				if (!user) {
-					return done(null, false, { message: 'Unknown user' })
+					return done(null, false, { message: 'Usuário não cadastrado.' })
 				}
-				
-				if (user.status == 'inactive') {
+
+				// User don't have a password yet
+				if (!user.hashed_password) {
+					mailer.passwordNeeded(user, function(err){
+						console.log(err);
+						if (err)
+							return done(null, false, { message: 'Você precisa de uma senha para acessar sua conta, mas houve um erro. Por favor, contate o suporte.' });
+						else
+							return done(null, false, { message: 'Você precisa de uma senha para acessar sua conta com o seu e-mail. Verifique seu e-mail para continuar.' });
+					});				
+				} else if (user.needsEmailConfirmation) {
 					mailer.welcome(user, function(err){
 						if (err)
-							return done(null, false, { message: 'Fail to send new activation email, please contact support' });
+							return done(null, false, { message: 'Erro ao enviar e-mail de ativação, por favor, contate o suporte.' });
 						else
-							return done(null, false, { message: 'User is not active, new activation email sent.' });
+							return done(null, false, { message: 'Um e-mail de ativação foi enviado para sua caixa de correio.' });
 					});
 				} else if (user.status == 'to_migrate') {
 					return done(null, false, { message: "Sua conta não foi migrada ainda. Visite esta <a href='/migrate' target='_self'>página</a>." });
+
 				} else if (!user.authenticate(password)) {
 					return done(null, false, { message: 'Invalid password' })
 				} else {
@@ -54,56 +64,46 @@ module.exports = function (passport, config) {
 		}
 	))
 
-	// use twitter strategy
-	passport.use(new TwitterStrategy({
-			consumerKey: config.twitter.clientID,
-			consumerSecret: config.twitter.clientSecret,
-			callbackURL: config.twitter.callbackURL
-		},
-		function(token, tokenSecret, profile, done) {
-			User.findOne({ 'twitter.id_str': profile.id }, function (err, user) {
-				if (err) { return done(err) }
-				if (!user) {
-					user = new User({
-						name: profile.displayName,
-						username: profile.username,
-						provider: 'twitter',
-						twitter: profile._json,
-						status: 'active'
-					})
-					user.save(function (err) {
-						if (err) console.log(err)
-						return done(err, user)
-					})
-				}
-				else {
-					return done(err, user)
-				}
-			})
-		}
-	))
-
 	// use facebook strategy
 	passport.use(new FacebookStrategy({
-			clientID: config.facebook.clientID,
-			clientSecret: config.facebook.clientSecret,
-			callbackURL: config.facebook.callbackURL
+			clientID: config.oauth.facebook.clientID,
+			clientSecret: config.oauth.facebook.clientSecret,
+			callbackURL: config.oauth.facebook.callbackURL
 		},
 		function(accessToken, refreshToken, profile, done) {
 			User.findOne({ 'facebook.id': profile.id }, function (err, user) {
 				if (err) { return done(err) }
+
+				// Not yet registered via Facebook
 				if (!user) {
-					user = new User({
-						name: profile.displayName,
-						email: profile.emails[0].value,
-						username: profile.username,
-						provider: 'facebook',
-						facebook: profile._json
-					})
-					user.save(function (err) {
-						if (err) console.log(err)
-						return done(err, user)
-					})
+
+					// Check user registration via email
+					User.findOne({ email: profile.emails[0].value }, function (err, user) {
+						if (err) { return done(err) }
+
+						// User not registered, create one
+						if (!user) {
+							user = new User({
+								name: profile.displayName,
+								email: profile.emails[0].value,
+								username: profile.username,
+								provider: 'facebook',
+								facebook: profile._json,
+								status: 'active',
+								needsEmailConfirmation: false
+							})
+							
+						// User is already registed by email, add Facebook info
+						} else {
+							user.facebook = profile._json;
+						}
+
+						// Save and return
+						user.save(function (err) {
+							if (err) console.log(err)
+							return done(err, user)
+						});
+					});
 				}
 				else {
 					return done(err, user)
@@ -114,24 +114,43 @@ module.exports = function (passport, config) {
 
 	// use google login strategy
 	passport.use(new GoogleStrategy({
-			clientID: config.google.clientID,
-			clientSecret: config.google.clientSecret,
-			callbackURL: config.google.callbackURL
+			clientID: config.oauth.google.clientID,
+			clientSecret: config.oauth.google.clientSecret,
+			callbackURL: config.oauth.google.callbackURL
 		},
 		function(accessToken, refreshToken, profile, done) {
 			User.findOne({ 'google.id': profile.id }, function (err, user) {
+				if (err) { return done(err) }
+				
+				// Not yet registered via Google
 				if (!user) {
-					user = new User({
-						name: profile.displayName,
-						email: profile.emails[0].value,
-						username: profile.username,
-						provider: 'google',
-						google: profile._json
-					})
-					user.save(function (err) {
-						if (err) console.log(err)
-						return done(err, user)
-					})
+
+					// Check user registration via email
+					User.findOne({ email: profile.emails[0].value }, function (err, user) {
+						if (err) { return done(err) }
+
+						// User not registered, create one
+						if (!user) {				
+							user = new User({
+								name: profile.displayName,
+								email: profile.emails[0].value,
+								username: profile.name.givenName + profile.name.familyName,
+								provider: 'google',
+								google: profile._json,
+								status: 'active',
+								needsEmailConfirmation: false
+							})
+
+						// User is already registed by email, add Google info	
+						} else {
+							user.google = profile._json
+						}
+
+						user.save(function (err) {
+							if (err) console.log(err)
+							return done(err, user)
+						});
+					});
 				} else {
 					return done(err, user)
 				}

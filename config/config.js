@@ -7,7 +7,7 @@ var
 	path = require('path'),
 	rootPath = path.resolve(__dirname + '../..'),
 	templatePath = path.normalize(__dirname + '/../app/mailer/templates'),
-	app_url = process.env.APP_URL,
+	app_url = process.env.APP_URL || ('http://localhost:' + (process.env.PORT || 3000)),
 	nodemailer = {
 		host: process.env.SMTP_HOST,
 		port: 465,
@@ -18,64 +18,8 @@ var
 				pass: process.env.SMTP_PASSWORD
 		},
 		from: process.env.SMTP_FROM
-	}
-
-/**
-* Expose config
-*/
-
-module.exports = {
-	development: {
-		root: rootPath,
-		appUrl: 'http://localhost:3000',
-		nodemailer: nodemailer,
-		db: 'mongodb://localhost/mapascoletivos_dev',
-		facebook: {
-			clientID: "APP_ID",
-			clientSecret: "APP_SECRET",
-			callbackURL: "http://localhost:3000/auth/facebook/callback"
-		},
-		twitter: {
-			clientID: "CONSUMER_KEY",
-			clientSecret: "CONSUMER_SECRET",
-			callbackURL: "http://localhost:3000/auth/twitter/callback"
-		},
-		google: {
-			clientID: "APP_ID",
-			clientSecret: "APP_SECRET",
-			callbackURL: "http://localhost:3000/auth/google/callback"
-		}
 	},
-	test: {
-		root: rootPath,
-		appUrl: 'http://localhost:3000',
-		db: 'mongodb://localhost/mapascoletivos_test',
-		nodemailer: nodemailer,
-		facebook: {
-			clientID: "APP_ID",
-			clientSecret: "APP_SECRET",
-			callbackURL: "http://localhost:3000/auth/facebook/callback"
-		},
-		twitter: {
-			clientID: "CONSUMER_KEY",
-			clientSecret: "CONSUMER_SECRET",
-			callbackURL: "http://localhost:3000/auth/twitter/callback"
-		},
-		google: {
-			clientID: "APP_ID",
-			clientSecret: "APP_SECRET",
-			callbackURL: "http://localhost:3000/auth/google/callback"
-		}
-	},
-	staging: {
-		root: rootPath,
-		db: process.env.MONGOHQ_URL
-	},
-	production: {
-		root: rootPath,
-		appUrl: app_url,
-		db: 'mongodb://localhost/mapascoletivos_production',
-		nodemailer: nodemailer,
+	oauth = {
 		facebook: {
 			clientID: process.env.FACEBOOK_CLIENT_ID,
 			clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
@@ -90,6 +34,33 @@ module.exports = {
 			clientID: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 			callbackURL: app_url + "/auth/google/callback"
-		}
+		}	
+	}
+
+/**
+* Expose config
+*/
+
+module.exports = {
+	development: {
+		root: rootPath,
+		appUrl: 'http://localhost:3000',
+		nodemailer: nodemailer,
+		db: 'mongodb://localhost/mapascoletivos_dev',
+		oauth: oauth
+	},
+	test: {
+		root: rootPath,
+		appUrl: 'http://localhost:3000',
+		db: 'mongodb://localhost/mapascoletivos_test',
+		nodemailer: nodemailer,
+		oauth: oauth
+	},
+	production: {
+		root: rootPath,
+		appUrl: app_url,
+		db: 'mongodb://localhost/mapascoletivos_production',
+		nodemailer: nodemailer,
+		oauth: oauth
 	}
 }
