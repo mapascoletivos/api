@@ -84,7 +84,6 @@ exports.Layer = [
 				return editing;
 			},
 			isDraft: function(layer) {
-				console.log(layer);
 				return layer.isDraft;
 			},
 			deleteDraft: function(layer, callback) {

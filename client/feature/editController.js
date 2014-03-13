@@ -30,12 +30,16 @@ exports.FeatureEditCtrl = [
 				map.on('draw:created', function(e) {
 					$scope.marker = e.layer;
 					$scope.editing.geometry = e.layer.toGeoJSON().geometry;
+					Feature.edit($scope.editing);
 					$scope.marker.editing.enable();
 					$scope.marker.on('edit', function(e) {
 						$scope.editing.geometry = e.target.toGeoJSON().geometry;
 					});
 					MapService.addFeature($scope.marker);
-					window.dispatchEvent(new Event('resize'));
+					setTimeout(function() {
+						MapService.get().fitBounds($scope.marker.getBounds());
+						window.dispatchEvent(new Event('resize'));
+					}, 200);
 				});
 
 			}
@@ -76,11 +80,11 @@ exports.FeatureEditCtrl = [
 		};
 
 		$scope.newFeature = function(type) {
-			$scope.editing = {
+			Feature.edit({
 				geometry: {
 					type: type
 				}
-			}
+			});
 
 			$scope.setMarker(false);
 		}
@@ -90,13 +94,11 @@ exports.FeatureEditCtrl = [
 			var LatLng = LatLng.latlng;
 
 			if(!$scope.marker) {
-				$scope.editing.geometry = {
-					coordinates: [
-						LatLng.lng,
-						LatLng.lat
-					]
-				};
-				$scope.setMarker(false);
+				$scope.editing.geometry.coordinates = [
+					LatLng.lng,
+					LatLng.lat
+				];
+				Feature.edit($scope.marker);
 			}
 
 		}
@@ -113,7 +115,9 @@ exports.FeatureEditCtrl = [
 
 					if($scope.editing.geometry.coordinates) {
 
-						$scope.marker = featureToMapObj($scope.editing);
+						$scope.marker = featureToMapObj($scope.editing, {
+							draggable: true
+						});
 
 						if($scope.editing.geometry.type == 'Point') {
 
@@ -134,9 +138,11 @@ exports.FeatureEditCtrl = [
 							$scope.marker.openPopup();
 
 							if(focus !== false) {
-								map.setView($scope.marker.getLatLng(), 15, {
-									reset: true
-								});
+								setTimeout(function() {
+									map.setView($scope.marker.getLatLng(), 15, {
+										reset: true
+									});
+								}, 200);
 							}
 
 						} else {
@@ -148,7 +154,9 @@ exports.FeatureEditCtrl = [
 							});
 
 							if(focus !== false) {
-								map.fitBounds($scope.marker.getBounds());
+								setTimeout(function() {
+									map.fitBounds($scope.marker.getBounds());
+								}, 200);
 							}
 
 						}

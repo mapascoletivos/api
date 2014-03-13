@@ -1,10 +1,22 @@
 {
 	"name": "mapascoletivos",
 	"description": "A collaborative mapping platform",
-	"version": "0.0.1",
-	"author": {
-		"name": "Ecolab"
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/oeco/mapascoletivos.git"
 	},
+	"version": "0.1.0",
+	"author": "Ecolab <gustavo.faleiros@gmail.com>",
+	"contributors": [
+		{
+			"name": "Miguel Peixe",
+			"email": "miguel@cardume.art.br"
+		},
+		{
+			"name": "Vitor George",
+			"email": "vitor.george@gmail.com"
+		}
+	],
 	"engines": {
 		"node": "0.10.x",
 		"npm": "1.2.x"

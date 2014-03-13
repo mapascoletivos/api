@@ -75,7 +75,6 @@ exports.import = function(req, res) {
 		// save feature
 		feature.save(function (err) {
 			if (err) {
-				console.log('Feature save: ' + err);
 				cb(err);
 			} else {
 				layer.features.addToSet(feature);

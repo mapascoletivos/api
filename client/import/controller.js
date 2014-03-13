@@ -41,10 +41,10 @@ exports.DataImportCtrl = [
 					draft.$save(function(draft) {
 						var features = [];
 						angular.forEach(gj.features, function(feature) {
-							if(feature.properties.name && typeof feature.properties.name == 'string')
-								feature.title = feature.properties.name;
 							if(feature.properties.title && typeof feature.properties.title == 'string')
 								feature.title = feature.properties.title;
+							else if(feature.properties.name && typeof feature.properties.name == 'string')
+								feature.title = feature.properties.name;
 							else
 								feature.title = 'Untitled';
 

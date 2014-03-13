@@ -148,14 +148,14 @@
 					<h3>Local</h3>
 					<textarea class="edit-title no-canvas" placeholder="Título do local" ng-model="editing.title" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
-					<div class="latlng">
+					<div class="latlng" ng-show="editing.geometry.type == 'Point'">
 						<p class="latitude latlng-item">Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" /></p>
 						<p class="longitude latlng-item">Longitude: <input ng-model="editing.geometry.coordinates[1]" ng-change="setMarker()" type="text" /></p>
 					</div>
 				</div>
 				<div class="editing-tools" ng-class="{editing: tool}">
 					<ul class="tools-list">
-						<li class="feature-location-label" ng-class="{active: tool == 'feature-location'}"><a href="javascript:void(0);" title="Buscar uma localização" ng-click="setTool('feature-location')"><span class="lsf">&#xE116;</span></a></li>
+						<li class="feature-location-label" ng-show="editing.geometry.type == 'Point'" ng-class="{active: tool == 'feature-location'}"><a href="javascript:void(0);" title="Buscar uma localização" ng-click="setTool('feature-location')"><span class="lsf">&#xE116;</span></a></li>
 						<li class="feature-data-label" ng-class="{active: tool == 'feature-data'}"><a href="javascript:void(0);" title="Dados do local" ng-click="setTool('feature-data')"><span class="lsf">&#xE127;</span></a></li>
 						<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover esta feature" ng-click="delete()"><span class="lsf">&#xE12c;</span></a></li>
 						<li class="save-label"><a href="javascript:void(0);" title="Salvar alterações desta feature" ng-click="save()"><span class="lsf">&#xE029;</span></a></li>

@@ -56,11 +56,13 @@ exports.LayerCtrl = [
 								})
 								.on('mouseover', function() {
 									marker.openPopup();
-									MapService.get().on('mousemove', followMousePopup);
+									if(f.geometry.type !== 'Point')
+										MapService.get().on('mousemove', followMousePopup);
 								})
 								.on('mouseout', function() {
 									marker.closePopup();
-									MapService.get().off('mousemove', followMousePopup);
+									if(f.geometry.type !== 'Point')
+										MapService.get().off('mousemove', followMousePopup);
 								})
 								.bindPopup(popup);
 

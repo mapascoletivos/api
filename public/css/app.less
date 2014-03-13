@@ -228,7 +228,7 @@ input.no-canvas {
 				text-decoration: none;
 				font-size: 12px;
 				line-height: 32px;
-				padding: 10px 15px;
+				padding: 10px 0 10px 30px;
 				text-transform: uppercase;
 				font-weight: 600;
 				&:hover {
@@ -786,15 +786,46 @@ input.no-canvas {
 		}
 	}
 	input {
-		height: 54px;
 		display: inline-block;
 		background: transparent;
 		border: 0;
-		margin: 0 0 0 40px;
+		margin: 0;
 		color: #fff;
-		font-size: 20px;
+		font-size: 16px;
 		padding: 0;
-		width: 400px;
+		width: 300px;
+		float: right;
+		font-weight: 200;
+		height: 30px;
+	}
+	.searchform {
+		margin: 10px 0 0 0;
+		float: right;
+		background: #666;
+		padding: 10px 15px;
+		&:before {
+			.lsf;
+			content: '\E116';
+			float: right;
+			color: #999;
+			font-size: 30px;
+			line-height: 30px;
+		}
+		::-webkit-input-placeholder {
+		   color: #999;
+		}
+		:-moz-placeholder { /* Firefox 18- */
+		   color: #999;  
+		}
+		::-moz-placeholder {  /* Firefox 19+ */
+		   color: #999;  
+		}
+		:-ms-input-placeholder {  
+		   color: #999;  
+		}
+		input {
+			color: #fff;
+		}
 	}
 	.header-actions {
 		display: block;
