@@ -202,19 +202,23 @@ exports.create = function (req, res) {
 	var user = new User(req.body);
 	user.provider = 'local';
 
-	// uncomment these lines if you want to enable email confirmation at dev environment
-	// if (process.env.NODE_ENV == 'development')		
-	// 	user.status = 'active';
+	// Avoid e-mail confirmation at development environment
+	if (process.env.NODE_ENV == 'development') {
+		user.needsEmailConfirmation = false;
+	}
 
 
 	user.save(function (err) {
 		if (err) {
-			req.flash('error', utils.errorMessagesFlash(err.errors));
-			return res.redirect('/signup');
+			// req.flash('error', utils.errorMessagesFlash(err.errors));
+			return res.render('users/signup', {
+				errors: utils.errorMessagesFlash(err.errors),
+				user: user
+			});
 		}
 
 		// Don't send email if user is active
-		if (user.status == 'active') {
+		if (!user.needsEmailConfirmation) {
 			return res.redirect('/login');
 		} else {
 			mailer.welcome(user, function(err){

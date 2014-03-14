@@ -1,4 +1,5 @@
 .env
+.env.backup
 lib-cov
 *.seed
 *.log

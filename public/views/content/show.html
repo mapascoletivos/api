@@ -9,7 +9,7 @@
 		</p>
 		<p class="features" ng-show="content.featureObjs.length" title="Features">
 			<span class="feature" ng-repeat="feature in content.featureObjs">
-				<a href="{{baseUrl}}/feature/{{feature._id}}">{{feature.title}}</a>
+				<a href="{{baseUrl}}/feature/{{feature._id}}" ng-click="focus(feature)">{{feature.title}}</a>
 			</span>
 		</p>
 	</div>

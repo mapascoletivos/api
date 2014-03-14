@@ -75,6 +75,8 @@ exports.LayerCtrl = [
 				}
 			}
 
+			MapService.fitFeatureLayer();
+
 		}
 
 		// New layer

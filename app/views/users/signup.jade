@@ -1,31 +1,37 @@
 extends auth
 
 block auth
-  form.form-horizontal(action="/users", method="post", role="form")
-    input(type='hidden', name='_csrf', value="#{csrf_token}")
+	form.form-horizontal(action="/users", method="post", role="form")
+		input(type='hidden', name='_csrf', value="#{csrf_token}")
 
-    .form-group
-      label.col-sm-2.control-label(for='name') Nome completo
-      .col-sm-10
-        input#name.form-control(type='text', name="name", placeholder='Nome completo', value=user.name)
+		.form-group
+			label.col-sm-2.control-label(for='name') Nome completo
+			.col-sm-10
+				input#name.form-control(type='text', name="name", placeholder='Nome completo', value=user.name)
 
-    .form-group
-      label.col-sm-2.control-label(for='email') Email
-      .col-sm-10
-        input#email.form-control(type='text', name="email", placeholder='Email', value=user.email)
+		.form-group
+			label.col-sm-2.control-label(for='email') Email
+			.col-sm-10
+				input#email.form-control(type='text', name="email", placeholder='Email', value=user.email)
 
-    .form-group
-      label.col-sm-2.control-label(for='password') Senha
-      .col-sm-10
-        input#password.form-control(type='password', name="password", placeholder='Senha')
+		.form-group
+			label.col-sm-2.control-label(for='username') Nome de usuário
+			.col-sm-10
+				input#email.form-control(type='text', name="username", placeholder='Nome de usuário', value=user.username)
 
-    p
-      | Ao clicar em Cadastrar ou fazer login via redes sociais, você concorda com nossos 
-      a(href="/terms-of-use" target="_self") termos de uso
-      | .
 
-    input.btn.btn-primary(type='submit' value="Cadastrar")
+		.form-group
+			label.col-sm-2.control-label(for='password') Senha
+			.col-sm-10
+				input#password.form-control(type='password', name="password", placeholder='Senha')
 
-    .form-group.action-group
-      a.show-signup(href="/login" target="_self") Fazer login
-      a(href="/forgot_password" target="_self") Recuperar senha
+		p
+			| Ao clicar em Cadastrar ou fazer login via redes sociais, você concorda com nossos 
+			a(href="/terms-of-use" target="_self") termos de uso
+			| .
+
+		input.btn.btn-primary(type='submit' value="Cadastrar")
+
+		.form-group.action-group
+			a.show-signup(href="/login" target="_self") Fazer login
+			a(href="/forgot_password" target="_self") Recuperar senha

@@ -78,7 +78,7 @@ UserSchema.path('email').validate(function (email, fn) {
 		})
 	} else 
 		fn(true);
-}, 'Email already exists')
+}, 'Este e-mail já existe.');
 
 UserSchema.path('username').validate(function (username, fn) {
 	var User = mongoose.model('User');
@@ -90,7 +90,12 @@ UserSchema.path('username').validate(function (username, fn) {
 		})
 	} else 
 		fn(true);
-}, 'Username already exists')
+}, 'Este nome de usuário já é utilizado.')
+
+UserSchema.path('username').validate(function (username) {
+  return username.length
+}, 'Informe um nome de usuário.')
+
 
 /**
  * Pre-save hook

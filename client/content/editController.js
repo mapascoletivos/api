@@ -161,7 +161,7 @@ exports.ContentEditCtrl = [
 
 				// Fix map size and bounds (animation safe)
 				setTimeout(function() {
-					MapService.fitMarkerLayer();
+					MapService.fitFeatureLayer();
 				}, 200);
 			}
 

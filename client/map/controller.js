@@ -130,12 +130,6 @@ exports.MapCtrl = [
 
 				}, 300));
 
-				$scope.focusLayer = function(layer) {
-
-
-
-				};
-
 				$scope.toggleLayer = function(layer) {
 
 					if(!$scope.map.layers)
