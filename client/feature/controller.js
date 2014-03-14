@@ -75,6 +75,11 @@ exports.FeatureCtrl = [
 
 			$scope.feature = feature;
 
+			if(window.mcHistory.length == 1) {
+				MapService.get().setView(feature.geometry.coordinates, MapService.get().getMaxZoom());
+				focused = true;
+			}
+
 			var featureContents = Feature.getContents(feature, contents);
 
 			Content.set(featureContents);

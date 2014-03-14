@@ -65,9 +65,7 @@ exports.LayerCtrl = [
 				}
 			}
 
-			if(features && features.length) {
-				// Fit marker layer after 200ms (animation safe)
-			}
+			MapService.fitMarkerLayer();
 
 		}
 

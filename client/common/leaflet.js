@@ -25,7 +25,6 @@ angular.module('mapasColetivos.leaflet', [])
 				//config = _.extend({ infoControl: tr, attributionControl: true }, config);
 				map = L.mapbox.map(id, null, config);
 				map.whenReady(function() {
-					console.log(map);
 					map.addLayer(baseLayer);
 					map.addLayer(markerLayer);
 					map.addControl(legendControl);
