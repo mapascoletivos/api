@@ -29,7 +29,6 @@ angular.module('mapasColetivos.mapView', [])
 			backLink: function(url) {
 				if(typeof url !== 'undefined') {
 					backLink = url;
-					console.log(backLink);
 				}
 
 				return backLink;

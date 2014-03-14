@@ -22,11 +22,14 @@ angular.module('mapasColetivos.leaflet', [])
 		return {
 			init: function(id, config) {
 				this.destroy();
+				//config = _.extend({ infoControl: tr, attributionControl: true }, config);
 				map = L.mapbox.map(id, null, config);
 				map.whenReady(function() {
+					console.log(map);
 					map.addLayer(baseLayer);
 					map.addLayer(featureLayer);
 					map.addControl(legendControl);
+					map.infoControl.addInfo('<a href="https://www.mapbox.com/map-feedback/" target="_blank" class="mapbox-improve-map">Melhore este mapa</a>');
 				});
 				return map;
 			},
@@ -170,7 +173,7 @@ angular.module('mapasColetivos.leaflet', [])
 			},
 			destroy: function() {
 				this.clearAll();
-				baseLayer = L.tileLayer('http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png');
+				baseLayer = L.mapbox.tileLayer('tmcw.map-7s15q36b');
 				legendControl = L.mapbox.legendControl();
 				if(map instanceof L.Map)
 					map.remove();
