@@ -21,18 +21,13 @@ var
 	},
 	oauth = {
 		facebook: {
-			clientID: process.env.FACEBOOK_CLIENT_ID,
-			clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+			clientID: process.env.FACEBOOK_CLIENT_ID || 'APP_ID',
+			clientSecret: process.env.FACEBOOK_CLIENT_SECRET || 'APP_SECRET',
 			callbackURL: app_url + "/auth/facebook/callback"
 		},
-		twitter: {
-			clientID: process.env.TWITTER_CLIENT_ID,
-			clientSecret: process.env.TWITTER_CLIENT_SECRET,
-			callbackURL: app_url + "/auth/twitter/callback"
-		},
 		google: {
-			clientID: process.env.GOOGLE_CLIENT_ID,
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+			clientID: process.env.GOOGLE_CLIENT_ID || 'APP_ID',
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'APP_SECRET',
 			callbackURL: app_url + "/auth/google/callback"
 		}	
 	}
