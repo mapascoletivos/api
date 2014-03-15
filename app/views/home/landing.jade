@@ -52,4 +52,22 @@ html.landing
 					h3 Riscos de inundação na costa carioca
 					p.author Gustavo Faleiros
 					a.button(href="http://alpha.mapascoletivos.com.br/layers/5318c853f352b70d6fa7e278/" target="_self") Veja o mapa
+		if selectedProjects
+			section#selected-projects.home-section
+				.container
+					.twelve.columns
+						.title
+							h2 Mapas selecionados
+					.project-list
+						ul
+							each project, i in selectedProjects
+								li.four.columns
+									article
+										.img(style="background-image:url(#{project.img})")
+											a(href="#{project.url}" title="#{project.title}")
+										h3
+											a(href="#{project.url}" title="#{project.title}") #{project.title}
+										p #{project.description}
+
+
 		include ../includes/footer
