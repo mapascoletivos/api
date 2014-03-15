@@ -5,10 +5,6 @@ window.grvtr = require('grvtr');
 window.markdown = require("markdown").markdown;
 
 require('leaflet-draw');
-require('leaflet-draw/src/edit/handler/Edit.Poly');
-require('leaflet-draw/src/edit/handler/Edit.SimpleShape');
-require('leaflet-draw/src/edit/handler/Edit.Circle');
-require('leaflet-draw/src/edit/handler/Edit.Rectangle');
 require('jquery-ui-browserify');
 require('angular/angular');
 require('angular-route/angular-route');

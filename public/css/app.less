@@ -1,3 +1,39 @@
+/* MC FEATURES */
+
+@font-face {
+	font-family: 'mc-features';
+	src:url('../font/mc-features.eot?-qtuckt');
+	src:url('../font/mc-features.eot?#iefix-qtuckt') format('embedded-opentype'),
+		url('../font/mc-features.woff?-qtuckt') format('woff'),
+		url('../font/mc-features.ttf?-qtuckt') format('truetype'),
+		url('../font/mc-features.svg?-qtuckt#mc-features') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.mcf, .mcf-icon:before {
+	font-family: 'mc-features';
+	-webkit-text-rendering: optimizeLegibility;
+	-moz-text-rendering: optimizeLegibility;
+	-ms-text-rendering: optimizeLegibility;
+	-o-text-rendering: optimizeLegibility;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-ms-font-smoothing: antialiased;
+	-o-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+}
+
+.mcf-marker {
+	content: "\e600";
+}
+.mcf-polygon {
+	content: "\e602";
+}
+.mcf-line {
+	content: "\e601";
+}
 
 /* LIGATURE SYMBOLS */
 
@@ -1407,11 +1443,16 @@ input.no-canvas {
 					&:hover {
 						color: #777;
 					}
-					.lsf {
+					.lsf,
+					.mcf {
 						font-size: 28px;
 						line-height: 30px;
 						margin-right: 10px;
 						font-weight: 200;
+					}
+					.mcf {
+						font-size: 22px;
+						line-height: 22px;
 					}
 				}
 				&.active {
@@ -1553,7 +1594,7 @@ input.no-canvas {
 					.type {
 						color: @blue;
 						float: left;
-						font-size: 40px;
+						font-size: 25px;
 						padding: 20px 20px 20px 0;
 					}
 					.actions {
@@ -1734,55 +1775,81 @@ input.no-canvas {
 			bottom: 0;
 			-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
 		}
-		.add-marker-tip {
-			display: none;
+		.start-tip {
+			display: block;
+			position: absolute;
+			top: 0;
+			padding-top: 15%;
+			box-sizing: border-box;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			background: rgba(0,0,0,0.5);
+			pointer-events: none;
+			text-align: center;
+			color: #fff;
+			z-index: 100;
+			font-size: 20px;
+			font-weight: 600;
+			text-transform: uppercase;
+			text-shadow: 2px 2px 1px rgba(0,0,0,0.2);
 		}
 		.new-feature {
-			display: none;
+			display: block;
+			position: absolute;
+			top: 0;
+			padding-top: 15%;
+			box-sizing: border-box;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			background: rgba(0,0,0,0.7);
+			text-align: center;
+			color: #fff;
+			z-index: 100;
+			font-size: 18px;
+			font-weight: 600;
+			text-shadow: 2px 2px 1px rgba(0,0,0,0.2);
+			.available-types {
+				max-width: 600px;
+				margin: 0 auto;
+				padding: 0 10%;
+				text-align: left;
+				font-size: 14px;
+				ul {
+					width: 100%;
+					display: table;
+					text-align: center;
+					li {
+						width: 1%;
+						display: table-cell;
+						padding: 25px;
+						border-right: 1px solid @dark-blue;
+						background: @blue;
+						text-shadow: 0 0 0;
+						cursor: pointer;
+						&:hover {
+							background: @light-blue;
+						}
+						.mcf {
+							display: block;
+							font-size: 40px;
+							line-height: 40px;
+							margin-bottom: 20px;
+						}
+						&:last-child {
+							border-right: 0;
+						}
+					}
+				}
+			}
 		}
 		&.new {
-			.new-feature {
-				display: block;
-				position: absolute;
-				top: 0;
-				padding-top: 15%;
-				box-sizing: border-box;
-				left: 0;
-				bottom: 0;
-				right: 0;
-				background: rgba(0,0,0,0.5);
-				text-align: center;
-				color: #fff;
-				z-index: 100;
-				font-size: 20px;
-				font-weight: 600;
-				text-transform: uppercase;
-				text-shadow: 2px 2px 1px rgba(0,0,0,0.2);
-			}
 		}
 		&.editing {
 			.leaflet-container {
 				bottom: 60%;
 				-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
-			}
-			.add-marker-tip {
-				display: block;
-				position: absolute;
-				top: 0;
-				padding-top: 15%;
-				box-sizing: border-box;
-				left: 0;
-				bottom: 60%;
-				right: 0;
-				background: rgba(0,0,0,0.5);
-				pointer-events: none;
-				text-align: center;
-				color: #fff;
-				z-index: 100;
-				font-size: 20px;
-				font-weight: 600;
-				text-transform: uppercase;
-				text-shadow: 2px 2px 1px rgba(0,0,0,0.2);
 			}
 		}
 		#edit-feature {

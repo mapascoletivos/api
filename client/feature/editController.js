@@ -18,7 +18,7 @@ exports.FeatureEditCtrl = [
 
 		var layer;
 
-		var drawControl = new L.Control.Draw();
+		var drawControl;
 
 		$scope.$layer = Layer;
 
@@ -26,8 +26,9 @@ exports.FeatureEditCtrl = [
 			layer = editing;
 			var map = MapService.get();
 			if(map) {
-
+				drawControl = new L.Control.Draw();
 				map.on('draw:created', function(e) {
+					$scope.drawing = false;
 					$scope.marker = e.layer;
 					$scope.editing.geometry = e.layer.toGeoJSON().geometry;
 					Feature.edit($scope.editing);
@@ -57,10 +58,9 @@ exports.FeatureEditCtrl = [
 			$scope._data = {};
 			$scope.editing = editing;
 			if(editing) {
-				if(editing.geometry && editing.geometry.type == 'Point' && !editing.geometry.coordinates) {
+				$scope.setMarker();
+				if($scope.editing.geometry && editing.geometry.type == 'Point' && !editing.geometry.coordinates) {
 					MapService.get().on('click', addMarkerOnClick);
-				} else {
-					$scope.setMarker();
 				}
 				$rootScope.$broadcast('feature.edit.start');
 			} else {
@@ -85,7 +85,6 @@ exports.FeatureEditCtrl = [
 					type: type
 				}
 			});
-
 			$scope.setMarker(false);
 		}
 
@@ -98,7 +97,8 @@ exports.FeatureEditCtrl = [
 					LatLng.lng,
 					LatLng.lat
 				];
-				Feature.edit($scope.marker);
+				Feature.edit($scope.editing);
+				$scope.setMarker();
 			}
 
 		}
@@ -107,9 +107,13 @@ exports.FeatureEditCtrl = [
 
 			var map = MapService.get();
 
+			MapService.clearFeatures();
+
 			if($scope.editing) {
 
-				MapService.clearFeatures();
+				setTimeout(function() {
+					window.dispatchEvent(new Event('resize'));
+				}, 200);
 
 				if($scope.editing.geometry) {
 
@@ -165,22 +169,40 @@ exports.FeatureEditCtrl = [
 
 					} else {
 
+						var draw;
+
 						switch($scope.editing.geometry.type) {
 							case 'LineString':
-								new L.Draw.Polyline(map, drawControl.options.polyline).enable();
+								draw = new L.Draw.Polyline(map, {
+									shapeOptions: {
+										stroke: true,
+										color: '#333',
+										weight: 4,
+										opacity: 0.5,
+										fill: false,
+										clickable: true
+									}
+								});
+								draw.enable();
 								break;
 							case 'Polygon':
-								new L.Draw.Polygon(map, drawControl.options.polygon).enable();
+								draw = new L.Draw.Polygon(map, {
+									shapeOptions: {
+										stroke: true,
+										color: '#333',
+										weight: 4,
+										opacity: 0.5,
+										fill: true,
+										clickable: true
+									}
+								});
+								draw.enable();
 								break;
 						}
 
 					}
 
 				}
-
-				setTimeout(function() {
-					window.dispatchEvent(new Event('resize'));
-				}, 200);
 
 			}
 

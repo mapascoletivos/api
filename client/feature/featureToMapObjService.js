@@ -27,7 +27,9 @@ module.exports = function(feature, options) {
 				leafletCoordinates.push(latlng.reverse());
 			});
 
-			return L.polygon(leafletCoordinates);
+			return L.polygon(leafletCoordinates, {
+				color: '#333'
+			});
 
 		} else if(feature.geometry.type == 'LineString') {
 
@@ -42,7 +44,9 @@ module.exports = function(feature, options) {
 
 			});
 
-			return L.polyline(leafletCoordinates);
+			return L.polyline(leafletCoordinates, {
+				color: '#333'
+			});
 
 		} else if(feature.geometry.type == 'Point') {
 

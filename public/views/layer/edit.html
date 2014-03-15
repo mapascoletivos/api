@@ -25,7 +25,7 @@
 							</li>
 							<li ng-class="layerObj('feature')" ng-click="setLayerObj('feature')">
 								<a title="Locais" href="javascript:void(0);">
-									<span class="lsf">&#xE103;</span>
+									<span class="mcf">&#xe600;</span>
 									<span class="label" ng-show="layerObj('feature')">
 										Locais
 									</span>
@@ -101,7 +101,9 @@
 									<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 									<ul class="obj-list">
 										<li ng-repeat="feature in features | filter:search" ng-class="{disabled: !canEdit(feature, layer)}" ng-click="edit(feature, layer)" class="clearfix">
-											<span class="type lsf">&#xE103;</span>
+											<span class="type mcf" ng-show="feature.geometry.type == 'Point'">&#xe600;</span>
+											<span class="type mcf" ng-show="feature.geometry.type == 'Polygon'">&#xe602;</span>
+											<span class="type mcf" ng-show="feature.geometry.type == 'LineString'">&#xe601;</span>
 											<span class="locked lsf" ng-show="!canEdit(feature, layer)">&#xE086;</span>
 											<h4>{{feature.title}}</h4>
 											<p class="author" ng-show="layer.contributors.length">por {{feature.creator.name}}</p>
@@ -189,13 +191,25 @@
 			<div class="available-types">
 				<p>Escolha o tipo de geometria que gostaria de adicionar ao seu mapa</p>
 				<ul>
-					<li ng-click="newFeature('Point')">Ponto</li>
-					<li ng-click="newFeature('LineString')">Linha</li>
-					<li ng-click="newFeature('Polygon')">Polígono</li>
+					<li ng-click="newFeature('Point')">
+						<span class="mcf">&#xe600;</span>
+						Ponto
+					</li>
+					<li ng-click="newFeature('LineString')">
+						<span class="mcf">&#xe601;</span>
+						Linha
+					</li>
+					<li ng-click="newFeature('Polygon')">
+						<span class="mcf">&#xe602;</span>
+						Polígono
+					</li>
 				</ul>
 			</div>
 		</div>
-		<div class="add-marker-tip" ng-show="editing.geometry.type == 'Point' && !editing.geometry.coordinates">Clique no mapa para adicionar um marcador</div>
+		<div class="start-tip" ng-show="editing.geometry.type == 'Point' && !editing.geometry.coordinates">
+			<span ng-show="editing.geometry.type == 'Point'">Clique no mapa para adicionar um marcador</span>
+			<!--<span ng-show="editing.geometry.type != 'Point' && !drawing">Clique no mapa para começar a desenhar</span>-->
+		</div>
 	</div>
 	<div ng-controller="ContentEditCtrl" class="content-editor object-editor" ng-show="editing">
 		<form ng-submit="save()">
@@ -203,7 +217,7 @@
 				<ul class="tools-list">
 					<li class="content-features-label" ng-class="{active: tool == 'content-features'}">
 						<a href="javascript:void(0);" title="Locais deste conteúdo" ng-click="setTool('content-features')">
-							<span class="lsf">&#xE103;</span>
+							<span class="mcf">&#xe600;</span>
 							<span class="feature-length" ng-show="editing.features">{{editing.features.length}}</span>
 						</a>
 					</li>
