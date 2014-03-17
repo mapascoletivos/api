@@ -269,11 +269,6 @@ exports.LayerCtrl = [
 
 				$location.path('/layers').replace();
 
-				Message.message({
-					status: 'error',
-					text: 'Esta camada não existe'
-				});
-
 			});
 
 			$scope.$on('$destroy', function() {
