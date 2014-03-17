@@ -151,13 +151,17 @@ angular.module('mapasColetivos', [
 
 .run([
 	'$rootScope',
-	function($rootScope) {
+	'$location',
+	function($rootScope, $location) {
 
 		/*
 		 * Store nav history
 		 */
 		window.mcHistory = [];
 		$rootScope.$on('$stateChangeSuccess', function() {
+			if(window._gaq) {
+				window._gaq.push(['_trackPageview', $location.path()]);
+			}
 			window.mcHistory.push(window.location.pathname);
 		});
 

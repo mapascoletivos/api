@@ -19,6 +19,18 @@ head(ng-controller="PageCtrl")
   link(rel="stylesheet", href="/css/sir-trevor/sir-trevor.css")
   link(rel="stylesheet", href="/css/app.css")
 
+  - if(process.env.GOOGLE_ANALYTICS_ID)
+    script
+      | var _gaq = _gaq || [];
+      | _gaq.push(['_setAccount', '#{process.env.GOOGLE_ANALYTICS_ID}']);
+      | _gaq.push(['_trackPageview']);
+
+      | (function() {
+      | var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      | ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      | var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      | })();
+
   - if (req.isAuthenticated())
     script(type="text/javascript").
       window.isAuthenticated = true;

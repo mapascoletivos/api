@@ -54,7 +54,7 @@ module.exports = {
 	production: {
 		root: rootPath,
 		appUrl: app_url,
-		db: 'mongodb://localhost/mapascoletivos_production',
+		db: process.env.MONGOLAB_URI || 'mongodb://localhost/mapascoletivos_production',
 		nodemailer: nodemailer,
 		oauth: oauth
 	}

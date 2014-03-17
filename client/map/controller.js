@@ -42,6 +42,8 @@ exports.MapCtrl = [
 
 		} else if($stateParams.mapId) {
 
+			var origMap;
+
 			$scope.activeObj = 'settings';
 
 			$scope.mapObj = function(objType) {
@@ -70,6 +72,8 @@ exports.MapCtrl = [
 
 				Page.setTitle(map.title);
 
+				origMap = map;
+
 				$scope.map = angular.copy(map);
 
 				$scope.baseUrl = '/maps/' + map._id;
@@ -90,6 +94,18 @@ exports.MapCtrl = [
 				var map = MapService.init('map', mapOptions);
 
 				if($scope.isEditing()) {
+
+					var destroyConfirmation = $rootScope.$on('$stateChangeStart', function(event) {
+						if(!angular.equals($scope.map, origMap))
+							if(!confirm('Deseja sair sem salvar alterações?'))
+								event.preventDefault();
+							else
+								Map.deleteDraft($scope.map);
+					});
+
+					$scope.$on('$destroy', function() {
+						destroyConfirmation();
+					});
 
 					Layer.resource.query({
 						creatorOnly: true
@@ -389,15 +405,12 @@ exports.MapCtrl = [
 
 				$scope.$on('map.save.success', function(event, map) {
 					Page.setTitle(map.title);
-					$scope.map = map;
+					origMap = map;
+					$scope.map = angular.copy(map);
 				});
 
 				$scope.$on('map.delete.success', function() {
 					$location.path('/dashboard/maps').replace();
-				});
-
-				$scope.$on('$stateChangeStart', function() {
-					Map.deleteDraft($scope.map);
 				});
 
 				$scope.close = function() {

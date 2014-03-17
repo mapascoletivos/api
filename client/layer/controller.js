@@ -65,16 +65,21 @@ exports.LayerCtrl = [
 		// New layer
 		if($location.path() == '/layers/new/') {
 
+			Message.disable();
+
 			var draft = new Layer.resource({
 				title: 'Untitled',
 				type: 'FeatureLayer'
 			});
 			draft.$save(function(draft) {
+				Message.enable();
 				$location.path('/layers/' + draft.layer._id + '/edit/').replace();
 			});
 
 		// Single layer
 		} else if($stateParams.layerId) {
+
+			var origLayer;
 
 			$scope.$on('layer.delete.success', function() {
 				$location.path('/dashboard/layers').replace();
@@ -82,7 +87,9 @@ exports.LayerCtrl = [
 
 			Layer.resource.get({layerId: $stateParams.layerId}, function(layer) {
 
-				$scope.layer = layer;
+				origLayer = layer;
+
+				$scope.layer = angular.copy(layer);
 
 				$scope.baseUrl = '/layers/' + layer._id;
 
@@ -162,6 +169,22 @@ exports.LayerCtrl = [
 				 */
 				if($location.path().indexOf('edit') !== -1) {
 
+					var destroyConfirmation = $rootScope.$on('$stateChangeStart', function(event) {
+						if(!angular.equals($scope.layer, origLayer))
+							if(!confirm('Deseja sair sem salvar alterações?'))
+								event.preventDefault();
+							else
+								Layer.deleteDraft(layer);
+					});
+
+					$scope.$on('$destroy', function() {
+						destroyConfirmation();
+					});
+
+					setTimeout(function() {
+						window.dispatchEvent(new Event('resize'));
+					}, 100);
+
 					$scope.$on('layerObjectChange', function(event, active) {
 						populateMap(layer.features, layer, true, false);
 					});
@@ -226,7 +249,8 @@ exports.LayerCtrl = [
 
 					$scope.$on('layer.save.success', function(event, layer) {
 						Page.setTitle(layer.title);
-						$scope.layer = layer;
+						origLayer = layer;
+						$scope.layer = angular.copy(layer);
 					});
 					
 					$scope.close = function() {
@@ -238,10 +262,6 @@ exports.LayerCtrl = [
 						}
 
 					}
-
-					$scope.$on('$stateChangeStart', function() {
-						Layer.deleteDraft(layer);
-					});
 
 				} else {
 
@@ -258,11 +278,6 @@ exports.LayerCtrl = [
 			}, function() {
 
 				$location.path('/layers').replace();
-
-				Message.message({
-					status: 'error',
-					text: 'Esta camada não existe'
-				});
 
 			});
 
