@@ -20,7 +20,7 @@ head(ng-controller="PageCtrl")
   link(rel="stylesheet", href="/css/sir-trevor/sir-trevor.css")
   link(rel="stylesheet", href="/css/app.css")
 
-  - if(process.env.GOOGLE_ANALYTICS_ID && process.env.GOOGLE_ANALYTICS_DOMAIN)
+  - if(process.env.GOOGLE_ANALYTICS_ID)
     script
       | var _gaq = _gaq || [];
       | _gaq.push(['_setAccount', '#{process.env.GOOGLE_ANALYTICS_ID}']);
