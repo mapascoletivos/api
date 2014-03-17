@@ -260,7 +260,7 @@ exports.LayerCtrl = [
 
 					}
 
-					$scope.$on('$stateChangeStart', function() {
+					$scope.$on('$stateChangeSuccess', function() {
 						Layer.deleteDraft(layer);
 					});
 

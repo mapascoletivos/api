@@ -418,7 +418,7 @@ exports.MapCtrl = [
 					$location.path('/dashboard/maps').replace();
 				});
 
-				$scope.$on('$stateChangeStart', function() {
+				$scope.$on('$stateChangeSuccess', function() {
 					Map.deleteDraft($scope.map);
 				});
 
