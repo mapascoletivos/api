@@ -173,10 +173,16 @@ exports.LayerCtrl = [
 				 */
 				if($location.path().indexOf('edit') !== -1) {
 
-					$rootScope.$on('$stateChangeStart', function(event) {
+					var destroyConfirmation = $rootScope.$on('$stateChangeStart', function(event) {
 						if(!angular.equals($scope.layer, origLayer))
 							if(!confirm('Deseja sair sem salvar alterações?'))
 								event.preventDefault();
+							else
+								Layer.deleteDraft(layer);
+					});
+
+					$scope.$on('$destroy', function() {
+						destroyConfirmation();
 					});
 
 					setTimeout(function() {
@@ -259,10 +265,6 @@ exports.LayerCtrl = [
 						}
 
 					}
-
-					$scope.$on('$stateChangeSuccess', function() {
-						Layer.deleteDraft(layer);
-					});
 
 				} else {
 
