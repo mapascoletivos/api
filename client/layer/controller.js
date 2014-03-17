@@ -83,13 +83,17 @@ exports.LayerCtrl = [
 		// Single layer
 		} else if($stateParams.layerId) {
 
+			var origLayer;
+
 			$scope.$on('layer.delete.success', function() {
 				$location.path('/dashboard/layers').replace();
 			});
 
 			Layer.resource.get({layerId: $stateParams.layerId}, function(layer) {
 
-				$scope.layer = layer;
+				origLayer = layer;
+
+				$scope.layer = angular.copy(layer);
 
 				$scope.baseUrl = '/layers/' + layer._id;
 
@@ -169,6 +173,12 @@ exports.LayerCtrl = [
 				 */
 				if($location.path().indexOf('edit') !== -1) {
 
+					$rootScope.$on('$stateChangeStart', function(event) {
+						if(!angular.equals($scope.layer, origLayer))
+							if(!confirm('Deseja sair sem salvar alterações?'))
+								event.preventDefault();
+					});
+
 					setTimeout(function() {
 						window.dispatchEvent(new Event('resize'));
 					}, 100);
@@ -237,7 +247,8 @@ exports.LayerCtrl = [
 
 					$scope.$on('layer.save.success', function(event, layer) {
 						Page.setTitle(layer.title);
-						$scope.layer = layer;
+						origLayer = layer;
+						$scope.layer = angular.copy(layer);
 					});
 					$scope.close = function() {
 
