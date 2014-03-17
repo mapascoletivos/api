@@ -56,7 +56,6 @@ exports.LayerCtrl = [
 								})
 								.bindPopup('<h3 class="feature-title">' + f.title + '</h3>');
 
-
 							MapService.addMarker(marker);
 
 						}
@@ -72,11 +71,14 @@ exports.LayerCtrl = [
 		// New layer
 		if($location.path() == '/layers/new/') {
 
+			Message.disable();
+
 			var draft = new Layer.resource({
 				title: 'Untitled',
 				type: 'FeatureLayer'
 			});
 			draft.$save(function(draft) {
+				Message.enable();
 				$location.path('/layers/' + draft.layer._id + '/edit/').replace();
 			});
 

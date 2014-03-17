@@ -17,6 +17,7 @@ angular.module('mapasColetivos.messageStatus', [])
 	function($timeout) {
 
 		var messages = [];
+		var enabled = true;
 
 		return {
 			get: function() {
@@ -27,18 +28,22 @@ angular.module('mapasColetivos.messageStatus', [])
 			},
 			add: function(val, timeout) {
 
-				var self = this;
+				if(enabled) {
 
-				if(typeof val !== 'undefined') {
+					var self = this;
 
-					var message = val;
-					messages.push(message);
+					if(typeof val !== 'undefined') {
 
-					if(timeout !== false) {
-						timeout = timeout ? timeout : 3000;
-						$timeout(function() {
-							self.close(message);
-						}, timeout);
+						var message = val;
+						messages.push(message);
+
+						if(timeout !== false) {
+							timeout = timeout ? timeout : 3000;
+							$timeout(function() {
+								self.close(message);
+							}, timeout);
+						}
+
 					}
 
 				}
@@ -47,6 +52,12 @@ angular.module('mapasColetivos.messageStatus', [])
 			},
 			message: function(val, timeout) {
 				this.add(val, timeout);
+			},
+			disable: function() {
+				enabled = false;
+			},
+			enable: function() {
+				enabled = true;
 			}
 		}
 

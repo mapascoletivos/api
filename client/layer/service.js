@@ -8,7 +8,9 @@ exports.Layer = [
 	'$rootScope',
 	'apiPrefix',
 	'SessionService',
-	function($resource, $rootScope, apiPrefix, Session) {
+	'LoadingService',
+	'MessageService',
+	function($resource, $rootScope, apiPrefix, Session, Loading, Message) {
 
 		var editing = false;
 
@@ -65,6 +67,7 @@ exports.Layer = [
 			busy: false,
 			nextPage: function() {
 				var self = this;
+				Loading.disable();
 				if(!self.busy) {
 					self.busy = true;
 					this.resource.query(_.extend(params, {
@@ -74,6 +77,7 @@ exports.Layer = [
 							self.busy = false;
 							$rootScope.$broadcast('layer.page.next', res);
 						}
+						Loading.enable();
 					});
 				}
 			},
@@ -86,9 +90,12 @@ exports.Layer = [
 			isDraft: function(layer) {
 				return layer.isDraft;
 			},
-			deleteDraft: function(layer, callback) {
+			deleteDraft: function(layer) {
+				Message.disable();
 				if(this.isDraft(layer)) {
-					this.resource.delete({layerId: layer._id}, callback);
+					this.resource.delete({layerId: layer._id}, function() {
+						Message.enable();
+					});
 				}
 			},
 			isOwner: function(layer) {

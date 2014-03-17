@@ -16,18 +16,23 @@ angular.module('mapasColetivos.loadingStatus', [])
 
 	var active = false;
 	var message = 'Carregando...';
+	var enabled = true;
 
 	return {
 		show: function(text) {
-			if(typeof text !== 'undefined')
-				message = text;
-			active = true;
-			return active;
+			if(enabled) {
+				if(typeof text !== 'undefined')
+					message = text;
+				active = true;
+				return active;
+			}
 		},
 		hide: function() {
-			message = 'Carregando...';
-			active = false;
-			return active;
+			if(enabled) {
+				message = 'Carregando...';
+				active = false;
+				return active;
+			}
 		},
 		get: function() {
 			return active;
@@ -37,6 +42,12 @@ angular.module('mapasColetivos.loadingStatus', [])
 		},
 		getMessage: function() {
 			return message;
+		},
+		disable: function() {
+			enabled = false;
+		},
+		enable: function() {
+			enbaled = true;
 		}
 	}
 
