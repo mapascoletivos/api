@@ -102,7 +102,7 @@ angular.module('mapasColetivos.leaflet', [])
 					featureLayer.mcLayer = layer;
 					groups.push(featureLayer);
 					angular.forEach(layer.features, function(f) {
-						var feature = featureToMapObj(f);
+						var feature = featureToMapObj(f, null, self.get());
 						feature.mcFeature = f;
 						features.push(feature);
 						featureLayer.addLayer(feature);

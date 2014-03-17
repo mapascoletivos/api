@@ -60,7 +60,8 @@ exports.FeatureCtrl = [
 		$scope.focus = function(feature) {
 
 			setTimeout(function() {
-				MapService.get().setView(feature.geometry.coordinates.reverse(), MapService.get().getMaxZoom());
+				var lFeature = featureToMapObj(feature);
+				MapService.get().fitBounds(L.featureGroup([lFeature]).getBounds());
 				focused = true;
 			}, 100);
 
@@ -76,8 +77,11 @@ exports.FeatureCtrl = [
 			$scope.feature = feature;
 
 			if(window.mcHistory.length == 1) {
-				MapService.get().setView(feature.geometry.coordinates, MapService.get().getMaxZoom());
-				focused = true;
+				setTimeout(function() {
+					var lFeature = featureToMapObj(feature);
+					MapService.get().fitBounds(L.featureGroup([lFeature]).getBounds());
+					focused = true;
+				}, 200);
 			}
 
 			var featureContents = Feature.getContents(feature, contents);
@@ -85,6 +89,25 @@ exports.FeatureCtrl = [
 			Content.set(featureContents);
 
 			$rootScope.$broadcast('feature.filtering.started', feature, featureContents);
+
+		}
+
+		$scope.description = function(feature) {
+
+			if(feature && feature.description) {
+
+				var description = angular.copy(feature.description);
+
+				description = description.replace(new RegExp('{{', 'g'), '<%= ');
+				description = description.replace(new RegExp('}}', 'g'), ' %>');
+
+				var compiled = _.template(description);
+
+				return markdown.toHTML(compiled(feature.properties));
+
+			}
+
+			return '';
 
 		}
 

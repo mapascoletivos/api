@@ -94,10 +94,24 @@
 						<div ng-controller="FeatureCtrl" ng-show="layerObj(objType)">
 							<div id="layer-features" class="map-editor-subcontent">
 								<div class="features-list">
-									<a href="javascript:void(0);" class="button add-new" ng-click="new()">
-										<span class="lsf">&#xE108;</span>
-										Adicionar novo
-									</a>
+									<div class="button-group">
+										<div class="button-item">
+											<a href="javascript:void(0);" class="button add-new" ng-click="new()">
+												<span class="lsf">&#xE108;</span>
+												Adicionar novo
+											</a>
+										</div>
+										<div class="button-item" ng-controller="DataImportCtrl">
+											<a href="javascript:void(0);" class="button import" import-input-trigger="import-data-input">
+												<span class="img-container"><span class="lsf">&#xE115;</span></span>
+												<span>Importar dados</span>
+												<span class="tip">(GeoJSON, TopoJSON, KML, CSV, GPX e arquivos XML do OSM)</span>
+											</a>
+											<div style="position:absolute;height:0;visibility:hidden;">
+												<input type="file" id="import-data-input" import-input />
+											</div>
+										</div>
+									</div>
 									<input class="filter" type="text" ng-model="search" placeholder="Encontrar na lista" />
 									<ul class="obj-list">
 										<li ng-repeat="feature in features | filter:search" ng-class="{disabled: !canEdit(feature, layer)}" ng-click="edit(feature, layer)" class="clearfix">
@@ -143,17 +157,13 @@
 			</a>
 		</form>
 	</div>
-	<div ng-controller="FeatureEditCtrl" class="map-container object-editor" ng-class="{editing: editing.geometry.coordinates, new: editing}" ng-hide="sharedData.editingContent()">
+	<div ng-controller="FeatureEditCtrl" class="map-container object-editor" ng-class="{editing: editing.geometry.coordinates}" ng-hide="sharedData.editingContent()">
 		<div id="edit-feature" ng-show="editing.geometry.coordinates" ng-animate="'top-down'">
 			<form ng-submit="save()">
 				<div class="feature-settings">
 					<h3>Local</h3>
 					<textarea class="edit-title no-canvas" placeholder="Título do local" ng-model="editing.title" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
-					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" disable-enter-key="$event" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
-					<div class="latlng" ng-show="editing.geometry.type == 'Point'">
-						<p class="latitude latlng-item">Latitude: <input ng-model="editing.geometry.coordinates[0]" ng-change="setMarker()" type="text" /></p>
-						<p class="longitude latlng-item">Longitude: <input ng-model="editing.geometry.coordinates[1]" ng-change="setMarker()" type="text" /></p>
-					</div>
+					<textarea class="edit-description no-canvas" placeholder="Descrição da feature" ng-model="editing.description" spellcheck="false" autocorrect="off" autocapitalize="off" msd-elastic></textarea>
 				</div>
 				<div class="editing-tools" ng-class="{editing: tool}">
 					<ul class="tools-list">
@@ -251,16 +261,6 @@
 					<textarea sir-trevor-editor ng-model="editing.sirTrevor"></textarea>
 				</div>
 			</div>
-			<!--
-			<div class="editor-bottom">
-				<div class="content-actions editor-actions">
-					<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-show="editing._id">Salvar</a>
-					<a class="button button-small" href="javascript:void(0);" ng-click="revert()" ng-show="isRevertable()">Reverter alterações</a>
-					<a class="button button-small" href="javascript:void(0);" ng-click="save()" ng-hide="editing._id">Adicionar novo conteúdo</a>
-					<a class="button button-small" href="javascript:void(0);" ng-click="close()">Cancelar</a>
-				</div>
-			</div>
-			-->
 		</form>
 	</div>
 </div>

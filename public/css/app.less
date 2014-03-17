@@ -61,6 +61,7 @@
   -ms-font-smoothing: antialiased;
   -o-font-smoothing: antialiased;
   font-smoothing: antialiased;
+  font-weight: 200 !important;
 }
 
 .lsf-icon:before {
@@ -1452,7 +1453,7 @@ input.no-canvas {
 					}
 					.mcf {
 						font-size: 22px;
-						line-height: 22px;
+						line-height: 26px;
 					}
 				}
 				&.active {
@@ -1507,6 +1508,24 @@ input.no-canvas {
 				margin: 0;
 				background: transparent;
 			}
+			.button-group {
+				display: table;
+				width: 100%;
+				.button-item {
+					display: table-cell;
+					width: 1%;
+					border-right: 1px solid #555;
+					&:last-child {
+						border-right: 0;
+					}
+					.button {
+						padding: 15px 20px;
+					}
+					.tip {
+						display: none;
+					}
+				}
+			}
 			.button {
 				display: block;
 				width: auto;
@@ -1525,6 +1544,12 @@ input.no-canvas {
 					font-size: 22px;
 					display: inline-block;
 					margin: 5px 10px;
+				}
+				.tip {
+					font-size: 10px;
+					font-weight: 200;
+					display: block;
+					text-transform: none;
 				}
 			}
 			.count {
@@ -1844,8 +1869,6 @@ input.no-canvas {
 				}
 			}
 		}
-		&.new {
-		}
 		&.editing {
 			.leaflet-container {
 				bottom: 60%;
@@ -1880,9 +1903,18 @@ input.no-canvas {
 			}
 			.feature-settings {
 				float: left;
-				width: 50%;
+				width: 50%;	
 				box-sizing: border-box;
 				padding: 20px;
+				.edit-title {
+					margin-bottom: 20px;
+					font-size: 22px;
+					line-height: 28px;
+				}
+				.edit-description {
+					font-size: 16px;
+					line-height: 22px;
+				}
 			}
 			.feature-location {
 				input {
@@ -1915,38 +1947,6 @@ input.no-canvas {
 							color: #999;
 							&:hover {
 								color: #333;
-							}
-						}
-					}
-				}
-			}
-			.editor-bottom {
-				.feature-actions {
-					float: right;
-					margin: -5px 0;
-					a {
-						float: left;
-						margin-left: 1px;
-					}
-				}
-				.latlng {
-					p {
-						float: left;
-						font-size: 12px;
-						text-transform: uppercase;
-						font-weight: 600;
-						margin: 0;
-						input {
-							width: 150px;
-							display: inline;
-							margin: 0;
-							background: transparent;
-							border: 0;
-							padding-left: 15px;
-							color: #bbb;
-							&:hover,
-							&:focus {
-								color: #f0f0f0;
 							}
 						}
 					}
@@ -2275,21 +2275,15 @@ a.mapbox-improve-map {
 				.leaflet-control {
 					box-shadow: none;
 					-webkit-box-shadow: none;
-					border-color: #333;
 					border-radius: 0;
 				}
 				.leaflet-bar a {
 					box-shadow: none;
 					-webkit-box-shadow: none;
-					background: #444;
-					border-color: #333;
-					color: #999;
 					border-radius: 0;
 					opacity: 1;
 					font-size: 18px;
 					&:hover {
-						background: #555;
-						color: #f0f0f0;
 					}
 				}
 			}

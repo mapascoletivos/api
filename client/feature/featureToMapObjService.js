@@ -1,13 +1,8 @@
 'use strict';
 
-module.exports = function(feature, options) {
+module.exports = function(feature, options, map) {
 
-	var feature = angular.copy(feature);
-
-	var geojson = L.geoJson({
-		'type': 'FeatureCollection',
-		'features': []
-	});
+	var lFeature = false;
 
 	if(feature.geometry && feature.geometry.coordinates) {
 
@@ -15,36 +10,32 @@ module.exports = function(feature, options) {
 			feature.properties = {};
 		}
 
+		var coordinates = angular.copy(feature.geometry.coordinates);
+		var leafletCoordinates = coordinates;
+
 		if(feature.geometry.type == 'Polygon') {
 
 			var leafletCoordinates = [];
-
-			_.each(feature.geometry.coordinates[0], function(latlng) {
-
+			_.each(coordinates[0], function(latlng) {
 				// Clear Y value
 				latlng.splice(2,1);
-
 				leafletCoordinates.push(latlng.reverse());
 			});
 
-			return L.polygon(leafletCoordinates, {
+			lFeature = L.polygon(leafletCoordinates, {
 				color: '#333'
 			});
 
 		} else if(feature.geometry.type == 'LineString') {
 
-			var leafletCoordinates = [];
-
-			_.each(feature.geometry.coordinates, function(latlng) {
-				
+			leafletCoordinates = [];
+			_.each(coordinates, function(latlng) {
 				// Clear Y value
 				latlng.splice(2,1);
-
 				leafletCoordinates.push(latlng.reverse());
-
 			});
 
-			return L.polyline(leafletCoordinates, {
+			lFeature = L.polyline(leafletCoordinates, {
 				color: '#333'
 			});
 
@@ -63,15 +54,41 @@ module.exports = function(feature, options) {
 			}, options);
 				
 			// Clear Y value
-			feature.geometry.coordinates.splice(2,1);
+			coordinates.splice(2,1);
+			leafletCoordinates = coordinates.reverse();
 
-			var leafletCoordinates = feature.geometry.coordinates.reverse();
-
-			return L.marker(leafletCoordinates, options);
+			lFeature = L.marker(leafletCoordinates, options);
 
 		}
 
 	}
 
-	return false;
+	if(lFeature && map) {
+
+		var popupOptions = {};
+
+		if(feature.geometry.type !== 'Point')
+			popupOptions.autoPan = false;
+
+		var popup = L.popup(popupOptions).setContent('<h3 class="feature-title">' + feature.title + '</h3>');
+
+		var followMousePopup = function(e) {
+			popup.setLatLng(e.latlng);
+		}
+
+		lFeature
+			.on('mouseover', function() {
+				lFeature.openPopup();
+				if(feature.geometry.type !== 'Point')
+					map.on('mousemove', followMousePopup);
+			})
+			.on('mouseout', function() {
+				lFeature.closePopup();
+				if(feature.geometry.type !== 'Point')
+					map.off('mousemove', followMousePopup);
+			})
+			.bindPopup(popup);
+	}
+
+	return lFeature;
 }

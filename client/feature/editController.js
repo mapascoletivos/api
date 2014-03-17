@@ -38,8 +38,8 @@ exports.FeatureEditCtrl = [
 					});
 					MapService.addFeature($scope.marker);
 					setTimeout(function() {
-						MapService.get().fitBounds($scope.marker.getBounds());
 						window.dispatchEvent(new Event('resize'));
+						MapService.get().fitBounds($scope.marker.getBounds());
 					}, 200);
 				});
 
@@ -111,10 +111,6 @@ exports.FeatureEditCtrl = [
 
 			if($scope.editing) {
 
-				setTimeout(function() {
-					window.dispatchEvent(new Event('resize'));
-				}, 200);
-
 				if($scope.editing.geometry) {
 
 					if($scope.editing.geometry.coordinates) {
@@ -143,10 +139,12 @@ exports.FeatureEditCtrl = [
 
 							if(focus !== false) {
 								setTimeout(function() {
+									window.dispatchEvent(new Event('resize'));
+									map.invalidateSize(false);
 									map.setView($scope.marker.getLatLng(), 15, {
 										reset: true
 									});
-								}, 200);
+								}, 150);
 							}
 
 						} else {
@@ -159,8 +157,10 @@ exports.FeatureEditCtrl = [
 
 							if(focus !== false) {
 								setTimeout(function() {
+									window.dispatchEvent(new Event('resize'));
+									map.invalidateSize(false);
 									map.fitBounds($scope.marker.getBounds());
-								}, 200);
+								}, 150);
 							}
 
 						}

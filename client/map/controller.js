@@ -157,165 +157,6 @@ exports.MapCtrl = [
 
 				};
 
-				// Cache fetched layers
-				var fetchedLayers = {};
-
-				var markers = [];
-
-				var renderLayer = function(layer) {
-
-					// Add layer to map and get feature data
-					var layerData = MapService.addLayer(layer);
-
-					if(layer.type == 'FeatureLayer') {
-
-						layer._mcData = layerData;
-
-						angular.forEach(layerData.markers, function(marker) {
-
-							markers.push(marker);
-
-							marker
-								.on('click', function() {
-
-									if(!$scope.isEditing()) {
-
-										$state.go('singleMap.feature', {
-											featureId: marker.mcFeature._id
-										});
-
-									} else {
-
-										// Do something?
-
-									}
-
-								})
-								.on('mouseover', function() {
-
-									marker.openPopup();
-
-								})
-								.on('mouseout', function() {
-
-									marker.closePopup();
-
-								})
-								.bindPopup('<h3 class="feature-title">' + marker.mcFeature.title + '</h3>');
-
-						});
-
-					}
-
-					$scope.layers.push(layer);
-
-					if($scope.layers.length === $scope.map.layers.length) {
-						// Fix ordering
-						$scope.fixLayerOrdering();
-
-						// Setup map content
-						$scope.setupMapContent();
-					}
-
-				};
-
-				var filterFeatures = function(features) {
-
-					var filteredGroup = L.featureGroup();
-					var map = MapService.get();
-
-					angular.forEach($scope.layers, function(layer) {
-
-						if(layer.type == 'FeatureLayer') {
-
-							var markerLayer = layer._mcData.markerLayer;
-							var markers = layer._mcData.markers;
-
-							angular.forEach(markers, function(marker) {
-
-								if(!features.filter(function(f) { return marker.mcFeature._id == f._id; }).length)
-									markerLayer.removeLayer(marker);
-								else {
-									if(!markerLayer.hasLayer(marker))
-										markerLayer.addLayer(marker);
-
-									filteredGroup.addLayer(marker);
-								}
-
-							});
-
-						}
-
-					});
-
-					if(map && features.length !== markers.length)
-						map.fitBounds(filteredGroup);
-					else {
-						map.setView($scope.map.center, $scope.map.zoom);
-					}
-
-				}
-
-				$scope.fixLayerOrdering = function() {
-					var ordered = [];
-					angular.forEach($scope.map.layers, function(layerId) {
-						ordered.push($scope.layers.filter(function(layer) { return layer._id == layerId; })[0]);
-					});
-					$scope.layers = ordered;
-				};
-
-				$scope.hideAllLayers = function() {
-
-					angular.forEach($scope.layers, function(layer) {
-						$scope.hideLayer(layer._mcData.markerLayer);
-					});
-
-				};
-
-				$scope.hideLayer = function(layer) {
-
-					MapService.get().removeLayer(layer);
-
-				};
-
-				$scope.showAllLayers = function() {
-
-					angular.forEach($scope.layers, function(layer) {
-						$scope.showLayer(layer._mcData.markerLayer);
-					});
-
-				};
-
-				$scope.showLayer = function(layer) {
-
-					MapService.get().addLayer(layer);
-
-				};
-
-				$scope.setupMapContent = function() {
-					var contents = [];
-					var features = [];
-					angular.forEach($scope.layers, function(layer) {
-						angular.forEach(layer.features, function(lF) {
-							lF.layer = layer;
-							features.push(lF);
-						});
-						angular.forEach(layer.contents, function(lC) {
-							lC.layer = layer;
-							contents.push(lC);
-						});
-					});
-					Content.set(contents);
-					Feature.set(features);
-					$rootScope.$broadcast('data.ready', $scope.map);
-
-					$scope.$on('features.updated', function(event, features) {
-
-						filterFeatures(features);
-
-					});
-				}
-
 				$scope.$watch('map.layers', function(layers) {
 
 					markers = [];
@@ -344,6 +185,154 @@ exports.MapCtrl = [
 					});
 
 				});
+
+				// Cache fetched layers
+				var fetchedLayers = {};
+
+				var markers = [];
+
+				var renderLayer = function(layer) {
+
+					// Add layer to map and get feature data
+					var layerData = MapService.addLayer(layer);
+
+					if(layer.type == 'FeatureLayer') {
+
+						layer._mcData = layerData;
+
+						angular.forEach(layerData.features, function(marker) {
+
+							markers.push(marker);
+
+							marker.on('click', function() {
+
+								if(!$scope.isEditing()) {
+
+									$state.go('singleMap.feature', {
+										featureId: marker.mcFeature._id
+									});
+
+								} else {
+
+									// Do something?
+
+								}
+
+							});
+
+						});
+
+					}
+
+					$scope.layers.push(layer);
+
+					if($scope.layers.length === $scope.map.layers.length) {
+						// Fix ordering
+						$scope.fixLayerOrdering();
+
+						// Setup map content
+						$scope.setupMapContent();
+					}
+
+				};
+
+				$scope.fixLayerOrdering = function() {
+					var ordered = [];
+					angular.forEach($scope.map.layers, function(layerId) {
+						ordered.push($scope.layers.filter(function(layer) { return layer._id == layerId; })[0]);
+					});
+					$scope.layers = ordered;
+				};
+
+				$scope.setupMapContent = function() {
+					var contents = [];
+					var features = [];
+					angular.forEach($scope.layers, function(layer) {
+						angular.forEach(layer.features, function(lF) {
+							lF.layer = layer;
+							features.push(lF);
+						});
+						angular.forEach(layer.contents, function(lC) {
+							lC.layer = layer;
+							contents.push(lC);
+						});
+					});
+					Content.set(contents);
+					Feature.set(features);
+					$rootScope.$broadcast('data.ready', $scope.map);
+
+					$scope.$on('features.updated', function(event, features) {
+
+						filterFeatures(features);
+
+					});
+				};
+
+				var filterFeatures = function(features) {
+
+					var filteredGroup = L.featureGroup();
+					var map = MapService.get();
+
+					angular.forEach($scope.layers, function(layer) {
+
+						if(layer.type == 'FeatureLayer') {
+
+							var markerLayer = layer._mcData.featureLayer;
+							var markers = layer._mcData.features;
+
+							angular.forEach(markers, function(marker) {
+
+								if(!features.filter(function(f) { return marker.mcFeature._id == f._id; }).length)
+									markerLayer.removeLayer(marker);
+								else {
+									if(!markerLayer.hasLayer(marker))
+										markerLayer.addLayer(marker);
+
+									filteredGroup.addLayer(marker);
+								}
+
+							});
+
+						}
+
+					});
+
+					if(map && features.length !== markers.length) {
+						//map.fitBounds(filteredGroup.getBounds());
+					}
+					else {
+						map.setView($scope.map.center, $scope.map.zoom);
+					}
+
+				}
+
+				$scope.hideAllLayers = function() {
+
+					angular.forEach($scope.layers, function(layer) {
+						$scope.hideLayer(layer._mcData.markerLayer);
+					});
+
+				};
+
+				$scope.hideLayer = function(layer) {
+
+					MapService.get().removeLayer(layer);
+
+				};
+
+				$scope.showAllLayers = function() {
+
+					angular.forEach($scope.layers, function(layer) {
+						$scope.showLayer(layer._mcData.markerLayer);
+					});
+
+				};
+
+				$scope.showLayer = function(layer) {
+
+					MapService.get().addLayer(layer);
+
+				};
 
 				/*
 				 * Sortable config

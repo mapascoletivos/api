@@ -32,6 +32,7 @@ exports.DataImportCtrl = [
         			text: err.message
         		});
         	} else {
+
         		if(!Layer.edit()) {
         			var draft = new Layer.resource({
 						title: 'Untitled',
@@ -39,25 +40,51 @@ exports.DataImportCtrl = [
 						isDraft: false
 					});
 					draft.$save(function(draft) {
-						var features = [];
-						angular.forEach(gj.features, function(feature) {
-							if(feature.properties.title && typeof feature.properties.title == 'string')
-								feature.title = feature.properties.title;
-							else if(feature.properties.name && typeof feature.properties.name == 'string')
-								feature.title = feature.properties.name;
-							else
-								feature.title = 'Untitled';
 
-							features.push(feature);
-
-						});
-
-						Feature.resource.import({layerId: draft.layer._id}, features, function() {
+						doImport(draft.layer, gj, function() {
 							$location.path('/layers/' + draft.layer._id + '/edit/');
 						});
 					});
+
+        		} else {
+
+        			var layer = Layer.edit();
+
+        			doImport(layer, gj, function() {
+        				if(layer.isDraft) {
+        					layer.isDraft = false;
+        					delete layer.features;
+        					delete layer.contents;
+        					Layer.resource.update({layerId: layer._id}, layer, function(res) {
+        						window.location.reload();
+        					})
+        				} else {
+        					window.location.reload();
+        				}
+        			});
+
         		}
+
         	}
+        }
+
+        function doImport(layer, gj, callback) {
+
+			var features = [];
+			angular.forEach(gj.features, function(feature) {
+				if(feature.properties.title && typeof feature.properties.title == 'string')
+					feature.title = feature.properties.title;
+				else if(feature.properties.name && typeof feature.properties.name == 'string')
+					feature.title = feature.properties.name;
+				else
+					feature.title = 'Untitled';
+
+				features.push(feature);
+
+			});
+
+			Feature.resource.import({layerId: layer._id}, features, callback);
+
         }
 
 	}

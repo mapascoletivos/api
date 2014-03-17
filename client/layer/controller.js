@@ -27,7 +27,7 @@ exports.LayerCtrl = [
 
 		var mapFeatures;
 
-		var populateMap = function(features, layer, force) {
+		var populateMap = function(features, layer, force, focus) {
 
 			// Repopulate map if feature in scope has changed
 			if(!angular.equals(mapFeatures, features) || force === true) {
@@ -40,32 +40,13 @@ exports.LayerCtrl = [
 
 					angular.forEach(features, function(f) {
 
-						var marker = require('../feature/featureToMapObjService')(f);
+						var marker = require('../feature/featureToMapObjService')(f, null, MapService.get());
 
 						if(marker) {
 
-							var popup = L.popup().setContent('<h3 class="feature-title">' + f.title + '</h3>');
-
-							var followMousePopup = function(e) {
-								popup.setLatLng(e.latlng);
-							}
-
-							marker
-								.on('click', function() {
-									$rootScope.$broadcast('marker.clicked', f, layer);
-								})
-								.on('mouseover', function() {
-									marker.openPopup();
-									if(f.geometry.type !== 'Point')
-										MapService.get().on('mousemove', followMousePopup);
-								})
-								.on('mouseout', function() {
-									marker.closePopup();
-									if(f.geometry.type !== 'Point')
-										MapService.get().off('mousemove', followMousePopup);
-								})
-								.bindPopup(popup);
-
+							marker.on('click', function() {
+								$rootScope.$broadcast('marker.clicked', f, layer);
+							});
 
 							MapService.addFeature(marker);
 
@@ -73,9 +54,11 @@ exports.LayerCtrl = [
 
 					});
 				}
-			}
 
-			MapService.fitFeatureLayer();
+				if(focus !== false)
+					MapService.fitFeatureLayer();
+
+			}
 
 		}
 
@@ -179,12 +162,8 @@ exports.LayerCtrl = [
 				 */
 				if($location.path().indexOf('edit') !== -1) {
 
-					setTimeout(function() {
-						window.dispatchEvent(new Event('resize'));
-					}, 100);
-
 					$scope.$on('layerObjectChange', function(event, active) {
-						populateMap(layer.features, layer, true);
+						populateMap(layer.features, layer, true, false);
 					});
 
 					if(!Layer.canEdit(layer)) {
@@ -249,6 +228,7 @@ exports.LayerCtrl = [
 						Page.setTitle(layer.title);
 						$scope.layer = layer;
 					});
+					
 					$scope.close = function() {
 
 						if(Layer.isDraft(layer)) {
