@@ -86,7 +86,6 @@ module.exports = function (passport, config) {
 							user = new User({
 								name: profile.displayName,
 								email: profile.emails[0].value,
-								username: profile.username,
 								provider: 'facebook',
 								facebook: profile._json,
 								status: 'active',
@@ -134,7 +133,6 @@ module.exports = function (passport, config) {
 							user = new User({
 								name: profile.displayName,
 								email: profile.emails[0].value,
-								username: profile.name.givenName + profile.name.familyName,
 								provider: 'google',
 								google: profile._json,
 								status: 'active',

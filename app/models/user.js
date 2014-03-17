@@ -16,7 +16,7 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
 	name: { type: String, default: '' },
 	email: { type: String, default: '' },
-	username: { type: String, default: '' },
+	username: String,
 	hashed_password: { type: String, default: '' },
 	logins: Number,
 	lastLogin: Date,
@@ -90,11 +90,7 @@ UserSchema.path('username').validate(function (username, fn) {
 		})
 	} else 
 		fn(true);
-}, 'Este nome de usuário já é utilizado.')
-
-UserSchema.path('username').validate(function (username) {
-  return username.length
-}, 'Informe um nome de usuário.')
+}, 'Este nome de usuário já é utilizado.');
 
 
 /**
