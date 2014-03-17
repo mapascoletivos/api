@@ -18,10 +18,13 @@ var mongoose = require('mongoose'),
 
 exports.load = function(req, res, next, id){
 	Layer.load(id, function (err, layer) {
-		if (err) return res.json(400, { messages: [{status: 'error', text: 'Error loading layer.'}] });
-		if (!layer) res.json(400, { messages: [{status: 'error', text: 'Layer not found.'}] });
-		req.layer = layer
-		next()
+		console.log(err);
+		if (err) return res.json(400, { messages: [{status: 'error', text: 'Erro ao carregar camada.'}] });
+		else if (!layer) return res.json(400, { messages: [{status: 'error', text: 'Camada não encontrada.'}] });
+		else {
+			req.layer = layer
+			next()
+		}
 	})
 }
 
@@ -116,7 +119,7 @@ exports.create = function (req, res) {
 
 	layer.save(function (err) {
 		if (!err) {
-			res.json({ layer: layer,  messages: [{status: 'ok', text: 'Layer created successfully.'}] });
+			res.json({ layer: layer,  messages: [{status: 'ok', text: 'Camada gerada com sucesso.'}] });
 		} else {
 			res.json(400, utils.errorMessages(err.errors || err))
 		}
@@ -136,14 +139,14 @@ exports.update = function(req, res){
 	delete req.body['__v'];
 
 	if (req.layer == 'TileLayer') {
-		return res.json(400, { messages: [{status: 'error', text: "Can't update a TileLayer."}] });
+		return res.json(400, { messages: [{status: 'error', text: "Não foi possível atualizar o TileLayer."}] });
 	}
 
 	layer = extend(layer, req.body);
 
 	layer.save(function(err) {
 		if (!err) {
-			res.json({ layer: layer,  messages: [{status: 'ok', text: 'Layer updated successfully.'}] })
+			res.json({ layer: layer,  messages: [{status: 'ok', text: 'Camada atualizada com sucesso.'}] })
 		} else {
 			res.json(400, utils.errorMessages(err.errors || err))
 		}
@@ -160,7 +163,7 @@ exports.destroy = function(req, res){
 		if(err) {
 			res.json(400, utils.errorMessages(err.errors || err));
 		} else {
-			res.json({ messages: [{status: 'ok', text: 'Layer removed successfully.'}] });
+			res.json({ messages: [{status: 'ok', text: 'Camada removida com sucesso.'}] });
 		}
 	})
 }
