@@ -158,6 +158,48 @@
 		</form>
 	</div>
 	<div ng-controller="FeatureEditCtrl" class="map-container object-editor" ng-class="{editing: editing.geometry.coordinates}" ng-hide="sharedData.editingContent()">
+		<div class="new-feature" ng-hide="!editing || editing.geometry.type">
+			<div class="available-types">
+				<div class="new-type">
+					<p>Escolha o tipo de geometria que gostaria de adicionar ao seu mapa</p>
+					<ul>
+						<li ng-click="newFeature('Point')">
+							<span class="mcf">&#xe600;</span>
+							Ponto
+						</li>
+						<li ng-click="newFeature('LineString')">
+							<span class="mcf">&#xe601;</span>
+							Linha
+						</li>
+						<li ng-click="newFeature('Polygon')">
+							<span class="mcf">&#xe602;</span>
+							Polígono
+						</li>
+					</ul>
+				</div>
+				<div class="geocode">
+					<p>Ou busque uma localização</p>
+					<div class="location-editor">
+						<input class="geocode" type="text" ui-keypress="{'enter': 'geocode()'}" ng-model="_data.geocode" placeholder="Encontre uma localização" />
+						<a href="javascript:void(0);" ng-click="geocode()" class="search-button button button-small"><span class="lsf">&#xE116;</span> Buscar</a>
+						<div class="geocode-results">
+							<ul ng-repeat="result in _data.geocodeResults">
+								<li>
+									<a href="javascript:void(0);" class="mcf locate" title="Utilizar esta coordenada" ng-click="setNominatimFeature(result)">&#xe600;</a>
+									<a href="javascript:void(0);" class="mcf" ng-show="result.geojson.type === 'Polygon'" ng-click="setNominatimFeature(result, 'geojson')">&#xe602;</a>
+									<a href="javascript:void(0);" class="mcf" ng-show="result.geojson.type === 'LineString'" ng-click="setNominatimFeature(result, 'geojson')">&#xe601;</a>
+									{{result.display_name}}
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="start-tip" ng-show="editing.geometry.type == 'Point' && !editing.geometry.coordinates">
+			<span ng-show="editing.geometry.type == 'Point'">Clique no mapa para adicionar um marcador</span>
+			<!--<span ng-show="editing.geometry.type != 'Point' && !drawing">Clique no mapa para começar a desenhar</span>-->
+		</div>
 		<div id="edit-feature" ng-show="editing.geometry.coordinates" ng-animate="'top-down'">
 			<form ng-submit="save()">
 				<div class="feature-settings">
@@ -197,29 +239,6 @@
 			</form>
 		</div>
 		<div id="layer-map"></div>
-		<div class="new-feature" ng-hide="!editing || editing.geometry.type">
-			<div class="available-types">
-				<p>Escolha o tipo de geometria que gostaria de adicionar ao seu mapa</p>
-				<ul>
-					<li ng-click="newFeature('Point')">
-						<span class="mcf">&#xe600;</span>
-						Ponto
-					</li>
-					<li ng-click="newFeature('LineString')">
-						<span class="mcf">&#xe601;</span>
-						Linha
-					</li>
-					<li ng-click="newFeature('Polygon')">
-						<span class="mcf">&#xe602;</span>
-						Polígono
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div class="start-tip" ng-show="editing.geometry.type == 'Point' && !editing.geometry.coordinates">
-			<span ng-show="editing.geometry.type == 'Point'">Clique no mapa para adicionar um marcador</span>
-			<!--<span ng-show="editing.geometry.type != 'Point' && !drawing">Clique no mapa para começar a desenhar</span>-->
-		</div>
 	</div>
 	<div ng-controller="ContentEditCtrl" class="content-editor object-editor" ng-show="editing">
 		<form ng-submit="save()">

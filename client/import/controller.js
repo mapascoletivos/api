@@ -11,8 +11,14 @@ exports.DataImportCtrl = [
 	'MessageService',
 	function($scope, $rootScope, $location, Layer, Feature, Message) {
 
-		$rootScope.$on('import.input.change', function(e, node) {
+		var disableInputChange = $scope.$on('import.input.change', function(e, node) {
+			console.log('catching');
 			onSubmit(node);
+		});
+
+		$scope.$on('$destroy', function() {
+			console.log('destroying');
+			disableInputChange();
 		});
 
 		function onSubmit(node) {

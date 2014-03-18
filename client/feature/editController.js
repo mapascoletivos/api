@@ -42,7 +42,6 @@ exports.FeatureEditCtrl = [
 						MapService.get().fitBounds($scope.marker.getBounds());
 					}, 200);
 				});
-
 			}
 		});
 
@@ -68,7 +67,7 @@ exports.FeatureEditCtrl = [
 			}
 			setTimeout(function() {
 				window.dispatchEvent(new Event('resize'));
-			}, 100);
+			}, 200);
 		});
 
 		$scope._data = {};
@@ -149,11 +148,13 @@ exports.FeatureEditCtrl = [
 
 						} else {
 
-							$scope.marker.editing.enable();
+							if($scope.editing.source == 'local' || !$scope.editing.source) {
+								$scope.marker.editing.enable();
 
-							$scope.marker.on('edit', function(e) {
-								$scope.editing.geometry = e.target.toGeoJSON().geometry;
-							});
+								$scope.marker.on('edit', function(e) {
+									$scope.editing.geometry = e.target.toGeoJSON().geometry;
+								});
+							}
 
 							if(focus !== false) {
 								setTimeout(function() {
@@ -305,14 +306,25 @@ exports.FeatureEditCtrl = [
 
 		}
 
-		$scope.setNominatimFeature = function(feature) {
+		$scope.setNominatimFeature = function(feature, type) {
 
-			$scope.editing.geometry = {};
+			$scope.editing.source = 'osm';
 
-			$scope.editing.geometry.coordinates = [
-				parseFloat(feature.lat),
-				parseFloat(feature.lon)
-			];
+			if(type == 'geojson') {
+
+				$scope.editing.geometry = feature.geojson;
+
+			} else {
+
+				$scope.editing.geometry = {
+					type: 'Point',
+					coordinates: [
+						parseFloat(feature.lon),
+						parseFloat(feature.lat)
+					]
+				};
+
+			}
 
 			$scope.setMarker();
 

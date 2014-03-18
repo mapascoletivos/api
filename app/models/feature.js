@@ -25,6 +25,7 @@ var FeatureSchema = new Schema({
 	version: { type: Number, default: 1},
 	createdAt: {type: Date, default: Date.now},
 	updateAt: {type: Date, default: Date.now},
+	source: {type: String, required: true, default: 'local'},
 	tags: [String],
 	oldId: Number
 })

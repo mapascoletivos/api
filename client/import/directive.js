@@ -9,7 +9,7 @@ exports.ImportInput = [
 			link: function(scope, element, attrs) {
 				angular.element(element)
 					.on('change', function() {
-						$rootScope.$broadcast('import.input.change', this);
+						scope.$emit('import.input.change', this);
 					});
 			}
 		}

@@ -229,13 +229,17 @@ exports.LayerCtrl = [
 
 					Layer.edit(layer);
 
+					$scope.$on('$destroy', function() {
+						Layer.edit(false);
+					});
+
 					$scope.$watch('$feature.get()', function(features) {
 						$scope.layer.features = features;
 					});
 
 					$scope.$watch('$feature.edit()', function(editingFeature) {
 						if(!editingFeature)
-							populateMap(layer.features, layer, true);
+							populateMap($scope.layer.features, layer, true);
 					});
 
 					$scope.$watch('$content.get()', function(contents) {
