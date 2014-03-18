@@ -127,6 +127,7 @@ exports.migrateAccount = function(req, res){
 			
 			user.password = token.data.password;
 			user.status = 'active';
+			user.needsEmailConfirmation = false;
 
 			user.save(function(err){
 				if (err)
