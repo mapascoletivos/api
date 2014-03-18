@@ -76,6 +76,7 @@ exports.DataImportCtrl = [
 
 			var features = [];
 			angular.forEach(gj.features, function(feature) {
+
 				if(feature.properties.title && typeof feature.properties.title == 'string')
 					feature.title = feature.properties.title;
 				else if(feature.properties.name && typeof feature.properties.name == 'string')
@@ -83,7 +84,19 @@ exports.DataImportCtrl = [
 				else
 					feature.title = 'Untitled';
 
-				features.push(feature);
+				if(feature.geometry.type == 'GeometryCollection' && feature.geometry.geometries) {
+
+					angular.forEach(feature.geometry.geometries, function(geometry) {
+						var collectionFeature = angular.copy(feature);
+						collectionFeature.geometry = geometry;
+						features.push(collectionFeature);
+					});
+
+				} else {
+
+					features.push(feature);
+
+				}
 
 			});
 

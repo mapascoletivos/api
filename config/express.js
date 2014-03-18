@@ -47,7 +47,10 @@ module.exports = function (app, config, passport) {
       force: true
     }));
     
-    app.use(express.static(config.root + '/public'))    
+    app.use(express.static(config.root + '/public'))   
+
+    app.use(express.json({limit: '5mb'}));
+    app.use(express.urlencoded({limit: '5mb'})); 
 
     // bodyParser should be above methodOverride
     app.use(express.bodyParser())
