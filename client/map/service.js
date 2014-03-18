@@ -8,7 +8,9 @@ exports.Map = [
 	'$resource',
 	'$rootScope',
 	'apiPrefix',
-	function($resource, $rootScope, apiPrefix) {
+	'LoadingService',
+	'MessageService',
+	function($resource, $rootScope, apiPrefix, Loading, Message) {
 
 		var params = {};
 
@@ -56,6 +58,7 @@ exports.Map = [
 			busy: false,
 			nextPage: function() {
 				var self = this;
+				Loading.disable();
 				if(!self.busy) {
 					self.busy = true;
 					this.resource.query(_.extend(params, {
@@ -65,15 +68,19 @@ exports.Map = [
 							self.busy = false;
 							$rootScope.$broadcast('map.page.next', res);
 						}
+						Loading.enable();
 					});
 				}
 			},
 			isDraft: function(map) {
 				return map.isDraft;
 			},
-			deleteDraft: function(map, callback) {
+			deleteDraft: function(map) {
+				Message.disable();
 				if(this.isDraft(map)) {
-					this.resource.delete({mapId: map._id}, callback);
+					this.resource.delete({mapId: map._id}, function() {
+						Message.enable();
+					});
 				}
 			}
 		}

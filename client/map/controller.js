@@ -95,10 +95,16 @@ exports.MapCtrl = [
 
 				if($scope.isEditing()) {
 
-					$rootScope.$on('$stateChangeStart', function(event) {
+					var destroyConfirmation = $rootScope.$on('$stateChangeStart', function(event) {
 						if(!angular.equals($scope.map, origMap))
 							if(!confirm('Deseja sair sem salvar alterações?'))
 								event.preventDefault();
+							else
+								Map.deleteDraft($scope.map);
+					});
+
+					$scope.$on('$destroy', function() {
+						destroyConfirmation();
 					});
 
 					Layer.resource.query({
@@ -416,10 +422,6 @@ exports.MapCtrl = [
 
 				$scope.$on('map.delete.success', function() {
 					$location.path('/dashboard/maps').replace();
-				});
-
-				$scope.$on('$stateChangeStart', function() {
-					Map.deleteDraft($scope.map);
 				});
 
 				$scope.close = function() {
