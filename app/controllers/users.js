@@ -244,39 +244,67 @@ exports.update = function (req, res) {
 
 	User.findById(req.user._id, function(err, user){
 		
+
 		// User is changing password
 		if (req.body.userPwd) {
 			if (!user.authenticate(req.body.userPwd)) {
-				return res.json(400, { messages: [{status: 'error', text: 'Invalid password.'}] });
+				return res.json(400, { messages: [{status: 'error', text: 'Senha atual inválida.'}] });
+			} else if (req.body.newPwd.length < 6) {
+				return res.json(400, { messages: [{status: 'error', text: 'A nova senha deve ter no mínimo 6 caracteres.'}] });
 			} else {
-				if (req.body.newPwd != req.body.validatePwd) 
-					return res.json(400, { messages: [{status: 'error', text: "Passwords don't match." }] });
-				else
+				if (req.body.newPwd == req.body.validatePwd){
 					user.password = req.body.newPwd;
+					user.save(function(err){
+						if (err) res.json(400, utils.errorMessages(err.errors || err));
+						else res.json({ messages: [{status: 'ok', text: 'Senha alterada com sucesso.'}] });
+					});		
+				} else {
+					return res.json(400, { messages: [{status: 'error', text: "As senhas não coincidem." }] });
+				}
+			}
+ 
+		// User is changing e-mail
+		} else if (req.body.email) {
+
+			// Check if is a diffent e-mail
+			if (req.body.email == user.email) {
+				return res.json(400, { 
+					messages: [{status: 'error', text: 'Este já é o e-mail associado com seu perfil.'}]
+				});
 			}
 
-		// User is changing e-mail
-		} else if ((req.body.email) && (req.body.email != user.email)) {
-			if (validator.isEmail(req.body.email)) {
-				mailer.changeEmail(user, req.body.email, function(err){
-					if (err) {
-						console.log(err)
-						return res.json(400, { messages: [{status: 'error', text: "Error while trying to changing email."}] });
-					} else {
-						return res.json({ messages: [{status: 'ok', text: 'An email was sent to confirm new e-mail address.'}] });
-					}
+			// Check if is valid
+			if (!validator.isEmail(req.body.email)) {
+				return res.json(400, { 
+					messages: [{status: 'error', text: 'E-mail inválido.'}]
 				});
-			} else {
-				return res.json(400, { messages: [{status: 'error', text: "Endereço de e-mail inválido."}] });			
 			}
+
+			// Send confirmation, if e-mail is not already used
+			User.findOne({email: req.body.email}, function(err, anotherUser){
+				if (!anotherUser) {
+					mailer.changeEmail(user, req.body.email, function(err){
+						if (err) {
+							console.log(err)
+							return res.json(400, { messages: [{status: 'error', text: "Erro ao enviar e-mail de alteração de endereço."}] });
+						} else {
+							return res.json({ messages: [{status: 'ok', text: 'Um e-mail foi enviado para confirmação do novo endereço.'}] });
+						}
+					});
+				} else {
+					return res.json(400, { messages: [{status: 'error', text: "Este endereço de e-mail já está cadastrado."}] });			
+				}
+			})
+			
+
+
 		} else {
 			user.bio = req.body.bio;
 			user.name = req.body.name;
 			user.username = req.body.username;
-			user.email = req.body.email;
 			user.save(function(err){
 				if (err) res.json(400, utils.errorMessages(err.errors || err));
-				else res.json({ messages: [{status: 'ok', text: 'User profile info updated successfully.'}] });
+				else res.json({ messages: [{status: 'ok', text: 'Perfil do usuário atualizado com sucesso.'}] });
 			});		 
 		}
 
