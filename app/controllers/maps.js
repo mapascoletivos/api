@@ -122,6 +122,6 @@ exports.destroy = function(req, res){
 	var map = req.map
 	map.remove(function(err){
 		if (err) res.json(400, utils.errorMessages(err.errors || err));
-		else res.json({ messages: [{status: 'ok', text: 'Content removed successfully.'}] });
+		else res.json({ messages: [{status: 'ok', text: 'Mapa removido com sucesso.'}] });
 	});
 }
