@@ -76,11 +76,13 @@ module.exports = function (app, passport) {
 	app.get('/auth/facebook',
 		passport.authenticate('facebook', {
 			scope: [ 'email', 'user_about_me'],
-			failureRedirect: '/login'
+			failureRedirect: '/login',
+			failureFlash: true
 	}), users.signin)
 	app.get('/auth/facebook/callback',
 		passport.authenticate('facebook', {
-		failureRedirect: '/login'
+		failureRedirect: '/login',
+		failureFlash: true
 	}), users.authCallback)
 
 	// Google OAuth routes
@@ -88,6 +90,7 @@ module.exports = function (app, passport) {
 	app.get('/auth/google',
 		passport.authenticate('google', {
 		failureRedirect: '/login',
+		failureFlash: true,
 		scope: [
 			'https://www.googleapis.com/auth/userinfo.profile',
 			'https://www.googleapis.com/auth/userinfo.email'
@@ -95,7 +98,8 @@ module.exports = function (app, passport) {
 	}), users.signin)
 	app.get('/auth/google/callback',
 		passport.authenticate('google', {
-		failureRedirect: '/login'
+		failureRedirect: '/login',
+		failureFlash: true
 	}), users.authCallback)
 
 	app.param('userId', users.user)

@@ -37,7 +37,9 @@ module.exports = function (passport, config) {
 				}
 
 				// User don't have a password yet
-				if (!user.hashed_password) {
+				if (user.status == 'to_migrate') {
+					return done(null, false, { message: "Sua conta não foi migrada ainda. Visite esta <a href='/migrate' target='_self'>página</a>." });
+				} else if (!user.hashed_password) {
 					mailer.passwordNeeded(user, function(err){
 						console.log(err);
 						if (err)
@@ -52,9 +54,6 @@ module.exports = function (passport, config) {
 						else
 							return done(null, false, { message: 'Um e-mail de ativação foi enviado para sua caixa de correio.' });
 					});
-				} else if (user.status == 'to_migrate') {
-					return done(null, false, { message: "Sua conta não foi migrada ainda. Visite esta <a href='/migrate' target='_self'>página</a>." });
-
 				} else if (!user.authenticate(password)) {
 					return done(null, false, { message: 'Invalid password' })
 				} else {
@@ -81,12 +80,17 @@ module.exports = function (passport, config) {
 					User.findOne({ email: profile.emails[0].value }, function (err, user) {
 						if (err) { return done(err) }
 
+
+						// User have to migrate first
+						if (user.status == 'to_migrate') {
+							return done(null, false, { message: "Sua conta não foi migrada ainda. Visite esta <a href='/migrate' target='_self'>página</a>." });
+						}							
+
 						// User not registered, create one
 						if (!user) {
 							user = new User({
 								name: profile.displayName,
 								email: profile.emails[0].value,
-								username: profile.username,
 								provider: 'facebook',
 								facebook: profile._json,
 								status: 'active',
@@ -129,12 +133,16 @@ module.exports = function (passport, config) {
 					User.findOne({ email: profile.emails[0].value }, function (err, user) {
 						if (err) { return done(err) }
 
+						// User have to migrate first
+						if (user.status == 'to_migrate') {
+							return done(null, false, { message: "Sua conta não foi migrada ainda. Visite esta <a href='/migrate' target='_self'>página</a>." });
+						}
+
 						// User not registered, create one
 						if (!user) {				
 							user = new User({
 								name: profile.displayName,
 								email: profile.emails[0].value,
-								username: profile.name.givenName + profile.name.familyName,
 								provider: 'google',
 								google: profile._json,
 								status: 'active',

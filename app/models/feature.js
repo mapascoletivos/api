@@ -60,21 +60,6 @@ FeatureSchema.methods = {
 }
 
 /**
- * Pre-save hooks
- */
-
-FeatureSchema.pre('remove', function(next){
-	var self = this;
-
-	async.each( self.contents, 
-		function(contentId, done){
-			mongoose.model('Content').findById(contentId, function(err, content){
-				content.removeFeatureAndSave(self, done);
-			})
-		}, next);
-});
-
-/**
  * Statics
  */
 

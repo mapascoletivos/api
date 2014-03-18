@@ -9,4 +9,7 @@ block content
 			h1=title
 			include ../includes/messages
 
-			a.button(href="/login", title="Ir para o início", target="_self") Ir para o login
+			- if (isLogged)
+				a.button(href="/", title="Ir para o início", target="_self") Voltar à navegação
+			- else
+				a.button(href="/login", title="Ir para o início", target="_self") Ir para o login

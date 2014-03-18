@@ -86,17 +86,7 @@ exports.MapActionsCtrl = [
 
 			if(confirm('Você tem certeza que deseja remover este mapa?')) {
 				Map.resource.delete({mapId: map._id}, function(res) {
-					Message.message({
-						status: 'ok',
-						text: 'Mapa removido.'
-					});
 					$rootScope.$broadcast('map.delete.success', map);
-				}, function(err) {
-					Message.message({
-						status: 'error',
-						text: 'Ocorreu um erro.'
-					});
-					$rootScope.$broadcast('map.delete.error', err);
 				});
 			}
 

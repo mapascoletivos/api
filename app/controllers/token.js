@@ -127,6 +127,7 @@ exports.migrateAccount = function(req, res){
 			
 			user.password = token.data.password;
 			user.status = 'active';
+			user.needsEmailConfirmation = false;
 
 			user.save(function(err){
 				if (err)
@@ -153,7 +154,6 @@ exports.emailChange = function(req, res){
 		info = [];
 	
 
-	console.log('tá chegando');
 	// invalid route for token
 	if (token.type != 'email_change') {
 		return res.render('tokens/index', {errors: ['Token inválido.']});
@@ -175,6 +175,7 @@ exports.emailChange = function(req, res){
 					});
 				else {
 					return res.render('tokens/index', {
+						isLogged: req.isAuthenticated(),
 						info: ['E-mail alterado com sucesso.']
 					});
 				}
