@@ -14,7 +14,7 @@ angular.module('mapasColetivos.leaflet', [])
 			groups = [],
 			features = [],
 			hiddenFeatures = [],
-			baseLayer = L.tileLayer('http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png'),
+			baseLayer = L.mapbox.tileLayer('infoamazonia.h17kafbd'),
 			legendControl = L.mapbox.legendControl();
 
 		var featureToMapObj = require('../feature/featureToMapObjService');
@@ -172,7 +172,7 @@ angular.module('mapasColetivos.leaflet', [])
 			},
 			destroy: function() {
 				this.clearAll();
-				baseLayer = L.mapbox.tileLayer('tmcw.map-7s15q36b');
+				baseLayer = L.mapbox.tileLayer('infoamazonia.h17kafbd');
 				legendControl = L.mapbox.legendControl();
 				if(map instanceof L.Map)
 					map.remove();

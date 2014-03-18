@@ -161,7 +161,7 @@
 		<div class="new-feature" ng-hide="!editing || editing.geometry.type">
 			<div class="available-types">
 				<div class="new-type">
-					<p>Escolha o tipo de geometria que gostaria de adicionar ao seu mapa</p>
+					<p>Escolha o tipo de geometria que gostaria de adicionar ao seu mapa:</p>
 					<ul>
 						<li ng-click="newFeature('Point')">
 							<span class="mcf">&#xe600;</span>
@@ -173,21 +173,21 @@
 						</li>
 						<li ng-click="newFeature('Polygon')">
 							<span class="mcf">&#xe602;</span>
-							Polígono
+							Polígono (área)
 						</li>
 					</ul>
 				</div>
 				<div class="geocode">
-					<p>Ou busque uma localização</p>
+					<p>Ou busque e utilize uma localização:</p>
 					<div class="location-editor">
-						<input class="geocode" type="text" ui-keypress="{'enter': 'geocode()'}" ng-model="_data.geocode" placeholder="Encontre uma localização" />
+						<input class="geocode" type="text" ui-keypress="{'enter': 'geocode()'}" ng-model="_data.geocode" placeholder="Digite uma localização" />
 						<a href="javascript:void(0);" ng-click="geocode()" class="search-button button button-small"><span class="lsf">&#xE116;</span> Buscar</a>
 						<div class="geocode-results">
-							<ul ng-repeat="result in _data.geocodeResults">
-								<li>
-									<a href="javascript:void(0);" class="mcf locate" title="Utilizar esta coordenada" ng-click="setNominatimFeature(result)">&#xe600;</a>
-									<a href="javascript:void(0);" class="mcf" ng-show="result.geojson.type === 'Polygon'" ng-click="setNominatimFeature(result, 'geojson')">&#xe602;</a>
-									<a href="javascript:void(0);" class="mcf" ng-show="result.geojson.type === 'LineString'" ng-click="setNominatimFeature(result, 'geojson')">&#xe601;</a>
+							<ul>
+								<li ng-repeat="result in _data.geocodeResults">
+									<a href="javascript:void(0);" class="mcf" title="Utilizar esta localização como ponto" ng-click="setNominatimFeature(result)">&#xe600;</a>
+									<a href="javascript:void(0);" class="mcf" title="Utilizar esta localização como polígono (área)" ng-show="result.geojson.type === 'Polygon'" ng-click="setNominatimFeature(result, 'geojson')">&#xe602;</a>
+									<a href="javascript:void(0);" class="mcf" title="Utilizar esta localização como linha" ng-show="result.geojson.type === 'LineString'" ng-click="setNominatimFeature(result, 'geojson')">&#xe601;</a>
 									{{result.display_name}}
 								</li>
 							</ul>
@@ -209,23 +209,11 @@
 				</div>
 				<div class="editing-tools" ng-class="{editing: tool}">
 					<ul class="tools-list">
-						<li class="feature-location-label" ng-show="editing.geometry.type == 'Point'" ng-class="{active: tool == 'feature-location'}"><a href="javascript:void(0);" title="Buscar uma localização" ng-click="setTool('feature-location')"><span class="lsf">&#xE116;</span></a></li>
 						<li class="feature-data-label" ng-class="{active: tool == 'feature-data'}"><a href="javascript:void(0);" title="Dados do local" ng-click="setTool('feature-data')"><span class="lsf">&#xE127;</span></a></li>
 						<li class="remove-label" ng-show="editing._id"><a href="javascript:void(0);" title="Remover esta feature" ng-click="delete()"><span class="lsf">&#xE12c;</span></a></li>
 						<li class="save-label"><a href="javascript:void(0);" title="Salvar alterações desta feature" ng-click="save()"><span class="lsf">&#xE029;</span></a></li>
 					</ul>
 					<div class="tools-editor" ng-show="tool">
-						<div class="feature-location" ng-show="tool == 'feature-location'">
-							<div class="location-editor">
-								<input class="geocode" type="text" ui-keypress="{'enter': 'geocode()'}" ng-model="_data.geocode" placeholder="Encontre uma localização" />
-								<a href="javascript:void(0);" ng-click="geocode()" class="search-button button button-small"><span class="lsf">&#xE116;</span> Buscar</a>
-								<div class="geocode-results">
-									<ul ng-repeat="result in _data.geocodeResults">
-										<li><a href="javascript:void(0);" class="lsf locate" title="Utilizar esta coordenada" ng-click="setNominatimFeature(result)">&#xE056;</a>{{result.display_name}}</li>
-									</ul>
-								</div>
-							</div>
-						</div>
 						<div class="feature-data" ng-show="tool == 'feature-data'">
 							<table>
 								<tr ng-repeat="(key,prop) in editing.properties track by key">

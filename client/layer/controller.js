@@ -186,7 +186,7 @@ exports.LayerCtrl = [
 					}, 100);
 
 					$scope.$on('layerObjectChange', function(event, active) {
-						populateMap(layer.features, layer, true, false);
+						populateMap($scope.layer.features, layer, true, false);
 					});
 
 					if(!Layer.canEdit(layer)) {

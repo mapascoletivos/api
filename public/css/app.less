@@ -178,7 +178,7 @@ input[type=submit] {
 	line-height: 100%;
 	border: 0;
 	cursor: pointer;
-	font-weight: 600;
+	font-weight: 200;
 	&.button-small {
 		font-size: 90%;
 		padding: 12px 15px;
@@ -1580,6 +1580,7 @@ input.no-canvas {
 				background: #666;
 				border-bottom: 1px solid #555;
 				line-height: 22px;
+				font-size: 12px;
 				&:hover {
 					background: #777;
 				}
@@ -1866,7 +1867,7 @@ input.no-canvas {
 			display: block;
 			position: absolute;
 			top: 0;
-			padding-top: 15%;
+			padding: 10% 0;
 			box-sizing: border-box;
 			left: 0;
 			bottom: 0;
@@ -1876,8 +1877,9 @@ input.no-canvas {
 			color: #fff;
 			z-index: 100;
 			font-size: 18px;
-			font-weight: 600;
+			font-weight: 200;
 			text-shadow: 2px 2px 1px rgba(0,0,0,0.2);
+			overflow: auto;
 			.available-types {
 				max-width: 600px;
 				margin: 0 auto;
@@ -1908,6 +1910,53 @@ input.no-canvas {
 							}
 							&:last-child {
 								border-right: 0;
+							}
+						}
+					}
+				}
+				.geocode {
+					input {
+						border: 0;
+						padding: 15px;
+						width: 100%;
+						margin: 0;
+						font-size: 16px;
+						box-sizing: border-box;
+					}
+					.search-button {
+						width: 100%;
+						padding: 15px 0;
+						margin: 0;
+						text-align: center;
+						text-shadow: 0 0 0;
+						background: @light-blue;
+						&:hover {
+							background: @blue;
+						}
+						.lsf {
+							padding-right: 10px;
+							font-size: 18px;
+						}
+					}
+					.geocode-results {
+						background: #fff;
+						text-shadow: 0 0 0;
+						color: #333;
+						li {
+							font-size: 12px;
+							padding: 15px;
+							border-bottom: 1px solid #eee;
+							a {
+								float: left;
+								font-size: 20px;
+								margin: 0 10px 20px 0;
+								cursor: pointer;
+								text-decoration: none;
+								color: #999;
+								color: @blue;
+								&:hover {
+									color: @dark-blue;
+								}
 							}
 						}
 					}
@@ -1959,42 +2008,6 @@ input.no-canvas {
 				.edit-description {
 					font-size: 16px;
 					line-height: 22px;
-				}
-			}
-			.feature-location {
-				input {
-					background: transparent;
-					border: 0;
-					padding: 10px 0 28px;
-					width: 100%;
-					margin: 0;
-					font-size: 16px;
-				}
-				.search-button {
-					width: 100%;
-					padding: 10px 0;
-					margin: 0 0 20px;
-					text-align: center;
-					.lsf {
-						padding-right: 10px;
-						font-size: 18px;
-					}
-				}
-				.geocode-results {
-					li {
-						font-size: 12px;
-						.locate {
-							float: left;
-							font-size: 26px;
-							margin: 0 10px 20px 0;
-							cursor: pointer;
-							text-decoration: none;
-							color: #999;
-							&:hover {
-								color: #333;
-							}
-						}
-					}
 				}
 			}
 		}
