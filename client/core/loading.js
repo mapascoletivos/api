@@ -47,7 +47,7 @@ angular.module('mapasColetivos.loadingStatus', [])
 			enabled = false;
 		},
 		enable: function() {
-			enbaled = true;
+			enabled = true;
 		}
 	}
 
