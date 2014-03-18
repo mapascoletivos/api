@@ -1,8 +1,8 @@
 # Mapas Coletivos
  
-Mapas Coletivos is a collaborative mapping platform. Please visit the testing instance: 
+Mapas Coletivos is a collaborative mapping platform: 
 
-http://alpha.mapascoletivos.com.br 
+http://www.mapascoletivos.com.br 
  
 
 ## Development
