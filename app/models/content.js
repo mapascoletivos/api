@@ -21,7 +21,7 @@ var ContentSchema = new Schema({
 	features: [{type: Schema.ObjectId, ref: 'Feature'}],
 	layer: {type: Schema.ObjectId, ref: 'Layer', required: true},
 	createdAt: {type: Date, default: Date.now},
-	updateAt: {type: Date, default: Date.now},
+	updatedAt: {type: Date, default: Date.now},
 	tags: [String]
 });
 

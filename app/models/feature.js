@@ -24,7 +24,7 @@ var FeatureSchema = new Schema({
 	geometry: { type: {type: String}, coordinates: []},
 	version: { type: Number, default: 1},
 	createdAt: {type: Date, default: Date.now},
-	updateAt: {type: Date, default: Date.now},
+	updatedAt: {type: Date, default: Date.now},
 	tags: [String],
 	oldId: Number
 })
