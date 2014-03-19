@@ -47,10 +47,12 @@ var settings = angular.extend({
 angular.module('mapasColetivos', [
 	'ui.router',
 	'ui.keypress',
+	'ui.slider',
 	'monospaced.elastic',
 	'ngRoute',
 	'ngAnimate',
 	'infinite-scroll',
+	'colorpicker.module',
 	'mapasColetivos.mapView',
 	'mapasColetivos.user',
 	'mapasColetivos.pageTitle',

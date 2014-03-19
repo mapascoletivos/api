@@ -13,13 +13,14 @@ exports.LayerCtrl = [
 	'Page',
 	'Layer',
 	'Feature',
+	'Maki',
 	'Content',
 	'MessageService',
 	'SessionService',
 	'LoadingService',
 	'MapService',
 	'MapView',
-	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Content, Message, Session, Loading, MapService, MapView) {
+	function($scope, $rootScope, $location, $state, $stateParams, $q, Page, Layer, Feature, Maki, Content, Message, Session, Loading, MapService, MapView) {
 
 		$scope.$layer = Layer;
 		$scope.$feature = Feature;
@@ -266,6 +267,13 @@ exports.LayerCtrl = [
 						}
 
 					}
+
+					/*
+					 * Styles
+					 */
+
+					$scope.maki = Maki.maki;
+					$scope.makiSprite = Maki.makiSprite;
 
 				} else {
 

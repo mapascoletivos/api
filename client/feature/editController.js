@@ -9,12 +9,14 @@ var featureToMapObj = require('./featureToMapObjService');
 exports.FeatureEditCtrl = [
 	'$scope',
 	'$rootScope',
+	'$timeout',
 	'Feature',
+	'Maki',
 	'Layer',
 	'MessageService',
 	'GeocodeService',
 	'MapService',
-	function($scope, $rootScope, Feature, Layer, Message, Geocode, MapService) {
+	function($scope, $rootScope, $timeout, Feature, Maki, Layer, Message, Geocode, MapService) {
 
 		var layer;
 
@@ -82,7 +84,8 @@ exports.FeatureEditCtrl = [
 			Feature.edit({
 				geometry: {
 					type: type
-				}
+				},
+				properties: {}
 			});
 			$scope.setMarker(false);
 		}
@@ -105,6 +108,9 @@ exports.FeatureEditCtrl = [
 		$scope.setMarker = function(focus) {
 
 			var map = MapService.get();
+
+			if(!map)
+				return false;
 
 			MapService.clearFeatures();
 
@@ -211,6 +217,8 @@ exports.FeatureEditCtrl = [
 
 		$scope.save = function(silent) {
 
+			saveProperties();
+
 			if($scope.editing && $scope.editing._id) {
 
 				Feature.resource.update({featureId: $scope.editing._id, layerId: layer._id}, $scope.editing, function(feature) {
@@ -310,6 +318,12 @@ exports.FeatureEditCtrl = [
 
 			$scope.editing.source = 'osm';
 
+			if(!$scope.editing.properties)
+				$scope.editing.properties = {};
+
+			if(!$scope.editing.title)
+				$scope.editing.title = feature.display_name;
+
 			if(type == 'geojson') {
 
 				$scope.editing.geometry = feature.geojson;
@@ -330,12 +344,108 @@ exports.FeatureEditCtrl = [
 
 		}
 
-		$scope.$on('layer.save.success', function() {
+		/*
+		 * Property Editor
+		 */
 
+		$scope.properties = [];
+
+		$scope.removeProperty = function(id) {
+			var properties = [];
+			angular.forEach($scope.properties, function(property, i) {
+				if(property._id !== id) {
+					properties.push({
+						_id: i,
+						key: property.key,
+						val: property.val
+					});
+				}
+			});
+			$scope.properties = properties;
+			console.log($scope.properties);
+		}
+
+		$scope.addProperty = function(key, val) {
+
+			if(typeof key == 'undefined')
+				key = '';
+
+			if(typeof val == 'undefined')
+				val = '';
+
+			$scope.properties.push({
+				_id: $scope.properties.length,
+				key: key,
+				val: val
+			});
+
+			$scope.properties = $scope.properties;
+
+		}
+
+		var getProperty = function(key) {
+			return _.find($scope.properties, function(prop) { return prop.key == key; });
+		};
+
+		$scope.$watch('editing.properties', function(properties) {
+			//saveProperties();
+		}, true);
+
+		$scope.$watch('editing', function(editing) {
+			if(editing) {
+				var properties = editing.properties;
+				$scope.properties = [];
+				var i = 0;
+				for(var key in properties) {
+					if(properties.hasOwnProperty(key)) {
+						$scope.properties.push({
+							_id: i,
+							key: key,
+							val: properties[key]
+						});
+						i++;
+					}
+				}
+				$scope.properties = $scope.properties; // trigger digest
+			}
+		});
+
+		var saveProperties = function() {
+			if($scope.editing) {
+				$scope.editing.properties = {};
+				angular.forEach($scope.properties, function(prop) {
+					$scope.editing.properties[prop.key] = prop.val;
+				});
+			}
+		};
+
+		/*
+		 * Style editor
+		 */
+
+		$scope.maki = Maki.maki;
+		$scope.makiSprite = Maki.makiSprite;
+
+		$scope.$watch('editing.properties', _.debounce(function(properties, oldVal) {
+
+			if($scope.marker && $scope.editing) {
+
+				if($scope.editing.geometry.type == 'Point') {
+					$scope.marker.setIcon(L.mapbox.marker.icon(properties));
+				} else {
+					$scope.marker.setStyle(L.mapbox.simplestyle.style($scope.editing));
+				}
+			}
+
+		}, 150), true);
+
+		/*
+		 * Save feature on layer save
+		 */
+		$scope.$on('layer.save.success', function() {
 			if($scope.editing) {
 				$scope.save(true);
 			}
-
 		});
 
 	}

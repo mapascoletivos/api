@@ -205,6 +205,40 @@ input[type=submit] {
 	}
 }
 
+.dropdown-menu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1000;
+	display: none;
+	float: left;
+	min-width: 160px;
+	padding: 5px 0;
+	margin: 2px 0 0;
+	font-size: 14px;
+	list-style: none;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border: 1px solid rgba(0,0,0,0.15);
+	-webkit-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+	box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+	background-clip: padding-box;
+	.close {
+		float: right;
+		font-size: 21px;
+		font-weight: bold;
+		line-height: 1;
+		color: #000;
+		text-shadow: 0 1px 0 #fff;
+		opacity: .2;
+		filter: alpha(opacity=20);
+		background: transparent;
+		border: 0;
+		padding: 0;
+		margin:0;
+	}
+}
+
 input,
 textarea {
 	outline: none;
@@ -1437,7 +1471,7 @@ input.no-canvas {
 		left: 0;
 		right: 0;
 		overflow: auto;
-		float:right;
+		overflow-x:hidden;
 		background: #f5f5f5;
 		h2 {
 			font-size: 12px;
@@ -1491,7 +1525,7 @@ input.no-canvas {
 					.mcf {
 						font-size: 28px;
 						line-height: 30px;
-						margin-right: 10px;
+						margin: 0;
 						font-weight: 200;
 					}
 					.mcf {
@@ -1522,6 +1556,10 @@ input.no-canvas {
 						background: @blue;
 						&:hover {
 							color: #fff;
+						}
+						.mcf,
+						.lsf {
+							margin-right: 10px;
 						}
 					}
 				}
@@ -1812,6 +1850,7 @@ input.no-canvas {
 			}
 			table {
 				width: 100%;
+				margin-bottom: 20px;
 				tr {
 					&:hover {
 						td input {
@@ -1830,7 +1869,31 @@ input.no-canvas {
 								color: #333;
 							}
 						}
+						&.action {
+							cursor: pointer;
+							text-align: center;
+							&.action-remove {
+								color: @red;
+							}
+							.lsf {
+								display: block;
+								margin: 0 auto;
+								font-size: 20px;
+								line-height: 24px;
+							}
+						}
 					}
+				}
+			}
+			.button {
+				font-size: 12px;
+				width: 100%;
+				display: block;
+				padding: 15px 0;
+				text-align: center;
+				background: @blue;
+				&:hover {
+					background: @light-blue;
 				}
 			}
 		}
@@ -2008,6 +2071,60 @@ input.no-canvas {
 				.edit-description {
 					font-size: 16px;
 					line-height: 22px;
+				}
+			}
+		}
+	}
+	/*
+	 * Feature style
+	 */
+	.feature-style {
+		position: relative;
+		.label {
+			border-bottom: 1px solid #eee;
+			padding-bottom: 10px;
+		}
+		.colorpicker-container {
+			position: relative;
+		}
+		.colorpicker-box {
+			width: 100%;
+			height: 75px;
+			margin-bottom: 20px;
+			cursor: pointer;
+			border: 1px solid #eee;
+			box-sizing: border-box;
+		}
+		.ui-slider {
+			margin-bottom: 20px;
+		}
+		.size-picker {
+			display: table;
+			height: 90px;
+			margin: 0 auto;
+			span {
+				display: table-cell;
+				vertical-align: middle;
+				cursor: pointer;
+				padding: 0 20px;
+			}
+		}
+		.marker-icon {
+			li {
+				float: left;
+				margin: 0 5px 5px 0;
+			}
+			.maki-sprite {
+				background-image: url('/img/maki-sprite.png');
+				background-repeat: no-repeat;
+				display: inline-block;
+				width: 24px;
+				height: 24px;
+				&:hover {
+					background-color: #eee;
+				}
+				&.blank {
+					background-image: none;
 				}
 			}
 		}
@@ -2273,22 +2390,23 @@ a.mapbox-improve-map {
 		pointer-events: none;
 		ul {
 			margin: 0;
+			border: 1px solid #999;
+			float: left;
 			li {
-				margin: 0 -1px 0 0;
 				float: left;
+				margin:0;
+				padding: 0;
 				a {
 					position: relative;
 					pointer-events: auto;
 					display: block;
-					background: @dark-blue;
-					border: 1px solid @blue;
+					background: #fff;
+					border-right: 1px solid rgba(0,0,0,0.10);
 					padding: 15px 20px;
-					color: #fff;
+					color: #333;
 					text-decoration: none;
 					&:hover {
-						background: #fff;
-						color: @blue;
-						border-color: @blue;
+						background: #f8f8f8;
 						z-index: 2;
 					}
 					.lsf {

@@ -22,9 +22,7 @@ module.exports = function(feature, options, map) {
 				leafletCoordinates.push(latlng.reverse());
 			});
 
-			lFeature = L.polygon(leafletCoordinates, {
-				color: '#333'
-			});
+			lFeature = L.polygon(leafletCoordinates, L.mapbox.simplestyle.style(feature));
 
 		} else if(feature.geometry.type == 'LineString') {
 
@@ -35,18 +33,13 @@ module.exports = function(feature, options, map) {
 				leafletCoordinates.push(latlng.reverse());
 			});
 
-			lFeature = L.polyline(leafletCoordinates, {
-				color: '#333'
-			});
+			lFeature = L.polyline(leafletCoordinates, L.mapbox.simplestyle.style(feature));
 
 		} else if(feature.geometry.type == 'Point') {
 
 			feature.properties = angular.extend({
 				'marker-size': 'medium',
-				'marker-color': '#444',
-				'stroke': '#333',
-				'stroke-width': 2,
-				'fill': '#444'
+				'marker-color': '#444'
 			}, feature.properties);
 
 			options = angular.extend({
