@@ -148,7 +148,7 @@ exports.FeatureEditCtrl = [
 
 						} else {
 
-							if($scope.editing.source == 'local' || !$scope.editing.source) {
+							if(($scope.editing.source == 'local' || !$scope.editing.source) && _.flatten($scope.editing.geometry.coordinates).length < 250) {
 								$scope.marker.editing.enable();
 
 								$scope.marker.on('edit', function(e) {
