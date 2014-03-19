@@ -179,11 +179,6 @@ exports.addFeature = function (req, res) {
 		feature = req.feature,
 		layer = req.layer;
 
-	// associate feature to layer, if not already 
-	if ( ! _.contains(feature.layers, layer._id) ) { 
-		feature.layers.push(layer);
-	}
-
 	// associate layer to feature, if not already 
 	if ( ! _.contains(layer.features, feature._id) ) { 
 		layer.features.push(feature);

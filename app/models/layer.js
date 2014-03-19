@@ -19,7 +19,7 @@ var LayerSchema = new Schema({
 	creator: {type: Schema.ObjectId, ref: 'User'},
 	maps: [{type: Schema.ObjectId, ref: 'Map'}],
 	createdAt: {type: Date, default: Date.now},
-	updateAt: {type: Date, default: Date.now},
+	updatedAt: {type: Date, default: Date.now},
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
 	type: { type: String, enum: ['FeatureLayer', 'TileLayer'], default: 'FeatureLayer'},
 

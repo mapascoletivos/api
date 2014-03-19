@@ -15,7 +15,6 @@ var
 
 var FeatureSchema = new Schema({
 	creator: { type: Schema.ObjectId, ref: 'User', required: true},
-	layers: [{ type: Schema.ObjectId, ref: 'Layer'}],
 	contents: [{ type: Schema.ObjectId, ref: 'Content'}],	
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
 	properties: {},
@@ -24,7 +23,7 @@ var FeatureSchema = new Schema({
 	geometry: { type: {type: String}, coordinates: []},
 	version: { type: Number, default: 1},
 	createdAt: {type: Date, default: Date.now},
-	updateAt: {type: Date, default: Date.now},
+	updatedAt: {type: Date, default: Date.now},
 	source: {type: String, required: true, default: 'local'},
 	tags: [String],
 	oldId: Number
