@@ -105,22 +105,22 @@
 									<h3>Pontos</h3>
 									<p class="label">Cor do marcador</p>
 									<div class="colorpicker-container">
-										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{styles.markerColor}};" ng-model="layer.styles.markerColor"></div>
+										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.Point['marker-color']}};" ng-model="layer.styles.Point['marker-color']"></div>
 									</div>
 									<p class="label">Tamanho</p>
 									<div class="size-picker">
-										<span ng-click="layer.styles.markerSize = 'small'" title="Pequeno"><img src="http://a.tiles.mapbox.com/v3/marker/pin-s+444.png" /></span>
-										<span ng-click="layer.styles.markerSize = 'medium'" title="Médio"><img src="http://a.tiles.mapbox.com/v3/marker/pin-m+444.png" /></span>
-										<span ng-click="layer.styles.markerSize = 'large'" title="Grande"><img src="http://a.tiles.mapbox.com/v3/marker/pin-l+444.png" /></span>
+										<span ng-click="layer.styles.Point['marker-size'] = 'small'" title="Pequeno"><img src="http://a.tiles.mapbox.com/v3/marker/pin-s+444.png" /></span>
+										<span ng-click="layer.styles.Point['marker-size'] = 'medium'" title="Médio"><img src="http://a.tiles.mapbox.com/v3/marker/pin-m+444.png" /></span>
+										<span ng-click="layer.styles.Point['marker-size'] = 'large'" title="Grande"><img src="http://a.tiles.mapbox.com/v3/marker/pin-l+444.png" /></span>
 									</div>
 									<p class="label">Ícone</p>
 									<div class="marker-icon">
 										<ul>
 											<li>
-												<a class="maki-sprite blank" href="javascript:void(0);" ng-click="layer.styles.markerSymbol = ''" title="Nenhum"></a>
+												<a class="maki-sprite blank" href="javascript:void(0);" ng-click="layer.styles.Point['marker-symbol'] = ''" title="Nenhum"></a>
 											</li>
 											<li ng-repeat="icon in maki">
-												<a class="maki-sprite" href="javascript:void(0);" ng-click="layer.styles.markerSymbol = icon.icon" style="{{makiSprite(icon.icon)}}" title="{{icon.name}}"></a>
+												<a class="maki-sprite" href="javascript:void(0);" ng-click="layer.styles.Point['marker-symbol'] = icon.icon" style="{{makiSprite(icon.icon)}}" title="{{icon.name}}"></a>
 											</li>
 										</ul>
 									</div>
@@ -129,29 +129,29 @@
 									<h3>Polígonos (areas)</h3>
 									<p class="label">Cor da área</p>
 									<div class="colorpicker-container">
-										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{styles.fill}};" ng-model="styles.fill"></div>
+										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.Polygon.fill}};" ng-model="styles.fill"></div>
 									</div>
 									<p class="label">Opacidade da área</p>
-									<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="styles.fillOpacity"></div>
+									<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="layer.styles.Polygon['fill-opacity']"></div>
 									<p class="label">Cor da borda</p>
 									<div class="colorpicker-container">
-										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{styles.stroke}};" ng-model="styles.stroke"></div>
+										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.Polygon.stroke}};" ng-model="layer.styles.Polygon.stroke"></div>
 									</div>
 									<p class="label">Opacidade da borda</p>
-									<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="styles.strokeOpacity"></div>
+									<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="layer.styles.Polygon['stroke-opacity']"></div>
 									<p class="label">Espessura da borda</p>
-									<div ui-slider min="0" max="20" step="1" ng-model="styles.strokeWidth"></div>
+									<div ui-slider min="0" max="20" step="1" ng-model="layer.styles.Polygon['stroke-width']"></div>
 								</div>
 								<div class="line-styles">
 									<h3>Linhas</h3>
 									<p class="label">Cor da linha</p>
 									<div class="colorpicker-container">
-										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{styles.stroke}};" ng-model="styles.stroke"></div>
+										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.LineString.stroke}};" ng-model="layer.styles.LineString.stroke"></div>
 									</div>
 									<p class="label">Opacidade da linha</p>
-									<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="styles.strokeOpacity"></div>
+									<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="layer.styles.LineString['stroke-opacity']"></div>
 									<p class="label">Espessura da linha</p>
-									<div ui-slider min="0" max="20" step="1" ng-model="styles.strokeWidth"></div>
+									<div ui-slider min="0" max="20" step="1" ng-model="layer.styles.LineString['stroke-width']"></div>
 								</div>
 							</div>
 						</div>
@@ -285,31 +285,32 @@
 								<tr ng-repeat="prop in properties track by prop._id">
 									<td class="prop-key"><input ng-model="prop.key" /></td>
 									<td class="prop-value"><input ng-model="prop.val" /></td>
-									<td class="action action-remove" ng-click="removeProperty($index)" title="Remover propriedade"><span class="lsf">&#xE10f;</span></td>
+									<td class="action action-remove" ng-click="removeProperty(prop._id)" title="Remover propriedade"><span class="lsf">&#xE10f;</span></td>
 								</tr>
 							</table>
 							<a class="button" ng-click="addProperty()">Nova propriedade</a>
 						</div>
 						<div class="feature-style" ng-show="tool == 'feature-style'">
+							<a class="button" href="javascript:void(0);" ng-click="editing.styles = false" ng-show="editing.properties.customStyle">Utilizar padrão da camada</a>
 							<div class="marker-styles" ng-show="editing.geometry.type == 'Point'">
 								<p class="label">Cor do marcador</p>
 								<div class="colorpicker-container">
-									<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{editing.properties['marker-color']}};" ng-model="editing.properties['marker-color']"></div>
+									<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{editing.styles['marker-color']}};" ng-model="editing.styles['marker-color']"></div>
 								</div>
 								<p class="label">Tamanho</p>
 								<div class="size-picker">
-									<span ng-click="editing.properties['marker-size'] = 'small'" title="Pequeno"><img src="http://a.tiles.mapbox.com/v3/marker/pin-s+444.png" /></span>
-									<span ng-click="editing.properties['marker-size'] = 'medium'" title="Médio"><img src="http://a.tiles.mapbox.com/v3/marker/pin-m+444.png" /></span>
-									<span ng-click="editing.properties['marker-size'] = 'large'" title="Grande"><img src="http://a.tiles.mapbox.com/v3/marker/pin-l+444.png" /></span>
+									<span ng-click="editing.styles['marker-size'] = 'small'" title="Pequeno"><img src="http://a.tiles.mapbox.com/v3/marker/pin-s+444.png" /></span>
+									<span ng-click="editing.styles['marker-size'] = 'medium'" title="Médio"><img src="http://a.tiles.mapbox.com/v3/marker/pin-m+444.png" /></span>
+									<span ng-click="editing.styles['marker-size'] = 'large'" title="Grande"><img src="http://a.tiles.mapbox.com/v3/marker/pin-l+444.png" /></span>
 								</div>
 								<p class="label">Ícone</p>
 								<div class="marker-icon">
 									<ul>
 										<li>
-											<a class="maki-sprite blank" href="javascript:void(0);" ng-click="editing.properties['marker-symbol'] = ''" title="Nenhum"></a>
+											<a class="maki-sprite blank" href="javascript:void(0);" ng-click="editing.styles['marker-symbol'] = ''" title="Nenhum"></a>
 										</li>
 										<li ng-repeat="icon in maki">
-											<a class="maki-sprite" href="javascript:void(0);" ng-click="editing.properties['marker-symbol'] = icon.icon" style="{{makiSprite(icon.icon)}}" title="{{icon.name}}"></a>
+											<a class="maki-sprite" href="javascript:void(0);" ng-click="editing.styles['marker-symbol'] = icon.icon" style="{{makiSprite(icon.icon)}}" title="{{icon.name}}"></a>
 										</li>
 									</ul>
 								</div>
@@ -317,20 +318,20 @@
 							<div class="polygon-styles" ng-show="editing.geometry.type == 'Polygon'">
 								<p class="label">Cor da área</p>
 								<div class="colorpicker-container">
-									<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{editing.properties.fill}};" ng-model="editing.properties.fill"></div>
+									<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{editing.styles.fill}};" ng-model="editing.styles.fill"></div>
 								</div>
 								<p class="label">Opacidade da área</p>
-								<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="editing.properties['fill-opacity']"></div>
+								<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="editing.styles['fill-opacity']"></div>
 							</div>
 							<div class="line-styles" ng-show="editing.geometry.type == 'Polygon' || editing.geometry.type == 'LineString'">
 								<p class="label">Cor da borda</p>
 								<div class="colorpicker-container">
-									<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{editing.properties.stroke}};" ng-model="editing.properties.stroke"></div>
+									<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{editing.styles.stroke}};" ng-model="editing.styles.stroke"></div>
 								</div>
 								<p class="label">Opacidade da borda</p>
-								<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="editing.properties['stroke-opacity']"></div>
+								<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="editing.styles['stroke-opacity']"></div>
 								<p class="label">Espessura da borda</p>
-								<div ui-slider min="0" max="20" step="1" ng-model="editing.properties['stroke-width']"></div>
+								<div ui-slider min="0" max="20" step="1" ng-model="editing.styles['stroke-width']"></div>
 							</div>
 						</div>
 					</div>

@@ -37,11 +37,6 @@ module.exports = function(feature, options, map) {
 
 		} else if(feature.geometry.type == 'Point') {
 
-			feature.properties = angular.extend({
-				'marker-size': 'medium',
-				'marker-color': '#444'
-			}, feature.properties);
-
 			options = angular.extend({
 				icon: L.mapbox.marker.icon(feature.properties)
 			}, options);

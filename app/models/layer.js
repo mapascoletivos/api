@@ -26,6 +26,7 @@ var LayerSchema = new Schema({
 	// Content Layer Attributes
 	contributors: [{type: Schema.ObjectId, ref: 'User'}],
 	features: [{type: Schema.ObjectId, ref: 'Feature'}],
+	styles: {},
 	contents: [{type: Schema.ObjectId, ref: 'Content'}],
 	isDraft: {type: Boolean, default: true},
 	oldId: Number,

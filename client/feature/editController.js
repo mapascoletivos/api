@@ -217,7 +217,7 @@ exports.FeatureEditCtrl = [
 
 		$scope.save = function(silent) {
 
-			saveProperties();
+			$scope.$emit('feature.save.init', $scope.editing);
 
 			if($scope.editing && $scope.editing._id) {
 
@@ -350,6 +350,14 @@ exports.FeatureEditCtrl = [
 
 		$scope.properties = [];
 
+		$scope.reservedProperties = [];
+
+		$scope.isReservedProperty = function(propKey) {
+			if($scope.reservedProperties.indexOf(propKey) !== -1)
+				return true;
+			return false;
+		}
+
 		$scope.removeProperty = function(id) {
 			var properties = [];
 			angular.forEach($scope.properties, function(property, i) {
@@ -362,7 +370,20 @@ exports.FeatureEditCtrl = [
 				}
 			});
 			$scope.properties = properties;
-			console.log($scope.properties);
+		}
+
+		$scope.removePropertyByKey = function(key) {
+			var properties = [];
+			angular.forEach($scope.properties, function(property, i) {
+				if(property.key !== key) {
+					properties.push({
+						_id: i,
+						key: property.key,
+						val: property.val
+					});
+				}
+			});
+			$scope.properties = properties;
 		}
 
 		$scope.addProperty = function(key, val) {
@@ -387,17 +408,28 @@ exports.FeatureEditCtrl = [
 			return _.find($scope.properties, function(prop) { return prop.key == key; });
 		};
 
-		$scope.$watch('editing.properties', function(properties) {
-			//saveProperties();
-		}, true);
+		var updateProperties = function(properties) {
+			for(var key in properties) {
+				$scope.updateProperty(key, properties[key]);
+			}
+			$scope.properties = $scope.properties;
+		};
+
+		var updateProperty = function(key, val) {
+			if(getProperty(key)) {
+				getProperty(key).val = val;
+			} else {
+				$scope.addProperty(key, val);
+			}
+		}
 
 		$scope.$watch('editing', function(editing) {
 			if(editing) {
 				var properties = editing.properties;
 				$scope.properties = [];
 				var i = 0;
-				for(var key in properties) {
-					if(properties.hasOwnProperty(key)) {
+				if(properties) {
+					for(var key in properties) {
 						$scope.properties.push({
 							_id: i,
 							key: key,
@@ -412,41 +444,118 @@ exports.FeatureEditCtrl = [
 
 		var saveProperties = function() {
 			if($scope.editing) {
-				$scope.editing.properties = {};
-				angular.forEach($scope.properties, function(prop) {
-					$scope.editing.properties[prop.key] = prop.val;
-				});
+				var properties = {};
+				if($scope.properties.length) {
+					angular.forEach($scope.properties, function(prop) {
+						properties[prop.key] = prop.val;
+					});
+				}
+				$scope.editing.properties = angular.copy(properties);
 			}
 		};
+
+		var unHookSaveProperties = $scope.$on('feature.save.init', saveProperties);
+		$scope.$on('$destroy', unHookSaveProperties);
 
 		/*
 		 * Style editor
 		 */
 
+		var defaultStyles = _.extend({
+			Point: {
+				'marker-size': 'medium',
+				'marker-color': '#7e7e7e',
+				'marker-symbol': ''
+			},
+			Polygon: {
+				'stroke': '#555555',
+				'stroke-width': 2,
+				'stroke-opacity': 1,
+				'fill': '#555555',
+				'fill-opacity': 0.5
+			},
+			LineString: {
+				'stroke': '#555555',
+				'stroke-width': 2,
+				'stroke-opacity': 1
+			}
+		}, Layer.edit().styles);
+
+		$scope.reservedProperties = $scope.reservedProperties.concat([
+			'marker-size',
+			'marker-color',
+			'marker-symbol',
+			'stroke',
+			'stroke-width',
+			'stroke-opacity',
+			'fill',
+			'fill-opacity',
+			'customStyle'
+		]);
+
 		$scope.maki = Maki.maki;
 		$scope.makiSprite = Maki.makiSprite;
 
-		$scope.$watch('editing.properties', _.debounce(function(properties, oldVal) {
+		$scope.$watch('editing', function(feature) {
 
-			if($scope.marker && $scope.editing) {
+			if(feature && feature.geometry && feature.geometry.type) {
+				if(!feature.properties.customStyle) {
+					feature.styles = _.extend(feature.styles || {}, defaultStyles[feature.geometry.type]);
+				} else {
+					feature.styles = feature.properties;
+				}
+				$scope.editing.styles = feature.styles;
+			}
+
+		});
+
+		$scope.$watch('editing.styles', _.debounce(function(styles, oldVal) {
+
+			if($scope.editing && $scope.editing.geometry) {
+
+				var dS = angular.copy(defaultStyles[$scope.editing.geometry.type]);
+
+				if(styles === false) {
+					$scope.editing.styles = dS;
+					window.dispatchEvent(new Event('resize'));
+					delete $scope.editing.properties.customStyle;
+					$scope.editing = $scope.editing; // trigger digest
+					$scope.removePropertyByKey('customStyle');
+				}
+
+				if(angular.equals(styles, dS)) {
+					for(var styleProp in dS) {
+						$scope.removePropertyByKey(styleProp);
+					}
+					$scope.removePropertyByKey('customStyle');
+				} else {
+					for(var styleProp in dS) {
+						updateProperty(styleProp, styles[styleProp]);
+					}
+					updateProperty('customStyle', 1);
+				}
 
 				if($scope.editing.geometry.type == 'Point') {
-					$scope.marker.setIcon(L.mapbox.marker.icon(properties));
+					$scope.marker.setIcon(L.mapbox.marker.icon(styles));
 				} else {
-					$scope.marker.setStyle(L.mapbox.simplestyle.style($scope.editing));
+					$scope.marker.setStyle(L.mapbox.simplestyle.style({properties: styles}));
 				}
 			}
 
 		}, 150), true);
 
+		//var unHookSaveStyles = $scope.$on('feature.save.init', saveStyles);
+		//$scope.$on('$destroy', unHookSaveStyles);
+
 		/*
 		 * Save feature on layer save
 		 */
-		$scope.$on('layer.save.success', function() {
+		var unHookSaveLayer = $scope.$on('layer.save.success', function() {
 			if($scope.editing) {
 				$scope.save(true);
 			}
 		});
+		$scope.$on('$destroy', unHookSaveLayer);
 
 	}
 ];
