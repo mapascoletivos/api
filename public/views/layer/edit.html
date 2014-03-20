@@ -100,58 +100,73 @@
 							</div>
 						</div>
 						<div ng-show="layerObj('styles') && isOwner(layer)">
-							<div id="layer-styles" class="feature-style" class="map-editor-subcontent">
-								<div class="marker-styles">
-									<h3>Pontos</h3>
-									<p class="label">Cor do marcador</p>
-									<div class="colorpicker-container">
-										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.Point['marker-color']}};" ng-model="layer.styles.Point['marker-color']"></div>
+							<div id="layer-styles" class="feature-style map-editor-subcontent">
+								<div class="button-group">
+									<div class="button-item">
+										<a href="javascript:void(0);" class="button" ng-click="editingStyle = 'Point'" ng-class="{active: editingStyle == 'Point' || !editingStyle}"><span class="mcf">&#xe600;</span> Pontos</a>
 									</div>
-									<p class="label">Tamanho</p>
-									<div class="size-picker">
-										<span ng-click="layer.styles.Point['marker-size'] = 'small'" title="Pequeno"><img src="http://a.tiles.mapbox.com/v3/marker/pin-s+444.png" /></span>
-										<span ng-click="layer.styles.Point['marker-size'] = 'medium'" title="Médio"><img src="http://a.tiles.mapbox.com/v3/marker/pin-m+444.png" /></span>
-										<span ng-click="layer.styles.Point['marker-size'] = 'large'" title="Grande"><img src="http://a.tiles.mapbox.com/v3/marker/pin-l+444.png" /></span>
+									<div class="button-item">
+										<a href="javascript:void(0);" class="button" ng-click="editingStyle = 'LineString'" ng-class="{active: editingStyle == 'LineString'}"><span class="mcf">&#xe601;</span> Linhas</a>
 									</div>
-									<p class="label">Ícone</p>
-									<div class="marker-icon">
-										<ul>
-											<li>
-												<a class="maki-sprite blank" href="javascript:void(0);" ng-click="layer.styles.Point['marker-symbol'] = ''" title="Nenhum"></a>
-											</li>
-											<li ng-repeat="icon in maki">
-												<a class="maki-sprite" href="javascript:void(0);" ng-click="layer.styles.Point['marker-symbol'] = icon.icon" style="{{makiSprite(icon.icon)}}" title="{{icon.name}}"></a>
-											</li>
-										</ul>
+									<div class="button-item">
+										<a href="javascript:void(0);" class="button" ng-click="editingStyle = 'Polygon'" ng-class="{active: editingStyle == 'Polygon'}"><span class="mcf">&#xe602;</span> Polígonos</a>
 									</div>
 								</div>
-								<div class="polygon-styles">
-									<h3>Polígonos (areas)</h3>
-									<p class="label">Cor da área</p>
-									<div class="colorpicker-container">
-										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.Polygon.fill}};" ng-model="styles.fill"></div>
+								<a class="button preview" ng-click="previewLayer()">Visualizar alterações</a>
+								<div class="marker-styles" ng-show="editingStyle == 'Point' || !editingStyle">
+									<div class="style-editor">
+										<p class="label">Cor do marcador</p>
+										<div class="colorpicker-container">
+											<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.Point['marker-color']}};" ng-model="layer.styles.Point['marker-color']"></div>
+										</div>
+										<p class="label">Tamanho</p>
+										<div class="size-picker">
+											<span ng-click="layer.styles.Point['marker-size'] = 'small'" title="Pequeno"><img src="http://a.tiles.mapbox.com/v3/marker/pin-s+444.png" /></span>
+											<span ng-click="layer.styles.Point['marker-size'] = 'medium'" title="Médio"><img src="http://a.tiles.mapbox.com/v3/marker/pin-m+444.png" /></span>
+											<span ng-click="layer.styles.Point['marker-size'] = 'large'" title="Grande"><img src="http://a.tiles.mapbox.com/v3/marker/pin-l+444.png" /></span>
+										</div>
+										<p class="label">Ícone</p>
+										<div class="marker-icon clearfix">
+											<ul>
+												<li>
+													<a class="maki-sprite blank" href="javascript:void(0);" ng-click="layer.styles.Point['marker-symbol'] = ''" title="Nenhum"></a>
+												</li>
+												<li ng-repeat="icon in maki">
+													<a class="maki-sprite" href="javascript:void(0);" ng-click="layer.styles.Point['marker-symbol'] = icon.icon" style="{{makiSprite(icon.icon)}}" title="{{icon.name}}"></a>
+												</li>
+											</ul>
+										</div>
 									</div>
-									<p class="label">Opacidade da área</p>
-									<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="layer.styles.Polygon['fill-opacity']"></div>
-									<p class="label">Cor da borda</p>
-									<div class="colorpicker-container">
-										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.Polygon.stroke}};" ng-model="layer.styles.Polygon.stroke"></div>
-									</div>
-									<p class="label">Opacidade da borda</p>
-									<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="layer.styles.Polygon['stroke-opacity']"></div>
-									<p class="label">Espessura da borda</p>
-									<div ui-slider min="0" max="20" step="1" ng-model="layer.styles.Polygon['stroke-width']"></div>
 								</div>
-								<div class="line-styles">
-									<h3>Linhas</h3>
-									<p class="label">Cor da linha</p>
-									<div class="colorpicker-container">
-										<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.LineString.stroke}};" ng-model="layer.styles.LineString.stroke"></div>
+								<div class="polygon-styles" ng-show="editingStyle == 'Polygon'">
+									<div class="style-editor">
+										<p class="label">Cor da área</p>
+										<div class="colorpicker-container">
+											<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.Polygon.fill}};" ng-model="layer.styles.Polygon.fill"></div>
+										</div>
+										<p class="label">Opacidade da área</p>
+										<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="layer.styles.Polygon['fill-opacity']"></div>
+										<p class="label">Cor da borda</p>
+										<div class="colorpicker-container">
+											<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.Polygon.stroke}};" ng-model="layer.styles.Polygon.stroke"></div>
+										</div>
+										<p class="label">Opacidade da borda</p>
+										<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="layer.styles.Polygon['stroke-opacity']"></div>
+										<p class="label">Espessura da borda</p>
+										<div ui-slider min="0" max="20" step="1" ng-model="layer.styles.Polygon['stroke-width']"></div>
 									</div>
-									<p class="label">Opacidade da linha</p>
-									<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="layer.styles.LineString['stroke-opacity']"></div>
-									<p class="label">Espessura da linha</p>
-									<div ui-slider min="0" max="20" step="1" ng-model="layer.styles.LineString['stroke-width']"></div>
+								</div>
+								<div class="line-styles" ng-show="editingStyle == 'LineString'">
+									<div class="style-editor">
+										<p class="label">Cor da linha</p>
+										<div class="colorpicker-container">
+											<div colorpicker class="colorpicker-box" colorpicker-parent="true" style="background:{{layer.styles.LineString.stroke}};" ng-model="layer.styles.LineString.stroke"></div>
+										</div>
+										<p class="label">Opacidade da linha</p>
+										<div ui-slider min="0.00" max="1.00" step="0.01" use-decimals ng-model="layer.styles.LineString['stroke-opacity']"></div>
+										<p class="label">Espessura da linha</p>
+										<div ui-slider min="0" max="20" step="1" ng-model="layer.styles.LineString['stroke-width']"></div>
+									</div>
 								</div>
 							</div>
 						</div>

@@ -1619,11 +1619,20 @@ input.no-canvas {
 				border-bottom: 1px solid #555;
 				line-height: 22px;
 				font-size: 12px;
-				&:hover {
+				&.preview {
+					background: @blue;
+					&:hover {
+						background: @light-blue;
+					}
+				}
+				&:hover,
+				&.active {
 					background: #777;
 				}
-				.lsf {
+				.lsf,
+				.mcf {
 					font-size: 22px;
+					line-height: 22px;
 					display: inline-block;
 					margin: 5px 10px;
 				}
@@ -1722,6 +1731,21 @@ input.no-canvas {
 								cursor: move;
 							}
 						}
+					}
+				}
+			}
+			&.feature-style {
+				h3 {
+					background: #666;
+					padding: 15px 20px;
+					color: #f0f0f0;
+					font-size: 14px;
+					line-height: 14px;
+				}
+				.style-editor {
+					padding: 20px;
+					p {
+						margin: 0 0 20px;
 					}
 				}
 			}
@@ -2079,7 +2103,6 @@ input.no-canvas {
 	 * Feature style
 	 */
 	.feature-style {
-		position: relative;
 		.label {
 			border-bottom: 1px solid #eee;
 			padding-bottom: 10px;

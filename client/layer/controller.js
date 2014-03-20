@@ -39,9 +39,17 @@ exports.LayerCtrl = [
 
 				if(features) {
 
-					angular.forEach(features, function(f) {
+					angular.forEach(features, function(feature) {
 
-						var marker = require('../feature/featureToMapObjService')(f, null, MapService.get(), layer.styles);
+						var f = angular.copy(feature);
+
+						var properties = angular.copy(layer.styles[f.geometry.type]);
+
+						_.extend(properties, f.properties || {});
+
+						f.properties = properties;
+
+						var marker = require('../feature/featureToMapObjService')(f, null, MapService.get());
 
 						if(marker) {
 
@@ -56,8 +64,15 @@ exports.LayerCtrl = [
 					});
 				}
 
-				if(focus !== false)
-					MapService.fitFeatureLayer();
+				if(focus !== false) {
+
+					window.dispatchEvent(new Event('resize'));
+					setTimeout(function() {
+						MapService.get().invalidateSize(false);
+						window.dispatchEvent(new Event('resize'));
+						MapService.fitFeatureLayer();
+					}, 300);
+				}
 
 			}
 
@@ -90,10 +105,8 @@ exports.LayerCtrl = [
 
 				origLayer = layer;
 
-				$scope.layer = angular.copy(layer);
-
-				if(!$scope.layer.styles) {
-					$scope.layer.styles = {
+				if(!layer.styles) {
+					layer.styles = {
 						Point: {
 							'marker-size': 'medium',
 							'marker-color': '#7e7e7e',
@@ -113,6 +126,16 @@ exports.LayerCtrl = [
 						}
 					};
 				}
+
+				$scope.layer = angular.copy(layer);
+
+				$scope.$watch('layer.styles', function() {
+					Layer.edit($scope.layer); // trigger digest
+				});
+
+				$scope.previewLayer = function() {
+					populateMap($scope.layer.features, $scope.layer, true, false);
+				};
 
 				$scope.baseUrl = '/layers/' + layer._id;
 
@@ -156,8 +179,8 @@ exports.LayerCtrl = [
 					}
 
 					// Init features
-					Feature.set(angular.copy(layer.features));
-					populateMap(layer.features, layer, true);
+					Feature.set(angular.copy($scope.layer.features));
+					populateMap($scope.layer.features, $scope.layer, true);
 					
 					setTimeout(function() {
 						MapService.fitFeatureLayer();
@@ -208,10 +231,6 @@ exports.LayerCtrl = [
 						window.dispatchEvent(new Event('resize'));
 					}, 100);
 
-					$scope.$on('layerObjectChange', function(event, active) {
-						//populateMap($scope.layer.features, layer, true, false);
-					});
-
 					if(!Layer.canEdit(layer)) {
 						$location.path('/layers/' + layer._id);
 						Message.add({
@@ -256,13 +275,14 @@ exports.LayerCtrl = [
 						Layer.edit(false);
 					});
 
-					$scope.$watch('$feature.get()', function(features) {
-						$scope.layer.features = features;
+					var unHookFeaturesUpdate = $scope.$on('features.updated', function() {
+						$scope.layer.features = Feature.get();
 					});
+					$scope.$on('$destroy', unHookFeaturesUpdate);
 
 					$scope.$watch('$feature.edit()', function(editingFeature) {
 						if(!editingFeature)
-							populateMap($scope.layer.features, layer, true);
+							populateMap($scope.layer.features, $scope.layer, true);
 					});
 
 					$scope.$watch('$content.get()', function(contents) {
@@ -278,6 +298,7 @@ exports.LayerCtrl = [
 						Page.setTitle(layer.title);
 						origLayer = layer;
 						$scope.layer = angular.copy(layer);
+						populateMap($scope.layer.features, $scope.layer, true, false);
 					});
 					
 					$scope.close = function() {

@@ -30,20 +30,8 @@ exports.FeatureEditCtrl = [
 			if(map) {
 				map.on('draw:created', function(e) {
 					$scope.drawing = false;
-					$scope.marker = e.layer;
 					$scope.editing.geometry = e.layer.toGeoJSON().geometry;
-					Feature.edit($scope.editing);
-					$scope.marker.editing.enable();
-					$scope.marker.on('edit', function(e) {
-						$scope.editing.geometry = e.target.toGeoJSON().geometry;
-					});
-					MapService.addFeature($scope.marker);
-					window.dispatchEvent(new Event('resize'));
-					setTimeout(function() {
-						map.invalidateSize(false);
-						window.dispatchEvent(new Event('resize'));
-						MapService.get().fitBounds($scope.marker.getBounds());
-					}, 300);
+					init($scope.editing);
 				});
 			}
 		});
@@ -54,7 +42,7 @@ exports.FeatureEditCtrl = [
 			$scope.features = features;
 		});
 
-		$scope.$watch('$feature.edit()', function(editing) {
+		var init = function(editing) {
 			$scope.tool = false;
 			$scope.marker = false;
 			$scope._data = {};
@@ -66,8 +54,10 @@ exports.FeatureEditCtrl = [
 				$scope.setMarker();
 				if($scope.editing.geometry && editing.geometry.type == 'Point' && !editing.geometry.coordinates) {
 					MapService.get().on('click', addMarkerOnClick);
+				} else {
+					MapService.get().off('click', addMarkerOnClick);
 				}
-				$rootScope.$broadcast('feature.edit.start');
+				$rootScope.$broadcast('feature.edit.start', editing);
 			} else {
 				$rootScope.$broadcast('feature.edit.stop');
 			}
@@ -78,7 +68,9 @@ exports.FeatureEditCtrl = [
 					window.dispatchEvent(new Event('resize'));
 				}, 300);
 			}
-		});
+		}
+
+		$scope.$watch('$feature.edit()', init);
 
 		$scope._data = {};
 
@@ -107,8 +99,7 @@ exports.FeatureEditCtrl = [
 					LatLng.lng,
 					LatLng.lat
 				];
-				Feature.edit($scope.editing);
-				$scope.setMarker();
+				init($scope.editing);
 			}
 
 		}
@@ -239,6 +230,8 @@ exports.FeatureEditCtrl = [
 					});
 					Feature.set($scope.features);
 
+					$rootScope.$broadcast('features.updated');
+
 					if(silent !== true) {
 						Message.message({
 							status: 'ok',
@@ -264,6 +257,8 @@ exports.FeatureEditCtrl = [
 					// Update editing feature to saved data
 					Feature.edit(angular.copy(feature));
 
+					$rootScope.$broadcast('features.updated');
+
 					Message.message({
 						status: 'ok',
 						text: 'Feature adicionada.'
@@ -284,6 +279,8 @@ exports.FeatureEditCtrl = [
 					Feature.set($scope.features.filter(function(f) {
 						return f._id !== $scope.editing._id;
 					}));
+
+					$rootScope.$broadcast('features.updated');
 
 					Message.message({
 						status: 'ok',
@@ -349,7 +346,7 @@ exports.FeatureEditCtrl = [
 
 			}
 
-			$scope.setMarker();
+			init($scope.editing);
 
 		}
 
@@ -470,25 +467,13 @@ exports.FeatureEditCtrl = [
 		 * Style editor
 		 */
 
-		var defaultStyles = _.extend({
-			Point: {
-				'marker-size': 'medium',
-				'marker-color': '#7e7e7e',
-				'marker-symbol': ''
-			},
-			Polygon: {
-				'stroke': '#555555',
-				'stroke-width': 2,
-				'stroke-opacity': 1,
-				'fill': '#555555',
-				'fill-opacity': 0.5
-			},
-			LineString: {
-				'stroke': '#555555',
-				'stroke-width': 2,
-				'stroke-opacity': 1
+		var defaultStyles;
+
+		$scope.$watch('$layer.edit()', function(layer) {
+			if(layer) {
+				defaultStyles = layer.styles;
 			}
-		}, Layer.edit().styles);
+		}, true);
 
 		$scope.reservedProperties = $scope.reservedProperties.concat([
 			'marker-size',
@@ -505,7 +490,15 @@ exports.FeatureEditCtrl = [
 		$scope.maki = Maki.maki;
 		$scope.makiSprite = Maki.makiSprite;
 
-		$scope.$watch('editing', function(feature) {
+		var setStyles = function() {
+			if($scope.editing.geometry.type == 'Point') {
+				$scope.marker.setIcon(L.mapbox.marker.icon($scope.editing.styles));
+			} else {
+				$scope.marker.setStyle(L.mapbox.simplestyle.style({properties: $scope.editing.styles}));
+			}
+		}
+
+		var unHookSetStyles = $scope.$on('feature.edit.start', function(event, feature) {
 
 			if(feature && feature.geometry && feature.geometry.type) {
 				if(!feature.properties.customStyle) {
@@ -516,7 +509,13 @@ exports.FeatureEditCtrl = [
 				$scope.editing.styles = feature.styles;
 			}
 
+			if($scope.marker) {
+				setStyles();
+			}
+
 		});
+
+		$scope.$on('$destroy', unHookSetStyles);
 
 		$scope.$watch('editing.styles', _.debounce(function(styles, oldVal) {
 
@@ -544,11 +543,7 @@ exports.FeatureEditCtrl = [
 					updateProperty('customStyle', 1);
 				}
 
-				if($scope.editing.geometry.type == 'Point') {
-					$scope.marker.setIcon(L.mapbox.marker.icon(styles));
-				} else {
-					$scope.marker.setStyle(L.mapbox.simplestyle.style({properties: styles}));
-				}
+				setStyles();
 			}
 
 		}, 150), true);
