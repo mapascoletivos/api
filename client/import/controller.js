@@ -77,24 +77,28 @@ exports.DataImportCtrl = [
 			var features = [];
 			angular.forEach(gj.features, function(feature) {
 
-				if(feature.properties.title && typeof feature.properties.title == 'string')
-					feature.title = feature.properties.title;
-				else if(feature.properties.name && typeof feature.properties.name == 'string')
-					feature.title = feature.properties.name;
-				else
-					feature.title = 'Untitled';
+				if(feature.geometry) {
 
-				if(feature.geometry.type == 'GeometryCollection' && feature.geometry.geometries) {
+					if(feature.properties.title && typeof feature.properties.title == 'string')
+						feature.title = feature.properties.title;
+					else if(feature.properties.name && typeof feature.properties.name == 'string')
+						feature.title = feature.properties.name;
+					else
+						feature.title = 'Untitled';
 
-					angular.forEach(feature.geometry.geometries, function(geometry) {
-						var collectionFeature = angular.copy(feature);
-						collectionFeature.geometry = geometry;
-						features.push(collectionFeature);
-					});
+					if(feature.geometry.type == 'GeometryCollection' && feature.geometry.geometries) {
 
-				} else {
+						angular.forEach(feature.geometry.geometries, function(geometry) {
+							var collectionFeature = angular.copy(feature);
+							collectionFeature.geometry = geometry;
+							features.push(collectionFeature);
+						});
 
-					features.push(feature);
+					} else {
+
+						features.push(feature);
+
+					}
 
 				}
 
