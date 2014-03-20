@@ -55,7 +55,8 @@ exports.FeatureEditCtrl = [
 				if($scope.editing.geometry && editing.geometry.type == 'Point' && !editing.geometry.coordinates) {
 					MapService.get().on('click', addMarkerOnClick);
 				} else {
-					MapService.get().off('click', addMarkerOnClick);
+					if(MapService.get())
+						MapService.get().off('click', addMarkerOnClick);
 				}
 				$rootScope.$broadcast('feature.edit.start', editing);
 			} else {
