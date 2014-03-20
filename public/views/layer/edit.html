@@ -23,14 +23,6 @@
 									</span>
 								</a>
 							</li>
-							<li ng-class="layerObj('styles')" ng-show="isOwner(layer)" ng-click="setLayerObj('styles')">
-								<a title="Configurações" href="javascript:void(0);">
-									<span class="lsf">&#xE033;</span>
-									<span class="label" ng-show="layerObj('styles')">
-										Estilos
-									</span>
-								</a>
-							</li>
 							<li ng-class="layerObj('feature')" ng-click="setLayerObj('feature')">
 								<a title="Locais" href="javascript:void(0);">
 									<span class="mcf">&#xe600;</span>
@@ -50,6 +42,14 @@
 									</span>
 									<span class="content-length tab-tip" ng-show="layer.contents.length">
 										{{layer.contents.length}}
+									</span>
+								</a>
+							</li>
+							<li ng-class="layerObj('styles')" ng-show="isOwner(layer)" ng-click="setLayerObj('styles')">
+								<a title="Configurações" href="javascript:void(0);">
+									<span class="lsf">&#xE033;</span>
+									<span class="label" ng-show="layerObj('styles')">
+										Estilos
 									</span>
 								</a>
 							</li>
@@ -277,7 +277,6 @@
 		</div>
 		<div class="start-tip" ng-show="editing.geometry.type == 'Point' && !editing.geometry.coordinates">
 			<span ng-show="editing.geometry.type == 'Point'">Clique no mapa para adicionar um marcador</span>
-			<!--<span ng-show="editing.geometry.type != 'Point' && !drawing">Clique no mapa para começar a desenhar</span>-->
 		</div>
 		<div id="edit-feature" ng-show="editing.geometry.coordinates" ng-animate="'top-down'">
 			<form ng-submit="save()">
@@ -297,7 +296,7 @@
 						<div class="feature-data" ng-show="tool == 'feature-data'">
 							<p>Adicione/edite dados do seu local</p>
 							<table>
-								<tr ng-repeat="prop in properties track by prop._id">
+								<tr ng-repeat="prop in properties track by prop._id" ng-hide="isReservedProperty(prop.key)">
 									<td class="prop-key"><input ng-model="prop.key" /></td>
 									<td class="prop-value"><input ng-model="prop.val" /></td>
 									<td class="action action-remove" ng-click="removeProperty(prop._id)" title="Remover propriedade"><span class="lsf">&#xE10f;</span></td>
