@@ -41,7 +41,7 @@ exports.LayerCtrl = [
 
 					angular.forEach(features, function(f) {
 
-						var marker = require('../feature/featureToMapObjService')(f, null, MapService.get());
+						var marker = require('../feature/featureToMapObjService')(f, null, MapService.get(), layer.styles);
 
 						if(marker) {
 
@@ -91,6 +91,28 @@ exports.LayerCtrl = [
 				origLayer = layer;
 
 				$scope.layer = angular.copy(layer);
+
+				if(!$scope.layer.styles) {
+					$scope.layer.styles = {
+						Point: {
+							'marker-size': 'medium',
+							'marker-color': '#7e7e7e',
+							'marker-symbol': ''
+						},
+						Polygon: {
+							'stroke': '#555555',
+							'stroke-width': 2,
+							'stroke-opacity': 1,
+							'fill': '#555555',
+							'fill-opacity': 0.5
+						},
+						LineString: {
+							'stroke': '#555555',
+							'stroke-width': 2,
+							'stroke-opacity': 1
+						}
+					};
+				}
 
 				$scope.baseUrl = '/layers/' + layer._id;
 

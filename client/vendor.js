@@ -20,6 +20,7 @@ require('angular-ui-utils/modules/utils');
 
 require('mapbox.js');
 require('leaflet-draw');
+
 require('jquery-ui-browserify');
 require('ngInfiniteScroll/ng-infinite-scroll');
 require('eventable/eventable');

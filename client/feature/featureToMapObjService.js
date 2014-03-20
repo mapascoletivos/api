@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(feature, options, map) {
+module.exports = function(feature, options, map, defaultStyles) {
 
 	var lFeature = false;
 

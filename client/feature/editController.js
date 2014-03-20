@@ -20,7 +20,7 @@ exports.FeatureEditCtrl = [
 
 		var layer;
 
-		var drawControl;
+		var draw;
 
 		$scope.$layer = Layer;
 
@@ -28,7 +28,6 @@ exports.FeatureEditCtrl = [
 			layer = editing;
 			var map = MapService.get();
 			if(map) {
-				drawControl = new L.Control.Draw();
 				map.on('draw:created', function(e) {
 					$scope.drawing = false;
 					$scope.marker = e.layer;
@@ -39,10 +38,12 @@ exports.FeatureEditCtrl = [
 						$scope.editing.geometry = e.target.toGeoJSON().geometry;
 					});
 					MapService.addFeature($scope.marker);
+					window.dispatchEvent(new Event('resize'));
 					setTimeout(function() {
+						map.invalidateSize(false);
 						window.dispatchEvent(new Event('resize'));
 						MapService.get().fitBounds($scope.marker.getBounds());
-					}, 200);
+					}, 300);
 				});
 			}
 		});
@@ -58,6 +59,9 @@ exports.FeatureEditCtrl = [
 			$scope.marker = false;
 			$scope._data = {};
 			$scope.editing = editing;
+			if(draw) {
+				draw.disable();
+			}
 			if(editing) {
 				$scope.setMarker();
 				if($scope.editing.geometry && editing.geometry.type == 'Point' && !editing.geometry.coordinates) {
@@ -67,9 +71,13 @@ exports.FeatureEditCtrl = [
 			} else {
 				$rootScope.$broadcast('feature.edit.stop');
 			}
-			setTimeout(function() {
+			if(MapService.get()) {
 				window.dispatchEvent(new Event('resize'));
-			}, 200);
+				setTimeout(function() {
+					MapService.get().invalidateSize(false);
+					window.dispatchEvent(new Event('resize'));
+				}, 300);
+			}
 		});
 
 		$scope._data = {};
@@ -143,13 +151,15 @@ exports.FeatureEditCtrl = [
 							$scope.marker.openPopup();
 
 							if(focus !== false) {
+								window.dispatchEvent(new Event('resize'));
 								setTimeout(function() {
 									window.dispatchEvent(new Event('resize'));
-									map.invalidateSize(false);
+									map.invalidateSize(true);
 									map.setView($scope.marker.getLatLng(), 15, {
 										reset: true
 									});
-								}, 150);
+									map.invalidateSize(true);
+								}, 200);
 							}
 
 						} else {
@@ -163,11 +173,12 @@ exports.FeatureEditCtrl = [
 							}
 
 							if(focus !== false) {
+								window.dispatchEvent(new Event('resize'));
 								setTimeout(function() {
 									window.dispatchEvent(new Event('resize'));
 									map.invalidateSize(false);
 									map.fitBounds($scope.marker.getBounds());
-								}, 150);
+								}, 300);
 							}
 
 						}
@@ -176,14 +187,12 @@ exports.FeatureEditCtrl = [
 
 					} else {
 
-						var draw;
-
 						switch($scope.editing.geometry.type) {
 							case 'LineString':
 								draw = new L.Draw.Polyline(map, {
 									shapeOptions: {
 										stroke: true,
-										color: '#333',
+										color: '#555',
 										weight: 4,
 										opacity: 0.5,
 										fill: false,
@@ -196,7 +205,7 @@ exports.FeatureEditCtrl = [
 								draw = new L.Draw.Polygon(map, {
 									shapeOptions: {
 										stroke: true,
-										color: '#333',
+										color: '#555',
 										weight: 4,
 										opacity: 0.5,
 										fill: true,
@@ -511,7 +520,7 @@ exports.FeatureEditCtrl = [
 
 		$scope.$watch('editing.styles', _.debounce(function(styles, oldVal) {
 
-			if($scope.editing && $scope.editing.geometry) {
+			if($scope.editing && $scope.editing.geometry && $scope.editing.geometry.coordinates) {
 
 				var dS = angular.copy(defaultStyles[$scope.editing.geometry.type]);
 
@@ -543,9 +552,6 @@ exports.FeatureEditCtrl = [
 			}
 
 		}, 150), true);
-
-		//var unHookSaveStyles = $scope.$on('feature.save.init', saveStyles);
-		//$scope.$on('$destroy', unHookSaveStyles);
 
 		/*
 		 * Save feature on layer save
