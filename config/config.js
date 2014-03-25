@@ -38,6 +38,7 @@ var
 
 module.exports = {
 	development: {
+		allowedDomains: '*',
 		root: rootPath,
 		appUrl: 'http://localhost:3000',
 		nodemailer: nodemailer,

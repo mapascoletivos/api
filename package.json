@@ -25,8 +25,8 @@
 	"scripts": {
 		"build": "./node_modules/.bin/napa && npm run bundle",
 		"bundle": "./node_modules/.bin/browserify client/vendor.js | ./node_modules/.bin/uglifyjs -mt > public/vendor.js",
-		"watch": "./node_modules/.bin/watchify -t brfs -r topojson client/app.js -o  public/app.js -v & ( sleep 3 && NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js)",
-		"start": "./node_modules/.bin/browserify client/app.js | ./node_modules/.bin/uglifyjs -mt > public/app.js & NODE_PATH=./app/controllers node web.js",
+		"watch": "./node_modules/.bin/watchify -t brfs client/app.js -o public/app.js -v & ( sleep 3 && NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js)",
+		"start": "./node_modules/.bin/browserify -t brfs client/app.js | ./node_modules/.bin/uglifyjs -mt > public/app.js & NODE_PATH=./app/controllers node web.js",
 		"install": "cp ./node_modules/maki/www/images/maki-sprite.png ./public/img/maki-sprite.png && npm run build",
 		"test": "make test"
 	},
@@ -76,7 +76,7 @@
 		"uglify-js": "latest"
 	},
 	"devDependencies": {
-		"watchify": "latest",
+		"watchify": "0.6.2",
 		"nodemon": "latest",
 		"mocha": "latest",
 		"should": "latest",

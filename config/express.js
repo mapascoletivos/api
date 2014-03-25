@@ -38,6 +38,15 @@ module.exports = function (app, config, passport) {
   app.set('views', config.root + '/app/views')
   app.set('view engine', 'jade')
 
+  var allowCrossDomain = function(req, res, next) {
+    if(config.allowedDomains) {
+      res.header('Access-Control-Allow-Origin', config.allowedDomains);
+      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+      res.header('Access-Control-Allow-Headers', 'Content-Type');
+    }
+    next();
+  }
+
   app.configure(function () {
 
     // setup less
@@ -81,6 +90,9 @@ module.exports = function (app, config, passport) {
 
     // View helpers
     app.use(helpers(pkg.name))
+
+    // Allow cross domain
+    app.use(allowCrossDomain);
 
     // routes should be at the last
     app.use(app.router)
