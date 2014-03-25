@@ -108,12 +108,18 @@ exports.UserCtrl = [
 
 		$scope.profileUrl = function(user) {
 
-			var slug = user._id;
+			if(typeof user !== 'undefined') {
 
-			if(user.username)
-				slug =  user.username;
-			
-			return '/user/' + slug + '/';
+				var slug = user._id;
+
+				if(user.username)
+					slug =  user.username;
+	
+				return '/user/' + slug + '/';
+	
+			}
+
+			return '';
 
 		}
 

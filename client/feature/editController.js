@@ -42,11 +42,14 @@ exports.FeatureEditCtrl = [
 			$scope.features = features;
 		});
 
+		var originalEditing;
+
 		var init = function(editing) {
 			$scope.tool = false;
 			$scope.marker = false;
 			$scope._data = {};
-			$scope.editing = editing;
+			$scope.editing = angular.copy(editing);
+			originalEditing = angular.copy(editing);
 			if(draw) {
 				draw.disable();
 			}
@@ -501,7 +504,7 @@ exports.FeatureEditCtrl = [
 
 		var unHookSetStyles = $scope.$on('feature.edit.start', function(event, feature) {
 
-			if(feature && feature.geometry && feature.geometry.type) {
+			if(feature && feature.properties && feature.geometry && feature.geometry.type && defaultStyles) {
 				if(!feature.properties.customStyle) {
 					feature.styles = _.extend(feature.styles || {}, defaultStyles[feature.geometry.type]);
 				} else {
