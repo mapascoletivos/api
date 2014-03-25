@@ -153,14 +153,9 @@ exports.LayerCtrl = [
 
 					var tilelayer = MapService.addTileLayer(layer.url);
 
-					Loading.show('Carregando camada');
-
 					if(layer.properties.service == 'mapbox') {
 						tilelayer.on('load', _.once(function() {
 							MapService.renderTileJSON(tilelayer.getTileJSON());
-							$rootScope.$apply(function() {
-								Loading.hide();
-							});
 						}));
 					}
 
