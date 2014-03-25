@@ -82,7 +82,10 @@ angular.module('mapasColetivos', [
 	'$httpProvider',
 	function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
 
-		$httpProvider.defaults.withCredentials = true;
+		if(settings.server !== 'local') {
+			$httpProvider.defaults.useXDomain = true;
+			delete $httpProvider.defaults.headers.common['X-Requested-With'];
+		}
 
 		$urlRouterProvider.otherwise('/');
 
@@ -97,7 +100,7 @@ angular.module('mapasColetivos', [
 		var interceptor = ['$rootScope', '$q', '$location', function(scope, $q, $location) {
 
 			function success(response) {
-				return response;''
+				return response;
 			}
 
 			function error(response) {

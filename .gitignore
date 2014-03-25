@@ -22,6 +22,8 @@ public/vendor.js
 public/app.js
 public/css/app.css
 
+client/config.js
+
 config/config.local.js
 
 import/*
