@@ -120,6 +120,7 @@ MapSchema.statics = {
 
 		this.find(criteria)
 			.sort({'createdAt': -1}) // sort by date
+			.populate('creator', 'name username email')
 			.limit(options.perPage)
 			.skip(options.perPage * options.page)
 		.exec(cb)

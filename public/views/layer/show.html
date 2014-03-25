@@ -3,7 +3,7 @@
 		<div id="layer-info" class="map-info" ng-class="{withBackButton: mapView.backLink()}">
 			<a class="back lsf" title="Voltar" href="javascript:void(0);" ng-click="mapView.goBack()" ng-show="mapView.backLink()"><span>&#xE133;</span></a>
 			<h1>{{layer.title}}</h1>
-			<p class="author">por <a href="/user/{{layer.creator.username}}/">{{layer.creator.name}}</a></p>
+			<p class="author" ng-controller="UserCtrl">por <a href="{{profileUrl(layer.creator)}}">{{layer.creator.name}}</a></p>
 		</div>
 	</div>
 	<div id="layer-controls" class="map-controls" ng-controller="LayerActionsCtrl">

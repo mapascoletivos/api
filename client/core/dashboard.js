@@ -36,6 +36,8 @@ angular.module('mapasColetivos.dashboard', [])
 
 		Page.setTitle('Painel de Controle');
 
+		$scope.isDashboard = true;
+
 		if(!SessionService.authenticated) {
 			window.location = '/login';
 		}
