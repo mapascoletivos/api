@@ -33,19 +33,11 @@ exports.index = function(req, res){
 	var options = {
 		perPage: perPage,
 		page: page,
-		criteria: {
-			$or: [ {creator: req.user} , {visibility: 'Visible'} ]
-		}
+		criteria: { visibility: 'Visible' }
 	}
 
-	if(req.param('creatorOnly'))
-		options.criteria = { creator: req.user }
-
 	if(req.param('userId')) {
-		if(!req.user || req.user._id != req.param('userId'))
-			options.criteria = { $and: [ {creator: req.param('userId')}, {visibility: 'Visible'} ] };
-		else
-			options.criteria = { creator: req.param('userId') };
+		options.criteria = { creator: req.param('userId') };
 	}
 
 	if (req.param('search'))

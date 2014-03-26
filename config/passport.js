@@ -5,8 +5,9 @@ var
 	TwitterStrategy = require('passport-twitter').Strategy,
 	FacebookStrategy = require('passport-facebook').Strategy,
 	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
-	User = mongoose.model('User');
-
+	BearerStrategy = require('passport-http-bearer').Strategy,
+	User = mongoose.model('User'),
+	AccessToken = mongoose.model('AccessToken');
 
 module.exports = function (passport, config) {
 	// require('./initializer')
@@ -57,7 +58,7 @@ module.exports = function (passport, config) {
 				} else if (!user.authenticate(password)) {
 					return done(null, false, { message: 'Invalid password' })
 				} else {
-					return done(null, user)
+					return done(null, user);
 				}
 			})
 		}
@@ -165,5 +166,19 @@ module.exports = function (passport, config) {
 			})
 		}
 	));
+
+	passport.use(new BearerStrategy({}, function(token, done) {
+		AccessToken.load({'_id': token}, function(err, token) {
+			if(err)
+				return done(err);
+
+			console.log(token);
+
+			if(!token || !token.user)
+				return done(null, false);
+
+			return done(null, token.user);
+		});
+	}));
 
 }

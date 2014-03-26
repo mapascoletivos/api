@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var passport = require('passport');
 var mongoose = require('mongoose');
 var Layer = mongoose.model('Layer');
 
@@ -7,9 +8,36 @@ var Layer = mongoose.model('Layer');
  */
 
 exports.requiresLogin = function (req, res, next) {
-	if (req.isAuthenticated()) return next()
-	if (req.method == 'GET') req.session.returnTo = req.originalUrl
-	res.redirect('/login')
+
+	passport.authenticate('bearer', { session: false }, function(err, user, info) {
+
+		if (req.isAuthenticated()) {
+			// user is allowed through local strategy
+			return next();
+		}  
+
+		if (err) {
+			return res.send(403, { error: 'Error: ' + info });        
+		}
+
+		if (!user) {
+			return res.send(403, { error: 'Invalid token' });
+		}
+
+		if (user) {
+			req.user = user;
+			return next();
+		}
+
+		// (default res.forbidden() behavior can be overridden in `config/403.js`)
+		return res.forbidden('You are not permitted to perform this action.');    
+
+	})(req, res, next);
+
+	// if (req.isAuthenticated()) return next()
+
+	// if (req.method == 'GET') req.session.returnTo = req.originalUrl
+	// res.redirect('/login')
 }
 
 /*

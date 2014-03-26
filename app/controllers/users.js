@@ -6,6 +6,9 @@
 var 
 	mongoose = require('mongoose'),
 	User = mongoose.model('User'),
+	AccessToken = mongoose.model('AccessToken'),
+	Layer = mongoose.model('Layer'),
+	Map = mongoose.model('Map'),
 	mailer = require('../mailer'),
 	validator = require('validator'),
 	utils = require('../../lib/utils'),
@@ -13,9 +16,27 @@ var
 	_ = require('underscore');
 
 var login = function (req, res) {
-	var redirectTo = req.session.returnTo ? req.session.returnTo : '/dashboard';
-	delete req.session.returnTo;
-	res.json({session: req.session, user: req.user});
+
+	var token = new AccessToken({user: req.user});
+
+	token.save(function(err) {
+		if(err) {
+			console.log(err);
+			return res.json(401, { messages: [
+				{
+					status: 'error',
+					text: 'Unauthorized'
+				}
+			]});
+		}
+
+		var response = _.extend({
+			accessToken: token._id
+		}, req.user.toObject());
+
+		res.json(response);
+	});
+
 }
 
 exports.signin = function (req, res) {}
@@ -36,6 +57,68 @@ exports.user = function (req, res, next, id) {
 			req.profile = user
 			next()
 		});
+}
+
+exports.info = function(req, res, next) {
+	return res.json(req.user.info());
+}
+
+exports.layers = function(req, res, next) {
+	var page = (req.param('page') > 0 ? req.param('page') : 1) - 1
+	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
+	var options = {
+		perPage: perPage,
+		page: page,
+		criteria: { $or: [ { creator: req.user }, {contributors: { $in: [req.user._id] } } ] }
+	}
+
+	if (req.param('search')) {
+		options.criteria = {
+			$and: [
+				options.criteria,
+				{ title: { $regex: req.param('search'), $options: 'i' }}
+			]
+		}
+	}
+
+	Layer.list(options, function(err, layers) {
+		console.log(err);
+		if (err) return res.json(400, err);
+		Layer.count(options.criteria).exec(function (err, count) {
+			if (!err) {
+				res.json({options: options, layersTotal: count, layers: layers});
+			} else {
+				res.json(400, utils.errorMessages(err.errors || err))
+			} 
+		});
+	});
+
+}
+
+exports.maps = function(req, res, next) {
+	var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
+	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
+	var options = {
+		perPage: perPage,
+		page: page,
+		criteria: { creator: req.user }
+	}
+
+	if (req.param('search'))
+		options.criteria = {
+			$and: [
+				options.criteria,
+				{ title: { $regex: req.param('search'), $options: 'i' }}
+			]
+		}
+
+	Map.list(options, function(err, maps) {
+		if (err) return res.json(400, utils.errorMessages(err.errors || err));
+		Map.count(options.criteria).exec(function (err, count) {
+			if (err) res.json(400, utils.errorMessages(err.errors || err));
+			else res.json({options: options, mapsTotal: count, maps: maps});
+		})
+	})
 }
 
 /**

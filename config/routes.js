@@ -49,24 +49,30 @@ module.exports = function (app, passport) {
 	app.get('/migrate', users.showMigrate);
 	app.post('/migrate', users.migrate);
 	
-	app.post('/users', users.create)
-	app.put(apiPrefix + '/users', auth.requiresLogin, users.update)
-	app.get(apiPrefix + '/users/:userId', users.show)
+	app.post('/users', users.create);
+	app.put(apiPrefix + '/users', auth.requiresLogin, users.update);
+	app.get(apiPrefix + '/users/:userId', users.show);
 	app.post(apiPrefix + '/users/session',
 		passport.authenticate('local', {
-		failureRedirect: '/login',
-		failureFlash: true
-	}), users.session)
-	
+			failureRedirect: '/login',
+			failureFlash: true
+		}
+	), users.session);
+
+	// Session routes
+	app.get(apiPrefix + '/user', auth.requiresLogin, users.info);
+	app.get(apiPrefix + '/user/layers', auth.requiresLogin, users.layers);
+	app.get(apiPrefix + '/user/maps', auth.requiresLogin, users.maps);
+
 	/** 
 	 * Token route 
 	 **/
 	app.get('/activate_account/:tokenId', token.activateAccount);
 	app.get('/new_password/:tokenId', token.newPasswordForm);
-	app.post('/password_reset/:tokenId', token.newPassword);	
-	app.post('/password_needed/:tokenId', token.newPassword);	
-	app.get('/migrate_account/:tokenId', token.migrateAccount);	
-	app.get('/email_change/:tokenId', token.emailChange);	
+	app.post('/password_reset/:tokenId', token.newPassword);
+	app.post('/password_needed/:tokenId', token.newPassword);
+	app.get('/migrate_account/:tokenId', token.migrateAccount);
+	app.get('/email_change/:tokenId', token.emailChange);
 	app.param('tokenId', token.load);
 	
 	/** 

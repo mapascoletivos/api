@@ -18,7 +18,6 @@ var mongoose = require('mongoose'),
 
 exports.load = function(req, res, next, id){
 	Layer.load(id, function (err, layer) {
-		console.log(err);
 		if (err) return res.json(400, { messages: [{status: 'error', text: 'Erro ao carregar camada.'}] });
 		else if (!layer) return res.json(400, { messages: [{status: 'error', text: 'Camada não encontrada.'}] });
 		else {
@@ -38,21 +37,12 @@ exports.index = function(req, res){
 	var options = {
 		perPage: perPage,
 		page: page,
-		criteria: {
-			$or: [ {creator: req.user} , {visibility: 'Visible'} ]
-		}
+		criteria: { visibility: 'Visible' }
 	}
-	
-	// get only layers created by the user
-	if(req.param('creatorOnly'))
-		options.criteria = { $or: [ { creator: req.user }, {contributors: { $in: [req.user._id] } } ] }
 
 	// get visible layers for a user   
 	if(req.param('userId')) {
-		if(!req.user || req.user._id != req.param('userId'))
-			options.criteria = { $and: [ {creator: req.param('userId')}, {visibility: 'Visible'} ] };
-		else
-			options.criteria = { creator: req.param('userId') };
+		options.criteria = { $and: [ {creator: req.param('userId')}, {visibility: 'Visible'} ] };
 	}
 
 	if (req.param('search')) {

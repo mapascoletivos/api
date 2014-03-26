@@ -61,9 +61,7 @@ angular.module('mapasColetivos.dashboard', [])
 		});
 
 		$scope.$layer = Layer;
-		Layer.resource.query({
-			creatorOnly: true
-		}, function(res) {
+		Layer.resource.userLayers(function(res) {
 			$scope.totalLayer = res.layersTotal;
 			$scope.layers = res.layers;
 
@@ -82,9 +80,8 @@ angular.module('mapasColetivos.dashboard', [])
 		});
 
 		$scope.$map = Map;
-		Map.resource.query({
-			creatorOnly: true
-		}, function(res) {
+		Map.resource.userMaps(function(res) {
+			
 			$scope.totalMap = res.mapsTotal;
 			$scope.maps = res.maps;
 

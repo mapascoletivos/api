@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	crypto = require('crypto'),
 	moment = require('moment'),
+	_ = require('underscore'),
 	oAuthTypes = ['facebook', 'google'];
 
 /**
@@ -14,8 +15,10 @@ var mongoose = require('mongoose'),
  */
 
 var UserSchema = new Schema({
+	isAdmin: { type: Boolean, default: false },
 	name: { type: String, default: '' },
 	email: { type: String, default: '' },
+	token: { type: String },
 	username: String,
 	hashed_password: { type: String, default: '' },
 	logins: Number,
@@ -112,6 +115,21 @@ UserSchema.path('username').validate(function (username, fn) {
  */
 
 UserSchema.methods = {
+
+	info: function() {
+
+		var info = {
+			name: this.name,
+			username: this.username,
+			email: this.email,
+			status: this.status,
+			isAdmin: this.isAdmin,
+			bio: this.bio
+		};
+
+		return info;
+
+	},
 
 	/**
 	 * Authenticate - check if the passwords are the same
