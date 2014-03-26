@@ -52,7 +52,7 @@ module.exports = function (app, passport) {
 	app.post('/users', users.create)
 	app.put(apiPrefix + '/users', auth.requiresLogin, users.update)
 	app.get(apiPrefix + '/users/:userId', users.show)
-	app.post('/users/session',
+	app.post(apiPrefix + '/users/session',
 		passport.authenticate('local', {
 		failureRedirect: '/login',
 		failureFlash: true

@@ -15,7 +15,7 @@ var
 var login = function (req, res) {
 	var redirectTo = req.session.returnTo ? req.session.returnTo : '/dashboard';
 	delete req.session.returnTo;
-	res.redirect(redirectTo);
+	res.json({session: req.session, user: req.user});
 }
 
 exports.signin = function (req, res) {}
