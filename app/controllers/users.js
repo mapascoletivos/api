@@ -5,6 +5,7 @@
 
 var 
 	mongoose = require('mongoose'),
+	passport = require('passport'),
 	User = mongoose.model('User'),
 	AccessToken = mongoose.model('AccessToken'),
 	Layer = mongoose.model('Layer'),
@@ -15,31 +16,43 @@ var
 	extend = require('util')._extend,
 	_ = require('underscore');
 
+
+
+
+exports.passportCallback = function(provider, req, res, next) {
+
+	passport.authenticate(provider, function(err, user, info) {
+
+		if (err) { return next(err); }
+		if (!user) { return res.json(401, { messages: [ { status: 'error', text: 'Unauthorized' } ] } ); }
+
+		var token = new AccessToken({user: user});
+
+		token.save(function(err) {
+			if(err) {
+				return res.json(401, { messages: [ { status: 'error', text: 'Unauthorized' } ] } );
+			}
+
+			var response = _.extend({
+				accessToken: token._id
+			}, user.toObject());
+
+			if(req.callback_url) {
+				res.redirect(req.callback_url);
+			} else {
+				res.json(response);
+			}
+		});
+
+	})(req, res, next);
+
+};
+
+
+
 var login = function (req, res) {
 
-	var token = new AccessToken({user: req.user});
-
-	token.save(function(err) {
-		if(err) {
-			console.log(err);
-			return res.json(401, { messages: [
-				{
-					status: 'error',
-					text: 'Unauthorized'
-				}
-			]});
-		}
-
-		var response = _.extend({
-			accessToken: token._id
-		}, req.user.toObject());
-
-		res.json(response);
-	});
-
 }
-
-exports.signin = function (req, res) {}
 
 /**
  * Find user by id

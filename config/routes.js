@@ -52,12 +52,7 @@ module.exports = function (app, passport) {
 	app.post('/users', users.create);
 	app.put(apiPrefix + '/users', auth.requiresLogin, users.update);
 	app.get(apiPrefix + '/users/:userId', users.show);
-	app.post(apiPrefix + '/users/session',
-		passport.authenticate('local', {
-			failureRedirect: '/login',
-			failureFlash: true
-		}
-	), users.session);
+	app.post(apiPrefix + '/users/session', users.passportCallback);
 
 	// Session routes
 	app.get(apiPrefix + '/user', auth.requiresLogin, users.info);
@@ -84,12 +79,8 @@ module.exports = function (app, passport) {
 			scope: [ 'email', 'user_about_me'],
 			failureRedirect: '/login',
 			failureFlash: true
-	}), users.signin)
-	app.get('/auth/facebook/callback',
-		passport.authenticate('facebook', {
-		failureRedirect: '/login',
-		failureFlash: true
-	}), users.authCallback)
+	}),  function(req,res) {})
+	app.get('/auth/facebook/callback', function(req, res, next) { users.passportCallback('facebook', req, res, next) });
 
 	// Google OAuth routes
 
@@ -101,12 +92,12 @@ module.exports = function (app, passport) {
 			'https://www.googleapis.com/auth/userinfo.profile',
 			'https://www.googleapis.com/auth/userinfo.email'
 		]
-	}), users.signin)
+	}), function(req,res) {})
 	app.get('/auth/google/callback',
 		passport.authenticate('google', {
 		failureRedirect: '/login',
 		failureFlash: true
-	}), users.authCallback)
+	}), users.passportCallback)
 
 	app.param('userId', users.user)
 
