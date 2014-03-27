@@ -53,6 +53,7 @@ module.exports = {
 		oauth: oauth
 	},
 	production: {
+		allowedDomains: '*', // temporary
 		root: rootPath,
 		appUrl: app_url,
 		db: process.env.MONGOLAB_URI || 'mongodb://localhost/mapascoletivos_production',
