@@ -18,6 +18,24 @@ var
 
 
 
+var getAccessToken = function(user, res) {
+
+	var token = new AccessToken({user: user});
+
+	token.save(function(err) {
+		if(err) {
+			return res.json(401, { messages: [ { status: 'error', text: 'Unauthorized' } ] } );
+		}
+
+		var response = _.extend({
+			accessToken: token._id
+		}, user.toObject());
+
+		res.json(response);
+
+	});
+
+}
 
 exports.passportCallback = function(provider, req, res, next) {
 
@@ -26,27 +44,17 @@ exports.passportCallback = function(provider, req, res, next) {
 		if (err) { return next(err); }
 		if (!user) { return res.json(401, { messages: [ { status: 'error', text: 'Unauthorized' } ] } ); }
 
-		var token = new AccessToken({user: user});
-
-		token.save(function(err) {
-			if(err) {
-				return res.json(401, { messages: [ { status: 'error', text: 'Unauthorized' } ] } );
-			}
-
-			var response = _.extend({
-				accessToken: token._id
-			}, user.toObject());
-
-			if(req.callback_url) {
-				res.redirect(req.callback_url);
-			} else {
-				res.json(response);
-			}
-		});
+		getAccessToken(user, res);
 
 	})(req, res, next);
 
 };
+
+exports.oauthAccessToken = function(req, res, next) {
+
+	getAccessToken(req.user, res);
+
+}
 
 
 

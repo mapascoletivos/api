@@ -2,8 +2,7 @@ var
 	mongoose = require('mongoose'),
 	mailer = require('../app/mailer'),
 	LocalStrategy = require('passport-local').Strategy,
-	TwitterStrategy = require('passport-twitter').Strategy,
-	FacebookStrategy = require('passport-facebook').Strategy,
+	FacebookTokenStrategy = require('passport-facebook-token').Strategy,
 	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
 	BearerStrategy = require('passport-http-bearer').Strategy,
 	User = mongoose.model('User'),
@@ -65,12 +64,12 @@ module.exports = function (passport, config) {
 	))
 
 	// use facebook strategy
-	passport.use(new FacebookStrategy({
+	passport.use(new FacebookTokenStrategy({
 			clientID: config.oauth.facebook.clientID,
-			clientSecret: config.oauth.facebook.clientSecret,
-			callbackURL: config.oauth.facebook.callbackURL
+			clientSecret: config.oauth.facebook.clientSecret
 		},
 		function(accessToken, refreshToken, profile, done) {
+
 			User.findOne({ 'facebook.id': profile.id }, function (err, user) {
 				if (err) { return done(err) }
 
@@ -79,11 +78,11 @@ module.exports = function (passport, config) {
 
 					// Check user registration via email
 					User.findOne({ email: profile.emails[0].value }, function (err, user) {
+
 						if (err) { return done(err) }
 
-
 						// User have to migrate first
-						if (user.status == 'to_migrate') {
+						if (user && user.status == 'to_migrate') {
 							return done(null, false, { message: "Sua conta não foi migrada ainda. Visite esta <a href='/migrate' target='_self'>página</a>." });
 						}							
 

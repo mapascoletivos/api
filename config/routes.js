@@ -18,7 +18,6 @@ var
 	features = require('features'),
 	contents = require('contents'),
 	images = require('images'),
-	importMC = require('importMC'),
 	auth = require('./middlewares/authorization');
 
 /**
@@ -73,14 +72,7 @@ module.exports = function (app, passport) {
 	/** 
 	 * Facebook login routes 
 	 **/
-	
-	app.get('/auth/facebook',
-		passport.authenticate('facebook', {
-			scope: [ 'email', 'user_about_me'],
-			failureRedirect: '/login',
-			failureFlash: true
-	}),  function(req,res) {})
-	app.get('/auth/facebook/callback', function(req, res, next) { users.passportCallback('facebook', req, res, next) });
+	app.post(apiPrefix + '/access_token/facebook', passport.authenticate('facebook-token'), users.oauthAccessToken);
 
 	// Google OAuth routes
 
@@ -168,8 +160,6 @@ module.exports = function (app, passport) {
 	// feature x content
 	app.put(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, features.addContent);
 	app.del(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, features.removeContent);
-
-	app.get('/import', importMC.import);
 
 	/*
 	 * All other routes enabled for Angular app (no 404)
