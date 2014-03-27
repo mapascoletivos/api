@@ -48,6 +48,7 @@
 		"connect-flash": "latest",
 		"view-helpers": "latest",
 		"jade": "latest",
+		"less": "latest",
 		"less-middleware": "~0.1.15",
 		"async": "latest",
 		"underscore": "latest",
