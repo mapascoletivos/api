@@ -75,6 +75,39 @@ exports.create = function (req, res) {
 }
 
 /**
+ * List
+ */
+
+exports.index = function(req, res){
+	var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
+	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
+	var options = {
+		perPage: perPage,
+		page: page
+	}
+
+	if(req.param('userId')) {
+		options.criteria = { creator: req.param('userId') };
+	}
+
+	if (req.param('search'))
+		options.criteria = {
+			$and: [
+				options.criteria,
+				{ title: { $regex: req.param('search'), $options: 'i' }}
+			]
+		}
+
+	Content.list(options, function(err, contents) {
+		if (err) return res.json(400, utils.errorMessages(err.errors || err));
+		Content.count(options.criteria).exec(function (err, count) {
+			if (err) res.json(400, utils.errorMessages(err.errors || err));
+			else res.json({options: options, contentsTotal: count, contents: contents});
+		})
+	})
+}
+
+/**
  * Show
  */
 

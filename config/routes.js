@@ -119,6 +119,7 @@ module.exports = function (app, passport) {
 	app.param('contentId', contents.load);
 	// new content should be associated to a layer
 	app.get(apiPrefix + '/contents/:contentId', contents.show);
+	app.get(apiPrefix + '/contents', contents.index);
 	app.post(apiPrefix + '/contents', [auth.requiresLogin, auth.content.canCreate], contents.create);	
 	app.put(apiPrefix + '/contents/:contentId', [auth.requiresLogin, auth.content.canEditOrDelete], contents.update);
 	app.del(apiPrefix + '/contents/:contentId', [auth.requiresLogin, auth.content.canEditOrDelete], contents.destroy);
