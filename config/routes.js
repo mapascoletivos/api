@@ -52,7 +52,7 @@ module.exports = function (app, passport) {
 	app.post('/users', users.create);
 	app.put(apiPrefix + '/users', auth.requiresLogin, users.update);
 	app.get(apiPrefix + '/users/:userId', users.show);
-	app.post(apiPrefix + '/users/session', users.passportCallback);
+	app.post(apiPrefix + '/users/session', function(req, res, next) { users.passportCallback('local', req, res, next) });
 
 	// Session routes
 	app.get(apiPrefix + '/user', auth.requiresLogin, users.info);
