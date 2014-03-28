@@ -171,8 +171,6 @@ module.exports = function (passport, config) {
 			if(err)
 				return done(err);
 
-			console.log(token);
-
 			if(!token || !token.user)
 				return done(null, false);
 
