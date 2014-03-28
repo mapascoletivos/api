@@ -13,6 +13,7 @@ var
 	mailer = require('../mailer'),
 	validator = require('validator'),
 	utils = require('../../lib/utils'),
+	messages = require('../../lib/messages'),
 	extend = require('util')._extend,
 	_ = require('underscore');
 
@@ -303,8 +304,18 @@ exports.session = login;
  */
 
 exports.create = function (req, res) {
+
 	var user = new User(req.body);
-	user.provider = 'local';
+	var preValidationErrors = [];
+
+	// Checks existence of all fields before sending to mongoose
+
+	if (!user.name)
+		preValidationErrors.push('Informe um nome.');
+	if (!user.email)
+		preValidationErrors.push('Informe uma email.');
+	if (!user.password)
+		preValidationErrors.push('Informe uma senha.');
 
 	// Avoid e-mail confirmation at development environment
 	if (process.env.NODE_ENV == 'development') {
@@ -312,32 +323,25 @@ exports.create = function (req, res) {
 	}
 
 
-	user.save(function (err) {
-		if (err) {
-			// req.flash('error', utils.errorMessagesFlash(err.errors));
-			return res.render('users/signup', {
-				errors: utils.errorMessagesFlash(err.errors),
-				user: user
-			});
-		}
 
-		// Don't send email if user is active
-		if (!user.needsEmailConfirmation) {
-			return res.redirect('/login');
-		} else {
-			mailer.welcome(user, function(err){
-				if (err) {
-					req.flash('error', 'Erro ao enviar o e-mail de ativação.');
-				}
-				else {
-					req.flash('info', 'Um link de ativação de usuário foi enviado para seu e-mail.');
-				}
-				return res.redirect('/login');
-			});	
-		}
-		
-		
-	})
+	if (preValidationErrors.length > 0){
+		return res.json(messages.errors(preValidationErrors))
+	} else {
+		user.save(function (err) {
+			
+			if (err) return res.json(messages.errors(err));		
+
+			// Don't send email if user is active
+			if (!user.needsEmailConfirmation) {			
+				return res.json(messages.info('Usuário criado com sucesso.'))
+			} else {
+				mailer.welcome(user, function(err){
+					if (err) return res.json(messages.errors(err));
+					res.json(messages.info('Usuário criado com sucesso. Um link de confirmação foi enviado para seu email.'));
+				});	
+			}
+		})		
+	}
 }
 
 /**

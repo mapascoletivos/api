@@ -13,6 +13,7 @@ var
 	home = require('home'),
 	users = require('users'),
 	token = require('token'),
+	accessToken = require('access_token')
 	maps = require('maps'),
 	layers = require('layers'),
 	features = require('features'),
@@ -48,7 +49,7 @@ module.exports = function (app, passport) {
 	app.get('/migrate', users.showMigrate);
 	app.post('/migrate', users.migrate);
 	
-	app.post('/users', users.create);
+	app.post(apiPrefix + '/users', users.create);
 	app.put(apiPrefix + '/users', auth.requiresLogin, users.update);
 	app.get(apiPrefix + '/users/:userId', users.show);
 	app.post(apiPrefix + '/users/session', function(req, res, next) { users.passportCallback('local', req, res, next) });
@@ -72,7 +73,9 @@ module.exports = function (app, passport) {
 	/** 
 	 * Facebook login routes 
 	 **/
+	app.post(apiPrefix + '/access_token/local', accessToken.local);
 	app.post(apiPrefix + '/access_token/facebook', passport.authenticate('facebook-token'), users.oauthAccessToken);
+	app.post(apiPrefix + '/access_token/google', accessToken.google);
 
 	// Google OAuth routes
 

@@ -212,6 +212,13 @@ UserSchema.methods = {
 
 UserSchema.static({
 
+	load: function (options, cb) {
+		this.findOne(options)
+			.select('email name username bio status needsEmailsConfirmation isAdmin')
+			.exec(cb)
+	}
+
+
 })
 
 /**

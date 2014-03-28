@@ -123,6 +123,7 @@ module.exports = function (passport, config) {
 			callbackURL: config.oauth.google.callbackURL
 		},
 		function(accessToken, refreshToken, profile, done) {
+			console.log(accessToken);
 			User.findOne({ 'google.id': profile.id }, function (err, user) {
 				if (err) { return done(err) }
 				
