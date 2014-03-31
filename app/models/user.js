@@ -4,6 +4,7 @@
  */
 
 var mongoose = require('mongoose'),
+	validate = require('mongoose-validate'),
 	Schema = mongoose.Schema,
 	crypto = require('crypto'),
 	moment = require('moment'),
@@ -17,7 +18,7 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
 	isAdmin: { type: Boolean, default: false },
 	name: { type: String, default: '' },
-	email: { type: String, default: '' },
+	email: { type: String, default: '', validate: [validate.email, 'Invalid e-mail address.'] },
 	token: { type: String },
 	username: String,
 	hashed_password: { type: String, default: '' },
@@ -61,14 +62,12 @@ var validatePresenceOf = function (value) {
 // the below 5 validations only apply if you are signing up traditionally
 
 UserSchema.path('name').validate(function (name) {
-	if (this.doesNotRequireValidation()) return true
 	return name.length;
-}, 'Name cannot be blank');
+}, 'Name cannot be blank.');
 
 UserSchema.path('email').validate(function (email) {
-	if (this.doesNotRequireValidation()) return true
 	return email.length
-}, 'Email cannot be blank');
+}, 'Email cannot be blank.');
 
 UserSchema.path('email').validate(function (email, fn) {
 	var User = mongoose.model('User')
@@ -81,7 +80,7 @@ UserSchema.path('email').validate(function (email, fn) {
 		})
 	} else 
 		fn(true);
-}, 'Este e-mail já existe.');
+}, 'Este e-mail já está sendo utilizado.');
 
 UserSchema.path('username').validate(function (username, fn) {
 	var User = mongoose.model('User');

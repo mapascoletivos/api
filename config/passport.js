@@ -45,7 +45,7 @@ module.exports = function (passport, config) {
 						if (err)
 							return done(null, false, { message: 'Você precisa de uma senha para acessar sua conta, mas houve um erro. Por favor, contate o suporte.' });
 						else
-							return done(null, false, { message: 'Você precisa de uma senha para acessar sua conta com o seu e-mail. Verifique seu e-mail para continuar.' });
+							return done(null, false, { message: 'Você precisa de uma senha para acessar sua conta. Verifique seu e-mail para continuar.' });
 					});				
 				} else if (user.needsEmailConfirmation) {
 					mailer.welcome(user, function(err){
@@ -62,110 +62,6 @@ module.exports = function (passport, config) {
 			})
 		}
 	))
-
-	// use facebook strategy
-	passport.use(new FacebookTokenStrategy({
-			clientID: config.oauth.facebook.clientID,
-			clientSecret: config.oauth.facebook.clientSecret
-		},
-		function(accessToken, refreshToken, profile, done) {
-
-			User.findOne({ 'facebook.id': profile.id }, function (err, user) {
-				if (err) { return done(err) }
-
-				// Not yet registered via Facebook
-				if (!user) {
-
-					// Check user registration via email
-					User.findOne({ email: profile.emails[0].value }, function (err, user) {
-
-						if (err) { return done(err) }
-
-						// User have to migrate first
-						if (user && user.status == 'to_migrate') {
-							return done(null, false, { message: "Sua conta não foi migrada ainda. Visite esta <a href='/migrate' target='_self'>página</a>." });
-						}							
-
-						// User not registered, create one
-						if (!user) {
-							user = new User({
-								name: profile.displayName,
-								email: profile.emails[0].value,
-								provider: 'facebook',
-								facebook: profile._json,
-								status: 'active',
-								needsEmailConfirmation: false
-							})
-							
-						// User is already registed by email, add Facebook info
-						} else {
-							user.facebook = profile._json;
-						}
-
-						// Save and return
-						user.save(function (err) {
-							if (err) console.log(err)
-							return done(err, user)
-						});
-					});
-				}
-				else {
-					return done(err, user)
-				}
-			})
-		}
-	))
-
-	// use google login strategy
-	passport.use(new GoogleStrategy({
-			clientID: config.oauth.google.clientID,
-			clientSecret: config.oauth.google.clientSecret,
-			callbackURL: config.oauth.google.callbackURL
-		},
-		function(accessToken, refreshToken, profile, done) {
-			console.log(accessToken);
-			User.findOne({ 'google.id': profile.id }, function (err, user) {
-				if (err) { return done(err) }
-				
-				// Not yet registered via Google
-				if (!user) {
-
-					// Check user registration via email
-					User.findOne({ email: profile.emails[0].value }, function (err, user) {
-						if (err) { return done(err) }
-
-						// User have to migrate first
-						if (user.status == 'to_migrate') {
-							return done(null, false, { message: "Sua conta não foi migrada ainda. Visite esta <a href='/migrate' target='_self'>página</a>." });
-						}
-
-						// User not registered, create one
-						if (!user) {				
-							user = new User({
-								name: profile.displayName,
-								email: profile.emails[0].value,
-								provider: 'google',
-								google: profile._json,
-								status: 'active',
-								needsEmailConfirmation: false
-							})
-
-						// User is already registed by email, add Google info	
-						} else {
-							user.google = profile._json
-						}
-
-						user.save(function (err) {
-							if (err) console.log(err)
-							return done(err, user)
-						});
-					});
-				} else {
-					return done(err, user)
-				}
-			})
-		}
-	));
 
 	passport.use(new BearerStrategy({}, function(token, done) {
 		AccessToken.load({'_id': token}, function(err, token) {

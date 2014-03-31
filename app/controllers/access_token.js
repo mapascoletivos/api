@@ -4,6 +4,8 @@
 
 var 
 	_ = require('underscore'),
+	crypto = require('crypto'),
+	messages = require('../../lib/messages'),
 	https = require('https'),
 	passport = require('passport'),
 	mongoose = require('mongoose'),
@@ -14,6 +16,9 @@ var
 var generateAccessToken = function(user, res) {
 
 	var token = new AccessToken({user: user._id});
+
+	var seed = crypto.randomBytes(20);
+	token._id = crypto.createHash('sha1').update(seed).digest('hex');
 
 	token.save(function(err) {
 		if (err) {
@@ -41,6 +46,11 @@ var authSocialUser = function(provider, profile, res) {
 			userProfile.email = profile.emails[0].value;
 			userProfile.name = profile.displayName;
 			userProfile.google = profile;
+			break;		
+		case 'facebook':
+			userProfile.email = profile.email;
+			userProfile.name = profile.name;
+			userProfile.facebook = profile;
 			break;
 	} 
 
@@ -73,8 +83,7 @@ var authSocialUser = function(provider, profile, res) {
 }
 
 exports.google = function(req, res){
-	return res.json({});
-	// Google Access Token should be send via Authorization request header field 
+
 	if (req.headers.authorization) {
 		var authorizationField = req.headers.authorization.split(' ');
 		if (authorizationField[0] = 'Bearer'){
@@ -100,19 +109,77 @@ exports.google = function(req, res){
 			});
 		}
 	} else {
-		return res.json(req.headers.authorization.length);
+		return res.json(400, messages.error('Missing Google authorization token.'));
 	}
 }
+
+exports.facebook = function(req, res, next) {
+
+	if (req.headers.authorization) {
+		var authorizationField = req.headers.authorization.split(' ');
+		if (authorizationField[0] = 'Bearer'){
+			
+			console.log('vai buscar no facebook')
+
+			https.get('https://graph.facebook.com/me?access_token='+authorizationField[1], function(response) {
+				var body = '';
+
+				if (response.statusCode == 200) {
+					response.on('data', function(d) {
+						body += d;
+					});
+
+					response.on('end', function(){
+						var profile = JSON.parse(body);
+						authSocialUser('facebook', profile, res);
+					});					
+				} else {
+					res.json(response.statusCode);
+				}
+
+			}).on('error', function(e) {
+				res.json(e);
+			});
+		}
+	} else {
+		return res.json(400, messages.error('Missing Facebook authorization token.'));
+	}
+
+
+};
 
 exports.local = function(req, res, next) {
 
 	passport.authenticate('local', function(err, user, info) {
-
-		if (err) { return next(err); }
-		if (!user) { return res.json(401, { messages: [ { status: 'error', text: 'Unauthorized' } ] } ); }
-
-		generateAccessToken(user, res);
+		console.log(info);
+		if (err) { return res.json(400, messages.errors(err)) }
+		else if (info.message) { res.json(400, messages.error(info.message)) }
+		else if (!user) { return res.json(403, messages.error("Unauthorized.")); }
+		else generateAccessToken(user, res);
 
 	})(req, res, next);
+
+};
+
+exports.logout = function(req, res, next) {
+
+	req.logout;
+
+	if (req.headers.authorization) {
+		var access_token = req.headers.authorization.split(' ')[1];
+		AccessToken.findOne({_id: access_token}, function(err, at){
+			if (err) return res.json(400, err);
+			if (!at) return res.json(400, messages.error("Can't find access token."));
+
+			at.expired = true;
+			at.save(function(err){
+				if (err) return res.json(400, err);
+				else return res.json(messages.success('Logout successfull.'));
+			});
+		});
+	} else {
+		res.json(400, messages.error('You are not logged in.'));
+	}
+
 
 };

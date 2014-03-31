@@ -29,7 +29,7 @@ module.exports = function (app, passport) {
 
 	var apiPrefix = '/api/v1';
 
-	app.get('/', home.index);
+	// app.get('/', home.index);
 
 	/*
 	 * Institutional routes
@@ -41,20 +41,14 @@ module.exports = function (app, passport) {
 	/** 
 	 * Users routes 
 	 **/
-	app.get('/login', users.login);
-	app.get('/forgot_password', users.forgotPassword);
 	app.post('/forgot_password', users.newPasswordToken);	
-	app.get('/signup', users.signup);
-	app.get('/logout', users.logout);
 	app.get('/migrate', users.showMigrate);
 	app.post('/migrate', users.migrate);
 	
 	app.post(apiPrefix + '/users', users.create);
 	app.put(apiPrefix + '/users', auth.requiresLogin, users.update);
 	app.get(apiPrefix + '/users/:userId', users.show);
-	app.post(apiPrefix + '/users/session', function(req, res, next) { users.passportCallback('local', req, res, next) });
 
-	// Session routes
 	app.get(apiPrefix + '/user', auth.requiresLogin, users.info);
 	app.get(apiPrefix + '/user/layers', auth.requiresLogin, users.layers);
 	app.get(apiPrefix + '/user/maps', auth.requiresLogin, users.maps);
@@ -71,28 +65,12 @@ module.exports = function (app, passport) {
 	app.param('tokenId', token.load);
 	
 	/** 
-	 * Facebook login routes 
+	 * Access token 
 	 **/
 	app.post(apiPrefix + '/access_token/local', accessToken.local);
-	app.post(apiPrefix + '/access_token/facebook', passport.authenticate('facebook-token'), users.oauthAccessToken);
+	app.post(apiPrefix + '/access_token/facebook', accessToken.facebook);
 	app.post(apiPrefix + '/access_token/google', accessToken.google);
-
-	// Google OAuth routes
-
-	app.get('/auth/google',
-		passport.authenticate('google', {
-		failureRedirect: '/login',
-		failureFlash: true,
-		scope: [
-			'https://www.googleapis.com/auth/userinfo.profile',
-			'https://www.googleapis.com/auth/userinfo.email'
-		]
-	}), function(req,res) {})
-	app.get('/auth/google/callback',
-		passport.authenticate('google', {
-		failureRedirect: '/login',
-		failureFlash: true
-	}), users.passportCallback)
+	app.get(apiPrefix + '/access_token/logout', accessToken.logout);
 
 	app.param('userId', users.user)
 

@@ -18,51 +18,6 @@ var
 	_ = require('underscore');
 
 
-
-var getAccessToken = function(user, res) {
-
-	var token = new AccessToken({user: user});
-
-	token.save(function(err) {
-		if(err) {
-			return res.json(401, { messages: [ { status: 'error', text: 'Unauthorized' } ] } );
-		}
-
-		var response = _.extend({
-			accessToken: token._id
-		}, user.toObject());
-
-		res.json(response);
-
-	});
-
-}
-
-exports.passportCallback = function(provider, req, res, next) {
-
-	passport.authenticate(provider, function(err, user, info) {
-
-		if (err) { return next(err); }
-		if (!user) { return res.json(401, { messages: [ { status: 'error', text: 'Unauthorized' } ] } ); }
-
-		getAccessToken(user, res);
-
-	})(req, res, next);
-
-};
-
-exports.oauthAccessToken = function(req, res, next) {
-
-	getAccessToken(req.user, res);
-
-}
-
-
-
-var login = function (req, res) {
-
-}
-
 /**
  * Find user by id
  */
@@ -141,35 +96,6 @@ exports.maps = function(req, res, next) {
 			else res.json({options: options, mapsTotal: count, maps: maps});
 		})
 	})
-}
-
-/**
- * Auth callback
- */
-
-exports.authCallback = login;
-
-/**
- * Show login form
- */
-
-exports.login = function (req, res) {
-	res.render('users/login', {
-		title: 'Login',
-		message: req.flash('error'),
-		user: req.user ? JSON.stringify(req.user) : 'null'
-	});
-}
-
-/**
- * Show forgot password form
- */
-
-exports.forgotPassword = function (req, res) {
-	res.render('users/forgot_password', {
-		title: 'Recuperar senha',
-		message: req.flash('error')
-	});
 }
 
 /**
@@ -282,23 +208,6 @@ exports.migrate = function (req, res) {
 
 }
 
-
-
-/**
- * Logout
- */
-
-exports.logout = function (req, res) {
-	req.logout();
-	res.redirect('/login');
-}
-
-/**
- * Session
- */
-
-exports.session = login;
-
 /**
  * Create user
  */
@@ -311,33 +220,36 @@ exports.create = function (req, res) {
 	// Checks existence of all fields before sending to mongoose
 
 	if (!user.name)
-		preValidationErrors.push('Informe um nome.');
+		preValidationErrors.push('Please enter your name.');
 	if (!user.email)
-		preValidationErrors.push('Informe uma email.');
+		preValidationErrors.push('Please enter your e-mail address.');
+	else 
+		if (!validator.isEmail(user.email))
+			preValidationErrors.push('Invalid e-mail address.');
+	
+
 	if (!user.password)
-		preValidationErrors.push('Informe uma senha.');
+		preValidationErrors.push('Please type a password.');
 
 	// Avoid e-mail confirmation at development environment
 	if (process.env.NODE_ENV == 'development') {
 		user.needsEmailConfirmation = false;
 	}
 
-
-
-	if (preValidationErrors.length > 0){
-		return res.json(messages.errors(preValidationErrors))
+	if (!user.password){
+		return res.json(400, messages.errorsArray(preValidationErrors));
 	} else {
 		user.save(function (err) {
 			
-			if (err) return res.json(messages.errors(err));		
+			if (err) return res.json(400, messages.errors(err));		
 
 			// Don't send email if user is active
 			if (!user.needsEmailConfirmation) {			
-				return res.json(messages.info('Usuário criado com sucesso.'))
+				return res.json(messages.success('Usuário criado com sucesso.'))
 			} else {
 				mailer.welcome(user, function(err){
 					if (err) return res.json(messages.errors(err));
-					res.json(messages.info('Usuário criado com sucesso. Um link de confirmação foi enviado para seu email.'));
+					res.json(messages.success('Usuário criado com sucesso. Um link de confirmação foi enviado para seu email.'));
 				});	
 			}
 		})		
