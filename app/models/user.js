@@ -111,7 +111,7 @@ UserSchema.methods = {
 	info: function() {
 
 		var info = {
-			id: this._id,
+			_id: this._id,
 			name: this.name,
 			username: this.username,
 			email: this.email,
