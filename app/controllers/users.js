@@ -12,7 +12,6 @@ var
 	Map = mongoose.model('Map'),
 	mailer = require('../mailer'),
 	validator = require('validator'),
-	utils = require('../../lib/utils'),
 	messages = require('../../lib/messages'),
 	extend = require('util')._extend,
 	_ = require('underscore');
@@ -27,7 +26,7 @@ exports.user = function (req, res, next, id) {
 	if(id.match(/^[0-9a-fA-F]{24}$/)) // change query if id string matches object ID regex
 		query = { _id: id };
 	User
-		.findOne(query)
+		.load(query)
 		.exec(function (err, user) {
 			if (err) return next(err)
 			if (!user) return next(new Error('Failed to load User ' + id))
@@ -230,26 +229,29 @@ exports.create = function (req, res) {
 
 	if (!user.password)
 		preValidationErrors.push('Please type a password.');
+	else if (user.password.length < 6)
+		preValidationErrors.push('Password should have at least 6 characters.');
 
 	// Avoid e-mail confirmation at development environment
 	if (process.env.NODE_ENV == 'development') {
 		user.needsEmailConfirmation = false;
 	}
 
-	if (!user.password){
+	if (preValidationErrors.length > 0){
 		return res.json(400, messages.errorsArray(preValidationErrors));
 	} else {
 		user.save(function (err) {
-			
 			if (err) return res.json(400, messages.errors(err));		
-
 			// Don't send email if user is active
 			if (!user.needsEmailConfirmation) {			
 				return res.json(messages.success('Usuário criado com sucesso.'))
 			} else {
-				mailer.welcome(user, function(err){
-					if (err) return res.json(messages.errors(err));
-					res.json(messages.success('Usuário criado com sucesso. Um link de confirmação foi enviado para seu email.'));
+				mailer.welcome(user, req.body.callback_url, function(err){
+					console.log(err);
+					if (err) 
+						return res.json(messages.errors(err));
+					else 
+						return res.json(messages.success('Usuário criado com sucesso. Um link de confirmação foi enviado para seu email.'));
 				});	
 			}
 		})		
@@ -268,18 +270,18 @@ exports.update = function (req, res) {
 		// User is changing password
 		if (req.body.userPwd) {
 			if (!user.authenticate(req.body.userPwd)) {
-				return res.json(400, { messages: [{status: 'error', text: 'Senha atual inválida.'}] });
+				return res.json(400, messages.error('Senha atual inválida.'));
 			} else if (req.body.newPwd.length < 6) {
-				return res.json(400, { messages: [{status: 'error', text: 'A nova senha deve ter no mínimo 6 caracteres.'}] });
+				return res.json(400, messages.error('A nova senha deve ter no mínimo 6 caracteres.'));
 			} else {
 				if (req.body.newPwd == req.body.validatePwd){
 					user.password = req.body.newPwd;
 					user.save(function(err){
-						if (err) res.json(400, utils.errorMessages(err.errors || err));
-						else res.json({ messages: [{status: 'ok', text: 'Senha alterada com sucesso.'}] });
+						if (err) res.json(400, messages.errors(err));
+						else res.json(messages.success('Senha alterada com sucesso.'));
 					});		
 				} else {
-					return res.json(400, { messages: [{status: 'error', text: "As senhas não coincidem." }] });
+					return res.json(400, messages.error("As senhas não coincidem."));
 				}
 			}
  
@@ -288,31 +290,29 @@ exports.update = function (req, res) {
 
 			// Check if is a diffent e-mail
 			if (req.body.email == user.email) {
-				return res.json(400, { 
-					messages: [{status: 'error', text: 'Este já é o e-mail associado com seu perfil.'}]
-				});
+				return res.json(400, messages.error('Este já é o e-mail associado com seu perfil.'));
 			}
 
 			// Check if is valid
 			if (!validator.isEmail(req.body.email)) {
-				return res.json(400, { 
-					messages: [{status: 'error', text: 'E-mail inválido.'}]
-				});
+				return res.json(400, messages.error('E-mail inválido.'));
 			}
 
 			// Send confirmation, if e-mail is not already used
 			User.findOne({email: req.body.email}, function(err, anotherUser){
-				if (!anotherUser) {
-					mailer.changeEmail(user, req.body.email, function(err){
+				if (!req.body.callback_url){
+					return res.json(400, messages.error("Invalid request (missing callback URL)."));			
+				} else if (!anotherUser) {
+					mailer.changeEmail(user, req.body.email, req.body.callback_url, function(err){
 						if (err) {
 							console.log(err)
-							return res.json(400, { messages: [{status: 'error', text: "Erro ao enviar e-mail de alteração de endereço."}] });
+							return res.json(400, messages.error("Erro ao enviar e-mail de alteração de endereço."));
 						} else {
-							return res.json({ messages: [{status: 'ok', text: 'Um e-mail foi enviado para confirmação do novo endereço.'}] });
+							return res.json(messages.success('Um e-mail foi enviado para confirmação do novo endereço.'));
 						}
 					});
 				} else {
-					return res.json(400, { messages: [{status: 'error', text: "Este endereço de e-mail já está cadastrado."}] });			
+					return res.json(400, messages.error("Este endereço de e-mail já está cadastrado."));			
 				}
 			})
 			
@@ -323,8 +323,8 @@ exports.update = function (req, res) {
 			user.name = req.body.name;
 			user.username = req.body.username;
 			user.save(function(err){
-				if (err) res.json(400, utils.errorMessages(err.errors || err));
-				else res.json({ messages: [{status: 'ok', text: 'Perfil do usuário atualizado com sucesso.'}] });
+				if (err) res.json(400, messages.errors(err));
+				else res.json(messages.success('Perfil do usuário atualizado com sucesso.'));
 			});		 
 		}
 

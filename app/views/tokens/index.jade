@@ -1,15 +1,14 @@
-extends ../layouts/default-static
-
-block main
-
-
-block content
-	section#login
-		.login-content
-			h1=title
+doctype html
+html
+	body
+		section
 			include ../includes/messages
 
-			- if (isLogged)
-				a.button(href="/", title="Ir para o início", target="_self") Voltar à navegação
-			- else
-				a.button(href="/login", title="Ir para o início", target="_self") Ir para o login
+			if (callbackUrl)
+				a.button(href="#{callbackUrl}", title="Proceed to site", target="_self") Proceed to site
+
+			- if (autoRedirect)
+				script.
+					setTimeout(function(){
+						window.location.href = '#{callbackUrl}';
+					}, 5000);

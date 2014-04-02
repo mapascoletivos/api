@@ -94,30 +94,24 @@ UserSchema.path('username').validate(function (username, fn) {
 		fn(true);
 }, 'Este nome de usuário já é utilizado.');
 
-
-/**
- * Pre-save hook
- */
-
-// UserSchema.pre('save', function(next) {
-// 	if (!this.isNew) return next();
-
-// 	if (!validatePresenceOf(this.password)
-// 		&& !this.doesNotRequireValidation())
-// 		next(new Error('Invalid password'));
-// 	else
-// 		next();
-// })
-
 /**
  * Methods
  */
 
 UserSchema.methods = {
 
+
+	/**
+	 * Info - avoids sending sensitive information to the client
+	 *
+	 * @return {}
+	 * @api public
+	 */
+
 	info: function() {
 
 		var info = {
+			id: this._id,
 			name: this.name,
 			username: this.username,
 			email: this.email,

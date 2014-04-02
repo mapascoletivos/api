@@ -54,7 +54,7 @@ module.exports = function (app, passport) {
 	app.get(apiPrefix + '/user/maps', auth.requiresLogin, users.maps);
 
 	/** 
-	 * Token route 
+	 * Token routes
 	 **/
 	app.get('/activate_account/:tokenId', token.activateAccount);
 	app.get('/new_password/:tokenId', token.newPasswordForm);

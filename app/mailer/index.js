@@ -17,7 +17,6 @@ var mailConfig = { from: config.nodemailer.from };
 var transport = nodemailer.createTransport('SMTP', config.nodemailer);
 
 
-
 /**
  * Notification methods
  */
@@ -25,15 +24,17 @@ var transport = nodemailer.createTransport('SMTP', config.nodemailer);
 var Notify = {
 
 	
-	welcome: function(user, callback){
+	welcome: function(user, callback_url, callback){
 		var
 			Token = mongoose.model('Token'),
 			token = new Token({
+				_id: Token.generateId(),
 				type: 'activateAccount',
 				user: user,
+				callbackUrl: callback_url,
 				expiresAt: moment().add('day', 1).toDate()
 			});
-		
+
 		token.save(function(err){
 			if (err)
 				callback(err);
@@ -67,6 +68,7 @@ var Notify = {
 		var
 			Token = mongoose.model('Token'),
 			token = new Token({
+				_id: Token.generateId(),
 				type: 'password_reset',
 				user: user,
 				expiresAt: moment().add('day', 1).toDate()
@@ -101,12 +103,14 @@ var Notify = {
 		});
 	},
 
-	passwordNeeded: function(user, callback) {
+	passwordNeeded: function(user, callbackUrl, callback) {
 		var
 			Token = mongoose.model('Token'),
 			token = new Token({
+				_id: Token.generateId(),
 				type: 'password_needed',
 				user: user,
+				callbackUrl: callbackUrl,
 				expiresAt: moment().add('day', 1).toDate()
 			});
 
@@ -139,13 +143,15 @@ var Notify = {
 		});
 	},
 
-	changeEmail: function(user, newEmail, callback){
+	changeEmail: function(user, newEmail, callbackUrl, callback){
 		var
 			Token = mongoose.model('Token'),
 			token = new Token({
+				_id: Token.generateId(),
 				type: 'email_change',
 				user: user,
 				expiresAt: moment().add('day', 1).toDate(),
+				callbackUrl: callbackUrl,
 				data: { email: newEmail}
 			});
 
@@ -181,6 +187,7 @@ var Notify = {
 		var
 			Token = mongoose.model('Token'),
 			token = new Token({
+				_id: Token.generateId(),
 				type: 'migrate_account',
 				user: user,
 				expiresAt: moment().add('day', 1).toDate(),

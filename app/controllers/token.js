@@ -16,10 +16,17 @@ exports.load = function(req, res, next, id){
 	Token.findById(id, function (err, token) {
 		if (err) return next(err);
 		if (!token){
-			return res.render('tokens/index', {errors: ['Token não encontrado.']});	
+			return res.render('tokens/index', {
+				errors: ['Token não encontrado.'], 
+				autoRedirect: false 
+			});	
 		} 
 		if (token.expiresAt < Date.now()) {
-			return res.render('tokens/index', {errors: ['Este token expirou.']});	
+			return res.render('tokens/index', {
+				errors: ['Este token expirou.'], 
+				callbackUrl: token.callbackUrl,
+				autoRedirect: false 
+			});	
 		}
 		req.token = token;
 		next()
@@ -40,7 +47,11 @@ exports.activateAccount = function(req, res){
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
-				return res.render('tokens/index', {errors: ['Não foi possível ativar este usuário.']});
+				return res.render('tokens/index', {
+					errors: ['Não foi possível ativar este usuário.'],
+					callbackUrl: token.callbackUrl,					
+					autoRedirect: false
+				});
 			}
 			
 			user.status = 'active';
@@ -48,10 +59,29 @@ exports.activateAccount = function(req, res){
 
 			user.save(function(err){
 				if (err)
-					return res.render('tokens/index', {errors: ['Não foi possível ativar este usuário.']});
+					return res.render('tokens/index', {
+						errors: ['Não foi possível ativar este usuário.'],
+						callbackUrl: token.callbackUrl,
+						autoRedirect: false
+					});
 				else {
-					req.flash('info', 'Conta ativada com sucesso, faça o login agora.')
-					return res.redirect('/login');
+
+					token.expired = true;
+					token.save(function(err){
+						console.log(err);
+						if (err)
+							return res.render('tokens/index', {
+								errors: ['Houve um erro de gravação do token.'],
+								callbackUrl: token.callbackUrl,
+								autoRedirect: false
+							})
+						else
+							return res.render('tokens/index', {
+								success: ['Conta ativada com sucesso, aguarde redirecionamento.'],
+								callbackUrl: token.callbackUrl,
+								autoRedirect: true
+							});
+					});
 				}
 			});
 		})
@@ -175,8 +205,9 @@ exports.emailChange = function(req, res){
 					});
 				else {
 					return res.render('tokens/index', {
-						isLogged: req.isAuthenticated(),
-						info: ['E-mail alterado com sucesso.']
+						info: ['E-mail alterado com sucesso.'],
+						callbackUrl: token.callbackUrl,
+						autoRedirect: true
 					});
 				}
 			});

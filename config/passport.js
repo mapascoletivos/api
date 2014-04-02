@@ -29,36 +29,14 @@ module.exports = function (passport, config) {
 		},
 		function(email, password, done) {
 			User.findOne({ email: email }, function (err, user) {
-				if (err) { 
-					return done(err) 
-				}
-				if (!user) {
+				if (err) 
+					return done(err)
+				else if (!user) 
 					return done(null, false, { message: 'Usuário não cadastrado.' })
-				}
-
-				// User don't have a password yet
-				if (user.status == 'to_migrate') {
-					return done(null, false, { message: "Sua conta não foi migrada ainda. Visite esta <a href='/migrate' target='_self'>página</a>." });
-				} else if (!user.hashed_password) {
-					mailer.passwordNeeded(user, function(err){
-						console.log(err);
-						if (err)
-							return done(null, false, { message: 'Você precisa de uma senha para acessar sua conta, mas houve um erro. Por favor, contate o suporte.' });
-						else
-							return done(null, false, { message: 'Você precisa de uma senha para acessar sua conta. Verifique seu e-mail para continuar.' });
-					});				
-				} else if (user.needsEmailConfirmation) {
-					mailer.welcome(user, function(err){
-						if (err)
-							return done(null, false, { message: 'Erro ao enviar e-mail de ativação, por favor, contate o suporte.' });
-						else
-							return done(null, false, { message: 'Um e-mail de ativação foi enviado para sua caixa de correio.' });
-					});
-				} else if (!user.authenticate(password)) {
-					return done(null, false, { message: 'Invalid password' })
-				} else {
+				else if (user.hashed_password && !user.authenticate(password))
+          			return done(null, false, { message: 'Invalid password' })
+				else 
 					return done(null, user);
-				}
 			})
 		}
 	))
