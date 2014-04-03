@@ -2,8 +2,6 @@ var
 	mongoose = require('mongoose'),
 	mailer = require('../app/mailer'),
 	LocalStrategy = require('passport-local').Strategy,
-	FacebookTokenStrategy = require('passport-facebook-token').Strategy,
-	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
 	BearerStrategy = require('passport-http-bearer').Strategy,
 	User = mongoose.model('User'),
 	AccessToken = mongoose.model('AccessToken');
