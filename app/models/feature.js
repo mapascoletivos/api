@@ -4,10 +4,9 @@
  */
 
 var 
-	async = require('async'),
-	_ = require('underscore'),
 	mongoose = require('mongoose'),
-	Schema = mongoose.Schema;
+	Schema = mongoose.Schema,
+	Area = mongoose.model('Area');
 
 /**
  * Feature schema
@@ -21,6 +20,7 @@ var FeatureSchema = new Schema({
 	title: { type: String, required: true },
 	description: { type: String },
 	geometry: { type: {type: String}, coordinates: []},
+	address: [{type: Schema.ObjectId, ref: 'Area'}],
 	version: { type: Number, default: 1},
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: {type: Date, default: Date.now},
@@ -34,6 +34,32 @@ var FeatureSchema = new Schema({
  **/
 
 FeatureSchema.index({ loc: '2dsphere' })
+
+/**
+ * Pre and Post middleware
+ */
+
+ FeatureSchema.pre('save', function(next){
+ 	var self = this;
+
+ 	Area.whichContains(self.geometry, function(err, areas){
+
+ 		if (err){
+ 			
+ 			console.log(err);
+
+	 		// This area shouldn't block feature save,
+	 		// so next() is called without the error
+ 			next();	
+ 		} 
+ 		else {
+	 		self.address = areas;
+	 		next()
+ 		}
+
+ 	})
+ })
+
 
 /**
  * Methods
@@ -67,6 +93,7 @@ FeatureSchema.statics = {
 	load: function (id, cb) {
 		this.findOne({ _id : id })
 			.populate('creator', 'name username email')
+			.populate('address')
 			.populate('contents')
 			.exec(cb)
 	},
