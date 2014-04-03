@@ -26,8 +26,7 @@ exports.user = function (req, res, next, id) {
 	if(id.match(/^[0-9a-fA-F]{24}$/)) // change query if id string matches object ID regex
 		query = { _id: id };
 	User
-		.load(query)
-		.exec(function (err, user) {
+		.load(query, function (err, user) {
 			if (err) return next(err)
 			if (!user) return next(new Error('Failed to load User ' + id))
 			req.profile = user

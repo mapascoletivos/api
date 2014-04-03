@@ -114,14 +114,21 @@ LayerSchema.statics = {
 						var populatedFeatures = [];
 						async.each(features, function(feature, cb){
 							feature.populate('creator', 'name username email', function(err, feature){
-								populatedFeatures.push(feature);
-								cb();
-							})
+								if (err) cb(err)
+								else 
+									feature.populate('address', function(err, feature){
+										if (err) cb(err)
+										else {
+											populatedFeatures.push(feature);
+											cb();
+										}
+									});
+							});
 						}, function(err){
 							donePopulateFeatures(err, populatedFeatures);
 						});
 					}
-					
+							
 					var populateContentsCreator = function(contents, donePopulateContents) {
 						var populatedContents = [];
 						async.each(contents, function(content, cb){
@@ -133,7 +140,7 @@ LayerSchema.statics = {
 							donePopulateContents(err, populatedContents);
 						});					
 					}
-					
+
 					async.parallel([
 							function(cb){
 								populateFeaturesCreator(layer.features, function(err, features){

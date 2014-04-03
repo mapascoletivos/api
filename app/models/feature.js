@@ -20,7 +20,7 @@ var FeatureSchema = new Schema({
 	title: { type: String, required: true },
 	description: { type: String },
 	geometry: { type: {type: String}, coordinates: []},
-	isIn: [{type: Schema.ObjectId, ref: 'Area'}],
+	address: [{type: Schema.ObjectId, ref: 'Area'}],
 	version: { type: Number, default: 1},
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: {type: Date, default: Date.now},
@@ -53,7 +53,7 @@ FeatureSchema.index({ loc: '2dsphere' })
  			next();	
  		} 
  		else {
-	 		self.isIn = areas;
+	 		self.address = areas;
 	 		next()
  		}
 
@@ -93,6 +93,7 @@ FeatureSchema.statics = {
 	load: function (id, cb) {
 		this.findOne({ _id : id })
 			.populate('creator', 'name username email')
+			.populate('address')
 			.populate('contents')
 			.exec(cb)
 	},

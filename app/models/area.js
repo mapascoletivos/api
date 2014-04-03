@@ -53,36 +53,44 @@ AreaSchema.statics = {
 			var keys = Object.keys(address_entries);
 
 			keys.forEach(function (key) {
-				entries.push({type: key, name: address_entries[key]})
+				entries.push({type: key, value: address_entries[key]})
 			})
 
-			console.log(entries);
-			
 			var parseEntries = function(entries_list, parent ) {
 
 				var 
 					entry = entries_list.pop();
 
-				if (entry.type == 'country' || entry.type == 'country_code' ) {
+
+				// Ignore postcodes because they don't appear in hierarchical order
+				if (entry.type == 'postcode') {
+					entry = entries_list.pop();
+				}
+
+				if (entry.type == 'country_code') {
+					
 					area_properties = {
 						type: 'country',
-						name: entry.name,
-						code: (areas_list.country_code ? areas_list.country_code.toUpperCase() : null) 
+						code: entry.value.toUpperCase() 
 					} 
-					delete areas_list.country;
-					delete areas_list.country_code;
+
+					// next entry is the contry name
+					entry = entries_list.pop();
+					if (entry.type == 'country') {
+						area_properties.name = entry.value;
+					} else {
+						// if not a country, put back on the list
+						entries_list.push(entry);
+					}
 				} else {
-					console.log('creating ' + areas_list.country + ' ' + areas_list.country_code + ' in ' + parent)
-					var last_entry = areas_list.pop();
 					area_properties = {
-						type: last_entry.key(),
-						name: last_entry.value()
+						type: entry.type,
+						name: entry.value
 					}
 				}
 
-				console.log('create areas - after parsing '+ JSON.stringify(areas_list));
-
-				area_properties.parent = parent;
+				if (parent)
+					area_properties.parent = parent;
 
 				Area.upsertArea(area_properties, function(err, area){
 					if (err){
@@ -90,12 +98,12 @@ AreaSchema.statics = {
 						doneCreatingArea(err);	
 					} 
 					else {
+
 						areas_objects.push(area);
-						// console.log('areas_objects '+ areas_objects);
-						// console.log(areas_list.properties().length);
-						// it still has more areas to parse
-						if (areas_list) {
-							parseEntries(areas_list, area._id);
+
+						// It still has more areas to parse?
+						if (entries_list.length > 0) {
+							parseEntries(entries_list, area._id);
 						} else {
 							doneWhichContains(null, areas_objects)
 						}
