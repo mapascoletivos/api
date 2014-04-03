@@ -34,6 +34,30 @@ exports.load = function(req, res, next, id){
 }
 
 /**
+ * List
+ */
+
+exports.index = function(req, res){
+	var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
+	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
+	var options = {
+		perPage: perPage,
+		page: page
+	}
+
+	Feature.list(options, function(err, features) {
+		if (err) return res.json(400, utils.errorMessages(err.errors || err));
+		Feature.count().exec(function (err, count) {
+			if (!err) {
+				res.json({options: options, featuresTotal: count, features: features});
+			} else {
+				res.json(400, utils.errorMessages(err.errors || err))
+			}
+		})
+	})
+}
+
+/**
  * Create a feature
  */
 
@@ -59,67 +83,6 @@ exports.create = function (req, res) {
 	});
 }
 
-/*
- * Import
- * (Batch create features)
- */
-
-exports.import = function(req, res) {
-	var layer = req.layer;
-	async.each(req.body, function(feature, cb) {
-
-		var feature = new Feature(feature);
-		feature.creator = req.user;
-		feature.layer = req.layer;
-
-		// save feature
-		feature.save(function (err) {
-			if (err) {
-				cb(err);
-			} else {
-				layer.features.addToSet(feature);
-				cb();
-			}
-		});
-	}, function(err) {
-		if(err) res.json(400, utils.errorMessages(err.errors || err));
-		else {			
-			// save layer
-			layer.save(function(err){
-				if(err) {
-					if(err) res.json(400, utils.errorMessages(err.errors || err));
-				} else {
-					res.json(layer.features);
-				}
-			});
-		}
-	});
-}
-
-/**
- * List
- */
-
-exports.index = function(req, res){
-	var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
-	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
-	var options = {
-		perPage: perPage,
-		page: page
-	}
-
-	Feature.list(options, function(err, features) {
-		if (err) return res.json(400, utils.errorMessages(err.errors || err));
-		Feature.count().exec(function (err, count) {
-			if (!err) {
-				res.json({options: options, featuresTotal: count, features: features});
-			} else {
-				res.json(400, utils.errorMessages(err.errors || err))
-			}
-		})
-	})
-}
-
 
 /**
  * Show
@@ -137,8 +100,15 @@ exports.update = function(req, res){
 	var 
 		feature = req.feature;
 	
-	// association to contents should be handled at Content Model.
+	// Association to contents should be handled at Content Model.
 	delete(req.body['contents']);
+
+	// If geometry hasn't changed, don't update it at the model to 
+	// avoid address lookup 
+	if (_.isEqual(feature.geometry.coordinates, req.body.geometry.coordinates)) {
+		console.log('não mudou geometria');
+		delete req.body.geometry;
+	}
 	
 	feature = extend(feature, req.body);
 
@@ -202,5 +172,47 @@ exports.removeContent = function(req, res){
 			if (err) res.json(400,err)
 			else res.json({ messages: [{status: 'ok', text: 'Content removed successfully.'}] });
 		});
+	});
+}
+
+/*
+ * Import
+ * (Batch create features)
+ */
+
+exports.import = function(req, res) {
+	var layer = req.layer;
+	async.eachSeries(req.body, function(feature, cb) {
+
+		var feature = new Feature(feature);
+		feature.creator = req.user;
+		feature.layer = req.layer;
+
+		// Set geometry as modified, otherwise it won't do address lookup
+		feature.markModified('geometry');
+
+		// save feature
+		feature.save(function (err) {
+			if (err) {
+				cb(err);
+			} else {
+				layer.features.addToSet(feature);
+
+				// Wait 0.2 seconds to process next feature to avoid nominatim overload 
+				setTimeout(cb, 200);
+			}
+		});
+	}, function(err) {
+		if(err) res.json(400, utils.errorMessages(err.errors || err));
+		else {			
+			// save layer
+			layer.save(function(err){
+				if(err) {
+					if(err) res.json(400, utils.errorMessages(err.errors || err));
+				} else {
+					res.json(layer.features);
+				}
+			});
+		}
 	});
 }

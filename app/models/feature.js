@@ -42,23 +42,24 @@ FeatureSchema.index({ loc: '2dsphere' })
  FeatureSchema.pre('save', function(next){
  	var self = this;
 
- 	Area.whichContains(self.geometry, function(err, areas){
+ 	if (self.isDirectModified('geometry')) {
+	 	Area.whichContains(self.geometry, function(err, areas){
+	 		if (err){
+	 			console.log(err);
 
- 		if (err){
- 			
- 			console.log(err);
-
-	 		// This area shouldn't block feature save,
-	 		// so next() is called without the error
- 			next();	
- 		} 
- 		else {
-	 		self.address = areas;
-	 		next()
- 		}
-
- 	})
- })
+		 		// Address lookup shouldn't block feature save,
+		 		// so next() is called without the error
+	 			next();	
+	 		} 
+	 		else {
+		 		self.address = areas;
+		 		next();
+	 		}
+	 	}) 		
+ 	} else {
+ 		next();
+ 	}
+})
 
 
 /**
