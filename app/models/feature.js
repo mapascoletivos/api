@@ -47,13 +47,14 @@ FeatureSchema.index({ loc: '2dsphere' })
 	 		if (err){
 	 			console.log(err);
 
-		 		// Address lookup shouldn't block feature save,
-		 		// so next() is called without the error
-	 			next();	
-	 		} 
+				// Address lookup shouldn't block feature save,
+				// so next() is called without the error
+				next();	
+			} 
 	 		else {
-		 		self.address = areas;
-		 		next();
+				delete self.address
+				self.address = areas;
+				next();
 	 		}
 	 	}) 		
  	} else {

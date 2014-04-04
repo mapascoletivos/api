@@ -104,6 +104,7 @@ exports.update = function(req, res){
 	
 	// Association to contents should be handled at Content Model.
 	delete(req.body['contents']);
+	delete(req.body['address']);
 
 	// If geometry hasn't changed, don't update it at the model to 
 	// avoid address lookup 
