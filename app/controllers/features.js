@@ -7,8 +7,8 @@ var
 	_ = require('underscore'),
 	mongoose = require('mongoose'), 
 	Feature = mongoose.model('Feature'),
-	utils = require('../../lib/utils'),
 	extend = require('util')._extend,
+	messages = require('../../lib/messages'),
 	async = require('async');
 	
 /**
@@ -46,12 +46,12 @@ exports.index = function(req, res){
 	}
 
 	Feature.list(options, function(err, features) {
-		if (err) return res.json(400, utils.errorMessages(err.errors || err));
+		if (err) return res.json(400, messages.errors(err));
 		Feature.count().exec(function (err, count) {
 			if (!err) {
 				res.json({options: options, featuresTotal: count, features: features});
 			} else {
-				res.json(400, utils.errorMessages(err.errors || err))
+				res.json(400, messages.errors(err))
 			}
 		})
 	})
@@ -66,17 +66,19 @@ exports.create = function (req, res) {
 	feature.creator = req.user;
 	feature.layer = req.layer;
 	
+	feature.markModified('geometry');
+	
 	// save feature
 	feature.save(function (err) {
 		if (err) {
-			res.json(400, utils.errorMessages(err.errors || err));
+			res.json(400, messages.errors(err));
 		} else {
 			var layer = feature.layer;
 			layer.features.addToSet(feature);
 			
 			// save layer
 			layer.save(function(err){
-				if (err) res.json(400, utils.errorMessages(err.errors || err));
+				if (err) res.json(400, messages.errors(err));
 				res.json(feature);
 			});
 		}
@@ -106,14 +108,13 @@ exports.update = function(req, res){
 	// If geometry hasn't changed, don't update it at the model to 
 	// avoid address lookup 
 	if (_.isEqual(feature.geometry.coordinates, req.body.geometry.coordinates)) {
-		console.log('não mudou geometria');
 		delete req.body.geometry;
 	}
 	
 	feature = extend(feature, req.body);
 
 	feature.save(function(err) {
-		if (err) res.json(400, utils.errorMessages(err.errors || err));
+		if (err) res.json(400, messages.errors(err));
 		else res.json(feature);
 	});
 }
@@ -139,10 +140,10 @@ exports.addContent = function(req, res){
 
 	// save both
 	content.save(function(err){
-		 if (err) res.json(400, utils.errorMessages(err.errors || err));
+		 if (err) res.json(400, messages.errors(err));
 		feature.save(function(err){
 			if (err) res.json(400,err)
-			else res.json({ messages: [{status: 'ok', text: 'Content added successfully.'}] });
+			else res.json(messages.success('Content added successfully.'));
 		});
 	});
 
@@ -170,7 +171,7 @@ exports.removeContent = function(req, res){
 		 if (err) res.json(400, utils.errorMessages(err.errors || err));
 		feature.save(function(err){
 			if (err) res.json(400,err)
-			else res.json({ messages: [{status: 'ok', text: 'Content removed successfully.'}] });
+			else res.json(messages.success('Content removed successfully.'));
 		});
 	});
 }
@@ -203,12 +204,12 @@ exports.import = function(req, res) {
 			}
 		});
 	}, function(err) {
-		if(err) res.json(400, utils.errorMessages(err.errors || err));
+		if(err) res.json(400, messages.errors(err));
 		else {			
 			// save layer
 			layer.save(function(err){
 				if(err) {
-					if(err) res.json(400, utils.errorMessages(err.errors || err));
+					if(err) res.json(400, messages.errors(err));
 				} else {
 					res.json(layer.features);
 				}
