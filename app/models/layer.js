@@ -65,7 +65,6 @@ LayerSchema.pre('remove', function(next) {
 		function(callback){
 			async.each( self.maps, 
 				function(mapId, doneDessociateFromMap){
-					console.log(mapId);
 					mongoose.model('Map').findById(mapId, function(err, map){
 						map.removeLayerAndSave(self, doneDessociateFromMap);
 					})
@@ -105,22 +104,28 @@ LayerSchema.statics = {
 			.exec(function(err, layer){
 				
 				if (err || !layer) {
-
 					doneLoading(err, null);
-
 				} else {
 
-					var populateFeaturesCreator = function(features, donePopulateFeatures) {
+					var populateFeatures = function(features, donePopulateFeatures) {
 						var populatedFeatures = [];
 						async.each(features, function(feature, cb){
-							feature.populate('creator', 'name username email', function(err, feature){
+							feature.populate('creator', 'name username email', function(err, ft){
+								feature = ft;
 								if (err) cb(err)
 								else 
-									feature.populate('address', function(err, feature){
+									feature.populate('address', function(err, ft){
+										feature = ft;
 										if (err) cb(err)
 										else {
-											populatedFeatures.push(feature);
-											cb();
+
+											feature.populateContents(function(err, feature){
+												if (err) cb(err)
+												else {
+													populatedFeatures.push(feature);
+													cb();
+												}
+											});
 										}
 									});
 							});
@@ -139,12 +144,14 @@ LayerSchema.statics = {
 						}, function(err){
 							donePopulateContents(err, populatedContents);
 						});					
-					}
-
+					}           
+					
+					var populatedFeatures;
+					
 					async.parallel([
 							function(cb){
-								populateFeaturesCreator(layer.features, function(err, features){
-									layer.features = features;
+								populateFeatures(layer.features, function(err, features){
+									populatedFeatures = features;
 									cb(err)
 								})
 							},
@@ -155,6 +162,11 @@ LayerSchema.statics = {
 								})
 							}
 					], function(err){
+						// This avoids layer document to missed populated features
+						// as mongoose clears out properties not explicitely declared at
+						// the model.
+						layer = layer.toObject();
+						layer.features = populatedFeatures;
 						doneLoading(err, layer);
 					});
 				}

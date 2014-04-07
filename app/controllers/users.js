@@ -57,7 +57,6 @@ exports.layers = function(req, res, next) {
 	}
 
 	Layer.list(options, function(err, layers) {
-		console.log(err);
 		if (err) return res.json(400, err);
 		Layer.count(options.criteria).exec(function (err, count) {
 			if (!err) {
@@ -246,7 +245,6 @@ exports.create = function (req, res) {
 				return res.json(messages.success('Usuário criado com sucesso.'))
 			} else {
 				mailer.welcome(user, req.body.callback_url, function(err){
-					console.log(err);
 					if (err) 
 						return res.json(messages.errors(err));
 					else 
@@ -304,7 +302,6 @@ exports.update = function (req, res) {
 				} else if (!anotherUser) {
 					mailer.changeEmail(user, req.body.email, req.body.callback_url, function(err){
 						if (err) {
-							console.log(err)
 							return res.json(400, messages.error("Erro ao enviar e-mail de alteração de endereço."));
 						} else {
 							return res.json(messages.success('Um e-mail foi enviado para confirmação do novo endereço.'));

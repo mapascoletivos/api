@@ -6,7 +6,9 @@
 var 
 	mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
-	Area = mongoose.model('Area');
+	Area = mongoose.model('Area'),
+	Content = mongoose.model('Content'),
+	_ = require('underscore');
 
 /**
  * Feature schema
@@ -14,7 +16,6 @@ var
 
 var FeatureSchema = new Schema({
 	creator: { type: Schema.ObjectId, ref: 'User', required: true},
-	contents: [{ type: Schema.ObjectId, ref: 'Content'}],	
 	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
 	properties: {},
 	title: { type: String, required: true },
@@ -39,52 +40,55 @@ FeatureSchema.index({ loc: '2dsphere' })
  * Pre and Post middleware
  */
 
- FeatureSchema.pre('save', function(next){
- 	var self = this;
+FeatureSchema.pre('save', function(next){
+	var self = this;
 
- 	if (self.isDirectModified('geometry')) {
-	 	Area.whichContains(self.geometry, function(err, areas){
-	 		if (err){
-	 			console.log(err);
+	if (self.isDirectModified('geometry')) {
+	Area.whichContains(self.geometry, function(err, areas){
+		if (err){
+			console.log(err);
 
 				// Address lookup shouldn't block feature save,
 				// so next() is called without the error
 				next();	
 			} 
-	 		else {
+			else {
 				delete self.address
 				self.address = areas;
 				next();
-	 		}
+			}
 	 	}) 		
  	} else {
  		next();
  	}
-})
+});                  
 
+FeatureSchema.virtual('contents').get(function () {
+  return this._contents;
+}).set(function(contents) {
+  this._contents;
+});
 
 /**
  * Methods
  */
 
 FeatureSchema.methods = {
-	addContentAndSave: function(content, done) {
-		this.contents.addToSet(content) // = _.union(this.contents, [content]);
-		this.save(done);
-	},
-	removeContentAndSave: function(content, done){
-		var self = this;
-		
-		// transform newFeaturesArray to a array of ids, if not already
-		if (typeof(content['_id']) != 'undefined') { 
-			content = content._id;
-		}
-
-		self.contents.pull({ _id: content }); // _.without(self.contents, _.findWhere(self.contents, content));
-		
-		self.save(done);
+	populateContents: function(donePopulate){
+		var 
+			self = this;
+		Content.find({features: {$in: [self._id]}}, function(err, contents){
+			if (err) cb(err)
+			else {          
+				contentsId = _.map(contents, function(ct){return ct._id});
+				var feature = self.toObject();
+				feature.contents = contentsId;
+				donePopulate(null, feature);
+			}
+		});
 	}
 }
+
 
 /**
  * Statics
@@ -93,14 +97,19 @@ FeatureSchema.methods = {
 FeatureSchema.statics = {
 
 	load: function (id, cb) {
-		this.findOne({ _id : id })
+		var self = this;
+		
+		self.findOne({ _id : id })
 			.populate('creator', 'name username email')
 			.populate('address')
-			.populate('contents')
-			.exec(cb)
+			.exec(function(err, feature){
+				if (err) cb(err);
+				else 
+					feature.populateContents(cb);
+			});
 	},
 	
-	list: function (options, cb) {
+	list: function (options, doneList) {
 		var criteria = options.criteria || {}
 
 		this.find(criteria)
@@ -108,7 +117,24 @@ FeatureSchema.statics = {
 			.sort({'createdAt': -1}) // sort by date
 			.limit(options.perPage)
 			.skip(options.perPage * options.page)
-		.exec(cb)
+		.exec(function(err, features){
+			if (err) doneList(err);
+			else {
+				var populatedFeatures = []
+				async.each(features, function(feature, callback){
+					self.populateContents(feature, function(err, f){
+						if (err) callback(err);
+						else {
+							populatedFeatures.push(f);
+							callback();
+						}
+					})
+				},function(err){
+					if (err) doneList(err)
+					else doneList(null, populatedFeatures);
+				})
+			}
+		})
 	}	
 	
 }

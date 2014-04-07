@@ -14,7 +14,7 @@ var mongoose = require('mongoose'),
  * Load
  */
 
-exports.load = function(req, res, next, id){
+exports.load = function(req, res, next, id) {
 	Content.load(id, function (err, content) {
 		if (err) {
 			return next(err)
@@ -28,48 +28,6 @@ exports.load = function(req, res, next, id){
 		} else {
 			req.content = content;
 			next();
-		}
-	});
-}
-
-/**
- * Create a content
- */
-
-exports.create = function (req, res) {
-
-	// clear field from body that should be handled internally
-	delete req.body['creator'];
-
-	var 
-		content = new Content(req.body)
-		newFeaturesArray = req.body.features;
-		
-	// associate content to user originating request
-	content.creator = req.user;
-	
-	Layer.findById(req.body['layer'], function(err, layer){
-		if (err) res.json(400, utils.errorMessages(err.errors || err));
-		else {
-			layer.contents.addToSet(content);
-			layer.save(function(err){
-				if (err) res.json(400, utils.errorMessages(err.errors || err));
-				else {
-					content.updateSirTrevor(req.body.sirTrevorData, function(err, ct){
-						if (err) res.json(400, utils.errorMessages(err.errors || err));
-						else
-							ct.setFeatures(req.body.features, function(err,ct){
-								if (err) res.json(400, utils.errorMessages(err.errors || err));
-								else
-									content.save(function(err){
-										// console.log('salvou o content assim\n'+content);
-										if (err) res.json(400, utils.errorMessages(err.errors || err));
-										else res.json(content);
-									});
-							});
-					});
-				}
-			});
 		}
 	});
 }
@@ -108,11 +66,41 @@ exports.index = function(req, res){
 }
 
 /**
- * Show
+ * Create a content
  */
 
-exports.show = function(req, res){
-	return res.json(req.content);
+exports.create = function (req, res) {
+
+	// clear field from body that should be handled internally
+	delete req.body['creator'];
+
+	var 
+		content = new Content(req.body)
+		newFeaturesArray = req.body.features;
+		
+	// associate content to user originating request
+	content.creator = req.user;
+	
+	Layer.findById(req.body['layer'], function(err, layer){
+		if (err) res.json(400, utils.errorMessages(err.errors || err));
+		else {
+			layer.contents.addToSet(content);
+			layer.save(function(err){
+				if (err) res.json(400, utils.errorMessages(err.errors || err));
+				else {
+					content.updateSirTrevor(req.body.sirTrevorData, function(err, ct){
+						if (err) res.json(400, utils.errorMessages(err.errors || err));
+						else
+							content.save(function(err){
+								// console.log('salvou o content assim\n'+content);
+								if (err) res.json(400, utils.errorMessages(err.errors || err));
+								else res.json(content);
+							});
+					});
+				}
+			});
+		}
+	});
 }
 
 /**
@@ -128,24 +116,28 @@ exports.update = function(req, res){
 	
 	delete req.body['creator'];
 	delete req.body.layer;
-	delete req.body.features;
 
 	content = extend(content, req.body)
 
 	content.updateSirTrevor(updatedSirTrevor, function(err, ct){
 		if (err) res.json(400, utils.errorMessages(err.errors || err));
 		else
-			ct.setFeatures(updatedFeatures, function(err, ct){
+			ct.save(function(err){
 				if (err) res.json(400, utils.errorMessages(err.errors || err));
-				else
-					ct.save(function(err){
-						if (err) res.json(400, utils.errorMessages(err.errors || err));
-						else res.json(ct);
-					});
+				else res.json(ct);
 			});
 	});
-
 }
+
+/**
+ * Show
+ */
+
+exports.show = function(req, res){
+	return res.json(req.content);
+}
+
+
 
 /**
  * Destroy content
