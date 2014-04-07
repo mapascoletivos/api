@@ -70,27 +70,6 @@ FeatureSchema.virtual('contents').get(function () {
 });
 
 /**
- * Methods
- */
-
-FeatureSchema.methods = {
-	populateContents: function(donePopulate){
-		var 
-			self = this;
-		Content.find({features: {$in: [self._id]}}, function(err, contents){
-			if (err) cb(err)
-			else {          
-				contentsId = _.map(contents, function(ct){return ct._id});
-				var feature = self.toObject();
-				feature.contents = contentsId;
-				donePopulate(null, feature);
-			}
-		});
-	}
-}
-
-
-/**
  * Statics
  */
 
@@ -102,11 +81,7 @@ FeatureSchema.statics = {
 		self.findOne({ _id : id })
 			.populate('creator', 'name username email')
 			.populate('address')
-			.exec(function(err, feature){
-				if (err) cb(err);
-				else 
-					feature.populateContents(cb);
-			});
+			.exec(cb);
 	},
 	
 	list: function (options, doneList) {

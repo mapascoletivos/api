@@ -6,11 +6,13 @@
 var mongoose = require('mongoose'), 
 	Layer = mongoose.model('Layer'),
 	Feature = mongoose.model('Feature'),
+	Content = mongoose.model('Content'),
 	User = mongoose.model('User'),
 	mailer = require('../mailer'),
 	utils = require('../../lib/utils'),
 	extend = require('util')._extend,
-	_ = require('underscore');
+	_ = require('underscore'),
+	async = require('async');
 	
 /**
  * Load
@@ -71,7 +73,34 @@ exports.index = function(req, res){
  */
 
 exports.show = function(req, res){
-	res.json(req.layer);
+	var 
+		layer = req.layer.toObject(),
+		features = [];
+		
+	
+	// This step is needed to populate features with related contents
+	// as they are not part of feature model.
+	async.each(layer.features, function(feature, callback){
+		Content
+			.find({features: {$in: [feature._id]}})
+			.select('_id')
+			.exec(function(err, contents){
+				if (err) callback(err);
+				else {
+					if (contents)
+						feature.contents = _.map(contents, function(ct){return ct._id});
+					else 
+						feature.contents = [];
+					features.push(feature)
+					callback();
+				}
+			});
+	}, function(err){
+		layer.features = features;
+		res.json(layer);
+	});
+
+
 }
 
 /**

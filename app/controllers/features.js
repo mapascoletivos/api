@@ -7,6 +7,7 @@ var
 	_ = require('underscore'),
 	mongoose = require('mongoose'), 
 	Feature = mongoose.model('Feature'),
+	Content = mongoose.model('Content'),
 	extend = require('util')._extend,
 	messages = require('../../lib/messages'),
 	async = require('async');
@@ -91,7 +92,24 @@ exports.create = function (req, res) {
  */
 
 exports.show = function(req, res){
-	res.json(req.feature)
+	var feature = req.feature.toObject();
+	
+	// This step is needed to populate features with related contents
+	// as they are not part of feature model.
+	Content
+		.find({features: {$in: [feature._id]}})
+		.exec(function(err, contents){
+			if (err) callback(err);
+			else {
+				if (contents)
+					feature.contents = _.map(contents, function(ct){return ct._id});
+				else 
+					feature.contents = [];
+					
+				res.json(feature)
+			}
+		});
+	
 }
 
 /**
