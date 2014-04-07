@@ -99,7 +99,6 @@ LayerSchema.statics = {
 			.populate('creator', 'name username email')
 			.populate('contributors', 'name username email')
 			.populate('features')
-			.populate('features.creator')
 			.populate('contents')
 			.exec(function(err, layer){
 				
@@ -118,14 +117,8 @@ LayerSchema.statics = {
 										feature = ft;
 										if (err) cb(err)
 										else {
-
-											feature.populateContents(function(err, feature){
-												if (err) cb(err)
-												else {
-													populatedFeatures.push(feature);
-													cb();
-												}
-											});
+											populatedFeatures.push(feature);
+											cb();
 										}
 									});
 							});
@@ -146,8 +139,6 @@ LayerSchema.statics = {
 						});					
 					}           
 					
-					var populatedFeatures;
-					
 					async.parallel([
 							function(cb){
 								populateFeatures(layer.features, function(err, features){
@@ -162,11 +153,6 @@ LayerSchema.statics = {
 								})
 							}
 					], function(err){
-						// This avoids layer document to missed populated features
-						// as mongoose clears out properties not explicitely declared at
-						// the model.
-						layer = layer.toObject();
-						layer.features = populatedFeatures;
 						doneLoading(err, layer);
 					});
 				}
