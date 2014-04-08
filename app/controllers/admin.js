@@ -39,6 +39,9 @@ exports.index = function (req, res) {
 
 exports.settings = function(req, res) {
 	Settings.findOne(function(err, settings){
+		if (!settings)
+			settings = { site: {}}
+		
 		res.render('admin/settings', {
 			messages: err ? messages.errors(err) : '',
 			site: settings.site
