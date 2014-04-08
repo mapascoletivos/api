@@ -11,7 +11,6 @@ var mongoose = require('mongoose');
 
 var 
 	home = require('home'),
-	users = require('users'),
 	token = require('token'),
 	accessToken = require('access_token')
 	maps = require('maps'),
@@ -19,6 +18,8 @@ var
 	features = require('features'),
 	contents = require('contents'),
 	images = require('images'),
+	users = require('users'),
+	admin = require('admin'),
 	auth = require('./middlewares/authorization');
 
 /**
@@ -57,6 +58,7 @@ module.exports = function (app, passport) {
 	 * Token routes
 	 **/
 	app.get('/activate_account/:tokenId', token.activateAccount);
+	app.get('/accept_invitation/:tokenId', token.acceptInvitation);	
 	app.get('/new_password/:tokenId', token.newPasswordForm);
 	app.post('/password_reset/:tokenId', token.newPassword);
 	app.post('/password_needed/:tokenId', token.newPassword);
@@ -141,6 +143,28 @@ module.exports = function (app, passport) {
 	// feature x content
 	app.put(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, features.addContent);
 	app.del(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, features.removeContent);
+
+	/**
+	 * Admin routes
+	 */
+	app.get('/admin/login', admin.login);
+	app.get('/admin/logout', admin.logout);
+	app.post('/admin/session',
+			passport.authenticate('local', {
+				failureRedirect: '/admin/login',
+				failureFlash: 'Invalid email or password.'
+			}), admin.session);
+	
+	app.get('/admin', auth.isAdmin, admin.index);
+
+	// Global settings
+	app.get('/admin/settings', auth.isAdmin, admin.settings);
+	app.post('/admin/settings', auth.isAdmin, admin.update);
+
+	app.get('/admin/users', admin.users);
+	app.get('/admin/users/invite', admin.inviteForm);
+	app.post('/admin/users/invite', admin.invite);
+	app.get('/admin/users/permissions', admin.permissions);
 
 	/*
 	 * All other routes enabled for Angular app (no 404)

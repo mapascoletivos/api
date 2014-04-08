@@ -1,0 +1,19 @@
+doctype html
+html
+	block css
+		link(rel="stylesheet", href="/css/admin.css")
+	include ../includes/head
+		body.admin-area
+			include ../includes/header
+			section#admin
+				header.admin-head
+					.container
+						.twelve.columns
+							h1 Administração
+				.container
+					.four.columns
+						nav#admin-nav.row
+							include ../admin/menu
+					.eight.columns
+						div.admin-content.row
+							block content

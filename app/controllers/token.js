@@ -6,7 +6,8 @@
 var 
 	_ = require('underscore'),
 	mongoose = require('mongoose'), 
-	Token = mongoose.model('Token');
+	Token = mongoose.model('Token'),
+	User = mongoose.model('User');
 	
 /**
  * Load
@@ -40,7 +41,7 @@ exports.load = function(req, res, next, id){
 exports.activateAccount = function(req, res){
 	var
 		token = req.token;
-	
+		
 	// invalid route for token
 	if (token.type != 'activateAccount') {
 		return res.render('tokens/index', {errors: ['Token inválido.']});	
@@ -87,6 +88,70 @@ exports.activateAccount = function(req, res){
 		})
 	}
 }
+
+/**
+ * Accept Invitation
+ */
+
+exports.acceptInvitation = function(req, res){
+	var
+		token = req.token;
+		
+	console.log(token);
+	
+	// invalid route for token
+	if (token.type != 'acceptInvitation') {
+		return res.render('tokens/index', {errors: ['Token inválido.']});	
+	} else {
+		mongoose.model('User').findOne({email: token.data.user.email}, function(err, user){
+			if (err) {
+				return res.render('tokens/index', {
+					errors: ['Não foi possível ativar este usuário.'],
+					callbackUrl: token.callbackUrl,					
+					autoRedirect: false
+				});
+			}
+			
+			if (!user) {
+				user = new User(token.data.user);
+			}
+			
+			user.status = 'active';
+			user.needsEmailConfirmation = false;
+
+			user.save(function(err){
+				if (err) {
+					console.log(err);
+					return res.render('tokens/index', {
+						errors: ['Não foi possível ativar este usuário.'],
+						callbackUrl: token.callbackUrl,
+						autoRedirect: false
+					});
+				}
+				else {
+
+					token.expired = true;
+					token.save(function(err){
+						console.log(err);
+						if (err)
+							return res.render('tokens/index', {
+								errors: ['Houve um erro de gravação do token.'],
+								callbackUrl: token.callbackUrl,
+								autoRedirect: false
+							})
+						else
+							return res.render('tokens/index', {
+								success: ['Conta ativada com sucesso, aguarde redirecionamento.'],
+								callbackUrl: token.callbackUrl,
+								autoRedirect: true
+							});
+					});
+				}
+			});
+		})
+	}
+}
+
 
 
 /**

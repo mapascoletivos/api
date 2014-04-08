@@ -1,0 +1,107 @@
+/*
+ * COLORS
+ */
+
+@green: #5cc851;
+@light-green: lighten(@green, 10%);
+@dark-green: darken(@green, 10%);
+
+@red: #F05656;
+@light-red: lighten(@red, 10%);
+@dark-red: darken(@red, 10%);
+
+@blue: #4e93d4;
+@light-blue: lighten(@blue, 10%);
+@dark-blue: darken(@blue, 10%);
+
+.admin-head {
+	padding: 40px 0;
+}
+
+#admin-nav {
+	a {
+		text-decoration: none;
+	}
+	> ul {
+		margin: 0;
+		padding: 0;
+		border-bottom: 1px solid #eee;
+		> li {
+			margin: 0;
+			padding: 0;
+			> a {
+				display: block;
+				padding: 10px;
+				background: @blue;
+				font-weight: 600;
+				border: 1px solid @dark-blue;
+				color: #fff;
+				&:hover {
+					border: 1px solid @blue;
+					background: @light-blue;
+				}
+			}
+			ul {
+				margin: 0;
+				padding: 0;
+				li {
+					margin: 0;
+					padding: 0;
+					a {
+						padding: 10px;
+						display: block;
+						color: #555;
+						border-bottom: 1px solid #eee;
+						border-left: 1px solid #eee;
+						border-right: 1px solid #eee;
+						&:hover {
+							background: #fefefe;
+						}
+					}
+					&:last-child a {
+						border-bottom: 0;
+					}
+				}
+			}
+		}
+	}
+}
+
+table.form {
+	width: 100%;
+	tr {
+		border-bottom: 1px dotted #f0f0f0;
+		&:last-child {
+			border-bottom: 0;
+		}
+		td {
+			padding: 20px 0;
+			vertical-align: top;
+			&.label {
+				width: 30%;
+				min-width: 150px;
+				border-right: 1px dotted #f0f0f0;
+				padding-right: 20px;
+				label {
+					font-weight: 600;
+				}
+			}
+			&.input {
+				padding-left: 20px;
+			}
+			label {
+				cursor: pointer;
+			}
+			input {
+				border: 0;
+			}
+			textarea,
+			input[type="text"] {
+				width: 100%;
+				border: 0;
+				padding: 0;
+				margin: 0;
+			}
+		}
+	}
+}

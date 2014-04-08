@@ -3,25 +3,17 @@ header#mast-header
 		.container
 			.six.columns
 				h1
-					a(class="brand" href="/" target="_self") Mapas Coletivos
-						img(alt="Mapas Coletivos" src="/img/logo-small.png")
+					a(class="brand" href="/admin" target="_self") Administrative area
+
 			.six.columns
 				ul#mast-nav
 					- if (req.isAuthenticated())
 						li
-							a(href="/explore", title="Explorar") Explorar
-						li
-							a(href="/dashboard", title="Dashboard")
-								span.lsf &#xE055;
-								| Painel de controle
-						li
-							a(href="/logout", title="Sair" target="_self")
+							a(href="/admin/logout", title="Logout" target="_self")
 								span.lsf &#xE088;
-								| Sair
+								| Logout
 					- else
-						li
-							a(href="/explore", title="Explorar") Explorar
 						li 
-							a.login(href="/login" target="_self")
+							a.login(href="/admin/login" target="_self")
 								span.lsf &#xE087;
-								| Entrar
+								| Login

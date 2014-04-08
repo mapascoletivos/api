@@ -249,6 +249,48 @@ var Notify = {
 				});
 			}
 		});
+	},
+	
+	invite: function(options, callback) {
+		var
+			Token = mongoose.model('Token'),
+			token = new Token({
+				_id: Token.generateId(),
+				type: 'acceptInvitation',
+				data: {user: options.user},
+				callbackUrl: options.callbackUrl,
+				expiresAt: moment().add('day', 1).toDate()
+			});
+
+
+		token.save(function(err){
+			if (err)
+				callback(err);
+			else {
+				jade.renderFile(tplPath + '/user_invitation.jade', { token: token, appUrl: config.appUrl }, function(err, file) {
+					if (err)
+						callback(err);
+					else {
+
+						var 
+							sendConfiguration = _.extend(mailConfig, {
+								subject: 'Convite ao mapeamento',
+								to: options.user.email, 
+								html: file
+							});
+						
+						transport.sendMail(sendConfiguration, function(err, response){
+							if (err) 
+								callback(err);
+							else {
+								console.log("Message sent: " + response.message);
+								callback();
+							}
+						});
+					}
+				});
+			}
+		});
 	}
 
 }

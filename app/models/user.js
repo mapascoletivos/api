@@ -16,7 +16,7 @@ var mongoose = require('mongoose'),
  */
 
 var UserSchema = new Schema({
-	isAdmin: { type: Boolean, default: false },
+	role: { type: String, enum: ['admin', 'editor', 'collaborator'], default: 'collaborator'},
 	name: { type: String, default: '' },
 	email: { type: String, default: '', validate: [validate.email, 'Invalid e-mail address.'] },
 	token: { type: String },
@@ -116,7 +116,7 @@ UserSchema.methods = {
 			username: this.username,
 			email: this.email,
 			status: this.status,
-			isAdmin: this.isAdmin,
+			role: this.role,
 			bio: this.bio
 		};
 
@@ -207,8 +207,12 @@ UserSchema.static({
 
 	load: function (options, cb) {
 		this.findOne(options)
-			.select('email name username bio status needsEmailsConfirmation isAdmin')
+			.select('email name username bio status needsEmailsConfirmation role')
 			.exec(cb)
+	},
+	
+	getAdmin: function(done) {
+		this.findOne({role: 'admin'}, done);
 	}
 
 

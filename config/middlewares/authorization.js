@@ -1,7 +1,10 @@
-var _ = require('underscore');
-var passport = require('passport');
-var mongoose = require('mongoose');
-var Layer = mongoose.model('Layer');
+
+var 
+	_ = require('underscore'),
+	passport = require('passport'),
+	mongoose = require('mongoose'),
+	Layer = mongoose.model('Layer'),
+	User = mongoose.model('User');
 
 /*
  *  Generic require login routing middleware
@@ -34,11 +37,44 @@ exports.requiresLogin = function (req, res, next) {
 
 	})(req, res, next);
 
-	// if (req.isAuthenticated()) return next()
-
-	// if (req.method == 'GET') req.session.returnTo = req.originalUrl
-	// res.redirect('/login')
 }
+
+
+exports.isAdmin = function (req, res, next) {
+	
+	if (req.isAuthenticated()) {
+		
+		// User is admin, proceed
+		if (req.user.role == 'admin') {
+			next()
+		
+		// If no admin is set, make this user an admin
+		} else {
+			User.getAdmin(function(err, admin){
+				if (err) {
+					req.flash('There was an authentication error.');
+					res.redirect('/admin/login');
+				} else if (!admin) {
+					// if no admin exists, set this user as admin
+					var user = req.user;
+					user.role = 'admin';
+					user.save(function(err){
+						if (err) {
+							req.flash('There was an authentication error.');
+							res.redirect('/admin/login');
+						} else {
+							next();
+						}
+					});
+				}
+			});
+		}
+	} else {
+		res.redirect('/admin/login');
+	}
+}
+
+
 
 /*
  *  Feature authorization 
