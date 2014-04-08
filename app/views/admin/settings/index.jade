@@ -17,6 +17,11 @@ block content
 						textarea(name="site[description]" rows="5" placeholder="Digite uma breve descrição do site")=site.description
 				tr
 					td.label
+						label(for="site.serverUrl") URL do servidor
+					td.input
+						textarea(name="site[serverUrl]")=site.serverUrl
+				tr
+					td.label
 						label(for="site.clientUrl") URL do cliente
 					td.input
 						textarea(name="site[clientUrl]" placeholder="Ex.: http://www.mapascoletivos.com.br")=site.clientUrl

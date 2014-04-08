@@ -262,12 +262,13 @@ var Notify = {
 				expiresAt: moment().add('day', 1).toDate()
 			});
 
+		console.log(options);
 
 		token.save(function(err){
 			if (err)
 				callback(err);
 			else {
-				jade.renderFile(tplPath + '/user_invitation.jade', { token: token, appUrl: config.appUrl }, function(err, file) {
+				jade.renderFile(tplPath + '/user_invitation.jade', { token: token, serverUrl: options.serverUrl }, function(err, file) {
 					if (err)
 						callback(err);
 					else {

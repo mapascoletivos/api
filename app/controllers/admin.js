@@ -112,6 +112,7 @@ exports.invite = function(req, res, next) {
 							email: req.body.user.email, 
 							role: req.body.user.role
 						},
+						serverUrl: req.app.locals.site.serverUrl,
 						callbackUrl: req.app.locals.site.clientUrl + '/login'
 				}
 					
