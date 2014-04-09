@@ -7,33 +7,28 @@ block content
 			table.form
 				tr
 					td.label
-						label(for="site.title") Título do site
+						label(for="settings.title") Título do site
 					td.input
-						input(name="site[title]" value=site.title type="text" placeholder="Digite o título do site")=site.title
+						input(name="settings[title]" value=settings.title type="text" placeholder="Digite o título do site")=settings.title
 				tr
 					td.label
-						label(for="site.description") Descrição do site
+						label(for="settings.description") Descrição do site
 					td.input
-						textarea(name="site[description]" rows="5" placeholder="Digite uma breve descrição do site")=site.description
+						textarea(name="settings[description]" rows="5" placeholder="Digite uma breve descrição do site")=settings.description
 				tr
 					td.label
-						label(for="site.serverUrl") URL do servidor
+						label(for="settings.serverUrl") URL do servidor
 					td.input
-						textarea(name="site[serverUrl]")=site.serverUrl
+						textarea(name="settings[serverUrl]")=settings.serverUrl
 				tr
 					td.label
-						label(for="site.clientUrl") URL do cliente
+						label(for="settings.clientUrl") URL do cliente
 					td.input
-						textarea(name="site[clientUrl]" placeholder="Ex.: http://www.mapascoletivos.com.br")=site.clientUrl
+						textarea(name="settings[clientUrl]" placeholder="Ex.: http://www.mapascoletivos.com.br")=settings.clientUrl
 				tr
 					td.label
-						label(for="site.baselayer") Camada base padrão
+						label(for="settings.baselayer") Camada base padrão
 					td.input
-						input(name="site[baselayer]" value=site.baselayer type="text" placeholder="URL em TileLayer da camada base")
-				tr
-					td.label
-						label(for="site.allowImports") Permitir importações (CSV, GeoJSON, KML):
-					td.input
-						input(type="checkbox" name="site[allowImports]" checked=site.allowImports)
+						input(name="settings[baselayer]" value=settings.baselayer type="text" placeholder="URL em TileLayer da camada base")
 						
 			input.btn.btn-primary(type='submit' value="Update")

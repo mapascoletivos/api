@@ -21,3 +21,9 @@
 		ul
 			- each warn in warning
 				li!= warn
+
+- if (typeof messages != 'undefined' && messages.length)
+	.fade.in.alert.alert-block.alert-error
+		ul
+			- each message in messages
+				li!= message.text

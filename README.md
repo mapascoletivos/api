@@ -1,21 +1,17 @@
-# Mapas Coletivos
- 
-Mapas Coletivos is a collaborative mapping platform: 
+# Yby
 
-http://www.mapascoletivos.com.br 
- 
+Yby is a API server for online collaborative mapping.
 
-## Development
+Projects running Yby:
 
-Requirements:
+* http://www.mapascoletivos.com.br 
+* http://agua.infoamazonia.org
 
-* [Node.js](http://nodejs.org/) v0.10.x 
-* [npm](http://www.mongodb.org/) v1.2.x 
-* [MongoDB](http://www.mongodb.org/)
+## Development setup
 
-Clone locally: `git clone git@github.com:oeco/mapascoletivos.git`
+Install [Node.js](http://nodejs.org) and [MongoDB](http://www.mongodb.org).
 
-Install: `npm install`
+Clone the repository locally and run `npm install`.
 
 Copy `.env.example` to `.env` and fill authentication credentials for third party services, like SMTP, Facebook, Twitter, Google. 
 

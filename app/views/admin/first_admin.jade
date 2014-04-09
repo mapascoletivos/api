@@ -1,0 +1,35 @@
+doctype html
+html
+	block css
+		link(rel="stylesheet", href="/css/admin.css")
+	include ../includes/head
+		body.admin-login
+		
+		section#login
+			.login-content
+				h1 Administrative area
+				include ../includes/messages
+				p You don't have an admin yet, please provide information below to create one:
+				.login-form		
+					form.form-horizontal(action="/admin/first_admin", method="post", role="form")
+						input(type='hidden', name='_csrf', value="#{csrf_token}")
+
+						p.col-sm-offset-2.error= message
+
+						.form-group
+							label.col-sm-2.control-label(for="name") Name
+							.col-sm-10
+								input#email.form-control(type="name", placeholder="Name", name="name")
+
+
+						.form-group
+							label.col-sm-2.control-label(for="email") Email
+							.col-sm-10
+								input#email.form-control(type="email", placeholder="Email", name="email")
+
+						.form-group
+							label.col-sm-2.control-label(for="password") Password
+							.col-sm-10
+								input#password.form-control(type="password", placeholder="Password", name="password")
+
+						input.btn.btn-primary(type='submit' value="Create admin")

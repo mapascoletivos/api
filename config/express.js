@@ -10,6 +10,7 @@ var pkg = require('../package');
 var flash = require('connect-flash');
 var env = process.env.NODE_ENV || 'development';
 var mongoose = require('mongoose');
+var Settings = mongoose.model('Settings');
 
 
 /*!
@@ -51,9 +52,6 @@ module.exports = function (app, config, passport) {
 	}
 
 	app.configure(function () {
-
-		// // Allow cross domain
-		// app.use(allowCrossDomain);
 
 		// setup less
 		app.use(lessMiddleware({
@@ -120,12 +118,12 @@ module.exports = function (app, config, passport) {
 		})
 
 		// Load settings from DB
-		mongoose.model('Settings').findOne(function(err, settings){
-			if (!err && settings) {
+		Settings.load(function(err, settings){
+			if (!err) {
 				settings = settings.toObject();
 				delete settings._v;
 				delete settings._id;
-				app.locals(settings);
+				app.locals({site: settings});
 			}
 		})
 

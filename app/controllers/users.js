@@ -231,9 +231,9 @@ exports.create = function (req, res) {
 		preValidationErrors.push('Password should have at least 6 characters.');
 
 	// Avoid e-mail confirmation at development environment
-	if (process.env.NODE_ENV == 'development') {
-		user.needsEmailConfirmation = false;
-	}
+	// if (process.env.NODE_ENV == 'development') {
+	// 	user.needsEmailConfirmation = false;
+	// }
 
 	if (preValidationErrors.length > 0){
 		return res.json(400, messages.errorsArray(preValidationErrors));

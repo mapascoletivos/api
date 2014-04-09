@@ -66,6 +66,13 @@ module.exports = function (app, passport) {
 	app.get('/email_change/:tokenId', token.emailChange);
 	app.param('tokenId', token.load);
 	
+	
+	/** 
+	 * API ROUTES
+	 **/
+	
+	app.get(apiPrefix + '/settings', admin.apiSettings);
+	
 	/** 
 	 * Access token 
 	 **/
@@ -145,8 +152,12 @@ module.exports = function (app, passport) {
 	app.del(apiPrefix + '/features/:featureId/contents/:contentId', auth.requiresLogin, features.removeContent);
 
 	/**
-	 * Admin routes
+	 * ADMIN ROUTES
 	 */
+		
+	app.get('/admin/first_admin', admin.firstAdminForm);
+	app.post('/admin/first_admin', admin.firstAdmin);
+
 	app.get('/admin/login', admin.login);
 	app.get('/admin/logout', admin.logout);
 	app.post('/admin/session',
@@ -166,9 +177,13 @@ module.exports = function (app, passport) {
 	app.post('/admin/users/invite', admin.invite);
 	app.get('/admin/users/permissions', admin.permissions);
 
+	app.get('/', function(req, res){
+		res.redirect('/admin');
+	});
+
 	/*
 	 * All other routes enabled for Angular app (no 404)
-	 */
+	 */	
 	app.get('/*', home.app);
 
 }
