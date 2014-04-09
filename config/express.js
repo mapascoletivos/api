@@ -30,6 +30,8 @@ module.exports = function (app, config, passport) {
 			next()
 		})
 	}
+	
+	
 
 	app.set('showStackError', true)
 
@@ -40,7 +42,7 @@ module.exports = function (app, config, passport) {
 	app.set('view engine', 'jade')
 
 	var allowCrossDomain = function(req, res, next) {
-		if(config.allowedDomains) {
+		if (config.allowedDomains) {
 			res.header('Access-Control-Allow-Origin', config.allowedDomains);
 			res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
 			res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
@@ -49,6 +51,9 @@ module.exports = function (app, config, passport) {
 	}
 
 	app.configure(function () {
+
+		// // Allow cross domain
+		// app.use(allowCrossDomain);
 
 		// setup less
 		app.use(lessMiddleware({
@@ -92,7 +97,7 @@ module.exports = function (app, config, passport) {
 		// View helpers
 		app.use(helpers(pkg.name))
 
-		// Allow cross domain
+		// Setup CORS
 		app.use(allowCrossDomain);
 
 		// routes should be at the last
