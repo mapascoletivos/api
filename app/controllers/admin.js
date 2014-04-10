@@ -226,6 +226,31 @@ exports.invite = function(req, res, next) {
 }
 
 
-exports.permissions = function(req, res, next) {
-	res.render('admin/users/permissions');
+exports.roles = function(req, res, next) {
+	User.find({}, function(err, users){
+		if (err) res.render('500');
+		else res.render('admin/users/roles', {users: users});
+	})
+}
+
+exports.changeRole = function(req, res, next) {
+	var user = req.user;
+	
+	User.findById(req.body.user_id, function(err, user){
+		if (err || !user) res.render('500');
+		else {
+			user.role = req.body.role;
+			user.save(function(err){
+				if (err) res.render('500');
+				else {
+					User.find({}, function(err, users){
+						if (err) res.render('500');
+						else res.render('admin/users/roles', {users: users});
+					})
+				}
+			})
+		}
+	});
+	
+
 }

@@ -181,10 +181,11 @@ module.exports = function (app, passport) {
 	app.get('/admin/settings', auth.isAdmin, admin.settings);
 	app.post('/admin/settings', auth.isAdmin, admin.update);
 
-	app.get('/admin/users', admin.users);
-	app.get('/admin/users/invite', admin.inviteForm);
-	app.post('/admin/users/invite', admin.invite);
-	app.get('/admin/users/permissions', admin.permissions);
+	app.get('/admin/users', auth.isAdmin, admin.users);
+	app.get('/admin/users/invite', auth.isAdmin, admin.inviteForm);
+	app.post('/admin/users/invite', auth.isAdmin, admin.invite);
+	app.get('/admin/users/roles', auth.isAdmin, admin.roles);
+	app.post('/admin/users/role', auth.isAdmin, admin.changeRole);	
 
 	app.get('/', function(req, res){
 		res.redirect('/admin');
