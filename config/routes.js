@@ -55,12 +55,23 @@ module.exports = function (app, passport) {
 	/** 
 	 * Token routes
 	 **/
+	
+	// activate account
 	app.get('/activate_account/:tokenId', token.activateAccount);
-	app.get('/accept_invitation/:tokenId', token.acceptInvitation);	
+
+	// accept invitation
+	app.get('/accept_invitation/:tokenId', token.acceptInvitationForm);
+	app.post('/accept_invitation/:tokenId', token.acceptInvitation);	
+
+	// define new passord
 	app.get('/new_password/:tokenId', token.newPasswordForm);
 	app.post('/password_reset/:tokenId', token.newPassword);
 	app.post('/password_needed/:tokenId', token.newPassword);
+	
+	// migrate account
 	app.get('/migrate_account/:tokenId', token.migrateAccount);
+	
+	// change e-mail
 	app.get('/email_change/:tokenId', token.emailChange);
 	app.param('tokenId', token.load);
 	

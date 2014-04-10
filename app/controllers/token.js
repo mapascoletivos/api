@@ -93,6 +93,22 @@ exports.activateAccount = function(req, res){
  * Accept Invitation
  */
 
+exports.acceptInvitationForm = function(req, res){
+	var
+		token = req.token;
+		
+	// invalid route for token
+	if (token.type != 'acceptInvitation') {
+		return res.render('tokens/index', {errors: ['Token inválido.']});
+	} else {
+		return res.render('tokens/accept_invitation', {
+			token: token
+		});
+	}
+
+	
+}
+
 exports.acceptInvitation = function(req, res){
 	var
 		token = req.token;
@@ -114,7 +130,7 @@ exports.acceptInvitation = function(req, res){
 				user = new User(token.data.user);
 			}
 			
-			user.status = 'active';
+			user.password = req.body.password;
 			user.needsEmailConfirmation = false;
 
 			user.save(function(err){

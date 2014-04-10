@@ -213,7 +213,7 @@ exports.logout = function(req, res, next) {
 			at.expired = true;
 			at.save(function(err){
 				if (err) return res.json(400, err);
-				else return res.json(messages.success('Logout successfull.'));
+				else return res.json(messages.success('Logout successful.'));
 			});
 		});
 	} else {

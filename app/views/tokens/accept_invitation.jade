@@ -9,11 +9,11 @@ block content
 			h1=title
 			include ../includes/messages
 			.login-form
-				form.form-horizontal(action="/#{token.type}/#{token._id}", method="post", role="form")
+				form.form-horizontal(action="/accept_invitation/#{token._id}", method="post", role="form")
 					p.col-sm-offset-2.error= message
 
 					.form-group
-						label.col-sm-2.control-label(for="password") Definição de senha
+						label.col-sm-2.control-label(for="password") Defina uma senha para criar sua conta
 						.col-sm-10
 							input#password.form-control(type="password", placeholder="Digite uma senha", name="password")
 

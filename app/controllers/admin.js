@@ -36,7 +36,7 @@ exports.firstAdmin = function(req, res) {
 	User.findOne({role: 'admin'}, function(err, admin){
 		if (err) return res.render('500');
 			
-		// If an admin user already existes, redirects to login
+		// If an admin user already exists, redirects to login
 		if (admin) {
 			console.log('admin already exists');
 			req.flash('error', 'An admin already exists.');
@@ -196,7 +196,7 @@ exports.invite = function(req, res, next) {
 		
 	// Just send mail to users not confirmed
 	User.findOne({email: req.body.email}, function(err, user){
-		if (err) res.render('admin/users/new');
+		if (err) res.render('500');
 		else {
 			if (user && !user.needsEmailConfirmation) {
 				res.render('admin/users/new', {message: 'User already active.'});
