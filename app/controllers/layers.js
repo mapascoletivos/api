@@ -227,7 +227,7 @@ exports.removeFeature = function (req, res) {
 		layer.save(function(err) {
 			if (err) res.json(400,utils.errorMessages(err.errors || err));
 			else res.json(feature);
-		})
+		});
 	}
 
 	feature.remove(saveLayer);

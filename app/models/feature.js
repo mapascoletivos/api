@@ -61,7 +61,27 @@ FeatureSchema.pre('save', function(next){
  	} else {
  		next();
  	}
-});                  
+});
+
+FeatureSchema.pre('remove', function(next){
+	var self = this;
+	
+	Content
+		.find({features: {$in: [self._id]}})
+		.exec(function(err, contents){
+			if (!err) {
+				_.each(contents, function(content){
+					content.features.pop(self._id);
+					content.save(next);
+				});
+			} 
+		});
+	
+});
+
+/**
+ * Virtuals
+ **/
 
 FeatureSchema.virtual('contents').get(function () {
   return this._contents;
