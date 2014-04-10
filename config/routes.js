@@ -30,8 +30,6 @@ module.exports = function (app, passport) {
 
 	var apiPrefix = '/api/v1';
 
-	// app.get('/', home.index);
-
 	/*
 	 * Institutional routes
 	 */
@@ -42,9 +40,9 @@ module.exports = function (app, passport) {
 	/** 
 	 * Users routes 
 	 **/
-	app.post('/forgot_password', users.newPasswordToken);	
 	app.get('/migrate', users.showMigrate);
 	app.post('/migrate', users.migrate);
+	app.post(apiPrefix + '/forgot_password', users.resetPasswordToken);	
 	
 	app.post(apiPrefix + '/users', users.create);
 	app.put(apiPrefix + '/users', auth.requiresLogin, users.update);

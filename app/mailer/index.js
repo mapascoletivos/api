@@ -3,14 +3,14 @@
  */
 
 var 
+	_ = require('underscore'),
 	mongoose = require('mongoose'),
 	env = process.env.NODE_ENV || 'development',
 	config = require('../../config/config')[env],
 	moment = require('moment'),
 	nodemailer = require('nodemailer'),
 	jade = require('jade'),
-	tplPath = require('path').normalize(__dirname + '/../mailer/templates'),
-	_ = require('underscore');
+	tplPath = require('path').normalize(__dirname + '/../mailer/templates');
 
 var mailConfig = { from: config.nodemailer.from };
 	
@@ -24,14 +24,14 @@ var transport = nodemailer.createTransport('SMTP', config.nodemailer);
 var Notify = {
 
 	
-	welcome: function(user, callback_url, callback){
+	confirmEmail: function(user, serverUrl, clientCallbackUrl, callback){
 		var
 			Token = mongoose.model('Token'),
 			token = new Token({
 				_id: Token.generateId(),
 				type: 'activateAccount',
 				user: user,
-				callbackUrl: callback_url,
+				callbackUrl: clientCallbackUrl,
 				expiresAt: moment().add('day', 1).toDate()
 			});
 
@@ -39,13 +39,13 @@ var Notify = {
 			if (err)
 				callback(err);
 			else {
-				jade.renderFile(tplPath + '/welcome.jade', { user: user, token: token, appUrl: config.appUrl }, function(err, file) {
+				jade.renderFile(tplPath + '/confirm_email.jade', { user: user, token: token, serverUrl: serverUrl }, function(err, file) {
 					if (err)
 						callback(err);
 					else {
 						var 
 							options = _.extend(mailConfig, {
-								subject: 'Bem-vindo ao Mapas Coletivos',
+								subject: 'Confirmação de e-mail',
 								to: user.email, 
 								html: file
 							});
@@ -64,13 +64,14 @@ var Notify = {
 		})
 	},
 		
-	passwordReset: function(user, callback){
+	passwordReset: function(user, serverUrl, callbackUrl, callback){
 		var
 			Token = mongoose.model('Token'),
 			token = new Token({
 				_id: Token.generateId(),
 				type: 'password_reset',
 				user: user,
+				callbackUrl: callbackUrl,
 				expiresAt: moment().add('day', 1).toDate()
 			});
 
@@ -78,7 +79,7 @@ var Notify = {
 			if (err)
 				callback(err);
 			else {
-				jade.renderFile(tplPath + '/password_reset.jade', { user: user, token: token, appUrl: config.appUrl }, function(err, file) {
+				jade.renderFile(tplPath + '/password_reset.jade', { user: user, token: token, serverUrl: serverUrl }, function(err, file) {
 					if (err)
 						callback(err);
 					else {

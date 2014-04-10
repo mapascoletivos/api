@@ -40,14 +40,12 @@ module.exports = {
 	development: {
 		allowedDomains: '*',
 		root: rootPath,
-		appUrl: 'http://localhost:3000',
 		nodemailer: nodemailer,
 		db: 'mongodb://localhost/mapascoletivos_dev',
 		oauth: oauth
 	},
 	test: {
 		root: rootPath,
-		appUrl: 'http://localhost:3000',
 		db: 'mongodb://localhost/mapascoletivos_test',
 		nodemailer: nodemailer,
 		oauth: oauth
@@ -55,7 +53,6 @@ module.exports = {
 	production: {
 		allowedDomains: '*', // temporary
 		root: rootPath,
-		appUrl: app_url,
 		db: process.env.MONGOLAB_URI || 'mongodb://localhost/mapascoletivos_production',
 		nodemailer: nodemailer,
 		oauth: oauth

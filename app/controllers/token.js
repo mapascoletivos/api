@@ -97,8 +97,6 @@ exports.acceptInvitation = function(req, res){
 	var
 		token = req.token;
 		
-	console.log(token);
-	
 	// invalid route for token
 	if (token.type != 'acceptInvitation') {
 		return res.render('tokens/index', {errors: ['Token inválido.']});	
@@ -107,7 +105,7 @@ exports.acceptInvitation = function(req, res){
 			if (err) {
 				return res.render('tokens/index', {
 					errors: ['Não foi possível ativar este usuário.'],
-					callbackUrl: token.callbackUrl,					
+					callbackUrl: token.callbackUrl,
 					autoRedirect: false
 				});
 			}
@@ -162,8 +160,6 @@ exports.newPasswordForm = function(req, res){
 	var
 		token = req.token;
 
-	console.log(token);
-	
 	// invalid route for token
 	if ((token.type != 'password_reset') && (token.type != 'password_needed')) {
 		return res.render('tokens/index', {errors: ['Token inválido.']});
@@ -195,7 +191,11 @@ exports.newPassword = function(req, res){
 				if (err)
 					return res.render('tokens/index', {errors: ['Não foi possível alterar a senha deste usuário.']});
 				else {
-					return res.render('tokens/index', {info: ['Senha alterada com sucesso.']});
+					return res.render('tokens/index', {
+						info: ['Senha alterada com sucesso.'],
+						callbackUrl: token.callbackUrl,
+						autoRedirect: true
+					});
 				}
 			});
 		})

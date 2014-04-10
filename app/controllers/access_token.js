@@ -172,7 +172,7 @@ exports.local = function(req, res, next) {
 
 		// User doesn't have a password, because it logged before via Facebook or Google
 		} else if (!user.hashed_password) {
-			mailer.passwordNeeded(user, user.callback_url, function(err){
+			mailer.passwordNeeded(user, req.app.locals.site.serverUrl, user.callback_url, function(err){
 				if (err)
 					return res.json(400, messages.error("Você precisa de uma senha para acessar sua conta, mas houve um erro. Por favor, contate o suporte.")); 
 				else
@@ -181,7 +181,7 @@ exports.local = function(req, res, next) {
 	
 		// User needs to confirm his email
 		} else if (user.needsEmailConfirmation) {
-			mailer.welcome(user, req.body.callback_url, function(err){
+			mailer.confirmEmail(user, req.app.locals.site.serverUrl, req.body.callback_url, function(err){
 				if (err)
 					return res.json(400, messages.error("Erro ao enviar e-mail de ativação, por favor, contate o suporte.")); 
 				else

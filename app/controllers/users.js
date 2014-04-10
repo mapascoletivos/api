@@ -34,177 +34,6 @@ exports.user = function (req, res, next, id) {
 		});
 }
 
-exports.info = function(req, res, next) {
-	return res.json(req.user.info());
-}
-
-exports.layers = function(req, res, next) {
-	var page = (req.param('page') > 0 ? req.param('page') : 1) - 1
-	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
-	var options = {
-		perPage: perPage,
-		page: page,
-		criteria: { $or: [ { creator: req.user }, {contributors: { $in: [req.user._id] } } ] }
-	}
-
-	if (req.param('search')) {
-		options.criteria = {
-			$and: [
-				options.criteria,
-				{ title: { $regex: req.param('search'), $options: 'i' }}
-			]
-		}
-	}
-
-	Layer.list(options, function(err, layers) {
-		if (err) return res.json(400, err);
-		Layer.count(options.criteria).exec(function (err, count) {
-			if (!err) {
-				res.json({options: options, layersTotal: count, layers: layers});
-			} else {
-				res.json(400, utils.errorMessages(err.errors || err))
-			} 
-		});
-	});
-
-}
-
-exports.maps = function(req, res, next) {
-	var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
-	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
-	var options = {
-		perPage: perPage,
-		page: page,
-		criteria: { creator: req.user }
-	}
-
-	if (req.param('search'))
-		options.criteria = {
-			$and: [
-				options.criteria,
-				{ title: { $regex: req.param('search'), $options: 'i' }}
-			]
-		}
-
-	Map.list(options, function(err, maps) {
-		if (err) return res.json(400, utils.errorMessages(err.errors || err));
-		Map.count(options.criteria).exec(function (err, count) {
-			if (err) res.json(400, utils.errorMessages(err.errors || err));
-			else res.json({options: options, mapsTotal: count, maps: maps});
-		})
-	})
-}
-
-/**
- * Send reset password token
- */
-
-exports.newPasswordToken = function (req, res) {
-	User.findOne({
-		$or: [
-		{email: req.body['emailOrUsername']}, 
-		{username: req.body['emailOrUsername']}
-		]
-	}, function(err,user){
-		if (err) 
-			res.render('users/forgot_password', {
-				title: 'Recuperar senha',
-				message: req.flash('error')
-			});
-		else {
-			if (user) {
-				mailer.passwordReset(user, function(err){
-					if (err) {
-						req.flash('error', 'Houve um erro ao enviar e-mail para mudança de senha');
-						return res.redirect('users/forgot_password');
-					} else {
-						req.flash('info', 'Um link de alteração de senha foi enviado para seu e-mail');
-						return res.redirect('/login');
-					}
-				});
-			} else {
-				req.flash('error', 'Usuário não encontrado.');
-				res.render('users/forgot_password', {
-					title: 'Recuperar senha',
-					message: req.flash('error')
-				});				
-			}
-		}
-	})
-}
-
-
-/**
- * Show sign up form
- */
-
-exports.signup = function (req, res) {
-	res.render('users/signup', {
-		title: 'Sign up',
-		user: new User()
-	});
-}
-
-/**
- * Show migrate form
- */
-
-exports.showMigrate = function (req, res) {
-	res.render('users/migrate');
-}
-
-/**
- * Generate migration token
- */
-
-exports.migrate = function (req, res) {
-	var
-		email = req.body.email,
-		password = req.body.password,
-		errors = [];
-
-	if (!email) {
-		errors.push('Informe um e-mail.');
-	}
-
-	if (!password) {
-		errors.push('Informe uma nova senha');
-	}
-
-	if ((password) && (password.length < 6)) {
-		errors.push('A nova senha deve ter ao menos 6 caracteres.');
-	}
-
-	if (errors.length > 0) {
-		res.render('users/migrate', {
-			errors: errors,
-			email: email
-		});
-	} else {
-		User.findOne({email: email, status: 'to_migrate'}, function(err, user){
-			if (err) {
-				res.render('users/migrate', {
-					errors:  utils.errorMessagesFlash(err.errors),
-					email: email
-				});
-			} else if (!user) {
-				res.render('users/migrate', {
-					errors:  ['Usuário não encontrado ou migração já realizada.'],
-					email: email
-				});
-			} else {
-				mailer.migrateAccount(user, password, function(err){
-					res.render('users/migrate', {
-						info:  ['Um link de confirmação de migração foi enviado ao seu e-mail.'],
-						email: email
-					});
-				})
-			}
-		})
-	}
-
-}
-
 /**
  * Create user
  */
@@ -239,12 +68,12 @@ exports.create = function (req, res) {
 		return res.json(400, messages.errorsArray(preValidationErrors));
 	} else {
 		user.save(function (err) {
-			if (err) return res.json(400, messages.errors(err));		
+			if (err) return res.json(400, {messages: messages.mongooseErrors(err)});		
 			// Don't send email if user is active
 			if (!user.needsEmailConfirmation) {			
 				return res.json(messages.success('Usuário criado com sucesso.'))
 			} else {
-				mailer.welcome(user, req.body.callback_url, function(err){
+				mailer.confirmEmail(user, req.app.locals.site.serverUrl, req.body.callback_url, function(err){
 					if (err) 
 						return res.json(messages.errors(err));
 					else 
@@ -334,3 +163,161 @@ exports.update = function (req, res) {
 exports.show = function (req, res) {
 	res.json(req.profile);
 }
+
+exports.info = function(req, res, next) {
+	return res.json(req.user.info());
+}
+
+exports.layers = function(req, res, next) {
+	var page = (req.param('page') > 0 ? req.param('page') : 1) - 1
+	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
+	var options = {
+		perPage: perPage,
+		page: page,
+		criteria: { $or: [ { creator: req.user }, {contributors: { $in: [req.user._id] } } ] }
+	}
+
+	if (req.param('search')) {
+		options.criteria = {
+			$and: [
+				options.criteria,
+				{ title: { $regex: req.param('search'), $options: 'i' }}
+			]
+		}
+	}
+
+	Layer.list(options, function(err, layers) {
+		if (err) return res.json(400, err);
+		Layer.count(options.criteria).exec(function (err, count) {
+			if (!err) {
+				res.json({options: options, layersTotal: count, layers: layers});
+			} else {
+				res.json(400, utils.errorMessages(err.errors || err))
+			} 
+		});
+	});
+
+}
+
+exports.maps = function(req, res, next) {
+	var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
+	var perPage = (req.param('perPage') > 0 ? req.param('perPage') : 30);
+	var options = {
+		perPage: perPage,
+		page: page,
+		criteria: { creator: req.user }
+	}
+
+	if (req.param('search'))
+		options.criteria = {
+			$and: [
+				options.criteria,
+				{ title: { $regex: req.param('search'), $options: 'i' }}
+			]
+		}
+
+	Map.list(options, function(err, maps) {
+		if (err) return res.json(400, utils.errorMessages(err.errors || err));
+		Map.count(options.criteria).exec(function (err, count) {
+			if (err) res.json(400, utils.errorMessages(err.errors || err));
+			else res.json({options: options, mapsTotal: count, maps: maps});
+		})
+	})
+}
+
+/**
+ * Send reset password token
+ */
+
+exports.resetPasswordToken = function (req, res) {
+	User.findOne({
+		$or: [
+		{email: req.body['emailOrUsername']}, 
+		{username: req.body['emailOrUsername']}
+		]
+	}, function(err,user){
+		if (err) 
+			res.render('users/forgot_password', {
+				title: 'Recuperar senha',
+				message: req.flash('error')
+			});
+		else {
+			if (user) {
+				mailer.passwordReset(user, req.app.locals.site.serverUrl, req.body.callback_url, function(err){
+					if (err) 
+						return res.json(messages.errors(err));
+					else 
+						return res.json(messages.success('Um link de alteração de senha foi enviado para seu e-mail.'));
+				});
+			} else {
+				req.flash('error', 'Usuário não encontrado.');
+				res.render('users/forgot_password', {
+					title: 'Recuperar senha',
+					message: req.flash('error')
+				});				
+			}
+		}
+	})
+}
+
+
+/**
+ * Show migrate form
+ */
+
+exports.showMigrate = function (req, res) {
+	res.render('users/migrate');
+}
+
+/**
+ * Generate migration token
+ */
+
+exports.migrate = function (req, res) {
+	var
+		email = req.body.email,
+		password = req.body.password,
+		errors = [];
+
+	if (!email) {
+		errors.push('Informe um e-mail.');
+	}
+
+	if (!password) {
+		errors.push('Informe uma nova senha');
+	}
+
+	if ((password) && (password.length < 6)) {
+		errors.push('A nova senha deve ter ao menos 6 caracteres.');
+	}
+
+	if (errors.length > 0) {
+		res.render('users/migrate', {
+			errors: errors,
+			email: email
+		});
+	} else {
+		User.findOne({email: email, status: 'to_migrate'}, function(err, user){
+			if (err) {
+				res.render('users/migrate', {
+					errors:  utils.errorMessagesFlash(err.errors),
+					email: email
+				});
+			} else if (!user) {
+				res.render('users/migrate', {
+					errors:  ['Usuário não encontrado ou migração já realizada.'],
+					email: email
+				});
+			} else {
+				mailer.migrateAccount(user, password, function(err){
+					res.render('users/migrate', {
+						info:  ['Um link de confirmação de migração foi enviado ao seu e-mail.'],
+						email: email
+					});
+				})
+			}
+		})
+	}
+
+}
+
