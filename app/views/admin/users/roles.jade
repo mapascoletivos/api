@@ -1,0 +1,30 @@
+extends ../../layouts/admin-area
+
+block content
+	section#dashboard
+		p Cadastro de novo usuário
+		- console.log(errors);
+		include ../../includes/messages.jade
+		
+		
+		- if (!users)
+			p Não há usuários!!!
+		- else 		
+			table
+				thead
+					tr
+						th Nome
+						th E-mail
+						th Permissão
+				tbody
+					- each user in users
+						tr
+							td=user.name
+							td=user.email
+							td
+								form.form-horizontal(action="/admin/users/role", method="post", role="form")
+									input(type='hidden', name='user_id', value="#{user._id}")
+									select(name='role')
+										- each role in ['collaborator', 'editor', 'admin']
+											option(selected=user.role == role) #{role}
+									input.btn.btn-primary(type='submit' value="Alterar")
