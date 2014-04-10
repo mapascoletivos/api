@@ -30,7 +30,7 @@
 	"dependencies": {
 		"dotenv": "latest",
 		"moment": "latest",
-		"express": "latest",
+		"express": "3.x",
 		"express-namespace": "latest",
 		"mysql": "latest",
 		"mongoose": "latest",
