@@ -1,18 +1,24 @@
-# Yby
+# Yby 
 
-Yby is a API server for online collaborative mapping.
+Yby is a collaborative mapping platform. It allows users to draw points, polygons and areas, and associate media content to them. These are projects based on Yby platform:
 
-Projects running Yby:
-
-* http://www.mapascoletivos.com.br 
+* http://www.mapascoletivos.com.br
 * http://agua.infoamazonia.org
 
-## Development setup
+## Architecture
 
-Install [Node.js](http://nodejs.org) and [MongoDB](http://www.mongodb.org).
+The platform has a decoupled client/server architecture, and this repository holds the server code. The client source code is available here (link to be added).  
 
-Clone the repository locally and run `npm install`.
+## Install
 
-Copy `.env.example` to `.env` and fill authentication credentials for third party services, like SMTP, Facebook, Twitter, Google. 
+Install [MongoDB](http://www.mongodb.org) and [Node.js](http://nodejs.org), [setup git](https://help.github.com/articles/set-up-git), clone this repository locally and install dependencies by:
 
-Start server: `npm start`, or run in development mode: `npm run watch`.
+    npm install
+
+Run the server:
+
+    npm run watch
+
+Access admin area at [http://localhost:3000](http://localhost:3000) to setup site appearance, third-party authentication and SMTP.
+
+After setup the server, install the client.
