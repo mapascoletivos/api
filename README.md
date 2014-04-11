@@ -1,4 +1,4 @@
-# Yby 
+# Yby (server)
 
 Yby is a collaborative mapping platform. It allows users to draw points, polygons and areas, and associate media content to them. These are projects based on Yby platform:
 
