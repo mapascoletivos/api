@@ -3,7 +3,7 @@ p Olá, #{locals.user.name}
 p Foi feita uma solicitação de recuperação de senha para o seu usuário (#{locals.user.email}). Se você não fez esta solicitação, ignore este e-mail. 
 
 p 
-	a(href='#{locals.serverUrl}/new_password/#{locals.token._id}') Clique aqui se você quiser alterar sua senha agora.
+	a(href='#{settings.general.serverUrl}/new_password/#{locals.token._id}') Clique aqui se você quiser alterar sua senha agora.
 
 
 p

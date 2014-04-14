@@ -32,6 +32,11 @@ block content
 						input(type="checkbox" name="settings[onlyInvitedUsers]" checked=settings.onlyInvitedUsers)
 				tr
 					td.label
+						label(for="settings.allowImports") Permitir importação de arquivos
+					td.input
+						input(type="checkbox" name="settings[allowImports]" checked=settings.allowImports)
+				tr
+					td.label
 						label(for="settings.baselayer") Camada base padrão
 					td.input
 						input(name="settings[baselayer]" value=settings.baselayer type="text" placeholder="URL em TileLayer da camada base")

@@ -21,12 +21,16 @@ var SettingsSchema = new Schema({
 		onlyInvitedUsers: {type: Boolean, default: false},
 		allowImports: {type: Boolean, default: true}
 	},
-	mail: {
-		SMTP: {
-			sender: { type: String, default: '' },
-			host: { type: String, default: '' },
-			username: { type: String, default: '' },
-			password: { type: String, default: '' }
+	mailer: {
+		transportMethod: {type: String, default: 'SMTP'},
+		host: { type: String, default: '' },
+		secureConnection: {type: Boolean, default: true}, // use SSL
+		requiresAuth: {type: Boolean, default: true},
+		port: {type: Number, default: 465}, // port for secure SMTP
+		from: { type: String, default: '' },
+		auth: {
+			user: { type: String, default: '' },
+			pass: { type: String, default: '' }
 		}
 	}
 });

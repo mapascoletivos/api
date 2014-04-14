@@ -6,9 +6,7 @@
 var 
 	mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
-	crypto = require('crypto'),
-	moment = require('moment'),
-	notify = require('../mailer');
+	crypto = require('crypto');
 
 /**
  * Token schema

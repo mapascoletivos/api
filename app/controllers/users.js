@@ -4,17 +4,16 @@
  */
 
 var 
+	_ = require('underscore'),
+	validator = require('validator'),
+	messages = require('../../lib/messages'),
+	mailer = require('../../lib/mailer'),
 	mongoose = require('mongoose'),
 	passport = require('passport'),
 	User = mongoose.model('User'),
 	AccessToken = mongoose.model('AccessToken'),
 	Layer = mongoose.model('Layer'),
-	Map = mongoose.model('Map'),
-	mailer = require('../mailer'),
-	validator = require('validator'),
-	messages = require('../../lib/messages'),
-	extend = require('util')._extend,
-	_ = require('underscore');
+	Map = mongoose.model('Map');
 
 
 /**
@@ -73,13 +72,17 @@ exports.create = function (req, res) {
 			if (!user.needsEmailConfirmation) {			
 				return res.json(messages.success('Usuário criado com sucesso.'))
 			} else {
-				mailer.confirmEmail(user, req.app.locals.settings.general.serverUrl, req.body.callback_url, function(err){
+				mailer.confirmEmail({
+					mailSender: req.app.mailer, 
+					user: user,
+					callbackUrl: req.body.callback_url
+				}, function(err){
 					console.log(err);
 					if (err) 
 						return res.json(messages.errors(err));
 					else 
 						return res.json(messages.success('Usuário criado com sucesso. Um link de confirmação foi enviado para seu email.'));
-				});	
+				})
 			}
 		})		
 	}

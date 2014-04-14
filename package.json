@@ -1,9 +1,9 @@
 {
-	"name": "mapascoletivos",
+	"name": "yby",
 	"description": "A collaborative mapping platform",
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/oeco/mapascoletivos.git"
+		"url": "git://github.com/oeco/yby.git"
 	},
 	"version": "0.1.0",
 	"author": "Ecolab <gustavo.faleiros@gmail.com>",
@@ -32,6 +32,7 @@
 		"moment": "latest",
 		"express": "3.x",
 		"express-namespace": "latest",
+		"express-mailer": "latest",
 		"mysql": "latest",
 		"mongoose": "latest",
 		"mongoose-user": "latest",
@@ -61,7 +62,7 @@
 	},
 	"keywords": [
 		"mapas",
-		"mapascoletivos",
+		"yby",
 		"openstreetmap"
 	]
 }

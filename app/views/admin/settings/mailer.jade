@@ -1,0 +1,31 @@
+extends ../../layouts/admin-area
+
+block content
+	section#dashboard
+		form(action="/admin/settings/mail" method="post" role="form")
+
+			- mailer = settings.mailer
+
+			table.formsender
+				tr
+					td.label
+						label(for="mailer.from") From address
+					td.input
+						input(type="text" name="mailer[from]" value=mailer.from placeholder="e.g. Notifications <notification@yourmailhost.com>")
+				tr
+					td.label
+						label(for="mailer[host]") Host
+					td.input
+						input(name="mailer[host]" value=mailer.host type="text" placeholder="smtp.yourmailhost.com")=mailer.host
+				tr
+					td.label
+						label(for="mailer.auth.user") User
+					td.input
+						input(type="text" name="mailer[auth][user]" value=mailer.auth.user)
+				tr
+					td.label
+						label(for="mailer.pass") Password (will be stored as plain text)
+					td.input
+						input(type="password" name="mailer[auth][pass]" value=mailer.auth.pass)
+						
+			input.btn.btn-primary(type='submit' value="Update")

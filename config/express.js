@@ -4,6 +4,7 @@
 
 var _ = require('underscore');
 var express = require('express');
+var mailer = require('express-mailer');
 var mongoStore = require('connect-mongo')(express);
 var helpers = require('view-helpers');
 var lessMiddleware = require('less-middleware');
@@ -125,6 +126,9 @@ module.exports = function (app, config, passport) {
 				delete settings.__v;
 				delete settings._id;
 				app.locals({settings: _.extend(app.locals.settings, settings)});
+
+				// Configure mailer (it needs app settings loaded first)
+				mailer.extend(app, settings.mailer);
 			}
 		})
 

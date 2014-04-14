@@ -8,7 +8,7 @@ var
 	mongoose = require('mongoose'),
 	messages = require('../../lib/messages'),
 	validator = require('validator'),
-	mailer = require('../mailer'),
+	mailer = require('../../lib/mailer'),
 	Settings = mongoose.model('Settings'),
 	User = mongoose.model('User');
 
@@ -127,7 +127,7 @@ exports.apiSettings = function(req, res) {
 			settings = settings.toObject();
 			delete settings._id;
 			delete settings.__v;
-			delete settings.mail;
+			delete settings.mailer;
 			
 			// return object
 			return res.json(settings);	
@@ -173,13 +173,14 @@ exports.update = function(req, res, next) {
 			settings.general = req.body.settings;
 						
 			settings.general.onlyInvitedUsers = req.body.settings.onlyInvitedUsers ? true : false;
+			settings.general.allowImports = req.body.settings.allowImports ? true : false;
 
 			settings.save(function(err){
 				if (err) return res.render('500');
 				else {
 
 					// Make settings available site wide
-					req.app.locals({settings: _.extend(app.locals.settings, settings)});
+					req.app.locals({settings: _.extend(req.app.locals.settings, settings)});
 					
 					res.render('admin/settings', {
 						settings: settings.general
@@ -195,14 +196,7 @@ exports.update = function(req, res, next) {
  **/
 
 exports.mailForm = function(req, res) {
-	Settings.load(function(err, settings){
-		if (err) res.render('500');
-		else {
-			res.render('admin/settings/mail', {
-				SMTP: settings.mail.SMTP
-			});
-		}
-	});
+	res.render('admin/settings/mailer');
 }
 
 /**
@@ -214,18 +208,19 @@ exports.mail = function(req, res) {
 		if (err) res.render('500');
 		else {
 
-			settings.mail = req.body;
+
+			console.log(req.body);
+
+			settings.mailer = _.extend(settings.mailer, req.body.mailer);
 			
 			settings.save(function(err){
 				if (err) res.render('500');
 				else {
 					
 					// Make settings available site wide
-					req.app.locals({settings: _.extend(app.locals.settings, settings)});
+					req.app.locals({settings: _.extend(req.app.locals.settings, settings)});
 					
-					res.render('admin/settings/mail', {
-						SMTP: settings.mail.SMTP
-					});
+					res.render('admin/settings/mailer');
 				}
 			})
 			

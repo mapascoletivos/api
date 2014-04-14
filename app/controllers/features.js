@@ -201,38 +201,42 @@ exports.removeContent = function(req, res){
  */
 
 exports.import = function(req, res) {
-	var layer = req.layer;
-	async.eachSeries(req.body, function(feature, cb) {
+	if (req.app.locals.settings.general.allowImports){
+		var layer = req.layer;
+		async.eachSeries(req.body, function(feature, cb) {
 
-		var feature = new Feature(feature);
-		feature.creator = req.user;
-		feature.layer = req.layer;
+			var feature = new Feature(feature);
+			feature.creator = req.user;
+			feature.layer = req.layer;
 
-		// Set geometry as modified, otherwise it won't do address lookup
-		feature.markModified('geometry');
+			// Set geometry as modified, otherwise it won't do address lookup
+			feature.markModified('geometry');
 
-		// save feature
-		feature.save(function (err) {
-			if (err) {
-				cb(err);
-			} else {
-				layer.features.addToSet(feature);
-
-				// Wait 0.2 seconds to process next feature to avoid nominatim overload 
-				setTimeout(cb, 200);
-			}
-		});
-	}, function(err) {
-		if(err) res.json(400, messages.errors(err));
-		else {			
-			// save layer
-			layer.save(function(err){
-				if(err) {
-					if(err) res.json(400, messages.errors(err));
+			// save feature
+			feature.save(function (err) {
+				if (err) {
+					cb(err);
 				} else {
-					res.json(layer.features);
+					layer.features.addToSet(feature);
+
+					// Wait 0.2 seconds to process next feature to avoid nominatim overload 
+					setTimeout(cb, 200);
 				}
 			});
-		}
-	});
+		}, function(err) {
+			if(err) res.json(400, messages.errors(err));
+			else {			
+				// save layer
+				layer.save(function(err){
+					if(err) {
+						if(err) res.json(400, messages.errors(err));
+					} else {
+						res.json(layer.features);
+					}
+				});
+			}
+		});
+	} else {
+		res.json(messages.error('A importação de arquivos está desabilitada.'));	
+	}
 }
