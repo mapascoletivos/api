@@ -1,4 +1,4 @@
-# Yby (server)
+# Yby
 
 Yby is a collaborative mapping platform. It allows users to draw points, polygons and areas, and associate media content to them. These are projects based on Yby platform:
 
@@ -7,7 +7,7 @@ Yby is a collaborative mapping platform. It allows users to draw points, polygon
 
 ## Architecture
 
-The platform has a decoupled client/server architecture, and this repository holds the server code. The client source code is available here (link to be added).  
+The platform has a decoupled client/server architecture, and this repository holds the server code. 
 
 ## Install
 
