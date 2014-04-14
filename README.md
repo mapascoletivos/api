@@ -11,7 +11,7 @@ The platform has a decoupled client/server architecture, and this repository hol
 
 ## Install
 
-Install [MongoDB](http://www.mongodb.org) and [Node.js](http://nodejs.org), [setup git](https://help.github.com/articles/set-up-git), clone this repository locally and install dependencies by:
+Install [MongoDB](http://www.mongodb.org), [Node.js](http://nodejs.org) and [Git](https://help.github.com/articles/set-up-git), clone this repository locally and install dependencies by running this command at application directory:
 
     npm install
 
@@ -19,6 +19,6 @@ Run the server:
 
     npm run watch
 
-Access admin area at [http://localhost:3000](http://localhost:3000) to setup site appearance, third-party authentication and SMTP.
+Access admin area at [http://localhost:3000](http://localhost:3000) to setup site appearance, mail server and user roles.
 
 After setup the server, install the client.
