@@ -27,6 +27,11 @@ block content
 						textarea(name="settings[clientUrl]" placeholder="Ex.: http://www.mapascoletivos.com.br")=settings.clientUrl
 				tr
 					td.label
+						label(for="settings.onlyInvitedUsers") Somente usuários convidados
+					td.input
+						input(type="checkbox" name="settings[onlyInvitedUsers]" checked=settings.onlyInvitedUsers)
+				tr
+					td.label
 						label(for="settings.baselayer") Camada base padrão
 					td.input
 						input(name="settings[baselayer]" value=settings.baselayer type="text" placeholder="URL em TileLayer da camada base")

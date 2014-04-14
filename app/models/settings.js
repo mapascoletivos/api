@@ -12,13 +12,23 @@ var
  */	
 
 var SettingsSchema = new Schema({
-	title: {type: String, default: 'Yby'},
-	description: {type: String, default: 'Collaborative web mapping platform'},
-	serverUrl: {type: String, default: 'http://localhost:3000'},
-	clientUrl: {type: String, default: 'http://localhost:8000'},
-	baseLayerUrl: {type: String, default: ''},
-	allowImports: {type: Boolean, default: true},
-	other: {}
+	general: {
+		title: {type: String, default: 'Yby'},
+		description: {type: String, default: 'Collaborative web mapping platform'},
+		serverUrl: {type: String, default: 'http://localhost:3000'},
+		clientUrl: {type: String, default: 'http://localhost:8000'},
+		baseLayerUrl: {type: String, default: ''},
+		onlyInvitedUsers: {type: Boolean, default: false},
+		allowImports: {type: Boolean, default: true}
+	},
+	mail: {
+		SMTP: {
+			sender: { type: String, default: '' },
+			host: { type: String, default: '' },
+			username: { type: String, default: '' },
+			password: { type: String, default: '' }
+		}
+	}
 });
 
 SettingsSchema.statics = {

@@ -1,0 +1,29 @@
+extends ../../layouts/admin-area
+
+block content
+	section#dashboard
+		p Defina aqui as configurações gerais do seu site.
+		form(action="/admin/settings/mail" method="post" role="form")
+			table.form
+				tr
+					td.label
+						label(for="auth.Facebook_ClientID") Facebook
+					td.input
+						input(name="auth[Facebook_ClientID]" value=auth.Facebook_ClientID type="text")=auth.Facebook_ClientID
+				tr
+					td.label
+						label(for="mail.SMTP_User") SMTP User
+					td.input
+						input(type="text" name="mail[SMTP_User]" placeholder="Username")=mail.SMTP_User
+				tr
+					td.label
+						label(for="mail.SMTP_Password") URL do servidor
+					td.input
+						input(type="text" name="mail[SMTP_Password]" placeholder="Username")=mail.SMTP_User
+				tr
+					td.label
+						label(for="mail.SMTP_Sender") Sender identification
+					td.input
+						input(type="text" name="mail[SMTP_Sender]" placeholder="e.g. Notifications <notification@yourmailhost.com")=mail.SMTP_Sender
+						
+			input.btn.btn-primary(type='submit' value="Update")

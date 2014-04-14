@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 
+var _ = require('underscore');
 var express = require('express');
 var mongoStore = require('connect-mongo')(express);
 var helpers = require('view-helpers');
@@ -121,9 +122,9 @@ module.exports = function (app, config, passport) {
 		Settings.load(function(err, settings){
 			if (!err) {
 				settings = settings.toObject();
-				delete settings._v;
+				delete settings.__v;
 				delete settings._id;
-				app.locals({site: settings});
+				app.locals({settings: _.extend(app.locals.settings, settings)});
 			}
 		})
 

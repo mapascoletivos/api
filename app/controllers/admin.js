@@ -127,6 +127,7 @@ exports.apiSettings = function(req, res) {
 			settings = settings.toObject();
 			delete settings._id;
 			delete settings.__v;
+			delete settings.mail;
 			
 			// return object
 			return res.json(settings);	
@@ -146,7 +147,7 @@ exports.users = function(req, res, next) {
 
 
 /**
- * Settings form
+ * General settings form
  */
 
 exports.settings = function(req, res) {
@@ -154,7 +155,7 @@ exports.settings = function(req, res) {
 		if (err) res.render('500');
 		else {
 			res.render('admin/settings', {
-				settings: settings
+				settings: settings.general
 			});
 		}
 	});
@@ -168,21 +169,66 @@ exports.update = function(req, res, next) {
 	Settings.load(function(err, settings){
 		if (err) res.render('500');
 		else {
-			console.log(req.body.settings);
-			settings = _.extend(settings, req.body.settings);
+
+			settings.general = req.body.settings;
+						
+			settings.general.onlyInvitedUsers = req.body.settings.onlyInvitedUsers ? true : false;
 
 			settings.save(function(err){
 				if (err) return res.render('500');
 				else {
 
 					// Make settings available site wide
-					req.app.locals(settings.toObject());
+					req.app.locals({settings: _.extend(app.locals.settings, settings)});
 					
 					res.render('admin/settings', {
-						settings: settings
+						settings: settings.general
 					});
 				}
 			});
+		}
+	});
+}
+
+/**
+ * Mail settings form
+ **/
+
+exports.mailForm = function(req, res) {
+	Settings.load(function(err, settings){
+		if (err) res.render('500');
+		else {
+			res.render('admin/settings/mail', {
+				SMTP: settings.mail.SMTP
+			});
+		}
+	});
+}
+
+/**
+ * Update mail settings
+ **/
+
+exports.mail = function(req, res) {
+	Settings.load(function(err, settings){
+		if (err) res.render('500');
+		else {
+
+			settings.mail = req.body;
+			
+			settings.save(function(err){
+				if (err) res.render('500');
+				else {
+					
+					// Make settings available site wide
+					req.app.locals({settings: _.extend(app.locals.settings, settings)});
+					
+					res.render('admin/settings/mail', {
+						SMTP: settings.mail.SMTP
+					});
+				}
+			})
+			
 		}
 	});
 }
@@ -209,8 +255,8 @@ exports.invite = function(req, res, next) {
 							email: req.body.user.email, 
 							role: req.body.user.role
 						},
-						serverUrl: req.app.locals.site.serverUrl,
-						callbackUrl: req.app.locals.site.clientUrl + '/login'
+						serverUrl: req.app.locals.settings.general.serverUrl,
+						callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
 				}
 					
 				mailer.invite(options, function(err) {

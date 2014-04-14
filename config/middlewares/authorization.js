@@ -1,6 +1,7 @@
 
 var 
 	_ = require('underscore'),
+	messages = require('../../lib/messages'),	
 	passport = require('passport'),
 	mongoose = require('mongoose'),
 	Layer = mongoose.model('Layer'),
@@ -39,6 +40,9 @@ exports.requiresLogin = function (req, res, next) {
 
 }
 
+/**
+ * User has administration role
+ **/
 
 exports.isAdmin = function (req, res, next) {
 	
@@ -72,6 +76,19 @@ exports.isAdmin = function (req, res, next) {
 	} else {
 		res.redirect('/admin/login');
 	}
+}
+
+/**
+ * Checks if users can signup without invitation
+ **/
+
+exports.usersCanSignup = function (req, res, next) {		
+	if (req.app.locals.settings.general.onlyInvitedUsers == true) {
+		return res.json(403, messages.error('User signup only by invitation.'));
+	} else {
+		next();
+	} 
+	
 }
 
 

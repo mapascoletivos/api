@@ -73,7 +73,8 @@ exports.create = function (req, res) {
 			if (!user.needsEmailConfirmation) {			
 				return res.json(messages.success('Usuário criado com sucesso.'))
 			} else {
-				mailer.confirmEmail(user, req.app.locals.site.serverUrl, req.body.callback_url, function(err){
+				mailer.confirmEmail(user, req.app.locals.settings.general.serverUrl, req.body.callback_url, function(err){
+					console.log(err);
 					if (err) 
 						return res.json(messages.errors(err));
 					else 
@@ -243,7 +244,7 @@ exports.resetPasswordToken = function (req, res) {
 			});
 		else {
 			if (user) {
-				mailer.passwordReset(user, req.app.locals.site.serverUrl, req.body.callback_url, function(err){
+				mailer.passwordReset(user, req.app.locals.settings.general.serverUrl, req.body.callback_url, function(err){
 					if (err) 
 						return res.json(messages.errors(err));
 					else 

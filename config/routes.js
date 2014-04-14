@@ -44,7 +44,7 @@ module.exports = function (app, passport) {
 	app.post('/migrate', users.migrate);
 	app.post(apiPrefix + '/forgot_password', users.resetPasswordToken);	
 	
-	app.post(apiPrefix + '/users', users.create);
+	app.post(apiPrefix + '/users', auth.usersCanSignup, users.create);
 	app.put(apiPrefix + '/users', auth.requiresLogin, users.update);
 	app.get(apiPrefix + '/users/:userId', users.show);
 
@@ -180,7 +180,10 @@ module.exports = function (app, passport) {
 	// Global settings
 	app.get('/admin/settings', auth.isAdmin, admin.settings);
 	app.post('/admin/settings', auth.isAdmin, admin.update);
+	app.get('/admin/settings/mail', auth.isAdmin, admin.mailForm);
+	app.post('/admin/settings/mail', auth.isAdmin, admin.mail);
 
+	// User administration
 	app.get('/admin/users', auth.isAdmin, admin.users);
 	app.get('/admin/users/invite', auth.isAdmin, admin.inviteForm);
 	app.post('/admin/users/invite', auth.isAdmin, admin.invite);
