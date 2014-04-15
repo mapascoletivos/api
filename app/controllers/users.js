@@ -247,7 +247,11 @@ exports.resetPasswordToken = function (req, res) {
 			});
 		else {
 			if (user) {
-				mailer.passwordReset(user, req.app.locals.settings.general.serverUrl, req.body.callback_url, function(err){
+				mailer.passwordReset({
+					mailSender: req.app.mailer,
+					user: user,
+					callbackUrl: req.body.callback_url
+				}, function(err){
 					if (err) 
 						return res.json(messages.errors(err));
 					else 

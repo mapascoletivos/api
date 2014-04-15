@@ -181,10 +181,17 @@ exports.update = function(req, res, next) {
 
 					// Make settings available site wide
 					req.app.locals({settings: _.extend(req.app.locals.settings, settings)});
-					
-					res.render('admin/settings', {
-						settings: settings.general
-					});
+
+					// Reconfigure mailer with new settings
+					req.app.mailer.update(req.app.locals.settings.mailer, function(err){
+						if (err) res.render('500');
+						else 
+						
+							// Render new configuration
+							res.render('admin/settings', {
+								settings: settings.general
+							});
+					})
 				}
 			});
 		}
