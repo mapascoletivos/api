@@ -252,12 +252,12 @@ exports.invite = function(req, res, next) {
 				
 				var 
 					options = {
+						mailSender: req.app.mailer,
 						user: {
 							name: req.body.user.name, 
 							email: req.body.user.email, 
 							role: req.body.user.role
 						},
-						serverUrl: req.app.locals.settings.general.serverUrl,
 						callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
 				}
 					
