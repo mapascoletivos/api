@@ -21,16 +21,18 @@ Run the server:
 
 ## Configure
 
-Access the administrative area at [http://localhost:3000/admin](http://localhost:3000/admin). After creating an user with adminstrative role, you will be presented to four sections, described bellow:
+Access the administrative area at [http://localhost:3000/admin](http://localhost:3000/admin). After creating an user with adminstrative role, you will be presented to the sections described bellow:
 
-1. General settings: 
-  - Site title and description;
-  - Client and server URLs;
-  - Enable/disable user registration;
-  - Enable/disable file import (CSV, KMLs, GeoJSON, etc);
-1. Mailer settings:
-  - Sender address;
-  - SMTP Host, username and password;
-1. Users invitation:
+1. **General settings:** 
+  - Setup site title and description, which will be exposed to the client via API. 
+  - Client and Server URLs, which are useful to generate links for email tokens;
+  - Enable/disable user registration, if you want to restrict the platform only to invited users;
+  - Enable/disable file import to create layer (CSV, KMLs, GeoJSON, etc);
+1. **Mailer settings:**
+  - User registration need e-mail confirmation, so you have to setup a SMTP server. At this area you can setup your SMTP host, username and password;
+1. **Users invitation:**
   - You can invite new users to the plataform by providing their email, name and role;
-1. Manage roles
+1. **Manage roles, which can be:**
+  - **Collaborator**: can create features and contents;
+  - **Editor**: same as collaborator, plus can create new layers and maps;
+  - **Admin**: same as editor, plus access to admin area.
