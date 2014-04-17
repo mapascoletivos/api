@@ -1,1 +1,1 @@
-web: NODE_PATH=./app/controllers node web.js
+web: node web.js
