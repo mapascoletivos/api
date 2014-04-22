@@ -110,7 +110,7 @@ exports.session = function(req, res) {
  */
 
 exports.index = function (req, res) {
-	res.render('admin/index');
+	res.render('admin/settings/index');
 }
 
 /**
@@ -182,16 +182,10 @@ exports.update = function(req, res, next) {
 					// Make settings available site wide
 					req.app.locals({settings: _.extend(req.app.locals.settings, settings)});
 
-					// Reconfigure mailer with new settings
-					req.app.mailer.update(req.app.locals.settings.mailer, function(err){
-						if (err) res.render('500');
-						else 
-						
-							// Render new configuration
-							res.render('admin/settings', {
-								settings: settings.general
-							});
-					})
+						// Render new configuration
+						res.render('admin/settings', {
+							settings: settings.general
+						});
 				}
 			});
 		}
@@ -219,15 +213,22 @@ exports.mail = function(req, res) {
 			console.log(req.body);
 
 			settings.mailer = _.extend(settings.mailer, req.body.mailer);
+			settings.mailer.secureConnection = req.body.mailer.secureConnection ? true : false;
 			
 			settings.save(function(err){
 				if (err) res.render('500');
 				else {
-					
+
 					// Make settings available site wide
 					req.app.locals({settings: _.extend(req.app.locals.settings, settings)});
 					
-					res.render('admin/settings/mailer');
+					console.log('will update the settings');
+					console.log(req.app.locals.settings.mailer);
+					// Reconfigure mailer with new settings
+					req.app.mailer.update(req.app.locals.settings.mailer, function(err){
+						if (err) res.render('500');
+						else res.render('admin/settings/mailer');
+					});
 				}
 			})
 			
@@ -283,17 +284,21 @@ exports.roles = function(req, res, next) {
 
 exports.changeRole = function(req, res, next) {
 	var user = req.user;
+
+	console.log(req.body);
 	
 	User.findById(req.body.user_id, function(err, user){
 		if (err || !user) res.render('500');
 		else {
 			user.role = req.body.role;
 			user.save(function(err){
+				console.log(user);
 				if (err) res.render('500');
 				else {
 					User.find({}, function(err, users){
 						if (err) res.render('500');
-						else res.render('admin/users/roles', {users: users});
+						// else res.render('admin/users/roles', {users: users});
+						else res.redirect('admin/users/roles');
 					})
 				}
 			})

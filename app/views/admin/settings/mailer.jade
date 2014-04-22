@@ -2,30 +2,42 @@ extends ../../layouts/admin-area
 
 block content
 	section#dashboard
+		- mailer = settings.mailer
+		
+		h3=t('Mailer configuration')
+		
 		form(action="/admin/settings/mail" method="post" role="form")
-
-			- mailer = settings.mailer
-
 			table.formsender
 				tr
 					td.label
-						label(for="mailer.from") From address
+						label(for="mailer.from")=t('"From" address')
 					td.input
-						input(type="text" name="mailer[from]" value=mailer.from placeholder="e.g. Notifications <notification@yourmailhost.com>")
+						input(type="text" name="mailer[from]" value=mailer.from placeholder=t("e.g. Notifications <notification@yourmailhost.com>"))
 				tr
 					td.label
-						label(for="mailer[host]") Host
+						label(for="mailer[host]")=t('SMTP Host')
 					td.input
-						input(name="mailer[host]" value=mailer.host type="text" placeholder="smtp.yourmailhost.com")=mailer.host
+						input(name="mailer[host]" value=mailer.host type="text" placeholder=t("e.g. smtp.yourmailhost.com"))=mailer.host
 				tr
 					td.label
-						label(for="mailer.auth.user") User
+						label(for="mailer.secureConnection")=t('Use SSL')
 					td.input
-						input(type="text" name="mailer[auth][user]" value=mailer.auth.user)
+						input(type="checkbox" name="mailer[secureConnection]" checked=mailer.secureConnection)
 				tr
 					td.label
-						label(for="mailer.pass") Password (will be stored as plain text)
+						label(for="mailer.post")=t('Port')
+					td.input
+						input(type="text" name="mailer[port]" value=mailer.port placeholder=t('SMTP port'))		
+				tr
+					td.label
+						label(for="mailer.auth.user")=t('SMTP User')
+					td.input
+						input(type="text" name="mailer[auth][user]" value=mailer.auth.user placeholder=t('username'))
+				tr
+					td.label
+						label(for="mailer.pass")=t('Password (will be stored as plain text)')
 					td.input
 						input(type="password" name="mailer[auth][pass]" value=mailer.auth.pass)
-						
+
+
 			input.btn.btn-primary(type='submit' value="Update")

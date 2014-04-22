@@ -1,7 +1,64 @@
 {
-    "app": {
-        "area": "Area 51",
-        "district": "District 9 is more fun than $t(app.area)"
+    "Administrative area": "Administrative area",
+    "Name": "Name",
+    "You": "You",
+    "E-mail": "E-mail",
+    "Password": "Password",
+    "Create admin": "Create admin",
+    "Email": "Email",
+    "\"Password\"": "\"Password\"",
+    "Log in": "Log in",
+    "Settings": "Settings",
+    "General": "General",
+    "Mailer": "Mailer",
+    "Users": "Users",
+    "Invite new": "Invite new",
+    "Manage roles": "Manage roles",
+    "Welcome to admin area": "Welcome to admin area",
+    "General settings": "General settings",
+    "Site title": "Site title",
+    "your site title": "your site title",
+    "Site description": "Site description",
+    "a brief site description": "a brief site description",
+    "Server URL": "Server URL",
+    "your yby server URL": "your yby server URL",
+    "Client URL": "Client URL",
+    "your yby client URL": "your yby client URL",
+    "Only invited users can register": "Only invited users can register",
+    "Allow geo files import": "Allow geo files import",
+    "Update": "Update",
+    "Allow geo-files import": "Allow geo-files import",
+    "\"From\" address": "\"From\" address",
+    "e": {
+        "g": {
+            " Notifications <notification@yourmailhost": {
+                "com>": "e.g. Notifications <notification@yourmailhost.com>"
+            },
+            " smtp": {
+                "yourmailhost": {
+                    "com": "e.g. smtp.yourmailhost.com"
+                }
+            }
+        }
     },
-    "Teste!": "Teste!"
+    "SMTP Host": "SMTP Host",
+    "SMTP User": "SMTP User",
+    "username": "username",
+    "Password (will be stored as plain text)": "Password (will be stored as plain text)",
+    "Invite a user": "Invite a user",
+    "Role": "Role",
+    "Colaborator": "Colaborator",
+    "Editor": "Editor",
+    "Administrador": "Administrador",
+    "Send invitation": "Send invitation",
+    "Mange user roles": "Mange user roles",
+    "Permissão": "Permissão",
+    "collaborator": "collaborator",
+    "editor": "editor",
+    "admin": "admin",
+    "Change": "Change",
+    "Use SSL": "Use SSL",
+    "Port": "Port",
+    "SMTP port": "SMTP port",
+    "Mailer configuration": "Mailer configuration"
 }

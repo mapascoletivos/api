@@ -60,18 +60,6 @@ exports.index = function (req, res) {
 	}
 }
 
-exports.about = function(req, res) {
-	res.render('home/about');
-}
-
-exports.tutorial = function(req, res) {
-	res.render('home/tutorial');
-}
-
-exports.terms = function(req, res) {
-	res.render('home/terms');
-}
-
 exports.app = function(req, res) {
 	res.render('layouts/default', {
 		title: 'Mapas Coletivos'

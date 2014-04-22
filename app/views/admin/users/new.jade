@@ -2,27 +2,26 @@ extends ../../layouts/admin-area
 
 block content
 	section#dashboard
-		p Cadastro de novo usuário
-		- console.log(errors);
+		h3=t('Invite a user')
 		include ../../includes/messages.jade
 		form(action="/admin/users/invite" method="post" role="form")
 			table.form
 				tr
 					td.label
-						label(for="user[name]") Nome completo
+						label(for="user[name]")=t('Name')
 					td.input
 						input(name="user[name]" type="text")
 				tr
 					td.label
-						label(for="user[email]") Email
+						label(for="user[email]")=t('E-mail')
 					td.input
 						input(name="user[email]" type="text")
 				tr
 					td.label
-						label(for="user[role]") Perfil
+						label(for="user[role]")=t('Role')
 					td.input
 						select(name="user[role]")
-							option(value='collaborator') Colaborador
-							option(value='editor') Editor
-							option(value='admin') Administrador
-			input.btn.btn-primary(type='submit' value="Invite")
+							option(value='collaborator')=t('Colaborator')
+							option(value='editor')=t('Editor')
+							option(value='admin')=t('Administrador')
+			input.btn.btn-primary(type='submit' value=t('Send invitation'))

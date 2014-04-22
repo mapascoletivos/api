@@ -30,13 +30,6 @@ module.exports = function (app, passport) {
 
 	var apiPrefix = '/api/v1';
 
-	/*
-	 * Institutional routes
-	 */
-	app.get('/about', home.about);
-	app.get('/tutorial', home.tutorial);
-	app.get('/terms-of-use', home.terms);
-
 	/** 
 	 * Users routes 
 	 **/

@@ -2,20 +2,20 @@ extends ../../layouts/admin-area
 
 block content
 	section#dashboard
-		p Cadastro de novo usuário
+		h3=t('Mange user roles')
 		- console.log(errors);
 		include ../../includes/messages.jade
 		
 		
 		- if (!users)
-			p Não há usuários!!!
+			p=t('There are no users!')
 		- else 		
 			table
 				thead
 					tr
-						th Nome
-						th E-mail
-						th Permissão
+						th=t('Name')
+						th=t('E-mail')
+						th=t('Permissão')
 				tbody
 					- each user in users
 						tr
@@ -26,5 +26,5 @@ block content
 									input(type='hidden', name='user_id', value="#{user._id}")
 									select(name='role')
 										- each role in ['collaborator', 'editor', 'admin']
-											option(selected=user.role == role) #{role}
-									input.btn.btn-primary(type='submit' value="Alterar")
+											option(value=role, selected=user.role == role)=t(role)
+									input.btn.btn-primary(type='submit' value=t('Change'))

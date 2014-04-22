@@ -7,7 +7,7 @@ html
 		
 		section#login
 			.login-content
-				h1 Administrative area
+				h1=t('Administrative area')
 				include ../includes/messages
 				.login-form		
 					form.form-horizontal(action="/admin/session", method="post", role="form")
@@ -16,13 +16,13 @@ html
 						p.col-sm-offset-2.error= message
 
 						.form-group
-							label.col-sm-2.control-label(for="email") Email
+							label.col-sm-2.control-label(for="email")=t('E-mail')
 							.col-sm-10
-								input#email.form-control(type="email", placeholder="Email", name="email")
+								input#email.form-control(type="email", placeholder=t('Email'), name="email")
 
 						.form-group
-							label.col-sm-2.control-label(for="password") Password
+							label.col-sm-2.control-label(for="password")=t('Password')
 							.col-sm-10
-								input#password.form-control(type="password", placeholder="Password", name="password")
+								input#password.form-control(type="password", placeholder=t('"Password"'), name="password")
 
-						input.btn.btn-primary(type='submit' value="Log in")
+						input.btn.btn-primary(type='submit' value=t("Log in"))

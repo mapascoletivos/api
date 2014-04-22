@@ -26,7 +26,6 @@ var SettingsSchema = new Schema({
 		transportMethod: {type: String, default: 'SMTP'},
 		host: { type: String, default: '' },
 		secureConnection: {type: Boolean, default: true}, // use SSL
-		requiresAuth: {type: Boolean, default: true},
 		port: {type: Number, default: 465}, // port for secure SMTP
 		from: { type: String, default: '' },
 		auth: {

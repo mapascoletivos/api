@@ -54,12 +54,6 @@ module.exports = function (app, config, passport) {
 		next();
 	}
 
-	// i18n
-	i18n.init(config.i18n, function(){
-		console.log(i18n.t('Teste!'));
-	});
-
-
 	app.configure(function () {
 
 		// setup less
@@ -78,6 +72,7 @@ module.exports = function (app, config, passport) {
 		app.use(express.bodyParser())
 
 		// i18next
+		i18n.init(config.i18n);
 		app.use(i18n.handle);
 		i18n.registerAppHelper(app);
 

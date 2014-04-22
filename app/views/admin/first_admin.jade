@@ -9,27 +9,27 @@ html
 			.login-content
 				h1= t('Administrative area')
 				include ../includes/messages
-				p You don't have an admin yet, please provide information below to create one:
-				.login-form		
+				p= t("You don't have an admin yet, please provide information below to create one:")
+				.login-form
 					form.form-horizontal(action="/admin/first_admin", method="post", role="form")
 						input(type='hidden', name='_csrf', value="#{csrf_token}")
 
 						p.col-sm-offset-2.error= message
 
 						.form-group
-							label.col-sm-2.control-label(for="name") Name
+							label.col-sm-2.control-label(for="name")=t('Name')
 							.col-sm-10
-								input#email.form-control(type="name", placeholder="Name", name="name")
+								input#email.form-control(type="name", placeholder=t('Name'), name="name")
 
 
 						.form-group
-							label.col-sm-2.control-label(for="email") Email
+							label.col-sm-2.control-label(for="email")=t('E-mail')
 							.col-sm-10
-								input#email.form-control(type="email", placeholder="Email", name="email")
+								input#email.form-control(type="email", placeholder=t('E-mail'), name="email")
 
 						.form-group
-							label.col-sm-2.control-label(for="password") Password
+							label.col-sm-2.control-label(for="password")=t('Password')
 							.col-sm-10
-								input#password.form-control(type="password", placeholder="Password", name="password")
+								input#password.form-control(type="password", placeholder=t('Password'), name="password")
 
-						input.btn.btn-primary(type='submit' value="Create admin")
+						input.btn.btn-primary(type='submit' value=t('Create admin'))
