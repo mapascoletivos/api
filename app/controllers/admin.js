@@ -110,7 +110,7 @@ exports.session = function(req, res) {
  */
 
 exports.index = function (req, res) {
-	res.render('admin/settings/index');
+	res.redirect('admin/settings');
 }
 
 /**
@@ -181,11 +181,11 @@ exports.update = function(req, res, next) {
 
 					// Make settings available site wide
 					req.app.locals({settings: _.extend(req.app.locals.settings, settings)});
-
-						// Render new configuration
-						res.render('admin/settings', {
-							settings: settings.general
-						});
+					
+					// Render new configuration
+					res.render('admin/settings', {
+						settings: settings.general
+					});
 				}
 			});
 		}

@@ -10,7 +10,6 @@ var mongoose = require('mongoose');
  */
 
 var 
-	home = require('home'),
 	token = require('token'),
 	accessToken = require('access_token')
 	maps = require('maps'),
@@ -186,10 +185,5 @@ module.exports = function (app, passport) {
 	app.get('/', function(req, res){
 		res.redirect('/admin');
 	});
-
-	/*
-	 * All other routes enabled for Angular app (no 404)
-	 */	
-	app.get('/*', home.app);
 
 }

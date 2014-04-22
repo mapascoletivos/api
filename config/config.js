@@ -16,6 +16,7 @@ var
 
 		lng: 'pt-BR',
 		preload: ['pt-BR'],
+		shorcutFunction: 'defaultValue',
 		fallbackLng: 'en',
 		saveMissing: true,
 		debug: true

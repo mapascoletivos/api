@@ -3,9 +3,16 @@ header#mast-header
 		.container
 			.six.columns
 				h1
-					a(class="brand" href="/admin" target="_self") Administrative area
+					a(class="brand" href="/admin" target="_self")=t('Administrative area')
 
 			.six.columns
+				ul#mast-nav
+					li 
+						a#de(href='/?setLng=en')= t('app.english', 'English')
+					li
+						a#de(href='/?setLng=es')= t('app.spanish', 'Spanish')
+					li
+						a#de(href='/?setLng=pt-BR')= t('app.brazilian_portuguese', 'Portuguese (BR)')
 				ul#mast-nav
 					- if (req.isAuthenticated())
 						li

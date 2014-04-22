@@ -134,7 +134,8 @@ module.exports = function (app, config, passport) {
 				app.locals({settings: _.extend(app.locals.settings, settings)});
 
 				// Configure mailer (it needs app settings loaded first)
-				mailer.extend(app, settings.mailer);
+				mailer.extend(app, settings.mailer);					
+
 			}
 		})
 

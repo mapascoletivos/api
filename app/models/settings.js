@@ -15,7 +15,7 @@ var SettingsSchema = new Schema({
 	general: {
 		title: {type: String, default: 'Yby'},
 		description: {type: String, default: 'Collaborative web mapping platform'},
-		systemLanguage: {type: String, default: 'en'},
+		language: {type: String, default: 'en'},
 		serverUrl: {type: String, default: 'http://localhost:3000'},
 		clientUrl: {type: String, default: 'http://localhost:8000'},
 		baseLayerUrl: {type: String, default: ''},

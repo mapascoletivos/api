@@ -60,5 +60,15 @@
     "Use SSL": "Use SSL",
     "Port": "Port",
     "SMTP port": "SMTP port",
-    "Mailer configuration": "Mailer configuration"
+    "Mailer configuration": "Mailer configuration",
+    "Administration": "Administration",
+    "English": "English",
+    "Brazilian Portuguese": "Brazilian Portuguese",
+    "Spanish": "Spanish",
+    "System language": "System language",
+    "app": {
+        "english": "English",
+        "spanish": "Spanish",
+        "brazilian_portuguese": "Portuguese (BR)"
+    }
 }
