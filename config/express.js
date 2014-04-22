@@ -13,6 +13,7 @@ var flash = require('connect-flash');
 var env = process.env.NODE_ENV || 'development';
 var mongoose = require('mongoose');
 var Settings = mongoose.model('Settings');
+var i18n = require('i18next');
 
 
 /*!
@@ -53,6 +54,12 @@ module.exports = function (app, config, passport) {
 		next();
 	}
 
+	// i18n
+	i18n.init(config.i18n, function(){
+		console.log(i18n.t('Teste!'));
+	});
+
+
 	app.configure(function () {
 
 		// setup less
@@ -69,6 +76,10 @@ module.exports = function (app, config, passport) {
 
 		// bodyParser should be above methodOverride
 		app.use(express.bodyParser())
+
+		// i18next
+		app.use(i18n.handle);
+		i18n.registerAppHelper(app);
 
 		// cookieParser should be above session
 		app.use(express.cookieParser())

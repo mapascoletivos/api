@@ -51,7 +51,8 @@
 		"less-middleware": "~0.1.15",
 		"async": "latest",
 		"underscore": "latest",
-		"imager": "latest"
+		"imager": "latest",
+		"i18next": "1.7.0"
 	},
 	"devDependencies": {
 		"nodemon": "latest",
