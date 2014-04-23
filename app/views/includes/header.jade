@@ -7,13 +7,6 @@ header#mast-header
 
 			.six.columns
 				ul#mast-nav
-					li 
-						a#de(href='/?setLng=en')= t('app.english', 'English')
-					li
-						a#de(href='/?setLng=es')= t('app.spanish', 'Spanish')
-					li
-						a#de(href='/?setLng=pt-BR')= t('app.brazilian_portuguese', 'Portuguese (BR)')
-				ul#mast-nav
 					- if (req.isAuthenticated())
 						li
 							a(href="/admin/logout", title="Logout" target="_self")
