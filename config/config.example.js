@@ -8,12 +8,6 @@ var
 	rootPath = path.resolve(__dirname + '../..'),
 	app_url = process.env.APP_URL || ('http://localhost:' + (process.env.PORT || 3000)),
 	i18n = {
-		// ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'},
-		// resSetPath: 'locales/__lng__/new.__ns__.json',
-		// saveMissing: true,
-		// debug: true,
-		// sendMissingTo: 'fallback'
-
 		lng: 'pt-BR',
 		preload: ['pt-BR'],
 		shorcutFunction: 'defaultValue',
