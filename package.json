@@ -52,7 +52,8 @@
 		"async": "latest",
 		"underscore": "latest",
 		"imager": "latest",
-		"i18next": "1.7.0"
+		"i18next": "1.7.0",
+		"forever": "lastest"
 	},
 	"devDependencies": {
 		"nodemon": "latest",
