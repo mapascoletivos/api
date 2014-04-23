@@ -262,9 +262,14 @@ exports.addContributor = function (req, res) {
 							.findById(layer._id)
 							.populate('contributors', 'name username email')
 							.exec(function(err, updatedLayer){
-								res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contribuidor adicionado com sucesso'}] });
-								mailer.informContributorPermission(layer, req.user, user, function(err){
-									console.log(err);
+								mailer.informContributorPermission({
+									mailSender: req.app.mailer,
+									layer: layer, 
+									creator: req.user, 
+									contributor: user
+								}, function(err){
+									if (err) res.json(400, { messages: [{status:'error', text: "Erro ao enviar e-mail de aviso ao contribuidor."}] })
+									res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contribuidor adicionado com sucesso'}] });
 								});
 						});
 				});
