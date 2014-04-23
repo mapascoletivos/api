@@ -15,6 +15,8 @@ Install [MongoDB](http://www.mongodb.org), [Node.js](http://nodejs.org) and [Git
 
     npm install
 
+Copy `config/config.example.js` to `config/config.js` and set basic configuration options, like the database name.
+
 Run the server:
 
     npm run watch
