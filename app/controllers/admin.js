@@ -210,8 +210,6 @@ exports.mail = function(req, res) {
 		else {
 
 
-			console.log(req.body);
-
 			settings.mailer = _.extend(settings.mailer, req.body.mailer);
 			settings.mailer.secureConnection = req.body.mailer.secureConnection ? true : false;
 			
@@ -222,8 +220,6 @@ exports.mail = function(req, res) {
 					// Make settings available site wide
 					req.app.locals({settings: _.extend(req.app.locals.settings, settings)});
 					
-					console.log('will update the settings');
-					console.log(req.app.locals.settings.mailer);
 					// Reconfigure mailer with new settings
 					req.app.mailer.update(req.app.locals.settings.mailer, function(err){
 						if (err) res.render('500');
@@ -285,14 +281,11 @@ exports.roles = function(req, res, next) {
 exports.changeRole = function(req, res, next) {
 	var user = req.user;
 
-	console.log(req.body);
-	
 	User.findById(req.body.user_id, function(err, user){
 		if (err || !user) res.render('500');
 		else {
 			user.role = req.body.role;
 			user.save(function(err){
-				console.log(user);
 				if (err) res.render('500');
 				else {
 					User.find({}, function(err, users){

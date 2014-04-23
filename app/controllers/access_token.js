@@ -120,7 +120,6 @@ exports.facebook = function(req, res, next) {
 		var authorizationField = req.headers.authorization.split(' ');
 		if (authorizationField[0] = 'Bearer'){
 			
-			console.log('vai buscar no facebook')
 
 			https.get('https://graph.facebook.com/me?access_token='+authorizationField[1], function(response) {
 				var body = '';
@@ -172,7 +171,6 @@ exports.local = function(req, res, next) {
 
 		// User doesn't have a password, because it logged before via Facebook or Google
 		} else if (!user.hashed_password) {
-			console.log('não tem pass');
 			mailer.passwordNeeded(user, req.app.locals.settings.general.serverUrl, user.callback_url, function(err){
 				if (err)
 					return res.json(400, messages.error("Você precisa de uma senha para acessar sua conta, mas houve um erro. Por favor, contate o suporte.")); 
@@ -182,7 +180,6 @@ exports.local = function(req, res, next) {
 	
 		// User needs to confirm his email
 		} else if (user.needsEmailConfirmation) {
-			console.log('necessita conf');
 			mailer.confirmEmail(user, req.app.locals.settings.general.serverUrl, req.body.callback_url, function(err){
 				if (err)
 					return res.json(400, messages.error("Erro ao enviar e-mail de ativação, por favor, contate o suporte.")); 
@@ -192,7 +189,6 @@ exports.local = function(req, res, next) {
 
 		// Login successful, proceed with token 
 		} else {
-			console.log('successful login');
 			generateAccessToken(user, res);
 		}
 
