@@ -111,7 +111,7 @@ module.exports = function (app, passport) {
 	 * Layer routes 
 	 **/
 	app.param('layerId', layers.load);
-	app.get(apiPrefix + '/layers', layers.index);
+	app.get(apiPrefix + '/layers', auth.loadUser, layers.index);
 	app.post(apiPrefix + '/layers', auth.requiresLogin, layers.create);
 	app.get(apiPrefix + '/layers/:layerId', layers.show);
 	app.del(apiPrefix + '/layers/:layerId', [auth.requiresLogin, auth.layer.requireOwnership], layers.destroy);

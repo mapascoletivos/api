@@ -42,7 +42,11 @@ exports.index = function(req, res){
 		criteria: { visibility: 'Visible' }
 	}
 
-	// get visible layers for a user   
+	if(req.isAuthenticated() && req.user.role == 'admin') {
+		delete options.criteria;
+	}
+
+	// get visible layers for a user
 	if(req.param('userId')) {
 		options.criteria = { $and: [ {creator: req.param('userId')}, {visibility: 'Visible'} ] };
 	}

@@ -40,6 +40,20 @@ exports.requiresLogin = function (req, res, next) {
 
 }
 
+exports.loadUser = function(req, res, next) {
+
+	passport.authenticate('bearer', { session: false }, function(err, user, info) {
+
+		if (user) {
+			req.user = user;
+		}
+
+		return next();
+
+	})(req, res, next);
+
+}
+
 /**
  * User has administration role
  **/
