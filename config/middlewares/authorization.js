@@ -122,8 +122,12 @@ exports.feature = {
 			featureCreatorId = (feature.creator._id || feature.creator).toHexString();
 			userId = user._id.toHexString();
 
-			// is layer or feature creator
-			if ((featureCreatorId == userId) || (layerCreatorId == userId)) {
+			if (req.user && req.user.role == 'admin') {
+				// is admin
+				next();
+
+			} else if ((featureCreatorId == userId) || (layerCreatorId == userId)) {
+				// is layer or feature creator
 				next();
 			} else {
 				return res.json(403, {
@@ -177,7 +181,10 @@ exports.feature = {
 		}
 
 		// is layer creator or contributor
-		if (typeof isContributor(req.layer, req.user) == 'undefined' && !isCreator(req.layer, req.user)) {
+		if (req.user && req.user.role == 'admin') {
+			// is admin
+			next();
+		} else if (typeof isContributor(req.layer, req.user) == 'undefined' && !isCreator(req.layer, req.user)) {
 			return res.json(403, {
 				messages: [{
 					status: 'error',
@@ -205,8 +212,12 @@ exports.content = {
 			contentCreatorId = (content.creator._id || content.creator).toHexString();
 			userId = user._id.toHexString();
 
+			// is admin
+			if (req.user && req.user.role == 'admin') {
+				next();
+
 			// is layer or content creator
-			if ((contentCreatorId == userId) || (layerCreatorId == userId)) {
+			} else if ((contentCreatorId == userId) || (layerCreatorId == userId)) {
 				next();
 			} else {
 				return res.json(403, {
@@ -261,6 +272,8 @@ exports.content = {
 						text: 'Erro ao carregar a camada.'
 					}]
 				});
+			} else if (req.user && req.user.role == 'admin') {
+				next();
 			} else if (typeof isContributor(layer, req.user) == 'undefined' && !isCreator(layer, req.user)) {
 				return res.json(403, {
 					messages: [{
@@ -284,7 +297,11 @@ exports.content = {
 
 exports.layer = {
 	requireOwnership: function (req, res, next) {
-		if (req.layer.creator.id != req.user.id) {
+		
+		if (req.user && req.user.role == 'admin') {
+			next();
+
+		} else if (req.layer.creator.id != req.user.id) {
 			return res.json(403, { 
 				messages: [{
 					status: 'error',

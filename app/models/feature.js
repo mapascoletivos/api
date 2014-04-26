@@ -4,11 +4,11 @@
  */
 
 var 
+	async = require('async'),
 	mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	Area = mongoose.model('Area'),
-	Content = mongoose.model('Content'),
-	_ = require('underscore');
+	Content = mongoose.model('Content');
 
 /**
  * Feature schema
@@ -46,7 +46,6 @@ FeatureSchema.pre('save', function(next){
 	if (self.isDirectModified('geometry')) {
 	Area.whichContains(self.geometry, function(err, areas){
 		if (err){
-			console.log(err);
 
 				// Address lookup shouldn't block feature save,
 				// so next() is called without the error
@@ -63,6 +62,8 @@ FeatureSchema.pre('save', function(next){
  	}
 });
 
+
+// Before deleting ifself, all association to contents should be removed
 FeatureSchema.pre('remove', function(next){
 	var self = this;
 	
@@ -70,11 +71,11 @@ FeatureSchema.pre('remove', function(next){
 		.find({features: {$in: [self._id]}})
 		.exec(function(err, contents){
 			if (!err) {
-				_.each(contents, function(content){
+				async.each(contents, function(content){
 					content.features.pop(self._id);
 					content.save(next);
-				});
-			} 
+				}, next);
+			} else next(err);
 		});
 	
 });

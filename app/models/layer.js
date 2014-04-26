@@ -44,33 +44,28 @@ var LayerSchema = new Schema({
 LayerSchema.pre('remove', function(next) {
 	var self = this;
 
-	async.parallel([ 
-		// remove features
-		function(callback){
-			async.each(self.features, function(feature, doneRemoveFeature){
-				feature.remove(function(err){
-					doneRemoveFeature(err);
-				})
-			}, callback);
-		},
-		// remove contents
-		function(callback){
-			async.each(self.contents, function(content, doneRemoveContent){
-				content.remove(function(err){
-					doneRemoveContent(err);
-				})
-			}, callback);
-		},
-		// dessoaciate from maps
-		function(callback){
-			async.each( self.maps, 
+	var removeFeatures = function(callback) {
+		async.eachSeries(self.features, function(feature, doneRemoveFeature){
+			feature.remove(doneRemoveFeature);
+		}, callback);
+	}
+
+	var removeContents = function(callback) {
+		async.eachSeries(self.contents, function(content, doneRemoveContent){
+			content.remove(doneRemoveContent);
+		}, callback);		
+	}
+
+	var removeFromMaps = function(callback) {
+			async.eachSeries( self.maps, 
 				function(mapId, doneDessociateFromMap){
 					mongoose.model('Map').findById(mapId, function(err, map){
 						map.removeLayerAndSave(self, doneDessociateFromMap);
 					})
 			}, callback);
-		}
-	], next)
+	}
+
+	async.series([removeFeatures, removeContents, removeFromMaps], next);
 
 });
 
