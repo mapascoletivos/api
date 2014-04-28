@@ -3,14 +3,14 @@
  * Module dependencies.
  */
 
-var mongoose = require('mongoose'), 
+var 
+	messages = require('../../lib/messages'),
+	mongoose = require('mongoose'), 
 	Layer = mongoose.model('Layer'),
 	Feature = mongoose.model('Feature'),
 	Content = mongoose.model('Content'),
 	User = mongoose.model('User'),
 	mailer = require('../../lib/mailer'),
-	utils = require('../../lib/utils'),
-	extend = require('util')._extend,
 	_ = require('underscore'),
 	async = require('async');
 	
@@ -19,9 +19,12 @@ var mongoose = require('mongoose'),
  */
 
 exports.load = function(req, res, next, id){
+	console.log(req.locale);
 	Layer.load(id, function (err, layer) {
-		if (err) return res.json(400, { messages: [{status: 'error', text: 'Erro ao carregar camada.'}] });
-		else if (!layer) return res.json(400, { messages: [{status: 'error', text: 'Camada não encontrada.'}] });
+		if (err) 
+			return res.json(400, {messages: messages.error(req.i18n.t('Error loading layer.'))});
+		else if (!layer) 
+			return res.json(400, {messages: messages.error(req.i18n.t('Layer not found.'))});
 		else {
 			req.layer = layer
 			next()
@@ -61,12 +64,12 @@ exports.index = function(req, res){
 	}
 
 	Layer.list(options, function(err, layers) {
-		if (err) return res.json(400, err);
+		if (err) return res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		Layer.count(options.criteria).exec(function (err, count) {
 			if (!err) {
 				res.json({options: options, layersTotal: count, layers: layers});
 			} else {
-				res.json(400, utils.errorMessages(err.errors || err))
+				res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 			} 
 		});
 	});
@@ -118,7 +121,7 @@ exports.create = function (req, res) {
 
 	if (!type) {
 
-		return res.json(400, { messages: [{status: 'error', text: 'Layer type missing.'}] })
+		return res.json(400, { messages: messages.error(req.i18n.t('Layer type missing.')) } );
 
 	} else if (type == 'TileLayer') {
 
@@ -144,9 +147,9 @@ exports.create = function (req, res) {
 
 	layer.save(function (err) {
 		if (!err) {
-			res.json({ layer: layer,  messages: [{status: 'ok', text: 'Camada gerada com sucesso.'}] });
+			res.json({ layer: layer,  messages: messages.success(req.i18n.t('Layer created successfully.'))});
 		} else {
-			res.json(400, utils.errorMessages(err.errors || err))
+			res.json(400, {messages: messages.mongooseError(req.i18n, err)});
 		}
 	})
 }
@@ -164,16 +167,17 @@ exports.update = function(req, res){
 	delete req.body['__v'];
 
 	if (req.layer == 'TileLayer') {
-		return res.json(400, { messages: [{status: 'error', text: "Não foi possível atualizar o TileLayer."}] });
+		return res.json(400, { messages: messages.error(req.i18n.t("Can't update TileLayer.") ) } );
 	}
 
-	layer = extend(layer, req.body);
+	layer = _.extend(layer, req.body);
 
 	layer.save(function(err) {
 		if (!err) {
-			res.json({ layer: layer,  messages: [{status: 'ok', text: 'Camada atualizada com sucesso.'}] })
+			res.json({ layer: layer,  messages: messages.success(req.i18n.t('Layer updated successfully.'))});
 		} else {
-			res.json(400, utils.errorMessages(err.errors || err))
+			console.log(err);
+			res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		}
 	})
 }
@@ -186,9 +190,9 @@ exports.destroy = function(req, res){
 	var layer = req.layer
 	layer.remove(function(err){
 		if(err) {
-			res.json(400, utils.errorMessages(err.errors || err));
+			res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		} else {
-			res.json({ messages: [{status: 'ok', text: 'Camada removida com sucesso.'}] });
+			res.json({ messages: messages.success(req.i18n.t('Layer removed successfully'))});
 		}
 	})
 }
@@ -208,9 +212,9 @@ exports.addFeature = function (req, res) {
 	}
 
 	feature.save(function(err){
-		 if (err) res.json(400, utils.errorMessages(err.errors || err));
+		res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		layer.save(function(err){
-			if (err) res.json(400,utils.errorMessages(err.errors || err))
+			if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 			else res.json(feature);
 		})
 	})
@@ -226,10 +230,10 @@ exports.removeFeature = function (req, res) {
 		layer = req.layer;
 
 	var saveLayer = function(err) {
-		if (err) res.json(400, utils.errorMessages(err.errors || err));
+		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		layer.features = _.filter(layer.features, function(f) { return !f._id.equals(feature._id); });
 		layer.save(function(err) {
-			if (err) res.json(400,utils.errorMessages(err.errors || err));
+			if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 			else res.json(feature);
 		});
 	}
@@ -249,18 +253,18 @@ exports.addContributor = function (req, res) {
 		layer = req.layer;
 
 	if (contributorEmail == req.user.email) {
-		res.json(400, { messages: [{status:'error', text: "O usuário já é o criador da camada."}] })
+		res.json(400, { messages: messages.error(req.i18n.t("User is already layer creator."))});
 	} else {
 		User.findOne({email: contributorEmail}, function(err, user){
 			if (err) {
-				res.json(400, utils.errorMessages(err.errors || err))
+				res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 			} else if (!user) {
-				res.json(400, { messages: [{status:'error', text: "Não foi encontrar usuário com email "+contributorEmail+"."}] })
+				res.json(400, { messages: messages.error(req.i18n.t("Can't find user with this e-mail"))});
 			} else {
 				layer.contributors.addToSet(user);
 				layer.save(function(err){
 					if (err)
-						res.json(400, { messages: utils.errors(err.errors || err) })
+						res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 					else
 						Layer
 							.findById(layer._id)
@@ -272,8 +276,8 @@ exports.addContributor = function (req, res) {
 									creator: req.user, 
 									contributor: user
 								}, function(err){
-									if (err) res.json(400, { messages: [{status:'error', text: "Erro ao enviar e-mail de aviso ao contribuidor."}] })
-									res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contribuidor adicionado com sucesso'}] });
+									if (err) res.json(400, { messages: messages.error(req.i18n.t("Error while sending e-mail to contributor."))})
+									res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('Contributor added successfully.'))});
 								});
 						});
 				});
@@ -296,17 +300,17 @@ exports.removeContributor = function (req, res) {
 	layer.contributors.pull({_id: contributorId});
 
 	if (contributorCount == layer.contributors.lentgh) {
-		res.json(400, { messages: [{status:'error', text: "Invalid contributor id."}] })
+		res.json(400, { messages: messages.error( req.i18n.t( "Invalid contributor id.") ) } );
 	} else {
 		layer.save(function(err){		
 			if (err) {
-				res.json(400, utils.errorMessagesutils( err.errors || err) );
+				res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 			} else {
 				Layer
 					.findById(layer._id)
 					.populate('contributors', 'name username email')
 					.exec(function(err, updatedLayer){
-					res.json({ layer: updatedLayer, messages: [{status:'ok', text: 'Contributor removed successfully'}] })
+					res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('Contributor removed successfully'))});
 				})
 			}
 		})

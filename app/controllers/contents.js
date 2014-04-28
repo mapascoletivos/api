@@ -3,11 +3,11 @@
  * Module dependencies.
  */
 
-var mongoose = require('mongoose'), 
+var 
+	messages = require('../../lib/messages'),
+	mongoose = require('mongoose'), 
 	Content = mongoose.model('Content'),
 	Layer = mongoose.model('Layer'),
-	utils = require('../../lib/utils'),
-	extend = require('util')._extend,
 	_ = require('underscore');
 
 /**
@@ -19,12 +19,7 @@ exports.load = function(req, res, next, id) {
 		if (err) {
 			return next(err)
 		} else if (!content) {
-			return res.json(400, {
-				messages: [{
-					status: 'error',
-					message: 'Content not found.'
-				}]
-			});
+			return res.json(400, { messages: messages.error(req.i18n.t('Content not found.'))});
 		} else {
 			req.content = content;
 			next();
@@ -57,9 +52,9 @@ exports.index = function(req, res){
 		}
 
 	Content.list(options, function(err, contents) {
-		if (err) return res.json(400, utils.errorMessages(err.errors || err));
+		if (err) return res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		Content.count(options.criteria).exec(function (err, count) {
-			if (err) res.json(400, utils.errorMessages(err.errors || err));
+			if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 			else res.json({options: options, contentsTotal: count, contents: contents});
 		})
 	})
@@ -82,18 +77,18 @@ exports.create = function (req, res) {
 	content.creator = req.user;
 	
 	Layer.findById(req.body['layer'], function(err, layer){
-		if (err) res.json(400, utils.errorMessages(err.errors || err));
+		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		else {
 			layer.contents.addToSet(content);
 			layer.save(function(err){
-				if (err) res.json(400, utils.errorMessages(err.errors || err));
+				if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 				else {
 					content.updateSirTrevor(req.body.sirTrevorData, function(err, ct){
-						if (err) res.json(400, utils.errorMessages(err.errors || err));
+						if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 						else
 							content.save(function(err){
 								// console.log('salvou o content assim\n'+content);
-								if (err) res.json(400, utils.errorMessages(err.errors || err));
+								if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 								else res.json(content);
 							});
 					});
@@ -117,13 +112,13 @@ exports.update = function(req, res){
 	delete req.body['creator'];
 	delete req.body.layer;
 
-	content = extend(content, req.body)
+	content = _.extend(content, req.body)
 
 	content.updateSirTrevor(updatedSirTrevor, function(err, ct){
-		if (err) res.json(400, utils.errorMessages(err.errors || err));
+		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		else
 			ct.save(function(err){
-				if (err) res.json(400, utils.errorMessages(err.errors || err));
+				if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 				else res.json(ct);
 			});
 	});
@@ -148,17 +143,17 @@ exports.destroy = function(req, res){
 		content = req.content;
 
 	mongoose.model('Layer').findById(content.layer._id, function(err, layer){
-		if (err) res.json(400, utils.errorMessages(err.errors || err));
+		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		else {
 
 			layer.contents.pull({_id: content._id});
 
 			layer.save(function(err){
-				if (err) res.json(400, utils.errorMessages(err.errors || err));
+				if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 				else {
 					content.remove(function(err){
-						if (err) res.json(400, utils.errorMessages(err.errors || err));
-						else res.json({messages: [{status: 'ok', text: 'Content removed successfully.'}]});
+						if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+						else res.json({messages: messages.success(req.i18n.t('Content removed successfully.'))});
 					})
 				}
 			})

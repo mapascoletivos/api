@@ -84,7 +84,7 @@ module.exports = function (app, config, passport) {
 				url: config.db,
 				collection : 'sessions'
 			}, function(){
-				console.log('Connection to Mongo opened.');
+				console.log('MongoDB connected.');
 			})
 		}));
 

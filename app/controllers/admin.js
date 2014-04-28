@@ -68,7 +68,7 @@ exports.firstAdmin = function(req, res) {
 			} else {
 				user.save(function (err) {
 					if (err) {
-						res.render('admin/first_admin', {messages: messages.mongooseErrors(err)});
+						res.render('admin/first_admin', {messages: messages.mongooseErrors(req.i18n, err)});
 					}
 					else {
 						req.flash('info', 'Admin created successfully.');

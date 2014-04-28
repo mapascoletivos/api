@@ -28,19 +28,6 @@
     "Allow geo files import": "Allow geo files import",
     "Update": "Update",
     "Allow geo-files import": "Allow geo-files import",
-    "\"From\" address": "\"From\" address",
-    "e": {
-        "g": {
-            " Notifications <notification@yourmailhost": {
-                "com>": "e.g. Notifications <notification@yourmailhost.com>"
-            },
-            " smtp": {
-                "yourmailhost": {
-                    "com": "e.g. smtp.yourmailhost.com"
-                }
-            }
-        }
-    },
     "SMTP Host": "SMTP Host",
     "SMTP User": "SMTP User",
     "username": "username",
@@ -70,5 +57,18 @@
         "english": "English",
         "spanish": "Spanish",
         "brazilian_portuguese": "Portuguese (BR)"
-    }
+    },
+    "Path `title` is required": "Please type a layer title.",
+    "Layer not found": "Layer not found",
+    "Error loading layer": "Error loading layer",
+    "Layer updated successfully": "Layer updated successfully.",
+    "Invalid password.": "Invalid password.",
+    "Content removed successfully.": "Content removed successfully.",
+    "Logout successful": {},
+    "Content removed successfully": {},
+    "Please enter your name": {},
+    "Invalid e-mail address": {},
+    "Password should have at least 6 characters": {},
+    "Please enter your e-mail address": {},
+    "Please type a password": {}
 }

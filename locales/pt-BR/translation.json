@@ -1,5 +1,9 @@
 {
+    "Path `title` is required": "Por favor digite um título.",	
+    "Layer not found": "Camada não encontrada",
+    "Layer updated successfully": "Camada atualizada com sucesso.",
 	"Administrative area": "Área administrativa",
     "Create admin": "Criar administrador",
-    "General settings": "Configurações gerais"
+    "General settings": "Configurações gerais",
+    "Content removed successfully.": "Conteúdo removido com sucesso."
 }

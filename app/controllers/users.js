@@ -64,13 +64,14 @@ exports.create = function (req, res) {
 	// }
 
 	if (preValidationErrors.length > 0){
-		return res.json(400, messages.errorsArray(preValidationErrors));
+		return res.json(400, { messages: messages.errorsArray(req.i18n, preValidationErrors) });
 	} else {
 		user.save(function (err) {
-			if (err) return res.json(400, {messages: messages.mongooseErrors(err)});		
+			if (err) return res.json(400, { messages: messages.mongooseErrors(req.i18n, err)});		
+
 			// Don't send email if user is active
 			if (!user.needsEmailConfirmation) {			
-				return res.json(messages.success('Usuário criado com sucesso.'))
+				return res.json(messages.success(req.i18n.t('User profile created successfully.')))
 			} else {
 				mailer.confirmEmail({
 					mailSender: req.app.mailer, 
@@ -79,9 +80,9 @@ exports.create = function (req, res) {
 				}, function(err){
 					console.log(err);
 					if (err) 
-						return res.json(messages.errors(err));
+						return res.json({ messages: messages.mongooseErrors(req.i18n, err)});
 					else 
-						return res.json(messages.success('Usuário criado com sucesso. Um link de confirmação foi enviado para seu email.'));
+						return res.json(messages.success(req.i18n('User profile created successfully. An activation link was sent.')));
 				})
 			}
 		})		
