@@ -83,6 +83,8 @@ module.exports = function (app, config, passport) {
 			store: new mongoStore({
 				url: config.db,
 				collection : 'sessions'
+			}, function(){
+				console.log('Connected to MongoDB.');
 			})
 		}))
 
