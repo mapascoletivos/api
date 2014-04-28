@@ -83,8 +83,10 @@ module.exports = function (app, config, passport) {
 			store: new mongoStore({
 				url: config.db,
 				collection : 'sessions'
+			}, function(){
+				console.log('Connection to Mongo opened.');
 			})
-		}))
+		}));
 
 		// Passport session
 		app.use(passport.initialize())
