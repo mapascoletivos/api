@@ -40,9 +40,6 @@
   "There are no users!": "",
   "Update": "",
   "Use SSL": "",
-  "User profile created successfully": {
-    "": ""
-  },
   "Users": "",
   "a brief site description": "",
   "access_token": {
@@ -246,6 +243,82 @@
         "generic": "Error while changing password."
       },
       "success": "Password changed successfully."
+    }
+  },
+  "user": {
+    "create": {
+      "error": {
+        "email": {
+          "invalid": "Invalid e-mail address.",
+          "missing": "Please type an e-mail address."
+        },
+        "missing_name": "Please enter your name.",
+        "password": {
+          "length": "Password should have at least 6 characters.",
+          "missing": "Please type a password."
+        }
+      },
+      "success": {
+        "with_token": "User profile created successfully. An activation link was sent.",
+        "without_token": "User profile created successfully."
+      }
+    },
+    "load": {
+      "error": "Failed to load user with id "
+    },
+    "migrate": {
+      "form": {
+        "errors": {
+          "email": {
+            "missing": "Please inform an e-mail."
+          },
+          "password": {
+            "length": "Password should have at least 6 characters.",
+            "missing": "Please type a password."
+          },
+          "user": {
+            "not_found": "User not found or migration already done."
+          }
+        },
+        "success": "A activation was sent to your e-mail."
+      }
+    },
+    "reset_pwd": {
+      "form": {
+        "error": {
+          "user": {
+            "not_found": "User not found."
+          }
+        },
+        "title": "Recover password"
+      },
+      "mail": {
+        "title": "Recover password"
+      },
+      "token": {
+        "success": "Password change token sent successfully."
+      }
+    },
+    "update": {
+      "email": {
+        "error": {
+          "already_associated": "E-mail already associated to account.",
+          "already_used": "This e-mail address is already used.",
+          "invalid": "Invalid e-mail address.",
+          "mailer": "Error while sending e-mail confirmation.",
+          "missing_callback": "Missing callback."
+        },
+        "success": "An e-mail was sent to confirm address change."
+      },
+      "password": {
+        "error": {
+          "dont_match": "Passwords don't match.",
+          "length": "Password should be at least 6 characters long.",
+          "wrong": "Wrong password."
+        },
+        "success": "Password changed successfully."
+      },
+      "success": "Profile updated successfully."
     }
   },
   "username": "",

@@ -40,9 +40,6 @@
   "There are no users!": "",
   "Update": "Update",
   "Use SSL": "Use SSL",
-  "User profile created successfully": {
-    "": ""
-  },
   "Users": "Users",
   "a brief site description": "a brief site description",
   "access_token": {
@@ -246,6 +243,79 @@
         "generic": ""
       },
       "success": ""
+    }
+  },
+  "user": {
+    "create": {
+      "error": {
+        "email": {
+          "invalid": "",
+          "missing": ""
+        },
+        "missing_name": "",
+        "password": {
+          "length": "",
+          "missing": ""
+        }
+      },
+      "success": ""
+    },
+    "load": {
+      "error": ""
+    },
+    "migrate": {
+      "form": {
+        "errors": {
+          "email": {
+            "missing": ""
+          },
+          "password": {
+            "length": "",
+            "missing": ""
+          },
+          "user": {
+            "not_found": ""
+          }
+        },
+        "success": ""
+      }
+    },
+    "reset_pwd": {
+      "form": {
+        "error": {
+          "user": {
+            "not_found": ""
+          }
+        },
+        "title": ""
+      },
+      "mail": {
+        "title": ""
+      },
+      "token": {
+        "success": ""
+      }
+    },
+    "update": {
+      "email": {
+        "error": {
+          "already_associated": "",
+          "already_used": "",
+          "invalid": "",
+          "mailer": "",
+          "missing_callback": ""
+        },
+        "success": ""
+      },
+      "password": {
+        "error": {
+          "dont_match": "",
+          "length": "",
+          "wrong": ""
+        },
+        "success": ""
+      },
+      "success": "Profile updated successfully."
     }
   },
   "username": "username",
