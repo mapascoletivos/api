@@ -18,13 +18,13 @@ exports.load = function(req, res, next, id){
 		if (err) return next(err);
 		if (!token){
 			return res.render('tokens/index', {
-				errors: ['Token não encontrado.'], 
+				errors: [t('token.load.error.not_found')], 
 				autoRedirect: false 
 			});	
 		} 
 		if (token.expiresAt < Date.now()) {
 			return res.render('tokens/index', {
-				errors: ['Este token expirou.'], 
+				errors: [t('token.load.error.expired')], 
 				callbackUrl: token.callbackUrl,
 				autoRedirect: false 
 			});	
@@ -44,12 +44,12 @@ exports.activateAccount = function(req, res){
 		
 	// invalid route for token
 	if (token.type != 'activateAccount') {
-		return res.render('tokens/index', {errors: ['Token inválido.']});	
+		return res.render('tokens/index', {errors: [t('token.activate_account.error.invalid')]});	
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
 				return res.render('tokens/index', {
-					errors: ['Não foi possível ativar este usuário.'],
+					errors: [t('token.activate_account.error.user')],
 					callbackUrl: token.callbackUrl,					
 					autoRedirect: false
 				});
@@ -61,7 +61,7 @@ exports.activateAccount = function(req, res){
 			user.save(function(err){
 				if (err)
 					return res.render('tokens/index', {
-						errors: ['Não foi possível ativar este usuário.'],
+						errors: [t('token.activate_account.error.user')],
 						callbackUrl: token.callbackUrl,
 						autoRedirect: false
 					});
@@ -72,13 +72,13 @@ exports.activateAccount = function(req, res){
 						console.log(err);
 						if (err)
 							return res.render('tokens/index', {
-								errors: ['Houve um erro de gravação do token.'],
+								errors: [t('token.activate_account.error.saving')],
 								callbackUrl: token.callbackUrl,
 								autoRedirect: false
 							})
 						else
 							return res.render('tokens/index', {
-								success: ['Conta ativada com sucesso, aguarde redirecionamento.'],
+								success: [t('token.activate_account.success')],
 								callbackUrl: token.callbackUrl,
 								autoRedirect: true
 							});
@@ -99,7 +99,7 @@ exports.acceptInvitationForm = function(req, res){
 		
 	// invalid route for token
 	if (token.type != 'acceptInvitation') {
-		return res.render('tokens/index', {errors: ['Token inválido.']});
+		return res.render('tokens/index', {errors: [t('token.accept_invitation.error.invalid_token')]});
 	} else {
 		return res.render('tokens/accept_invitation', {
 			token: token
@@ -115,12 +115,12 @@ exports.acceptInvitation = function(req, res){
 		
 	// invalid route for token
 	if (token.type != 'acceptInvitation') {
-		return res.render('tokens/index', {errors: ['Token inválido.']});	
+		return res.render('tokens/index', {errors: [t('token.error.invalid')]});	
 	} else {
 		mongoose.model('User').findOne({email: token.data.user.email}, function(err, user){
 			if (err) {
 				return res.render('tokens/index', {
-					errors: ['Não foi possível ativar este usuário.'],
+					errors: [t('token.accept_invitation.error.user_activation')],
 					callbackUrl: token.callbackUrl,
 					autoRedirect: false
 				});
@@ -137,7 +137,7 @@ exports.acceptInvitation = function(req, res){
 				if (err) {
 					console.log(err);
 					return res.render('tokens/index', {
-						errors: ['Não foi possível ativar este usuário.'],
+						errors: [t('token.accept_invitation.error.user_activation')],
 						callbackUrl: token.callbackUrl,
 						autoRedirect: false
 					});
@@ -149,13 +149,13 @@ exports.acceptInvitation = function(req, res){
 						console.log(err);
 						if (err)
 							return res.render('tokens/index', {
-								errors: ['Houve um erro de gravação do token.'],
+								errors: [t('token.error.cant_save')],
 								callbackUrl: token.callbackUrl,
 								autoRedirect: false
 							})
 						else
 							return res.render('tokens/index', {
-								success: ['Conta ativada com sucesso, aguarde redirecionamento.'],
+								success: [t('token.accept_invitation.success')],
 								callbackUrl: token.callbackUrl,
 								autoRedirect: true
 							});
@@ -178,7 +178,7 @@ exports.newPasswordForm = function(req, res){
 
 	// invalid route for token
 	if ((token.type != 'password_reset') && (token.type != 'password_needed')) {
-		return res.render('tokens/index', {errors: ['Token inválido.']});
+		return res.render('tokens/index', {errors: [t('token.error.invalid')]});
 	} else {
 		res.render('users/new_password', {user: req.user, token: token})
 	}
@@ -194,21 +194,21 @@ exports.newPassword = function(req, res){
 	
 	// invalid route for token
 	if ((token.type != 'password_reset') && (token.type != 'password_needed')) {
-		return res.render('tokens/index', {errors: ['Token inválido.']});
+		return res.render('tokens/index', {errors: [t('token.error.invalid')]});
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
-				return res.render('tokens/index', {errors: ['Houve um erro no pedido de alteração de senha.']});
+				return res.render('tokens/index', {errors: [t('token.new_password.error.generic')]});
 			}
 			
 			user.password = req.body.password;
 
 			user.save(function(err){
 				if (err)
-					return res.render('tokens/index', {errors: ['Não foi possível alterar a senha deste usuário.']});
+					return res.render('tokens/index', {errors: [t('token.new_password.error.generic')]});
 				else {
 					return res.render('tokens/index', {
-						info: ['Senha alterada com sucesso.'],
+						info: [t('token.new_password.success')],
 						callbackUrl: token.callbackUrl,
 						autoRedirect: true
 					});
@@ -229,11 +229,11 @@ exports.migrateAccount = function(req, res){
 	
 	// invalid route for token
 	if (token.type != 'migrate_account') {
-		return res.render('tokens/index', {errors: ['Token inválido.']});
+		return res.render('tokens/index', {errors: [t('token.error.invalid')]});
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
-				return res.render('tokens/index', {errors: ['Houve um erro na migração da conta.']});
+				return res.render('tokens/index', {errors: [t('token.migration.error.generic')]});
 			}
 			
 			user.password = token.data.password;
@@ -242,9 +242,9 @@ exports.migrateAccount = function(req, res){
 
 			user.save(function(err){
 				if (err)
-				return res.render('tokens/index', {errors: ['Não foi possível migrar a conta deste usuário']});
+				return res.render('tokens/index', {errors: [t('token.migration.error.generic')]});
 				else {
-					req.flash('info', 'Usuário migrado com sucesso.')
+					req.flash('info', t('token.migration.success'))
 				}
 
 				return res.redirect('/login');
@@ -267,12 +267,12 @@ exports.emailChange = function(req, res){
 
 	// invalid route for token
 	if (token.type != 'email_change') {
-		return res.render('tokens/index', {errors: ['Token inválido.']});
+		return res.render('tokens/index', {errors: [t('token.error.invalid')]});
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
 				return res.render('tokens/index', {
-					errors: ['Houve um erro na solicitação de alteração de e-mail.']
+					errors: [t('token.email_change.error.generic')]
 				});
 			}
 			
@@ -282,11 +282,11 @@ exports.emailChange = function(req, res){
 				// TODO render login form
 				if (err)
 					return res.render('tokens/index', {
-						errors: ['Não foi possível alterar o e-mail deste usuário.']
+						errors: [t('token.email_change.error.generic')]
 					});
 				else {
 					return res.render('tokens/index', {
-						info: ['E-mail alterado com sucesso.'],
+						info: [t('token.email_change.success')],
 						callbackUrl: token.callbackUrl,
 						autoRedirect: true
 					});

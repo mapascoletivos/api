@@ -19,7 +19,7 @@ exports.load = function(req, res, next, id) {
 		if (err) {
 			return next(err)
 		} else if (!content) {
-			return res.json(400, { messages: messages.error(req.i18n.t('Content not found.'))});
+			return res.json(400, { messages: messages.error(req.i18n.t('content.load.error.not_found'))});
 		} else {
 			req.content = content;
 			next();
@@ -153,7 +153,7 @@ exports.destroy = function(req, res){
 				else {
 					content.remove(function(err){
 						if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
-						else res.json({messages: messages.success(req.i18n.t('Content removed successfully.'))});
+						else res.json({messages: messages.success(req.i18n.t('content.destroy.success'))});
 					})
 				}
 			})

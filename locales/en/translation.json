@@ -1,74 +1,255 @@
 {
-    "Administrative area": "Administrative area",
-    "Name": "Name",
-    "You": "You",
-    "E-mail": "E-mail",
-    "Password": "Password",
-    "Create admin": "Create admin",
-    "Email": "Email",
-    "\"Password\"": "\"Password\"",
-    "Log in": "Log in",
-    "Settings": "Settings",
-    "General": "General",
-    "Mailer": "Mailer",
-    "Users": "Users",
-    "Invite new": "Invite new",
-    "Manage roles": "Manage roles",
-    "Welcome to admin area": "Welcome to admin area",
-    "General settings": "General settings",
-    "Site title": "Site title",
-    "your site title": "your site title",
-    "Site description": "Site description",
-    "a brief site description": "a brief site description",
-    "Server URL": "Server URL",
-    "your yby server URL": "your yby server URL",
-    "Client URL": "Client URL",
-    "your yby client URL": "your yby client URL",
-    "Only invited users can register": "Only invited users can register",
-    "Allow geo files import": "Allow geo files import",
-    "Update": "Update",
-    "Allow geo-files import": "Allow geo-files import",
-    "SMTP Host": "SMTP Host",
-    "SMTP User": "SMTP User",
-    "username": "username",
-    "Password (will be stored as plain text)": "Password (will be stored as plain text)",
-    "Invite a user": "Invite a user",
-    "Role": "Role",
-    "Colaborator": "Colaborator",
-    "Editor": "Editor",
-    "Administrador": "Administrador",
-    "Send invitation": "Send invitation",
-    "Mange user roles": "Mange user roles",
-    "Permissão": "Permissão",
-    "collaborator": "collaborator",
-    "editor": "editor",
-    "admin": "admin",
-    "Change": "Change",
-    "Use SSL": "Use SSL",
-    "Port": "Port",
-    "SMTP port": "SMTP port",
-    "Mailer configuration": "Mailer configuration",
-    "Administration": "Administration",
-    "English": "English",
-    "Brazilian Portuguese": "Brazilian Portuguese",
-    "Spanish": "Spanish",
-    "System language": "System language",
-    "app": {
-        "english": "English",
-        "spanish": "Spanish",
-        "brazilian_portuguese": "Portuguese (BR)"
+  "\"From\" address": "",
+  "\"Password\"": "",
+  "Administrador": "",
+  "Administration": "",
+  "Administrative area": "",
+  "Allow geo-files import": "",
+  "Change": "",
+  "Client URL": "",
+  "Colaborator": "",
+  "Create admin": "",
+  "Create first admin user": "",
+  "E-mail": "",
+  "Editor": "",
+  "Email": "",
+  "General": "",
+  "General settings": "",
+  "Invite a user": "",
+  "Invite new": "",
+  "Log in": "",
+  "Mailer": "",
+  "Mailer configuration": "",
+  "Manage roles": "",
+  "Mange user roles": "",
+  "Name": "",
+  "Only invited users can register": "",
+  "Password": "",
+  "Password (will be stored as plain text)": "",
+  "Permissão": "",
+  "Port": "",
+  "Role": "",
+  "SMTP Host": "",
+  "SMTP User": "",
+  "SMTP port": "",
+  "Send invitation": "",
+  "Server URL": "",
+  "Settings": "",
+  "Site description": "",
+  "Site title": "",
+  "There are no users!": "",
+  "Update": "",
+  "Use SSL": "",
+  "User profile created successfully": {
+    "": ""
+  },
+  "Users": "",
+  "a brief site description": "",
+  "access_token": {
+    "authsocial": {
+      "error": {
+        "load_user": "Error loading user.",
+        "save_user": "Error while saving user."
+      }
     },
-    "Path `title` is required": "Please type a layer title.",
-    "Layer not found": "Layer not found",
-    "Error loading layer": "Error loading layer",
-    "Layer updated successfully": "Layer updated successfully.",
-    "Invalid password.": "Invalid password.",
-    "Content removed successfully.": "Content removed successfully.",
-    "Logout successful": {},
-    "Content removed successfully": {},
-    "Please enter your name": {},
-    "Invalid e-mail address": {},
-    "Password should have at least 6 characters": {},
-    "Please enter your e-mail address": {},
-    "Please type a password": {}
+    "facebook": {
+      "error": {
+        "missing_token": "Missing Facebook authorization token."
+      }
+    },
+    "google": {
+      "error": {
+        "missing_token": "Missing Google authorization token."
+      }
+    },
+    "local": {
+      "error": {
+        "need_password": "Your need a password to acccess your profile. Check your e-mail to continue.",
+        "needs_activation": "Profile not active, an activation email was sent.",
+        "send_email": "There was an error while sending a password token to your e-mail."
+      },
+      "needs_migration": "Your account wasn't migrated yet, please visit this <a href='/migrate' target='_self'>page</a>.",
+      "unauthorized": "Unauthorized."
+    },
+    "logout": {
+      "error": {
+        "inexistent_token": "Can't find access token.",
+        "not_logged": "You are not logged in."
+      },
+      "successful": "Logout successful."
+    }
+  },
+  "admin": {
+    "api_settings": {
+      "error": {
+        "load": "Could not retrive server info."
+      }
+    },
+    "first_admin": {
+      "error": {
+        "already_exists": "An admin already exists.",
+        "invalid_email": "Invalid e-mail address.",
+        "needs_email": "Please enter a e-mail address.",
+        "needs_name": "Please enter a name.",
+        "password_length": "Password should have at least 6 characters.",
+        "password_missing": "Please type a password."
+      },
+      "success": "Admin created successfully."
+    },
+    "invite_user": {
+      "error": {
+        "already_active": "User is already active."
+      },
+      "success": "User invited successfully."
+    }
+  },
+  "content": {
+    "destroy": {
+      "success": "Content removed successfully."
+    },
+    "load": {
+      "error": {
+        "not_found": "Content not found."
+      }
+    }
+  },
+  "e": {
+    "g": {
+      " Notifications <notification@yourmailhost": {
+        "com>": ""
+      },
+      " smtp": {
+        "yourmailhost": {
+          "com": ""
+        }
+      }
+    }
+  },
+  "feature": {
+    "add_content": {
+      "success": "Content added successfully."
+    },
+    "import": {
+      "error": {
+        "disabled": "Geo files import is disabled."
+      }
+    },
+    "load": {
+      "error": {
+        "cant_find": "Can't find feature."
+      }
+    },
+    "remove_content": {
+      "success": "Content removed successfully."
+    }
+  },
+  "image": {
+    "create": {
+      "error": {
+        "not_found": "Image file not found"
+      }
+    },
+    "destroy": {
+      "success": "Image removed successfully."
+    },
+    "load": {
+      "error": {
+        "not_found": "Image not found."
+      }
+    }
+  },
+  "layer": {
+    "contributor": {
+      "add": {
+        "error": {
+          "already_exists": "User is already layer creator.",
+          "dont_exists": "Can't find user with this e-mail.",
+          "email": "Error while sending e-mail to contributor."
+        },
+        "success": "Contributor added successfully."
+      },
+      "remove": {
+        "error": {
+          "invalid_id": "Invalid contributor id."
+        },
+        "success": "Contributor removed successfully."
+      }
+    },
+    "create": {
+      "missing": "Layer type missing.",
+      "success": "Layer created successfully."
+    },
+    "destroy": {
+      "success": "Layer removed successfully."
+    },
+    "load": {
+      "error": "Error loading layer.",
+      "not_found": "Layer not found."
+    },
+    "update": {
+      "success": "Layer updated successfully.",
+      "tilelayer": {
+        "error": "Can't update TileLayer"
+      }
+    }
+  },
+  "map": {
+    "destroy": {
+      "success": "Map removed successfully."
+    },
+    "load": {
+      "error": {
+        "not_found": "Map not found."
+      }
+    }
+  },
+  "token": {
+    "accept_invitation": {
+      "error": {
+        "invalid_token": "Invalid token.",
+        "user_activation": "Can't actived this user."
+      },
+      "success": "Profile activated successfully."
+    },
+    "activate_account": {
+      "error": {
+        "invalid": "Invalid token.",
+        "saving": "Error while saving token.",
+        "user": "Can't activate this user."
+      },
+      "success": "Profile activated successfully, please wait redirection."
+    },
+    "email_change": {
+      "error": {
+        "generic": "Error while changing user e-mail."
+      },
+      "success": "E-mail changed successfully."
+    },
+    "error": {
+      "cant_save": "Can't save token.",
+      "invalid": "Invalid token."
+    },
+    "load": {
+      "error": {
+        "expired": "This token expired.",
+        "not_found": "Token not found."
+      }
+    },
+    "migration": {
+      "error": {
+        "generic": "Error while migrating account."
+      },
+      "success": "Account migrated successfully."
+    },
+    "new_password": {
+      "error": {
+        "generic": "Error while changing password."
+      },
+      "success": "Password changed successfully."
+    }
+  },
+  "username": "",
+  "your site title": "",
+  "your yby client URL": "",
+  "your yby server URL": ""
 }

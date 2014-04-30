@@ -22,9 +22,9 @@ exports.load = function(req, res, next, id){
 	console.log(req.locale);
 	Layer.load(id, function (err, layer) {
 		if (err) 
-			return res.json(400, {messages: messages.error(req.i18n.t('Error loading layer.'))});
+			return res.json(400, {messages: messages.error(req.i18n.t('layer.load.error'))});
 		else if (!layer) 
-			return res.json(400, {messages: messages.error(req.i18n.t('Layer not found.'))});
+			return res.json(400, {messages: messages.error(req.i18n.t('layer.load.not_found'))});
 		else {
 			req.layer = layer
 			next()
@@ -121,7 +121,7 @@ exports.create = function (req, res) {
 
 	if (!type) {
 
-		return res.json(400, { messages: messages.error(req.i18n.t('Layer type missing.')) } );
+		return res.json(400, { messages: messages.error(req.i18n.t('layer.create.missing')) } );
 
 	} else if (type == 'TileLayer') {
 
@@ -147,7 +147,7 @@ exports.create = function (req, res) {
 
 	layer.save(function (err) {
 		if (!err) {
-			res.json({ layer: layer,  messages: messages.success(req.i18n.t('Layer created successfully.'))});
+			res.json({ layer: layer,  messages: messages.success(req.i18n.t('layer.create.success'))});
 		} else {
 			res.json(400, {messages: messages.mongooseError(req.i18n, err)});
 		}
@@ -167,14 +167,14 @@ exports.update = function(req, res){
 	delete req.body['__v'];
 
 	if (req.layer == 'TileLayer') {
-		return res.json(400, { messages: messages.error(req.i18n.t("Can't update TileLayer.") ) } );
+		return res.json(400, { messages: messages.error(req.i18n.t("layer.update.tilelayer.error") ) } );
 	}
 
 	layer = _.extend(layer, req.body);
 
 	layer.save(function(err) {
 		if (!err) {
-			res.json({ layer: layer,  messages: messages.success(req.i18n.t('Layer updated successfully.'))});
+			res.json({ layer: layer,  messages: messages.success(req.i18n.t('layer.update.success'))});
 		} else {
 			console.log(err);
 			res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
@@ -192,7 +192,7 @@ exports.destroy = function(req, res){
 		if(err) {
 			res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		} else {
-			res.json({ messages: messages.success(req.i18n.t('Layer removed successfully'))});
+			res.json({ messages: messages.success(req.i18n.t('layer.destroy.success'))});
 		}
 	})
 }
@@ -253,13 +253,13 @@ exports.addContributor = function (req, res) {
 		layer = req.layer;
 
 	if (contributorEmail == req.user.email) {
-		res.json(400, { messages: messages.error(req.i18n.t("User is already layer creator."))});
+		res.json(400, { messages: messages.error(req.i18n.t("layer.contributor.add.error.already_exists"))});
 	} else {
 		User.findOne({email: contributorEmail}, function(err, user){
 			if (err) {
 				res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 			} else if (!user) {
-				res.json(400, { messages: messages.error(req.i18n.t("Can't find user with this e-mail"))});
+				res.json(400, { messages: messages.error(req.i18n.t("layer.contributor.add.error.dont_exists"))});
 			} else {
 				layer.contributors.addToSet(user);
 				layer.save(function(err){
@@ -276,8 +276,8 @@ exports.addContributor = function (req, res) {
 									creator: req.user, 
 									contributor: user
 								}, function(err){
-									if (err) res.json(400, { messages: messages.error(req.i18n.t("Error while sending e-mail to contributor."))})
-									res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('Contributor added successfully.'))});
+									if (err) res.json(400, { messages: messages.error(req.i18n.t("layer.contributor.add.error.email"))})
+									res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.add.success'))});
 								});
 						});
 				});
@@ -300,7 +300,7 @@ exports.removeContributor = function (req, res) {
 	layer.contributors.pull({_id: contributorId});
 
 	if (contributorCount == layer.contributors.lentgh) {
-		res.json(400, { messages: messages.error( req.i18n.t( "Invalid contributor id.") ) } );
+		res.json(400, { messages: messages.error( req.i18n.t( "layer.contributor.remove.error.invalid_id") ) } );
 	} else {
 		layer.save(function(err){		
 			if (err) {
@@ -310,7 +310,7 @@ exports.removeContributor = function (req, res) {
 					.findById(layer._id)
 					.populate('contributors', 'name username email')
 					.exec(function(err, updatedLayer){
-					res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('Contributor removed successfully'))});
+					res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.remove.success'))});
 				})
 			}
 		})

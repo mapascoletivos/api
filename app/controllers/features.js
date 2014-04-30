@@ -20,7 +20,7 @@ exports.load = function(req, res, next, id){
 		if (err) {
 			return next(err)
 		} else if (!feature) {
-			return res.json(400, {messages: messages.error(req.i18n.t("Can't find feature"))});
+			return res.json(400, {messages: messages.error(req.i18n.t('feature.load.error.cant_find'))});
 		} else {
 			req.feature = feature;
 			next();
@@ -156,7 +156,7 @@ exports.addContent = function(req, res){
 		 if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		feature.save(function(err){
 			if (err) res.json(400,err)
-			else res.json({messages: messages.success(req.i18n.t('Content added successfully.'))});
+			else res.json({messages: messages.success(req.i18n.t('feature.add_content.success'))});
 		});
 	});
 
@@ -184,7 +184,7 @@ exports.removeContent = function(req, res){
 		 if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
 		feature.save(function(err){
 			if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
-			else res.json({messages: messages.success(req.i18n.t('Content removed successfully.'))});
+			else res.json({messages: messages.success(req.i18n.t('feature.remove_content.success'))});
 		});
 	});
 }
@@ -231,6 +231,6 @@ exports.import = function(req, res) {
 			}
 		});
 	} else {
-		res.json({messages: messages.error(req.i18n.t('Geo files import is disabled.'))});	
+		res.json({messages: messages.error(req.i18n.t('feature.import.error.disabled'))});	
 	}
 }

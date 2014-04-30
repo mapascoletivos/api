@@ -1,9 +1,255 @@
 {
-    "Path `title` is required": "Por favor digite um título.",	
-    "Layer not found": "Camada não encontrada",
-    "Layer updated successfully": "Camada atualizada com sucesso.",
-	"Administrative area": "Área administrativa",
-    "Create admin": "Criar administrador",
-    "General settings": "Configurações gerais",
-    "Content removed successfully.": "Conteúdo removido com sucesso."
+  "\"From\" address": "",
+  "\"Password\"": "\"Password\"",
+  "Administrador": "Administrador",
+  "Administration": "Administration",
+  "Administrative area": "Área administrativa",
+  "Allow geo-files import": "Allow geo-files import",
+  "Change": "Change",
+  "Client URL": "Client URL",
+  "Colaborator": "Colaborator",
+  "Create admin": "Criar administrador",
+  "Create first admin user": "",
+  "E-mail": "E-mail",
+  "Editor": "Editor",
+  "Email": "Email",
+  "General": "General",
+  "General settings": "Configurações gerais",
+  "Invite a user": "Invite a user",
+  "Invite new": "Invite new",
+  "Log in": "Log in",
+  "Mailer": "Mailer",
+  "Mailer configuration": "Mailer configuration",
+  "Manage roles": "Manage roles",
+  "Mange user roles": "Mange user roles",
+  "Name": "Name",
+  "Only invited users can register": "Only invited users can register",
+  "Password": "Password",
+  "Password (will be stored as plain text)": "Password (will be stored as plain text)",
+  "Permissão": "Permissão",
+  "Port": "Port",
+  "Role": "Role",
+  "SMTP Host": "SMTP Host",
+  "SMTP User": "SMTP User",
+  "SMTP port": "SMTP port",
+  "Send invitation": "Send invitation",
+  "Server URL": "Server URL",
+  "Settings": "Settings",
+  "Site description": "Site description",
+  "Site title": "Site title",
+  "There are no users!": "",
+  "Update": "Update",
+  "Use SSL": "Use SSL",
+  "User profile created successfully": {
+    "": ""
+  },
+  "Users": "Users",
+  "a brief site description": "a brief site description",
+  "access_token": {
+    "authsocial": {
+      "error": {
+        "load_user": "",
+        "save_user": ""
+      }
+    },
+    "facebook": {
+      "error": {
+        "missing_token": ""
+      }
+    },
+    "google": {
+      "error": {
+        "missing_token": ""
+      }
+    },
+    "local": {
+      "error": {
+        "need_password": "",
+        "needs_activation": "",
+        "send_email": ""
+      },
+      "needs_migration": "",
+      "unauthorized": ""
+    },
+    "logout": {
+      "error": {
+        "inexistent_token": "",
+        "not_logged": ""
+      },
+      "successful": ""
+    }
+  },
+  "admin": {
+    "api_settings": {
+      "error": {
+        "load": ""
+      }
+    },
+    "first_admin": {
+      "error": {
+        "already_exists": "",
+        "invalid_email": "",
+        "needs_email": "",
+        "needs_name": "",
+        "password_length": "",
+        "password_missing": ""
+      },
+      "success": ""
+    },
+    "invite_user": {
+      "error": {
+        "already_active": ""
+      },
+      "success": ""
+    }
+  },
+  "content": {
+    "destroy": {
+      "success": ""
+    },
+    "load": {
+      "error": {
+        "not_found": ""
+      }
+    }
+  },
+  "e": {
+    "g": {
+      " Notifications <notification@yourmailhost": {
+        "com>": ""
+      },
+      " smtp": {
+        "yourmailhost": {
+          "com": ""
+        }
+      }
+    }
+  },
+  "feature": {
+    "add_content": {
+      "success": ""
+    },
+    "import": {
+      "error": {
+        "disabled": ""
+      }
+    },
+    "load": {
+      "error": {
+        "cant_find": ""
+      }
+    },
+    "remove_content": {
+      "success": ""
+    }
+  },
+  "image": {
+    "create": {
+      "error": {
+        "not_found": ""
+      }
+    },
+    "destroy": {
+      "success": ""
+    },
+    "load": {
+      "error": {
+        "not_found": ""
+      }
+    }
+  },
+  "layer": {
+    "contributor": {
+      "add": {
+        "error": {
+          "already_exists": "",
+          "dont_exists": "",
+          "email": ""
+        },
+        "success": ""
+      },
+      "remove": {
+        "error": {
+          "invalid_id": ""
+        },
+        "success": ""
+      }
+    },
+    "create": {
+      "missing": "",
+      "success": ""
+    },
+    "destroy": {
+      "success": ""
+    },
+    "load": {
+      "error": "Error loading layer.",
+      "not_found": ""
+    },
+    "update": {
+      "success": "",
+      "tilelayer": {
+        "error": ""
+      }
+    }
+  },
+  "map": {
+    "destroy": {
+      "success": ""
+    },
+    "load": {
+      "error": {
+        "not_found": ""
+      }
+    }
+  },
+  "token": {
+    "accept_invitation": {
+      "error": {
+        "invalid_token": "",
+        "user_activation": ""
+      },
+      "success": ""
+    },
+    "activate_account": {
+      "error": {
+        "invalid": "",
+        "saving": "",
+        "user": ""
+      },
+      "success": ""
+    },
+    "email_change": {
+      "error": {
+        "generic": ""
+      },
+      "success": ""
+    },
+    "error": {
+      "cant_save": "",
+      "invalid": ""
+    },
+    "load": {
+      "error": {
+        "expired": "",
+        "not_found": ""
+      }
+    },
+    "migration": {
+      "error": {
+        "generic": ""
+      },
+      "success": ""
+    },
+    "new_password": {
+      "error": {
+        "generic": ""
+      },
+      "success": ""
+    }
+  },
+  "username": "username",
+  "your site title": "your site title",
+  "your yby client URL": "your yby client URL",
+  "your yby server URL": "your yby server URL"
 }

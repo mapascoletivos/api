@@ -16,7 +16,7 @@ var
 exports.load = function(req, res, next, id){
 	Map.load(id, function (err, map) {
 		if (err) return next(err)
-		if (!map) return res.json(400, { messages: messages.error(req.i18n.t('Map not found.'))});
+		if (!map) return res.json(400, { messages: messages.error(req.i18n.t('map.load.error.not_found'))});
 		req.map = map
 		next()
 	});
@@ -113,6 +113,6 @@ exports.destroy = function(req, res){
 	var map = req.map
 	map.remove(function(err){
 		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
-		else res.json({ messages: messages.error(req.i18n.t('Map removed successfully.'))});
+		else res.json({ messages: messages.error(req.i18n.t('map.destroy.success'))});
 	});
 }

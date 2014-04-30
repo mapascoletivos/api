@@ -9,7 +9,7 @@ html
 			.login-content
 				h1= t('Administrative area')
 				include ../includes/messages
-				p= t("You don't have an admin yet, please provide information below to create one:")
+				p= t("Create first admin user")+':'
 				.login-form
 					form.form-horizontal(action="/admin/first_admin", method="post", role="form")
 						input(type='hidden', name='_csrf', value="#{csrf_token}")

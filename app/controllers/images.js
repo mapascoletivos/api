@@ -19,7 +19,7 @@ var
 exports.load = function (req, res, next, id) {
 	Image.load(id, function (err, image) {
 		if (err) return next(err)
-		if (!image) return res.json(400, { messages: messages.error(req.i18n.t('Image not found.'))});
+		if (!image) return res.json(400, { messages: messages.error(req.i18n.t('image.load.error.not_found'))});
 		req.image = image
 		next()
 	});
@@ -52,7 +52,7 @@ exports.showForm = function (req, res) {
 exports.create = function (req, res) {
 
 	if (!req.files.attachment.file) 
-		return res.json(400, {messages: messages.error(req.i18n.t('Image file not found'))});
+		return res.json(400, {messages: messages.error(req.i18n.t('image.create.error.not_found'))});
 	else {
 		
 		var image = new Image();
@@ -73,6 +73,6 @@ exports.create = function (req, res) {
 exports.destroy = function (req, res) {
 	req.image.remove(function(err) {
 		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
-		else res.json({ messages: messages.success(req.i18n.t('Content removed successfully.'))});
+		else res.json({ messages: messages.success(req.i18n.t('image.destroy.success'))});
 	});
 }

@@ -57,13 +57,13 @@ var authSocialUser = function(provider, profile, res) {
 
 	User.load({email: userProfile.email}, function(err, user){
 		if (err)
-			return res.json(401, {messages: messages.error(req.i18n.t('access_token:tokenGenerationError.'))});
+			return res.json(401, {messages: messages.error(req.i18n.t('access_token.authsocial.error.load_user'))});
 		if (!user) {
 
 			user = new User(userProfile);
 			user.save(function(err){
 				if (err)
-					return res.json(401, {messages: messages.error(req.i18n.t('Error while saving user.'))});
+					return res.json(401, {messages: messages.error(req.i18n.t('access_token.authsocial.error.save_user'))});
 				generateAccessToken(user, res);
 			})
 		} else {
@@ -110,7 +110,7 @@ exports.google = function(req, res){
 			});
 		}
 	} else {
-		return res.json(400, {messages: messages.error(req.i18n.t('Missing Google authorization token.'))});
+		return res.json(400, {messages: messages.error(req.i18n.t('access_token.google.error.missing_token'))});
 	}
 }
 
@@ -142,7 +142,7 @@ exports.facebook = function(req, res, next) {
 			});
 		}
 	} else {
-		return res.json(400, {messages: messages.error(req.i18n.t('Missing Facebook authorization token.'))});
+		return res.json(400, {messages: messages.error(req.i18n.t('access_token.facebook.error.missing_token'))});
 	}
 
 
@@ -162,29 +162,29 @@ exports.local = function(req, res, next) {
 
 		// User not found.
 		} else if (!user) { 
-			return res.json(403, { messages: messages.error(req.i18n.t("Unauthorized."))}); 
+			return res.json(403, { messages: messages.error(req.i18n.t("access_token.local.unauthorized"))}); 
 		}
 
 		// User needs to finish migration.
 		else if (user.status == 'to_migrate') {
-			return res.json(400, {messages: messages.error(req.i18n.t("Your account wasn't migrated yet, please visit this <a href='/migrate' target='_self'>page</a>."))}); 
+			return res.json(400, {messages: messages.error(req.i18n.t("access_token.local.needs_migration"))}); 
 
 		// User doesn't have a password, because it logged before via Facebook or Google
 		} else if (!user.hashed_password) {
 			mailer.passwordNeeded(user, req.app.locals.settings.general.serverUrl, user.callback_url, function(err){
 				if (err)
-					return res.json(400, { messages: messages.error(req.i18n.t("There was an error while sending a password token to your e-mail."))}); 
+					return res.json(400, { messages: messages.error(req.i18n.t("access_token.local.error.send_email"))}); 
 				else
-					return res.json(400, { messages: messages.error(req.i18n.t("Your need a password to acccess your profile. Check your e-mail to continue."))}); 
+					return res.json(400, { messages: messages.error(req.i18n.t("access_token.local.error.need_password"))}); 
 			});				
 	
 		// User needs to confirm his email
 		} else if (user.needsEmailConfirmation) {
 			mailer.confirmEmail(user, req.app.locals.settings.general.serverUrl, req.body.callback_url, function(err){
 				if (err)
-					return res.json(400, {messages: messages.error(req.i18n.t("Erro ao enviar e-mail de ativação, por favor, contate o suporte."))}); 
+					return res.json(400, {messages: messages.error(req.i18n.t("access_token.local.error.send_email"))}); 
 				else
-					return res.json(400, {messages: messages.error(req.i18n.t("Você ainda não ativou sua conta. Verifique seu e-mail."))}); 
+					return res.json(400, {messages: messages.error(req.i18n.t("access_token.local.error.needs_activation"))}); 
 			});
 
 		// Login successful, proceed with token 
@@ -207,16 +207,16 @@ exports.logout = function(req, res, next) {
 		var access_token = req.headers.authorization.split(' ')[1];
 		AccessToken.findOne({_id: access_token}, function(err, at){
 			if (err) return res.json(400, err);
-			if (!at) return res.json(400, {messages: messages.error(req.i18n.t("Can't find access token."))});
+			if (!at) return res.json(400, {messages: messages.error(req.i18n.t("access_token.logout.error.inexistent_token"))});
 
 			at.expired = true;
 			at.save(function(err){
 				if (err) return res.json(400, err);
-				else return res.json({messags: messages.success(req.i18n.t('Logout successful.'))});
+				else return res.json({messags: messages.success(req.i18n.t('access_token.logout.successful'))});
 			});
 		});
 	} else {
-		res.json(400, {messages: messages.error(req.i18n.t('You are not logged in.'))});
+		res.json(400, {messages: messages.error(req.i18n.t('access_token.logout.error.not_logged'))});
 	}
 
 

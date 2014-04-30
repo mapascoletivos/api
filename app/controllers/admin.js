@@ -38,8 +38,7 @@ exports.firstAdmin = function(req, res) {
 			
 		// If an admin user already exists, redirects to login
 		if (admin) {
-			console.log('admin already exists');
-			req.flash('error', 'An admin already exists.');
+			req.flash('error', t('admin.first_admin.error.already_exists'));
 			res.redirect('/admin/login');
 		} else {
 			var user = new User(req.body);
@@ -50,18 +49,18 @@ exports.firstAdmin = function(req, res) {
 
 			// Checks existence of all fields before sending to mongoose
 			if (!user.name)
-				preValidationErrors.push('Please enter a name.');
+				preValidationErrors.push(t('admin.first_admin.error.needs_name'));
 
 			if (!user.email)
-				preValidationErrors.push('Please enter a e-mail address.');
+				preValidationErrors.push(t('admin.first_admin.error.needs_email'));
 			else 
 				if (!validator.isEmail(user.email))
-					preValidationErrors.push('Invalid e-mail address.');
+					preValidationErrors.push(t('admin.first_admin.error.invalid_email'));
 
 			if (!user.password)
-				preValidationErrors.push('Please type a password.');
+				preValidationErrors.push(t('admin.first_admin.error.password_missing'));
 			else if (user.password.length < 6)
-				preValidationErrors.push('Password should have at least 6 characters.');
+				preValidationErrors.push(t('admin.first_admin.error.password_length'));
 
 			if (preValidationErrors.length > 0){
 				res.render('admin/first_admin', {messages: messages.errorsArray(preValidationErrors).messages});
@@ -71,7 +70,7 @@ exports.firstAdmin = function(req, res) {
 						res.render('admin/first_admin', {messages: messages.mongooseErrors(req.i18n, err)});
 					}
 					else {
-						req.flash('info', 'Admin created successfully.');
+						req.flash('info', t('admin.first_admin.success'));
 						res.redirect('/admin/login');
 					}
 				});
@@ -120,7 +119,7 @@ exports.index = function (req, res) {
 exports.apiSettings = function(req, res) {
 	Settings.load(function(err, settings){
 		if (err)
-			return res.json(400, message.error('Could not retrive server info.'));
+			return res.json(400, message.error(t('admin.api_settings.error.load')));
 		else {
 			
 			// clear mongoose fields
@@ -244,7 +243,7 @@ exports.invite = function(req, res, next) {
 		if (err) res.render('500');
 		else {
 			if (user && !user.needsEmailConfirmation) {
-				res.render('admin/users/new', {message: 'User already active.'});
+				res.render('admin/users/new', {message: t('admin.invite_user.error.already_active')});
 			} else {
 				
 				var 
@@ -263,7 +262,7 @@ exports.invite = function(req, res, next) {
 						console.log(err);
 						next(err);
 					}
-					else return res.render('admin/users/new', {messages: messages.success('User invited successfully')});
+					else return res.render('admin/users/new', {messages: messages.success(t('admin.invite_user.success'))});
 				});
 			}
 		}
@@ -290,7 +289,6 @@ exports.changeRole = function(req, res, next) {
 				else {
 					User.find({}, function(err, users){
 						if (err) res.render('500');
-						// else res.render('admin/users/roles', {users: users});
 						else res.redirect('admin/users/roles');
 					})
 				}
