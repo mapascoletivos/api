@@ -2,38 +2,38 @@ extends ../../layouts/admin-area
 
 block content
 	section#dashboard
-		h3=t('General settings')
+		h3=t('views.admin.settings.index.general_settings')
 		form(action="/admin/settings" method="post" role="form")
 			table.form
 				tr
 					td.label
-						label(for="settings.title")=t('Site title')
+						label(for="settings.title")=t('views.admin.settings.index.site_title')
 					td.input
-						input(name="settings[title]" value=settings.title type="text" placeholder=t("your site title"))
+						input(name="settings[title]" value=settings.title type="text")
 				tr
 					td.label
-						label(for="settings.description")=t('Site description')
+						label(for="settings.description")=t('views.admin.settings.index.site_description')
 					td.input
-						textarea(name="settings[description]" rows="5" placeholder=t("a brief site description"))=settings.description
+						textarea(name="settings[description]" rows="5"))=settings.description
 				tr
 					td.label
-						label(for="settings.serverUrl")=t('Server URL')
+						label(for="settings.serverUrl")=t('views.admin.settings.index.server_url')
 					td.input
-						input(name="settings[serverUrl]" value=settings.serverUrl type="text" placeholder=t("your yby server URL"))
+						input(name="settings[serverUrl]" value=settings.serverUrl type="text"))
 				tr
 					td.label
-						label(for="settings.clientUrl")=t('Client URL')
+						label(for="settings.clientUrl")=t('views.admin.settings.index.client_url')
 					td.input
-						input(name="settings[clientUrl]" value=settings.clientUrl type="text" placeholder=t("your yby client URL"))
+						input(name="settings[clientUrl]" value=settings.clientUrl type="text"))
 				tr
 					td.label
-						label(for="settings.onlyInvitedUsers")=t('Only invited users can register')
+						label(for="settings.onlyInvitedUsers")=t('views.admin.settings.index.only_invited_can_register')
 					td.input
 						input(type="checkbox" name="settings[onlyInvitedUsers]" checked=settings.onlyInvitedUsers)
 				tr
 					td.label
-						label(for="settings.allowImports")=t('Allow geo-files import')
+						label(for="settings.allowImports")=t('views.admin.settings.index.allow_geofiles_import')
 					td.input
 						input(type="checkbox" name="settings[allowImports]" checked=settings.allowImports)
 						
-			input.btn.btn-primary(type='submit' value=t("Update"))
+			input.btn.btn-primary(type='submit' value=t("views.admin.settings.index.update"))

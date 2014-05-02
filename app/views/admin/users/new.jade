@@ -2,26 +2,26 @@ extends ../../layouts/admin-area
 
 block content
 	section#dashboard
-		h3=t('Invite a user')
+		h3=t('views.admin.users.new.invite_a_user')
 		include ../../includes/messages.jade
 		form(action="/admin/users/invite" method="post" role="form")
 			table.form
 				tr
 					td.label
-						label(for="user[name]")=t('Name')
+						label(for="user[name]")=t('views.admin.users.new.name')
 					td.input
 						input(name="user[name]" type="text")
 				tr
 					td.label
-						label(for="user[email]")=t('E-mail')
+						label(for="user[email]")=t('views.admin.users.new.email')
 					td.input
 						input(name="user[email]" type="text")
 				tr
 					td.label
-						label(for="user[role]")=t('Role')
+						label(for="user[role]")=t('views.admin.users.new.role')
 					td.input
 						select(name="user[role]")
-							option(value='collaborator')=t('Colaborator')
-							option(value='editor')=t('Editor')
-							option(value='admin')=t('Administrador')
-			input.btn.btn-primary(type='submit' value=t('Send invitation'))
+							option(value='collaborator')=t('views.admin.users.new.colaborator')
+							option(value='editor')=t('views.admin.users.new.editor')
+							option(value='admin')=t('views.admin.users.new.admin')
+			input.btn.btn-primary(type='submit' value=t('views.admin.users.new.send_invitation'))

@@ -1,157 +1,102 @@
 {
-  "\"From\" address": "",
-  "\"Password\"": "\"Password\"",
-  "Administrador": "Administrador",
-  "Administration": "Administration",
-  "Administrative area": "Administrative area",
-  "Allow geo-files import": "Allow geo-files import",
-  "Change": "Change",
-  "Client URL": "Client URL",
-  "Colaborator": "Colaborator",
-  "Create admin": "Create admin",
-  "Create first admin user": "",
-  "E-mail": "E-mail",
-  "Editor": "Editor",
-  "Email": "Email",
-  "General": "General",
-  "General settings": "General settings",
-  "Invite a user": "Invite a user",
-  "Invite new": "Invite new",
-  "Log in": "Log in",
-  "Mailer": "Mailer",
-  "Mailer configuration": "Mailer configuration",
-  "Manage roles": "Manage roles",
-  "Mange user roles": "Mange user roles",
-  "Name": "Name",
-  "Only invited users can register": "Only invited users can register",
-  "Password": "Password",
-  "Password (will be stored as plain text)": "Password (will be stored as plain text)",
-  "Permissão": "Permissão",
-  "Port": "Port",
-  "Role": "Role",
-  "SMTP Host": "SMTP Host",
-  "SMTP User": "SMTP User",
-  "SMTP port": "SMTP port",
-  "Send invitation": "Send invitation",
-  "Server URL": "Server URL",
-  "Settings": "Settings",
-  "Site description": "Site description",
-  "Site title": "Site title",
-  "There are no users!": "",
-  "Update": "Update",
-  "Use SSL": "Use SSL",
-  "Users": "Users",
-  "a brief site description": "a brief site description",
   "access_token": {
     "authsocial": {
       "error": {
-        "load_user": "",
-        "save_user": ""
+        "load_user": "Erro carregando usuário.",
+        "save_user": "Erro salvando usuário."
       }
     },
     "facebook": {
       "error": {
-        "missing_token": ""
+        "missing_token": "Token de autorização do Facebook não encontrado."
       }
     },
     "google": {
       "error": {
-        "missing_token": ""
+        "missing_token": "Token de autorização do Google não encontrado."
       }
     },
     "local": {
       "error": {
-        "need_password": "",
-        "needs_activation": "",
-        "send_email": ""
+        "need_password": "Você precisa de uma senha para acessar seu perfil. Verifique seu e-mail.",
+        "needs_activation": "Perfil de usuário inativo, um e-mail de ativação foi enviado.",
+        "send_email": "Houve um erro enviando um token de senha para seu e-mail."
       },
-      "needs_migration": "",
-      "unauthorized": ""
+      "needs_migration": "Sua conta não foi migrada ainda, por favor visite esta <a href='/migrate' target='_self'>página</a>.",
+      "unauthorized": "Não autorizado."
     },
     "logout": {
       "error": {
-        "inexistent_token": "",
-        "not_logged": ""
+        "inexistent_token": "Token de acesso não encontrado.",
+        "not_logged": "Você não está logado."
       },
-      "successful": ""
+      "successful": "Logout bem sucedido."
     }
   },
   "admin": {
     "api_settings": {
       "error": {
-        "load": ""
+        "load": "Não foi possível buscar informação do servidor."
       }
     },
     "first_admin": {
       "error": {
-        "already_exists": "",
-        "invalid_email": "",
-        "needs_email": "",
-        "needs_name": "",
-        "password_length": "",
-        "password_missing": ""
+        "already_exists": "Um administrador já existe.",
+        "invalid_email": "Endereço de e-mail inválido.",
+        "needs_email": "Entre com um endereço de e-mail.",
+        "needs_name": "Entre com um nome.",
+        "password_length": "A senha deve ter no mínimo 6 caracteres.",
+        "password_missing": "Entre com uma senha."
       },
-      "success": ""
+      "success": "Admin criado com sucesso."
     },
     "invite_user": {
       "error": {
-        "already_active": ""
+        "already_active": "O usuário já está ativo."
       },
-      "success": ""
+      "success": "Convite foi com sucesso."
     }
   },
   "content": {
     "destroy": {
-      "success": ""
+      "success": "Conteúdo removido com sucesso."
     },
     "load": {
       "error": {
-        "not_found": ""
-      }
-    }
-  },
-  "e": {
-    "g": {
-      " Notifications <notification@yourmailhost": {
-        "com>": ""
-      },
-      " smtp": {
-        "yourmailhost": {
-          "com": ""
-        }
+        "not_found": "Conteúdo não encontrado."
       }
     }
   },
   "feature": {
     "add_content": {
-      "success": ""
+      "success": "Conteúdo adicionado com sucesso."
     },
     "import": {
       "error": {
-        "disabled": ""
+        "disabled": "Importação de arquivos não disponível."
       }
     },
     "load": {
       "error": {
-        "cant_find": ""
+        "cant_find": "Local não encontrado."
       }
     },
     "remove_content": {
-      "success": ""
+      "success": "Conteúdo removido com sucesso."
     }
   },
   "image": {
     "create": {
       "error": {
-        "not_found": ""
+        "not_found": "Arquivo de imagem não encontrado."
       }
     },
     "destroy": {
-      "success": ""
+      "success": "Imagem removida com sucesso."
     },
     "load": {
       "error": {
-        "not_found": ""
+        "not_found": "Imagem não encontrada."
       }
     }
   },
@@ -159,167 +104,248 @@
     "contributor": {
       "add": {
         "error": {
-          "already_exists": "",
-          "dont_exists": "",
-          "email": ""
+          "already_exists": "Usuário já é contribuidor da camada.",
+          "dont_exists": "Não existe usuário cadastrado com este e-mail.",
+          "email": "Erro enviando e-mail para este usuário."
         },
-        "success": ""
+        "success": "Contribuidor adicionado com sucesso."
       },
       "remove": {
         "error": {
-          "invalid_id": ""
+          "invalid_id": "Id de contribuidor inválido."
         },
-        "success": ""
+        "success": "Contribuidor adicionado com sucesso."
       }
     },
     "create": {
-      "missing": "",
-      "success": ""
+      "missing": "Tipo de camada não encontrado.",
+      "success": "Camada criada com sucesso."
     },
     "destroy": {
-      "success": ""
+      "success": "Camada removida com sucesso."
     },
     "load": {
-      "error": "Error loading layer.",
-      "not_found": ""
+      "error": "Erro carregando camada.",
+      "not_found": "Camada não encontrada."
     },
     "update": {
-      "success": "",
+      "success": "Camada atualizada com sucesso.",
       "tilelayer": {
-        "error": ""
+        "error": "Erro ao atualizar TileLayer."
       }
     }
   },
   "map": {
     "destroy": {
-      "success": ""
+      "success": "Mapa removido com sucesso."
     },
     "load": {
       "error": {
-        "not_found": ""
+        "not_found": "Mapa não encontrado."
       }
     }
   },
   "token": {
     "accept_invitation": {
       "error": {
-        "invalid_token": "",
-        "user_activation": ""
+        "invalid_token": "Token inválido.",
+        "user_activation": "Erro ao ativar usuário."
       },
-      "success": ""
+      "success": "Perfil ativado com sucesso."
     },
     "activate_account": {
       "error": {
-        "invalid": "",
-        "saving": "",
-        "user": ""
+        "invalid": "Token inválido.",
+        "saving": "Erro salvando token.",
+        "user": "Não foi possível ativar usuário."
       },
-      "success": ""
+      "success": "Perfil atualizado com sucesso, aguarde redirecionamento."
     },
     "email_change": {
       "error": {
-        "generic": ""
+        "generic": "Erro ao alterar e-mail do usuário."
       },
-      "success": ""
+      "success": "E-mail alterado com sucesso."
     },
     "error": {
-      "cant_save": "",
-      "invalid": ""
+      "cant_save": "Erro ao salvar token.",
+      "invalid": "Token inválido."
     },
     "load": {
       "error": {
-        "expired": "",
-        "not_found": ""
+        "expired": "Token expirado.",
+        "not_found": "Token não encontrado."
       }
     },
     "migration": {
       "error": {
-        "generic": ""
+        "generic": "Um erro ocorreu na migração."
       },
-      "success": ""
+      "success": "Conta migrada com sucesso."
     },
     "new_password": {
       "error": {
-        "generic": ""
+        "generic": "Erro alterando senha."
       },
-      "success": ""
+      "success": "Senha alterada com sucesso."
     }
   },
   "user": {
     "create": {
       "error": {
         "email": {
-          "invalid": "",
-          "missing": ""
+          "invalid": "Endereço de e-mail inválido.",
+          "missing": "Entre com um endereço de e-mail."
         },
-        "missing_name": "",
+        "missing_name": "Digite seu nome.",
         "password": {
-          "length": "",
-          "missing": ""
+          "length": "A senha deve ter no mínimo 6 caracteres.",
+          "missing": "Entre com uma senha."
         }
       },
-      "success": ""
+      "success": {
+        "with_token": "Perfil de usuário criado com sucesso. Um link de ativação foi enviado.",
+        "without_token": "Perfil de usuário criado com sucesso."
+      }
     },
     "load": {
-      "error": ""
+      "error": "Erro ao carregar usuário com id "
     },
     "migrate": {
       "form": {
         "errors": {
           "email": {
-            "missing": ""
+            "missing": "Digite um e-mail."
           },
           "password": {
-            "length": "",
-            "missing": ""
+            "length": "A senha deve ter no mínimo 6 caracteres.",
+            "missing": "Entre com uma senha."
           },
           "user": {
-            "not_found": ""
+            "not_found": "Usuário não encontrado."
           }
         },
-        "success": ""
+        "success": "Um e-mail de ativação foi enviado ao seu e-mail."
       }
     },
     "reset_pwd": {
       "form": {
         "error": {
           "user": {
-            "not_found": ""
+            "not_found": "Usuário não encontrado."
           }
         },
-        "title": ""
+        "title": "Recuperar senha"
       },
       "mail": {
-        "title": ""
+        "title": "Recuperar senha"
       },
       "token": {
-        "success": ""
+        "success": "Token de alteração de senha enviado."
       }
     },
     "update": {
       "email": {
         "error": {
-          "already_associated": "",
-          "already_used": "",
-          "invalid": "",
-          "mailer": "",
-          "missing_callback": ""
+          "already_associated": "E-mail já associado a outra conta.",
+          "already_used": "E-mail já utilizado.",
+          "invalid": "Endereço de e-mail inválido.",
+          "mailer": "Error enviando confirmação de e-mail.",
+          "missing_callback": "Callback não encontrado."
         },
-        "success": ""
+        "success": "E-mail de confirmação de endereco enviado."
       },
       "password": {
         "error": {
-          "dont_match": "",
-          "length": "",
-          "wrong": ""
+          "dont_match": "Senhas não coincidem.",
+          "length": "A senha deve ter no mínimo 6 caracteres.",
+          "wrong": "Senha incorreta."
         },
-        "success": ""
+        "success": "Senha alterada com sucesso."
       },
-      "success": "Profile updated successfully."
+      "success": "Perfil atualizado com sucesso."
     }
   },
-  "username": "username",
-  "your site title": "your site title",
-  "your yby client URL": "your yby client URL",
-  "your yby server URL": "your yby server URL"
+  "views": {
+    "admin": {
+      "first_admin": {
+        "administrative_area": "Área administrativa",
+        "create_admin": "Criar admin",
+        "create_first_admin_user": "Criar o primeiro usuário administrador:",
+        "email": "E-mail",
+        "name": "Nome",
+        "password": "Senha"
+      },
+      "login": {
+        "administrative_area": "Área administrativa",
+        "email": "E-mail",
+        "login": "Entrar",
+        "password": "Senha"
+      },
+      "menu": {
+        "general": "Geral",
+        "mailer": "Envio de e-mail",
+        "manage_users": "Gerenciar usuários",
+        "settings": "Configurações",
+        "users": {
+          "invite": "Convites",
+          "roles": "Permissões"
+        }
+      },
+      "settings": {
+        "index": {
+          "allow_geofiles_import": "Permitir importação de arquivo geo",
+          "client_url": "URL do cliente",
+          "general_settings": "Configurações gerais",
+          "only_invited_can_register": "Somente convidados podem registrar-se",
+          "server_url": "URL do servidor",
+          "site_description": "Descricão do site",
+          "site_title": "Título do site",
+          "update": "Atualizar"
+        },
+        "mailer": {
+          "from_address": "Endereço do remetente",
+          "mailer_settings": "Configurações de envio de e-mail",
+          "password": "Senha do SMTP",
+          "smtp_host": "Host do SMTP",
+          "smtp_port": "Porta do SMTP",
+          "smtp_user": "Usuário do SMTP",
+          "update": "Atualizar",
+          "use_ssl": "Usar SSL"
+        }
+      },
+      "users": {
+        "new": {
+          "admin": "Administrador",
+          "colaborator": "Colaborador",
+          "editor": "Editor",
+          "email": "E-mail",
+          "invite_a_user": "Convidar um usuário:",
+          "name": "Nome",
+          "role": "Perfil",
+          "send_invitation": "Enviar convite"
+        },
+        "roles": {
+          "change": "Alterar",
+          "email": "E-mail",
+          "manage_user_roles": "Gerenciar perfis de usuário",
+          "name": "Nome",
+          "role": "Perfil",
+          "there_are_no_users": "Não há usuários."
+        }
+      }
+    },
+    "includes": {
+      "header": {
+        "admin_area_link": "Ir para área adminstrativa",
+        "login": "Entrar",
+        "logout": "Sair"
+      }
+    },
+    "layouts": {
+      "admin_area": {
+        "administration": "Administração"
+      }
+    }
+  }
 }

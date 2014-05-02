@@ -3,17 +3,17 @@ header#mast-header
 		.container
 			.six.columns
 				h1
-					a(class="brand" href="/admin" target="_self")=t('Administrative area')
+					a(class="brand" href="/admin" target="_self")=t('views.includes.header.admin_area_link')
 
 			.six.columns
 				ul#mast-nav
 					- if (req.isAuthenticated())
 						li
-							a(href="/admin/logout", title="Logout" target="_self")
+							a(href="/admin/logout", title=t('views.includes.header.logout') target="_self")
 								span.lsf &#xE088;
 								| Logout
 					- else
 						li 
 							a.login(href="/admin/login" target="_self")
 								span.lsf &#xE087;
-								| Login
+									t('views.includes.header.login')
