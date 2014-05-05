@@ -7,6 +7,14 @@ block content
 			table.form
 				tr
 					td.label
+						label(for="settings.language")=t('views.admin.settings.index.site_language')
+					td.input
+						select(name='settings[language]')
+							option(value='en', selected=settings.language == 'en')=t('views.admin.settings.index.english')
+							option(value='es', selected=settings.language == 'es')=t('views.admin.settings.index.spanish')
+							option(value='pt-BR', selected=settings.language == 'pt-BR')=t('views.admin.settings.index.brazilian_portuguese')
+				tr
+					td.label
 						label(for="settings.title")=t('views.admin.settings.index.site_title')
 					td.input
 						input(name="settings[title]" value=settings.title type="text")
@@ -14,17 +22,17 @@ block content
 					td.label
 						label(for="settings.description")=t('views.admin.settings.index.site_description')
 					td.input
-						textarea(name="settings[description]" rows="5"))=settings.description
+						textarea(name="settings[description]" rows="5")=settings.description
 				tr
 					td.label
 						label(for="settings.serverUrl")=t('views.admin.settings.index.server_url')
 					td.input
-						input(name="settings[serverUrl]" value=settings.serverUrl type="text"))
+						input(name="settings[serverUrl]" value=settings.serverUrl type="text")
 				tr
 					td.label
 						label(for="settings.clientUrl")=t('views.admin.settings.index.client_url')
 					td.input
-						input(name="settings[clientUrl]" value=settings.clientUrl type="text"))
+						input(name="settings[clientUrl]" value=settings.clientUrl type="text")
 				tr
 					td.label
 						label(for="settings.onlyInvitedUsers")=t('views.admin.settings.index.only_invited_can_register')

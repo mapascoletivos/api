@@ -24,6 +24,7 @@ block content
 								form.form-horizontal(action="/admin/users/role", method="post", role="form")
 									input(type='hidden', name='user_id', value="#{user._id}")
 									select(name='role')
-										- each role in ['collaborator', 'editor', 'admin']
-											option(value=role, selected=user.role == role)=t(role)
+											option(value='collaborator', selected=user.role == 'collaborator')=t('views.admin.users.roles.collaborator')
+											option(value='editor', selected=user.role == 'editor')=t('views.admin.users.roles.editor')
+											option(value='admin', selected=user.role == 'admin')=t('views.admin.users.roles.admin')
 									input.btn.btn-primary(type='submit' value=t('views.admin.users.roles.change'))

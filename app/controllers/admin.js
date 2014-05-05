@@ -172,6 +172,7 @@ exports.update = function(req, res, next) {
 			settings.general = req.body.settings;
 						
 			settings.general.onlyInvitedUsers = req.body.settings.onlyInvitedUsers ? true : false;
+			settings.general.language = req.body.settings.language;
 			settings.general.allowImports = req.body.settings.allowImports ? true : false;
 
 			settings.save(function(err){
@@ -262,7 +263,7 @@ exports.invite = function(req, res, next) {
 						console.log(err);
 						next(err);
 					}
-					else return res.render('admin/users/new', {messages: messages.success(t('admin.invite_user.success'))});
+					else return res.render('admin/users/new', {messages: messages.success(req.i18n.t('admin.invite_user.success'))});
 				});
 			}
 		}
@@ -284,8 +285,12 @@ exports.changeRole = function(req, res, next) {
 		if (err || !user) res.render('500');
 		else {
 			user.role = req.body.role;
+			console.log(user);
 			user.save(function(err){
-				if (err) res.render('500');
+				if (err) {
+					console.log(err);
+					res.render('500');
+				}
 				else {
 					User.find({}, function(err, users){
 						if (err) res.render('500');

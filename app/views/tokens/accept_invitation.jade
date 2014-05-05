@@ -5,17 +5,17 @@ block main
 block content
 	section#login
 		.login-content
-			h1=title
+			h1=t('views.tokens.accept_invitation.confirm_signup')
 			include ../includes/messages
 			.login-form
 				form.form-horizontal(action="/accept_invitation/#{token._id}", method="post", role="form")
 					p.col-sm-offset-2.error= message
 
 					.form-group
-						label.col-sm-2.control-label(for="password") Defina uma senha para criar sua conta
+						label.col-sm-2.control-label(for="password")=t('views.tokens.accept_invitation.define_password')
 						.col-sm-10
-							input#password.form-control(type="password", placeholder="Digite uma senha", name="password")
+							input#password.form-control(type="password", placeholder=t('views.tokens.accept_invitation.type_a_password'), name="password")
 
 					.form-group
 						.col-sm-offset-2.col-sm-10
-							button.btn.btn-primary(type='submit') Enviar
+							button.btn.btn-primary(type='submit')=t('views.tokens.accept_invitation.send')

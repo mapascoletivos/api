@@ -295,12 +295,16 @@
       "settings": {
         "index": {
           "allow_geofiles_import": "Permitir importação de arquivo geo",
+          "brazilian_portuguese": "",
           "client_url": "URL do cliente",
+          "english": "",
           "general_settings": "Configurações gerais",
           "only_invited_can_register": "Somente convidados podem registrar-se",
           "server_url": "URL do servidor",
           "site_description": "Descricão do site",
+          "site_language": "",
           "site_title": "Título do site",
+          "spanish": "",
           "update": "Atualizar"
         },
         "mailer": {
@@ -326,7 +330,10 @@
           "send_invitation": "Enviar convite"
         },
         "roles": {
+          "admin": "views.admin.users.roles.admin",
           "change": "Alterar",
+          "collaborator": "views.admin.users.roles.collaborator",
+          "editor": "views.admin.users.roles.editor",
           "email": "E-mail",
           "manage_user_roles": "Gerenciar perfis de usuário",
           "name": "Nome",
@@ -345,6 +352,14 @@
     "layouts": {
       "admin_area": {
         "administration": "Administração"
+      }
+    },
+    "tokens": {
+      "accept_invitation": {
+        "confirm_signup": "",
+        "define_password": "views.tokens.accept_invitation.define_password",
+        "send": "",
+        "type_a_password": "views.tokens.accept_invitation.type_a_password"
       }
     }
   }
