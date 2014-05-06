@@ -38,7 +38,7 @@ exports.firstAdmin = function(req, res) {
 			
 		// If an admin user already exists, redirects to login
 		if (admin) {
-			req.flash('error', t('admin.first_admin.error.already_exists'));
+			req.flash('error', req.i18n.t('admin.first_admin.error.already_exists'));
 			res.redirect('/admin/login');
 		} else {
 			var user = new User(req.body);
@@ -70,7 +70,7 @@ exports.firstAdmin = function(req, res) {
 						res.render('admin/first_admin', {messages: messages.mongooseErrors(req.i18n, err)});
 					}
 					else {
-						req.flash('info', t('admin.first_admin.success'));
+						req.flash('info', req.i18n.t('admin.first_admin.success'));
 						res.redirect('/admin/login');
 					}
 				});
@@ -244,7 +244,7 @@ exports.invite = function(req, res, next) {
 		if (err) res.render('500');
 		else {
 			if (user && !user.needsEmailConfirmation) {
-				res.render('admin/users/new', {message: t('admin.invite_user.error.already_active')});
+				res.render('admin/users/new', {message: req.i18n.t('admin.invite_user.error.already_active')});
 			} else {
 				
 				var 
@@ -255,7 +255,8 @@ exports.invite = function(req, res, next) {
 							email: req.body.user.email, 
 							role: req.body.user.role
 						},
-						callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
+						callbackUrl: req.app.locals.settings.general.clientUrl + '/login',
+						t: req.i18n.t
 				}
 					
 				mailer.invite(options, function(err) {

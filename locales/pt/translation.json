@@ -33,30 +33,7 @@
       "successful": "Logout bem sucedido."
     }
   },
-  "admin": {
-    "api_settings": {
-      "error": {
-        "load": "Não foi possível buscar informação do servidor."
-      }
-    },
-    "first_admin": {
-      "error": {
-        "already_exists": "Um administrador já existe.",
-        "invalid_email": "Endereço de e-mail inválido.",
-        "needs_email": "Entre com um endereço de e-mail.",
-        "needs_name": "Entre com um nome.",
-        "password_length": "A senha deve ter no mínimo 6 caracteres.",
-        "password_missing": "Entre com uma senha."
-      },
-      "success": "Admin criado com sucesso."
-    },
-    "invite_user": {
-      "error": {
-        "already_active": "O usuário já está ativo."
-      },
-      "success": "Convite foi com sucesso."
-    }
-  },
+  "admin": "admin",
   "content": {
     "destroy": {
       "success": "Conteúdo removido com sucesso."
@@ -352,6 +329,16 @@
     "layouts": {
       "admin_area": {
         "administration": "Administração"
+      }
+    },
+    "mailer": {
+      "user": {
+        "invite": {
+          "intro": "You were invited to map.",
+          "link": "Click here to start.",
+          "salute": "Hi, __username__,",
+          "thanks": "Thank you!"
+        }
       }
     },
     "tokens": {

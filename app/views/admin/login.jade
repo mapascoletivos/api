@@ -9,7 +9,7 @@ html
 			.login-content
 				h1=t('views.admin.login.administrative_area')
 				include ../includes/messages
-				.login-form		
+				.login-form
 					form.form-horizontal(action="/admin/session", method="post", role="form")
 						input(type='hidden', name='_csrf', value="#{csrf_token}")
 

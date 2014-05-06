@@ -26,7 +26,7 @@
 		"watch": "NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon web.js",
 		"start": "NODE_PATH=./app/controllers node web.js",
 		"test": "make test",
-		"i18n": "./node_modules/.bin/i18next app/ -o locales/ -r -l en,es,es-ES,pt,pt-BR"
+		"i18n": "./node_modules/.bin/i18next app/ -o locales/ -r -l en-US,es,es-ES,pt,pt-BR"
 	},
 	"dependencies": {
 		"dotenv": "latest",
