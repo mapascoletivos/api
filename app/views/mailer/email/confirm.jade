@@ -1,7 +1,6 @@
-p Olá, #{locals.user.name}
+p=locals.t('views.mailer.email.confirm.salute', {defaultValue: 'Hi, __username__,', username: locals.user.name})
 
 p 
-	a(href='#{settings.general.serverUrl}/activate_account/#{locals.token._id}') Clique aqui para confirmar o seu e-mail.
+	a(href='#{settings.general.serverUrl}/activate_account/#{locals.token._id}')=p=locals.t('views.mailer.email.confirm.link', {defaultValue: 'Proceed to e-mail confirmation.'})
 
-p
-	| Até logo!
+p=locals.t('views.mailer.email.confirm.bye', {defaultValue: 'Bye!'})

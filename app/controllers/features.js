@@ -20,7 +20,7 @@ exports.load = function(req, res, next, id){
 		if (err) {
 			return next(err)
 		} else if (!feature) {
-			return res.json(400, {messages: messages.error(req.i18n.t('feature.load.error.cant_find'))});
+			return res.json(400, messages.error(req.i18n.t('feature.load.error.cant_find')));
 		} else {
 			req.feature = feature;
 			next();
@@ -41,12 +41,12 @@ exports.index = function(req, res){
 	}
 
 	Feature.list(options, function(err, features) {
-		if (err) return res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
 		Feature.count().exec(function (err, count) {
 			if (!err) {
 				res.json({options: options, featuresTotal: count, features: features});
 			} else {
-				res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+				res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
 			}
 		})
 	})
@@ -66,14 +66,14 @@ exports.create = function (req, res) {
 	// save feature
 	feature.save(function (err) {
 		if (err) {
-			res.json(400, messages.mongooseErrors(req.i18n, err));
+			res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
 		} else {
 			var layer = feature.layer;
 			layer.features.addToSet(feature);
 			
 			// save layer
 			layer.save(function(err){
-				if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+				if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
 				res.json(feature);
 			});
 		}
@@ -127,7 +127,7 @@ exports.update = function(req, res){
 	feature = _.extend(feature, req.body);
 
 	feature.save(function(err) {
-		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
 		else res.json(feature);
 	});
 }
@@ -153,10 +153,10 @@ exports.addContent = function(req, res){
 
 	// save both
 	content.save(function(err){
-		 if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		 if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 		feature.save(function(err){
-			if (err) res.json(400,err)
-			else res.json({messages: messages.success(req.i18n.t('feature.add_content.success'))});
+			if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'))
+			else res.json(messages.success(req.i18n.t('feature.add_content.success')));
 		});
 	});
 
@@ -181,10 +181,10 @@ exports.removeContent = function(req, res){
 	
 	// save both
 	content.save(function(err){
-		 if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		 if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 		feature.save(function(err){
-			if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
-			else res.json({messages: messages.success(req.i18n.t('feature.remove_content.success'))});
+			if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
+			else res.json(messages.success(req.i18n.t('feature.remove_content.success')));
 		});
 	});
 }
@@ -218,12 +218,12 @@ exports.import = function(req, res) {
 				}
 			});
 		}, function(err) {
-			if(err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+			if(err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
 			else {			
 				// save layer
 				layer.save(function(err){
 					if(err) {
-						if(err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+						if(err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 					} else {
 						res.json(layer.features);
 					}
@@ -231,6 +231,6 @@ exports.import = function(req, res) {
 			}
 		});
 	} else {
-		res.json({messages: messages.error(req.i18n.t('feature.import.error.disabled'))});	
+		res.json(messages.error(req.i18n.t('feature.import.error.disabled')));	
 	}
 }

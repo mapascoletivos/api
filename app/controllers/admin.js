@@ -67,7 +67,7 @@ exports.firstAdmin = function(req, res) {
 			} else {
 				user.save(function (err) {
 					if (err) {
-						res.render('admin/first_admin', {messages: messages.mongooseErrors(req.i18n, err)});
+						res.render('admin/first_admin', messages.mongooseErrors(req.i18n.t, err, 'user'));
 					}
 					else {
 						req.flash('info', req.i18n.t('admin.first_admin.success'));
@@ -264,7 +264,7 @@ exports.invite = function(req, res, next) {
 						console.log(err);
 						next(err);
 					}
-					else return res.render('admin/users/new', {messages: messages.success(req.i18n.t('admin.invite_user.success'))});
+					else return res.render('admin/users/new', messages.success(req.i18n.t('admin.invite_user.success')));
 				});
 			}
 		}

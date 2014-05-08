@@ -19,7 +19,7 @@ exports.load = function(req, res, next, id) {
 		if (err) {
 			return next(err)
 		} else if (!content) {
-			return res.json(400, { messages: messages.error(req.i18n.t('content.load.error.not_found'))});
+			return res.json(400, messages.error(req.i18n.t('content.load.error.not_found')));
 		} else {
 			req.content = content;
 			next();
@@ -52,9 +52,9 @@ exports.index = function(req, res){
 		}
 
 	Content.list(options, function(err, contents) {
-		if (err) return res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 		Content.count(options.criteria).exec(function (err, count) {
-			if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+			if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 			else res.json({options: options, contentsTotal: count, contents: contents});
 		})
 	})
@@ -77,18 +77,18 @@ exports.create = function (req, res) {
 	content.creator = req.user;
 	
 	Layer.findById(req.body['layer'], function(err, layer){
-		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 		else {
 			layer.contents.addToSet(content);
 			layer.save(function(err){
-				if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+				if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 				else {
 					content.updateSirTrevor(req.body.sirTrevorData, function(err, ct){
-						if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+						if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 						else
 							content.save(function(err){
 								// console.log('salvou o content assim\n'+content);
-								if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+								if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 								else res.json(content);
 							});
 					});
@@ -115,10 +115,10 @@ exports.update = function(req, res){
 	content = _.extend(content, req.body)
 
 	content.updateSirTrevor(updatedSirTrevor, function(err, ct){
-		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 		else
 			ct.save(function(err){
-				if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+				if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 				else res.json(ct);
 			});
 	});
@@ -143,17 +143,17 @@ exports.destroy = function(req, res){
 		content = req.content;
 
 	mongoose.model('Layer').findById(content.layer._id, function(err, layer){
-		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 		else {
 
 			layer.contents.pull({_id: content._id});
 
 			layer.save(function(err){
-				if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+				if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 				else {
 					content.remove(function(err){
-						if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
-						else res.json({messages: messages.success(req.i18n.t('content.destroy.success'))});
+						if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
+						else res.json(messages.success(req.i18n.t('content.destroy.success')));
 					})
 				}
 			})

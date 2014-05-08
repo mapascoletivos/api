@@ -91,7 +91,7 @@
         "error": {
           "invalid_id": "Id de contribuidor inválido."
         },
-        "success": "Contribuidor adicionado com sucesso."
+        "success": "Contribuidor removido com sucesso."
       }
     },
     "create": {
@@ -332,8 +332,53 @@
       }
     },
     "mailer": {
+      "contributions": {
+        "new_contributor": {
+          "bye": "",
+          "intro": "",
+          "salute": "",
+          "visit_dashboard": ""
+        }
+      },
+      "email": {
+        "change": {
+          "subject": "Confirmação de alteração de endereço de e-mail",
+          "bye": "Bom mapeamento!",
+          "intro": "Você solicitou alteração do seu endereço de e-mail.",
+          "salute": "Olá, __username__,",
+          "link": "Clique para proceder com a alteração"
+        },
+        "confirm": {
+          "bye": "",
+          "link": "",
+          "salute": ""
+        }
+      },
+      "password": {
+        "recover": {
+          "ignore": "",
+          "intro": "",
+          "link": "",
+          "salute": "",
+          "thanks": ""
+        },
+        "set": {
+          "intro": "",
+          "salute": "",
+          "thanks": "",
+          "token": ""
+        }
+      },
       "user": {
+        "account": {
+          "migrate": {
+            "bye": "",
+            "link": "",
+            "salute": ""
+          }
+        },
         "invite": {
+          "subject": "Convite para o mapa",
           "intro": "Você foi convidado a mapear.",
           "link": "Clique aqui para começar.",
           "salute": "Olá, __username__,",

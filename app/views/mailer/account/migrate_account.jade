@@ -1,9 +1,6 @@
-p Olá, #{locals.user.name}
-
-p 
-	| Clique 
-	a(href='#{settings.general.serverUrl}/migrate_account/#{locals.token._id}') aqui
-	|  para migrar sua conta para o novo Mapas Coletivos.
+p=locals.t('views.mailer.user.account.migrate.salute', {defaultValue: 'Hi, __username__,', username: locals.user.name})
 
 p
-	| Bom mapeamento!
+	a(href='#{settings.general.serverUrl}/migrate_account/#{locals.token._id}')=locals.t('views.mailer.user.account.migrate.link', {defaultValue: 'Proceed to migration'})
+
+p=locals.t('views.mailer.user.account.migrate.bye', {defaultValue: 'Happy mapping!'})

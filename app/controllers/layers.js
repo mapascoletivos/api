@@ -22,9 +22,9 @@ exports.load = function(req, res, next, id){
 	console.log(req.locale);
 	Layer.load(id, function (err, layer) {
 		if (err) 
-			return res.json(400, {messages: messages.error(req.i18n.t('layer.load.error'))});
+			return res.json(400, messages.error(req.i18n.t('layer.load.error')));
 		else if (!layer) 
-			return res.json(400, {messages: messages.error(req.i18n.t('layer.load.not_found'))});
+			return res.json(400, messages.error(req.i18n.t('layer.load.not_found')));
 		else {
 			req.layer = layer
 			next()
@@ -64,12 +64,12 @@ exports.index = function(req, res){
 	}
 
 	Layer.list(options, function(err, layers) {
-		if (err) return res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 		Layer.count(options.criteria).exec(function (err, count) {
 			if (!err) {
 				res.json({options: options, layersTotal: count, layers: layers});
 			} else {
-				res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+				res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 			} 
 		});
 	});
@@ -121,7 +121,7 @@ exports.create = function (req, res) {
 
 	if (!type) {
 
-		return res.json(400, { messages: messages.error(req.i18n.t('layer.create.missing')) } );
+		return res.json(400, messages.error(req.i18n.t('layer.create.missing')));
 
 	} else if (type == 'TileLayer') {
 
@@ -147,7 +147,7 @@ exports.create = function (req, res) {
 
 	layer.save(function (err) {
 		if (!err) {
-			res.json({ layer: layer,  messages: messages.success(req.i18n.t('layer.create.success'))});
+			res.json({ layer: layer,  messages: messages.success(req.i18n.t('layer.create.success')).messages});
 		} else {
 			res.json(400, {messages: messages.mongooseError(req.i18n, err)});
 		}
@@ -167,17 +167,17 @@ exports.update = function(req, res){
 	delete req.body['__v'];
 
 	if (req.layer == 'TileLayer') {
-		return res.json(400, { messages: messages.error(req.i18n.t("layer.update.tilelayer.error") ) } );
+		return res.json(400, messages.error(req.i18n.t("layer.update.tilelayer.error")));
 	}
 
 	layer = _.extend(layer, req.body);
 
 	layer.save(function(err) {
 		if (!err) {
-			res.json({ layer: layer,  messages: messages.success(req.i18n.t('layer.update.success'))});
+			res.json({ layer: layer,  messages: messages.success(req.i18n.t('layer.update.success')).messages});
 		} else {
 			console.log(err);
-			res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+			res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 		}
 	})
 }
@@ -190,9 +190,9 @@ exports.destroy = function(req, res){
 	var layer = req.layer
 	layer.remove(function(err){
 		if(err) {
-			res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+			res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 		} else {
-			res.json({ messages: messages.success(req.i18n.t('layer.destroy.success'))});
+			res.json(messages.success(req.i18n.t('layer.destroy.success')));
 		}
 	})
 }
@@ -212,9 +212,9 @@ exports.addFeature = function (req, res) {
 	}
 
 	feature.save(function(err){
-		res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
 		layer.save(function(err){
-			if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+			if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 			else res.json(feature);
 		})
 	})
@@ -230,10 +230,10 @@ exports.removeFeature = function (req, res) {
 		layer = req.layer;
 
 	var saveLayer = function(err) {
-		if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 		layer.features = _.filter(layer.features, function(f) { return !f._id.equals(feature._id); });
 		layer.save(function(err) {
-			if (err) res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+			if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 			else res.json(feature);
 		});
 	}
@@ -253,18 +253,18 @@ exports.addContributor = function (req, res) {
 		layer = req.layer;
 
 	if (contributorEmail == req.user.email) {
-		res.json(400, { messages: messages.error(req.i18n.t("layer.contributor.add.error.already_exists"))});
+		res.json(400, messages.error(req.i18n.t("layer.contributor.add.error.already_exists")));
 	} else {
 		User.findOne({email: contributorEmail}, function(err, user){
 			if (err) {
-				res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+				res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));
 			} else if (!user) {
-				res.json(400, { messages: messages.error(req.i18n.t("layer.contributor.add.error.dont_exists"))});
+				res.json(400, messages.error(req.i18n.t("layer.contributor.add.error.dont_exists")));
 			} else {
 				layer.contributors.addToSet(user);
 				layer.save(function(err){
 					if (err)
-						res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+						res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 					else
 						Layer
 							.findById(layer._id)
@@ -272,12 +272,13 @@ exports.addContributor = function (req, res) {
 							.exec(function(err, updatedLayer){
 								mailer.informContributorPermission({
 									mailSender: req.app.mailer,
+									t: req.i18n.t,
 									layer: layer, 
 									creator: req.user, 
 									contributor: user
 								}, function(err){
-									if (err) res.json(400, { messages: messages.error(req.i18n.t("layer.contributor.add.error.email"))})
-									res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.add.success'))});
+									if (err) res.json(400, messages.error(req.i18n.t("layer.contributor.add.error.email")))
+									else res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.add.success')).messages});
 								});
 						});
 				});
@@ -300,17 +301,17 @@ exports.removeContributor = function (req, res) {
 	layer.contributors.pull({_id: contributorId});
 
 	if (contributorCount == layer.contributors.lentgh) {
-		res.json(400, { messages: messages.error( req.i18n.t( "layer.contributor.remove.error.invalid_id") ) } );
+		res.json(400, messages.error( req.i18n.t( "layer.contributor.remove.error.invalid_id")));
 	} else {
 		layer.save(function(err){		
 			if (err) {
-				res.json(400, {messages: messages.mongooseErrors(req.i18n, err)});
+				res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
 			} else {
 				Layer
 					.findById(layer._id)
 					.populate('contributors', 'name username email')
 					.exec(function(err, updatedLayer){
-					res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.remove.success'))});
+					res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.remove.success')).messages});
 				})
 			}
 		})

@@ -27,7 +27,7 @@ exports.user = function (req, res, next, id) {
 	User
 		.load(query, function (err, user) {
 			if (err) return next(err)
-			if (!user) return next(new Error(t('user.load.error') + id))
+			if (!user) return next(new Error(req.i18n.t('user.load.error') + id))
 			req.profile = user
 			next()
 		});
@@ -45,18 +45,18 @@ exports.create = function (req, res) {
 	// Checks existence of all fields before sending to mongoose
 
 	if (!user.name)
-		preValidationErrors.push(t('user.create.error.missing_name'));
+		preValidationErrors.push(req.i18n.t('user.create.error.missing_name'));
 	if (!user.email)
-		preValidationErrors.push(t('user.create.error.email.missing'));
+		preValidationErrors.push(req.i18n.t('user.create.error.email.missing'));
 	else 
 		if (!validator.isEmail(user.email))
-			preValidationErrors.push(t('user.create.error.email.invalid'));
+			preValidationErrors.push(req.i18n.t('user.create.error.email.invalid'));
 	
 
 	if (!user.password)
-		preValidationErrors.push(t('user.create.error.password.missing'));
+		preValidationErrors.push(req.i18n.t('user.create.error.password.missing'));
 	else if (user.password.length < 6)
-		preValidationErrors.push(t('user.create.error.password.length'));
+		preValidationErrors.push(req.i18n.t('user.create.error.password.length'));
 
 	// Avoid e-mail confirmation at development environment
 	// if (process.env.NODE_ENV == 'development') {
@@ -67,7 +67,7 @@ exports.create = function (req, res) {
 		return res.json(400, { messages: messages.errorsArray(req.i18n, preValidationErrors) });
 	} else {
 		user.save(function (err) {
-			if (err) return res.json(400, { messages: messages.mongooseErrors(req.i18n, err)});		
+			if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));		
 
 			// Don't send email if user is active
 			if (!user.needsEmailConfirmation) {			
@@ -78,9 +78,8 @@ exports.create = function (req, res) {
 					user: user,
 					callbackUrl: req.body.callback_url
 				}, function(err){
-					console.log(err);
 					if (err) 
-						return res.json({ messages: messages.mongooseErrors(req.i18n, err)});
+						return res.json(messages.mongooseErrors(req.i18n.t, err));
 					else 
 						return res.json(messages.success(req.i18n.t('user.create.success.with_token')));
 				})
@@ -101,18 +100,18 @@ exports.update = function (req, res) {
 		// User is changing password
 		if (req.body.userPwd) {
 			if (!user.authenticate(req.body.userPwd)) {
-				return res.json(400, messages.error(t('user.update.password.error.wrong')));
+				return res.json(400, messages.error(req.i18n.t('user.update.password.error.wrong')));
 			} else if (req.body.newPwd.length < 6) {
-				return res.json(400, messages.error(t('user.update.password.error.length')));
+				return res.json(400, messages.error(req.i18n.t('user.update.password.error.length')));
 			} else {
 				if (req.body.newPwd == req.body.validatePwd){
 					user.password = req.body.newPwd;
 					user.save(function(err){
 						if (err) res.json(400, messages.errors(err));
-						else res.json(messages.success(t('user.update.password.success')));
+						else res.json(messages.success(req.i18n.t('user.update.password.success')));
 					});		
 				} else {
-					return res.json(400, messages.error(t('user.update.password.error.dont_match')));
+					return res.json(400, messages.error(req.i18n.t('user.update.password.error.dont_match')));
 				}
 			}
  
@@ -121,28 +120,35 @@ exports.update = function (req, res) {
 
 			// Check if is a diffent e-mail
 			if (req.body.email == user.email) {
-				return res.json(400, messages.error(t('user.update.email.error.already_associated')));
+				return res.json(400, messages.error(req.i18n.t('user.update.email.error.already_associated')));
 			}
 
 			// Check if is valid
 			if (!validator.isEmail(req.body.email)) {
-				return res.json(400, messages.error(t('user.update.email.error.invalid')));
+				return res.json(400, messages.error(req.i18n.t('user.update.email.error.invalid')));
 			}
 
 			// Send confirmation, if e-mail is not already used
 			User.findOne({email: req.body.email}, function(err, anotherUser){
 				if (!req.body.callback_url){
-					return res.json(400, messages.error(t('user.update.email.error.missing_callback')));			
+					return res.json(400, messages.error(req.i18n.t('user.update.email.error.missing_callback')));			
 				} else if (!anotherUser) {
-					mailer.changeEmail(user, req.body.email, req.body.callback_url, function(err){
+					// console.log(req.locale);
+					mailer.changeEmail({
+						mailSender: req.app.mailer,
+						user: user, 
+						newEmail: req.body.email, 
+						callbackUrl: req.body.callback_url, 
+						t: req.i18n.t
+					}, function(err){
 						if (err) {
-							return res.json(400, messages.error(t('user.update.email.error.mailer')));
+							return res.json(400, messages.error(req.i18n.t('user.update.email.error.mailer')));
 						} else {
-							return res.json(messages.success(t('user.update.email.success')));
+							return res.json(messages.success(req.i18n.t('user.update.email.success')));
 						}
 					});
 				} else {
-					return res.json(400, messages.error(t('user.update.email.error.already_used')));			
+					return res.json(400, messages.error(req.i18n.t('user.update.email.error.already_used')));			
 				}
 			})
 			
@@ -153,8 +159,8 @@ exports.update = function (req, res) {
 			user.name = req.body.name;
 			user.username = req.body.username;
 			user.save(function(err){
-				if (err) res.json(400, messages.errors(err));
-				else res.json(messages.success(t('user.update.success')));
+				if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));
+				else res.json(messages.success(req.i18n.t('user.update.success')));
 			});		 
 		}
 
@@ -243,7 +249,7 @@ exports.resetPasswordToken = function (req, res) {
 	}, function(err,user){
 		if (err) 
 			res.render('users/forgot_password', {
-				title: t('user.reset_pwd.mail.title'),
+				title: req.i18n.t('user.reset_pwd.mail.title'),
 				message: req.flash('error')
 			});
 		else {
@@ -256,12 +262,12 @@ exports.resetPasswordToken = function (req, res) {
 					if (err) 
 						return res.json(messages.errors(err));
 					else 
-						return res.json(messages.success(t('user.reset_pwd.token.success')));
+						return res.json(messages.success(req.i18n.t('user.reset_pwd.token.success')));
 				});
 			} else {
-				req.flash('error', t('user.reset_pwd.form.error.user.not_found'));
+				req.flash('error', req.i18n.t('user.reset_pwd.form.error.user.not_found'));
 				res.render('users/forgot_password', {
-					title: t('user.reset_pwd.form.title'),
+					title: req.i18n.t('user.reset_pwd.form.title'),
 					message: req.flash('error')
 				});				
 			}
@@ -289,15 +295,15 @@ exports.migrate = function (req, res) {
 		errors = [];
 
 	if (!email) {
-		errors.push(t('user.migrate.form.errors.email.missing'));
+		errors.push(req.i18n.t('user.migrate.form.errors.email.missing'));
 	}
 
 	if (!password) {
-		errors.push(t('user.migrate.form.errors.password.missing'));
+		errors.push(req.i18n.t('user.migrate.form.errors.password.missing'));
 	}
 
 	if ((password) && (password.length < 6)) {
-		errors.push(t('user.migrate.form.errors.password.length'));
+		errors.push(req.i18n.t('user.migrate.form.errors.password.length'));
 	}
 
 	if (errors.length > 0) {
@@ -314,13 +320,13 @@ exports.migrate = function (req, res) {
 				});
 			} else if (!user) {
 				res.render('users/migrate', {
-					errors:  [t('user.migrate.form.errors.user.not_found')],
+					errors:  [req.i18n.t('user.migrate.form.errors.user.not_found')],
 					email: email
 				});
 			} else {
 				mailer.migrateAccount(user, password, function(err){
 					res.render('users/migrate', {
-						info:  [t('user.migrate.form.success')],
+						info:  [req.i18n.t('user.migrate.form.success')],
 						email: email
 					});
 				})

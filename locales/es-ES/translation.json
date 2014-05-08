@@ -332,7 +332,49 @@
       }
     },
     "mailer": {
+      "contributions": {
+        "new_contributor": {
+          "bye": "",
+          "intro": "",
+          "salute": "",
+          "visit_dashboard": ""
+        }
+      },
+      "email": {
+        "change": {
+          "bye": "",
+          "intro": "",
+          "salute": ""
+        },
+        "confirm": {
+          "bye": "",
+          "link": "",
+          "salute": ""
+        }
+      },
+      "password": {
+        "recover": {
+          "ignore": "",
+          "intro": "",
+          "link": "",
+          "salute": "",
+          "thanks": ""
+        },
+        "set": {
+          "intro": "",
+          "salute": "",
+          "thanks": "",
+          "token": ""
+        }
+      },
       "user": {
+        "account": {
+          "migrate": {
+            "bye": "",
+            "link": "",
+            "salute": ""
+          }
+        },
         "invite": {
           "intro": "Has sido invitado a mapear.",
           "link": "Siga el enlace para empiezar.",
@@ -349,5 +391,6 @@
         "type_a_password": "Debes indicar una contraseña"
       }
     }
-  }
+  },
+  "Path `title` is required": "La capa debe tener un titulo."
 }
