@@ -91,7 +91,7 @@
         "error": {
           "invalid_id": "Id de contribuidor inválido."
         },
-        "success": "Contribuidor adicionado com sucesso."
+        "success": "Contribuidor removido com sucesso."
       }
     },
     "create": {
@@ -272,16 +272,16 @@
       "settings": {
         "index": {
           "allow_geofiles_import": "Permitir importação de arquivo geo",
-          "brazilian_portuguese": "",
+          "brazilian_portuguese": "Português Brasileiro",
           "client_url": "URL do cliente",
-          "english": "",
+          "english": "Inglês",
           "general_settings": "Configurações gerais",
           "only_invited_can_register": "Somente convidados podem registrar-se",
           "server_url": "URL do servidor",
-          "site_description": "Descricão do site",
-          "site_language": "",
+          "site_description": "Descrição do site",
+          "site_language": "Idioma padrão",
           "site_title": "Título do site",
-          "spanish": "",
+          "spanish": "Espanhol",
           "update": "Atualizar"
         },
         "mailer": {
@@ -307,10 +307,10 @@
           "send_invitation": "Enviar convite"
         },
         "roles": {
-          "admin": "views.admin.users.roles.admin",
+          "admin": "Administrador",
           "change": "Alterar",
-          "collaborator": "views.admin.users.roles.collaborator",
-          "editor": "views.admin.users.roles.editor",
+          "collaborator": "Colaborador",
+          "editor": "Editor",
           "email": "E-mail",
           "manage_user_roles": "Gerenciar perfis de usuário",
           "name": "Nome",
@@ -334,63 +334,65 @@
     "mailer": {
       "contributions": {
         "new_contributor": {
-          "bye": "",
-          "intro": "",
-          "salute": "",
-          "visit_dashboard": ""
+          "bye": "Bom mapeamento!",
+          "intro": "Você foi convidado por __creator__ a contribuir na camada __layer.",
+          "salute": "Olá, __username__,",
+          "visit_dashboard": "Visite seu painel de controle para visualizar suas camadas."
         }
       },
       "email": {
         "change": {
-          "bye": "",
-          "intro": "",
-          "salute": ""
+          "subject": "Confirmação de alteração de endereço de e-mail",
+          "bye": "Bom mapeamento!",
+          "intro": "Você solicitou alteração do seu endereço de e-mail.",
+          "salute": "Olá, __username__,",
+          "link": "Clique para proceder com a alteração"
         },
         "confirm": {
-          "bye": "",
-          "link": "",
-          "salute": ""
+          "bye": "Bom mapeamento!",
+          "link": "Prosseguir com a confirmação de e-mail.",
+          "salute": "Olá, __username__,"
         }
       },
       "password": {
         "recover": {
-          "ignore": "",
-          "intro": "",
-          "link": "",
-          "salute": "",
-          "thanks": ""
+          "ignore": "Se você não fez esta solicitação, ignore este e-mail.",
+          "intro": "Você solicitou alteração de senha.",
+          "link": "Prosseguir com alteração de senha.",
+          "salute": "Olá, __username__,",
+          "thanks": "Bom mapeamento!"
         },
         "set": {
-          "intro": "",
-          "salute": "",
-          "thanks": "",
-          "token": ""
+          "intro": "Você precisa de uma senha para acessar a plataforma.",
+          "salute": "Olá, __username__,",
+          "thanks": "Bom mapeamento!",
+          "token": "Clique para continuar."
         }
       },
       "user": {
         "account": {
           "migrate": {
-            "bye": "",
-            "link": "",
-            "salute": ""
+            "bye": "Bom mapeamento!",
+            "link": "Ir para migração.",
+            "salute": "Olá, __username__,"
           }
         },
         "invite": {
-          "intro": "You were invited to map.",
-          "link": "Click here to start.",
-          "salute": "Hi, __username__,",
-          "thanks": "Thank you!"
+          "subject": "Convite para o mapa",
+          "intro": "Você foi convidado a mapear.",
+          "link": "Clique aqui para começar.",
+          "salute": "Olá, __username__,",
+          "thanks": "Obrigado!"
         }
       }
     },
     "tokens": {
       "accept_invitation": {
-        "confirm_signup": "",
-        "define_password": "views.tokens.accept_invitation.define_password",
-        "send": "",
-        "type_a_password": "views.tokens.accept_invitation.type_a_password"
+        "confirm_signup": "Confirme sua inscrição",
+        "define_password": "Defina uma senha:",
+        "send": "Enviar",
+        "type_a_password": "Digite uma senha"
       }
     }
-  },
-  "Path `title` is required": "Digite um título para a camada."
+  }
 }

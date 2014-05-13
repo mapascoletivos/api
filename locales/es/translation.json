@@ -334,45 +334,47 @@
     "mailer": {
       "contributions": {
         "new_contributor": {
-          "bye": "",
-          "intro": "",
-          "salute": "",
-          "visit_dashboard": ""
+          "bye": "Hasta luego!",
+          "intro": "Fuíste invitado por __creator__ a contribuir el la capa __layer.",
+          "salute": "Hola, __username__,",
+          "visit_dashboard": "Visite su painel de control para visualizar sus capas."
         }
       },
       "email": {
         "change": {
-          "bye": "",
-          "intro": "",
-          "salute": ""
+          "subject": "Confirmación de cambio de dirección de correo",
+          "bye": "Hasta luego!",
+          "intro": "Has solicitado cambio de dirección de correo.",
+          "salute": "Hola, __username__,",
+          "link": "Confirmar el cambio."
         },
         "confirm": {
-          "bye": "",
-          "link": "",
-          "salute": ""
+          "bye": "Hasta luego!",
+          "link": "Confirmar el cambio.",
+          "salute": "Hola, __username__,"
         }
       },
       "password": {
         "recover": {
-          "ignore": "",
-          "intro": "",
-          "link": "",
-          "salute": "",
-          "thanks": ""
+          "ignore": "Si no has solicitado, ignore este correo.",
+          "intro": "Has solicitado cambio de contraseña.",
+          "link": "Segui para el cambio de contraseña.",
+          "salute": "Hola, __username__,",
+          "thanks": "Hasta luego!"
         },
         "set": {
-          "intro": "",
-          "salute": "",
-          "thanks": "",
-          "token": ""
+          "intro": "Necesitas una contraseña para aceder la plataforma.",
+          "salute": "Hola, __username__,",
+          "thanks": "Hasta luego!",
+          "token": "Seguir para el cadastro de contraseña."
         }
       },
       "user": {
         "account": {
           "migrate": {
-            "bye": "",
-            "link": "",
-            "salute": ""
+            "bye": "Hasta luego!",
+            "link": "Ir para la migración.",
+            "salute": "Hola, __username__,"
           }
         },
         "invite": {
@@ -391,5 +393,6 @@
         "type_a_password": "Debes indicar una contraseña"
       }
     }
-  }
+  },
+  "Path `title` is required": "La capa debe tener un titulo."
 }
