@@ -29,9 +29,9 @@ module.exports = function (passport, config) {
 				if (err) 
 					return done(err)
 				else if (!user) 
-					return done(null, false, { message: 'Usuário não cadastrado.' })
+					return done(null, false, { message: 'User not registered.' })
 				else if (user.hashed_password && !user.authenticate(password))
-          			return done(null, false, { message: 'Invalid password' })
+          			return done(null, false, { message: 'Invalid password.' })
 				else 
 					return done(null, user);
 			})

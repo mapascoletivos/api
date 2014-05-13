@@ -2,20 +2,19 @@ extends ../../layouts/admin-area
 
 block content
 	section#dashboard
-		h3=t('Mange user roles')
-		- console.log(errors);
+		h3=t('views.admin.users.roles.manage_user_roles')
 		include ../../includes/messages.jade
 		
 		
 		- if (!users)
-			p=t('There are no users!')
+			p=t('views.admin.users.roles.there_are_no_users')
 		- else 		
 			table
 				thead
 					tr
-						th=t('Name')
-						th=t('E-mail')
-						th=t('Permissão')
+						th=t('views.admin.users.roles.name')
+						th=t('views.admin.users.roles.email')
+						th=t('views.admin.users.roles.role')
 				tbody
 					- each user in users
 						tr
@@ -25,6 +24,7 @@ block content
 								form.form-horizontal(action="/admin/users/role", method="post", role="form")
 									input(type='hidden', name='user_id', value="#{user._id}")
 									select(name='role')
-										- each role in ['collaborator', 'editor', 'admin']
-											option(value=role, selected=user.role == role)=t(role)
-									input.btn.btn-primary(type='submit' value=t('Change'))
+											option(value='collaborator', selected=user.role == 'collaborator')=t('views.admin.users.roles.collaborator')
+											option(value='editor', selected=user.role == 'editor')=t('views.admin.users.roles.editor')
+											option(value='admin', selected=user.role == 'admin')=t('views.admin.users.roles.admin')
+									input.btn.btn-primary(type='submit' value=t('views.admin.users.roles.change'))

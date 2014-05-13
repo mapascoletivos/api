@@ -80,7 +80,7 @@ UserSchema.path('email').validate(function (email, fn) {
 		})
 	} else 
 		fn(true);
-}, 'Este e-mail já está sendo utilizado.');
+}, 'E-mail address already in use.');
 
 UserSchema.path('username').validate(function (username, fn) {
 	var User = mongoose.model('User');
@@ -92,7 +92,7 @@ UserSchema.path('username').validate(function (username, fn) {
 		})
 	} else 
 		fn(true);
-}, 'Este nome de usuário já é utilizado.');
+}, 'Username already in use.');
 
 /**
  * Methods

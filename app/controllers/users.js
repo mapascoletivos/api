@@ -27,7 +27,7 @@ exports.user = function (req, res, next, id) {
 	User
 		.load(query, function (err, user) {
 			if (err) return next(err)
-			if (!user) return next(new Error('Failed to load User ' + id))
+			if (!user) return next(new Error(req.i18n.t('user.load.error') + id))
 			req.profile = user
 			next()
 		});
@@ -45,18 +45,18 @@ exports.create = function (req, res) {
 	// Checks existence of all fields before sending to mongoose
 
 	if (!user.name)
-		preValidationErrors.push('Please enter your name.');
+		preValidationErrors.push(req.i18n.t('user.create.error.missing_name'));
 	if (!user.email)
-		preValidationErrors.push('Please enter your e-mail address.');
+		preValidationErrors.push(req.i18n.t('user.create.error.email.missing'));
 	else 
 		if (!validator.isEmail(user.email))
-			preValidationErrors.push('Invalid e-mail address.');
+			preValidationErrors.push(req.i18n.t('user.create.error.email.invalid'));
 	
 
 	if (!user.password)
-		preValidationErrors.push('Please type a password.');
+		preValidationErrors.push(req.i18n.t('user.create.error.password.missing'));
 	else if (user.password.length < 6)
-		preValidationErrors.push('Password should have at least 6 characters.');
+		preValidationErrors.push(req.i18n.t('user.create.error.password.length'));
 
 	// Avoid e-mail confirmation at development environment
 	// if (process.env.NODE_ENV == 'development') {
@@ -64,24 +64,24 @@ exports.create = function (req, res) {
 	// }
 
 	if (preValidationErrors.length > 0){
-		return res.json(400, messages.errorsArray(preValidationErrors));
+		return res.json(400, { messages: messages.errorsArray(req.i18n, preValidationErrors) });
 	} else {
 		user.save(function (err) {
-			if (err) return res.json(400, {messages: messages.mongooseErrors(err)});		
+			if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));		
+
 			// Don't send email if user is active
 			if (!user.needsEmailConfirmation) {			
-				return res.json(messages.success('Usuário criado com sucesso.'))
+				return res.json(messages.success(req.i18n.t('user.create.success.without_token')))
 			} else {
 				mailer.confirmEmail({
 					mailSender: req.app.mailer, 
 					user: user,
 					callbackUrl: req.body.callback_url
 				}, function(err){
-					console.log(err);
 					if (err) 
-						return res.json(messages.errors(err));
+						return res.json(messages.mongooseErrors(req.i18n.t, err));
 					else 
-						return res.json(messages.success('Usuário criado com sucesso. Um link de confirmação foi enviado para seu email.'));
+						return res.json(messages.success(req.i18n.t('user.create.success.with_token')));
 				})
 			}
 		})		
@@ -100,18 +100,18 @@ exports.update = function (req, res) {
 		// User is changing password
 		if (req.body.userPwd) {
 			if (!user.authenticate(req.body.userPwd)) {
-				return res.json(400, messages.error('Senha atual inválida.'));
+				return res.json(400, messages.error(req.i18n.t('user.update.password.error.wrong')));
 			} else if (req.body.newPwd.length < 6) {
-				return res.json(400, messages.error('A nova senha deve ter no mínimo 6 caracteres.'));
+				return res.json(400, messages.error(req.i18n.t('user.update.password.error.length')));
 			} else {
 				if (req.body.newPwd == req.body.validatePwd){
 					user.password = req.body.newPwd;
 					user.save(function(err){
 						if (err) res.json(400, messages.errors(err));
-						else res.json(messages.success('Senha alterada com sucesso.'));
+						else res.json(messages.success(req.i18n.t('user.update.password.success')));
 					});		
 				} else {
-					return res.json(400, messages.error("As senhas não coincidem."));
+					return res.json(400, messages.error(req.i18n.t('user.update.password.error.dont_match')));
 				}
 			}
  
@@ -120,28 +120,35 @@ exports.update = function (req, res) {
 
 			// Check if is a diffent e-mail
 			if (req.body.email == user.email) {
-				return res.json(400, messages.error('Este já é o e-mail associado com seu perfil.'));
+				return res.json(400, messages.error(req.i18n.t('user.update.email.error.already_associated')));
 			}
 
 			// Check if is valid
 			if (!validator.isEmail(req.body.email)) {
-				return res.json(400, messages.error('E-mail inválido.'));
+				return res.json(400, messages.error(req.i18n.t('user.update.email.error.invalid')));
 			}
 
 			// Send confirmation, if e-mail is not already used
 			User.findOne({email: req.body.email}, function(err, anotherUser){
 				if (!req.body.callback_url){
-					return res.json(400, messages.error("Invalid request (missing callback URL)."));			
+					return res.json(400, messages.error(req.i18n.t('user.update.email.error.missing_callback')));			
 				} else if (!anotherUser) {
-					mailer.changeEmail(user, req.body.email, req.body.callback_url, function(err){
+					// console.log(req.locale);
+					mailer.changeEmail({
+						mailSender: req.app.mailer,
+						user: user, 
+						newEmail: req.body.email, 
+						callbackUrl: req.body.callback_url, 
+						t: req.i18n.t
+					}, function(err){
 						if (err) {
-							return res.json(400, messages.error("Erro ao enviar e-mail de alteração de endereço."));
+							return res.json(400, messages.error(req.i18n.t('user.update.email.error.mailer')));
 						} else {
-							return res.json(messages.success('Um e-mail foi enviado para confirmação do novo endereço.'));
+							return res.json(messages.success(req.i18n.t('user.update.email.success')));
 						}
 					});
 				} else {
-					return res.json(400, messages.error("Este endereço de e-mail já está cadastrado."));			
+					return res.json(400, messages.error(req.i18n.t('user.update.email.error.already_used')));			
 				}
 			})
 			
@@ -152,8 +159,8 @@ exports.update = function (req, res) {
 			user.name = req.body.name;
 			user.username = req.body.username;
 			user.save(function(err){
-				if (err) res.json(400, messages.errors(err));
-				else res.json(messages.success('Perfil do usuário atualizado com sucesso.'));
+				if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));
+				else res.json(messages.success(req.i18n.t('user.update.success')));
 			});		 
 		}
 
@@ -242,7 +249,7 @@ exports.resetPasswordToken = function (req, res) {
 	}, function(err,user){
 		if (err) 
 			res.render('users/forgot_password', {
-				title: 'Recuperar senha',
+				title: req.i18n.t('user.reset_pwd.mail.title'),
 				message: req.flash('error')
 			});
 		else {
@@ -255,12 +262,12 @@ exports.resetPasswordToken = function (req, res) {
 					if (err) 
 						return res.json(messages.errors(err));
 					else 
-						return res.json(messages.success('Um link de alteração de senha foi enviado para seu e-mail.'));
+						return res.json(messages.success(req.i18n.t('user.reset_pwd.token.success')));
 				});
 			} else {
-				req.flash('error', 'Usuário não encontrado.');
+				req.flash('error', req.i18n.t('user.reset_pwd.form.error.user.not_found'));
 				res.render('users/forgot_password', {
-					title: 'Recuperar senha',
+					title: req.i18n.t('user.reset_pwd.form.title'),
 					message: req.flash('error')
 				});				
 			}
@@ -288,15 +295,15 @@ exports.migrate = function (req, res) {
 		errors = [];
 
 	if (!email) {
-		errors.push('Informe um e-mail.');
+		errors.push(req.i18n.t('user.migrate.form.errors.email.missing'));
 	}
 
 	if (!password) {
-		errors.push('Informe uma nova senha');
+		errors.push(req.i18n.t('user.migrate.form.errors.password.missing'));
 	}
 
 	if ((password) && (password.length < 6)) {
-		errors.push('A nova senha deve ter ao menos 6 caracteres.');
+		errors.push(req.i18n.t('user.migrate.form.errors.password.length'));
 	}
 
 	if (errors.length > 0) {
@@ -313,13 +320,13 @@ exports.migrate = function (req, res) {
 				});
 			} else if (!user) {
 				res.render('users/migrate', {
-					errors:  ['Usuário não encontrado ou migração já realizada.'],
+					errors:  [req.i18n.t('user.migrate.form.errors.user.not_found')],
 					email: email
 				});
 			} else {
 				mailer.migrateAccount(user, password, function(err){
 					res.render('users/migrate', {
-						info:  ['Um link de confirmação de migração foi enviado ao seu e-mail.'],
+						info:  [req.i18n.t('user.migrate.form.success')],
 						email: email
 					});
 				})

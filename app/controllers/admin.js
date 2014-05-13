@@ -38,8 +38,7 @@ exports.firstAdmin = function(req, res) {
 			
 		// If an admin user already exists, redirects to login
 		if (admin) {
-			console.log('admin already exists');
-			req.flash('error', 'An admin already exists.');
+			req.flash('error', req.i18n.t('admin.first_admin.error.already_exists'));
 			res.redirect('/admin/login');
 		} else {
 			var user = new User(req.body);
@@ -50,28 +49,28 @@ exports.firstAdmin = function(req, res) {
 
 			// Checks existence of all fields before sending to mongoose
 			if (!user.name)
-				preValidationErrors.push('Please enter a name.');
+				preValidationErrors.push(t('admin.first_admin.error.needs_name'));
 
 			if (!user.email)
-				preValidationErrors.push('Please enter a e-mail address.');
+				preValidationErrors.push(t('admin.first_admin.error.needs_email'));
 			else 
 				if (!validator.isEmail(user.email))
-					preValidationErrors.push('Invalid e-mail address.');
+					preValidationErrors.push(t('admin.first_admin.error.invalid_email'));
 
 			if (!user.password)
-				preValidationErrors.push('Please type a password.');
+				preValidationErrors.push(t('admin.first_admin.error.password_missing'));
 			else if (user.password.length < 6)
-				preValidationErrors.push('Password should have at least 6 characters.');
+				preValidationErrors.push(t('admin.first_admin.error.password_length'));
 
 			if (preValidationErrors.length > 0){
 				res.render('admin/first_admin', {messages: messages.errorsArray(preValidationErrors).messages});
 			} else {
 				user.save(function (err) {
 					if (err) {
-						res.render('admin/first_admin', {messages: messages.mongooseErrors(err)});
+						res.render('admin/first_admin', messages.mongooseErrors(req.i18n.t, err, 'user'));
 					}
 					else {
-						req.flash('info', 'Admin created successfully.');
+						req.flash('info', req.i18n.t('admin.first_admin.success'));
 						res.redirect('/admin/login');
 					}
 				});
@@ -120,7 +119,7 @@ exports.index = function (req, res) {
 exports.apiSettings = function(req, res) {
 	Settings.load(function(err, settings){
 		if (err)
-			return res.json(400, message.error('Could not retrive server info.'));
+			return res.json(400, message.error(t('admin.api_settings.error.load')));
 		else {
 			
 			// clear mongoose fields
@@ -173,6 +172,7 @@ exports.update = function(req, res, next) {
 			settings.general = req.body.settings;
 						
 			settings.general.onlyInvitedUsers = req.body.settings.onlyInvitedUsers ? true : false;
+			settings.general.language = req.body.settings.language;
 			settings.general.allowImports = req.body.settings.allowImports ? true : false;
 
 			settings.save(function(err){
@@ -244,7 +244,7 @@ exports.invite = function(req, res, next) {
 		if (err) res.render('500');
 		else {
 			if (user && !user.needsEmailConfirmation) {
-				res.render('admin/users/new', {message: 'User already active.'});
+				res.render('admin/users/new', {message: req.i18n.t('admin.invite_user.error.already_active')});
 			} else {
 				
 				var 
@@ -255,7 +255,8 @@ exports.invite = function(req, res, next) {
 							email: req.body.user.email, 
 							role: req.body.user.role
 						},
-						callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
+						callbackUrl: req.app.locals.settings.general.clientUrl + '/login',
+						t: req.i18n.t
 				}
 					
 				mailer.invite(options, function(err) {
@@ -263,7 +264,7 @@ exports.invite = function(req, res, next) {
 						console.log(err);
 						next(err);
 					}
-					else return res.render('admin/users/new', {messages: messages.success('User invited successfully')});
+					else return res.render('admin/users/new', messages.success(req.i18n.t('admin.invite_user.success')));
 				});
 			}
 		}
@@ -285,12 +286,15 @@ exports.changeRole = function(req, res, next) {
 		if (err || !user) res.render('500');
 		else {
 			user.role = req.body.role;
+			console.log(user);
 			user.save(function(err){
-				if (err) res.render('500');
+				if (err) {
+					console.log(err);
+					res.render('500');
+				}
 				else {
 					User.find({}, function(err, users){
 						if (err) res.render('500');
-						// else res.render('admin/users/roles', {users: users});
 						else res.redirect('admin/users/roles');
 					})
 				}

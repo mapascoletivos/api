@@ -29,3 +29,5 @@ config/config.js
 
 import/*
 backup/*
+
+translation_old.json

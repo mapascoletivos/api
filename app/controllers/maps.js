@@ -6,7 +6,6 @@
 var 
 	_ = require('underscore'),
 	mongoose = require('mongoose'),
-	utils = require('../../lib/utils'),
 	Map = mongoose.model('Map'),
 	extend = require('util')._extend;
 
@@ -17,7 +16,7 @@ var
 exports.load = function(req, res, next, id){
 	Map.load(id, function (err, map) {
 		if (err) return next(err)
-		if (!map) return res.json(400, { messages: [{status: 'error', text: 'Map not found.'}] });
+		if (!map) return res.json(400, messages.error(req.i18n.t('map.load.error.not_found')));
 		req.map = map
 		next()
 	});
@@ -49,9 +48,9 @@ exports.index = function(req, res){
 		}
 
 	Map.list(options, function(err, maps) {
-		if (err) return res.json(400, utils.errorMessages(err.errors || err));
+		if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'map'));
 		Map.count(options.criteria).exec(function (err, count) {
-			if (err) res.json(400, utils.errorMessages(err.errors || err));
+			if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'map'));
 			else res.json({options: options, mapsTotal: count, maps: maps});
 		})
 	})
@@ -78,7 +77,7 @@ exports.create = function (req, res) {
 
 	// save map
 	map.setLayersAndSave(req.body.layers, function (err) {
-		if (err) res.json(400, utils.errorMessages(err.errors || err));
+		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'map'));
 		else res.json(map);
 	});
 }
@@ -101,7 +100,7 @@ exports.update = function(req, res){
 	map = extend(map, req.body);
 
 	map.setLayersAndSave(newLayerSet, function(err) {
-		if (err) res.json(400, utils.errorMessages(err.errors || err));
+		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'map'));
 		else res.json(map);
 	})
 }
@@ -113,7 +112,7 @@ exports.update = function(req, res){
 exports.destroy = function(req, res){
 	var map = req.map
 	map.remove(function(err){
-		if (err) res.json(400, utils.errorMessages(err.errors || err));
-		else res.json({ messages: [{status: 'ok', text: 'Mapa removido com sucesso.'}] });
+		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'map'));
+		else res.json(messages.error(req.i18n.t('map.destroy.success')));
 	});
 }

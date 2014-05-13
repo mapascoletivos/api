@@ -1,12 +1,9 @@
-p Olá, #{locals.user.name}
+p=locals.t('views.mailer.password.set.salute', {username: locals.user.name})
 
-p Você precisa de uma senha para acessar o Mapas Coletivos com seu email.
+p=locals.t('views.mailer.password.set.intro')
 
 p 
-	| Clique&nbsp;
-	a(href='#{settings.general.serverUrl}/new_password/#{locals.token._id}') aqui
-	| &nbsp;para definir sua senha agora.
+	a(href='#{settings.general.serverUrl}/new_password/#{locals.token._id}')=locals.t('views.mailer.password.set.token')
 
 
-p
-	| Obrigado!
+p=locals.t('views.mailer.password.set.thanks', {defaultValue: 'Thank you!'})

@@ -7,9 +7,9 @@ html
 		
 		section#login
 			.login-content
-				h1= t('Administrative area')
+				h1= t('views.admin.first_admin.administrative_area')
 				include ../includes/messages
-				p= t("You don't have an admin yet, please provide information below to create one:")
+				p= t('views.admin.first_admin.create_first_admin_user')
 				.login-form
 					form.form-horizontal(action="/admin/first_admin", method="post", role="form")
 						input(type='hidden', name='_csrf', value="#{csrf_token}")
@@ -17,19 +17,19 @@ html
 						p.col-sm-offset-2.error= message
 
 						.form-group
-							label.col-sm-2.control-label(for="name")=t('Name')
+							label.col-sm-2.control-label(for="name")=t('views.admin.first_admin.name')
 							.col-sm-10
-								input#email.form-control(type="name", placeholder=t('Name'), name="name")
+								input#email.form-control(type="name", placeholder=t('views.admin.first_admin.name'), name="name")
 
 
 						.form-group
-							label.col-sm-2.control-label(for="email")=t('E-mail')
+							label.col-sm-2.control-label(for="email")=t('views.admin.first_admin.email')
 							.col-sm-10
-								input#email.form-control(type="email", placeholder=t('E-mail'), name="email")
+								input#email.form-control(type="email", placeholder=t('views.admin.first_admin.email'), name="email")
 
 						.form-group
-							label.col-sm-2.control-label(for="password")=t('Password')
+							label.col-sm-2.control-label(for="password")=t('views.admin.first_admin.password')
 							.col-sm-10
-								input#password.form-control(type="password", placeholder=t('Password'), name="password")
+								input#password.form-control(type="password", placeholder=t('views.admin.first_admin.password'), name="password")
 
-						input.btn.btn-primary(type='submit' value=t('Create admin'))
+						input.btn.btn-primary(type='submit' value=t('views.admin.first_admin.create_admin'))

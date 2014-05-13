@@ -1,0 +1,398 @@
+{
+  "access_token": {
+    "authsocial": {
+      "error": {
+        "load_user": "Erro al cargar perfil de usuario.",
+        "save_user": "Erro al grabar perfil de usuario."
+      }
+    },
+    "facebook": {
+      "error": {
+        "missing_token": "Token de autorización de Facebook no encontrado."
+      }
+    },
+    "google": {
+      "error": {
+        "missing_token": "Token de autorización de Google no encontrado."
+      }
+    },
+    "local": {
+      "error": {
+        "need_password": "Necesitas de una contraseña para activar su perfil. Verifique su correo.",
+        "needs_activation": "Perfil de usuario inacrivo, un correo de activación fue enviado.",
+        "send_email": "Hubo un error al enviar un token de contraseña a su correo."
+      },
+      "needs_migration": "Su cuenta todavia no fue migrada, por favor visite este <a href='/migrate' target='_self'>enlace</a>.",
+      "unauthorized": "No autorizado."
+    },
+    "logout": {
+      "error": {
+        "inexistent_token": "Token de acesso no encontrado.",
+        "not_logged": "No estás logado."
+      },
+      "successful": "Salida bien sucedida."
+    }
+  },
+  "admin": "admin",
+  "content": {
+    "destroy": {
+      "success": "Contenido removido con suceso."
+    },
+    "load": {
+      "error": {
+        "not_found": "Contenido no encontrado."
+      }
+    }
+  },
+  "feature": {
+    "add_content": {
+      "success": "Contenido añadido con suceso."
+    },
+    "import": {
+      "error": {
+        "disabled": "Importación de archivos no disponible."
+      }
+    },
+    "load": {
+      "error": {
+        "cant_find": "Local no encontrado."
+      }
+    },
+    "remove_content": {
+      "success": "Contenido removido con suceso."
+    }
+  },
+  "image": {
+    "create": {
+      "error": {
+        "not_found": "Archivo de imagen no encuentrado."
+      }
+    },
+    "destroy": {
+      "success": "Imagen removida con suceso."
+    },
+    "load": {
+      "error": {
+        "not_found": "Imagen no encuentrada."
+      }
+    }
+  },
+  "layer": {
+    "contributor": {
+      "add": {
+        "error": {
+          "already_exists": "El usuario ja contribuidor de la capa.",
+          "dont_exists": "No existe perfil de usuario con este correo.",
+          "email": "Hubo un error al enviar un correo a este perfil."
+        },
+        "success": "Contribuidor añadido con suceso."
+      },
+      "remove": {
+        "error": {
+          "invalid_id": "Id de contribuidor inválido."
+        },
+        "success": "Contribuidor añadido con suceso."
+      }
+    },
+    "create": {
+      "missing": "Tipo de capa no encuentrada.",
+      "success": "Capa creada con suceso."
+    },
+    "destroy": {
+      "success": "Capa removida con suceso."
+    },
+    "load": {
+      "error": "Error al cargar capa.",
+      "not_found": "Capa no encuentrada."
+    },
+    "update": {
+      "success": "Capa actualizada con suceso.",
+      "tilelayer": {
+        "error": "Error al actualizar TileLayer."
+      }
+    }
+  },
+  "map": {
+    "destroy": {
+      "success": "Mapa removido con suceso."
+    },
+    "load": {
+      "error": {
+        "not_found": "Mapa no encuentrado."
+      }
+    }
+  },
+  "token": {
+    "accept_invitation": {
+      "error": {
+        "invalid_token": "Token inválido.",
+        "user_activation": "Error al activar usuario."
+      },
+      "success": "Perfil activado con suceso."
+    },
+    "activate_account": {
+      "error": {
+        "invalid": "Token inválido.",
+        "saving": "Erro grabando token.",
+        "user": "No fue posible activar perfil de usuario."
+      },
+      "success": "Perfil atualizado con suceso, aguarde redireccionamiento."
+    },
+    "email_change": {
+      "error": {
+        "generic": "Error al alterar correo del usuario."
+      },
+      "success": "Correo alterado con suceso."
+    },
+    "error": {
+      "cant_save": "Erro ao salvar token.",
+      "invalid": "Token inválido."
+    },
+    "load": {
+      "error": {
+        "expired": "Token expirado.",
+        "not_found": "Token no encuentrado."
+      }
+    },
+    "migration": {
+      "error": {
+        "generic": "Hubo un error en la migración."
+      },
+      "success": "Conta migrada con suceso."
+    },
+    "new_password": {
+      "error": {
+        "generic": "Erro alterando senha."
+      },
+      "success": "Contraseña cambiada con suceso."
+    }
+  },
+  "user": {
+    "create": {
+      "error": {
+        "email": {
+          "invalid": "Dirección de correo inválido.",
+          "missing": "Debes indicar una dirección de correo."
+        },
+        "missing_name": "Debes indicar un nombre.",
+        "password": {
+          "length": "La contraseña debe contenter un mínimo de 6 caracteres.",
+          "missing": "Debes indicar una contraseña."
+        }
+      },
+      "success": {
+        "with_token": "Perfil de usuario creado con suceso. Un correo de activación fue enviado.",
+        "without_token": "Perfil de usuario creado con suceso."
+      }
+    },
+    "load": {
+      "error": "Error al cargar usuario con el id "
+    },
+    "migrate": {
+      "form": {
+        "errors": {
+          "email": {
+            "missing": "Debes indicar una dirección de correo."
+          },
+          "password": {
+            "length": "La contraseña debe contenter un mínimo de 6 caracteres.",
+            "missing": "Dever indicar una contraseña."
+          },
+          "user": {
+            "not_found": "Usuario no encuentrado."
+          }
+        },
+        "success": "Un correo de activación fue enviado a tu correo."
+      }
+    },
+    "reset_pwd": {
+      "form": {
+        "error": {
+          "user": {
+            "not_found": "Usuario no encuentrado."
+          }
+        },
+        "title": "Recuperar contraseña"
+      },
+      "mail": {
+        "title": "Recuperar contraseña"
+      },
+      "token": {
+        "success": "Token de cambio de contraseña enviado."
+      }
+    },
+    "update": {
+      "email": {
+        "error": {
+          "already_associated": "Este correo ya es associado a otro perfil.",
+          "already_used": "Este correo ya es utilizado.",
+          "invalid": "Dirección de correo inválido.",
+          "mailer": "Error al enviar confirmación de correo.",
+          "missing_callback": "Función de callback no encuentrada."
+        },
+        "success": "Confirmación de dirección de correo enviada."
+      },
+      "password": {
+        "error": {
+          "dont_match": "Contraseñas no coinciden.",
+          "length": "La contraseña debe contenter un mínimo de 6 caracteres.",
+          "wrong": "Contraseña incorrecta."
+        },
+        "success": "Contraseña cambiada con suceso."
+      },
+      "success": "Perfil actualizado con suceso."
+    }
+  },
+  "views": {
+    "admin": {
+      "first_admin": {
+        "administrative_area": "Area administrativa",
+        "create_admin": "Crear usuario admin",
+        "create_first_admin_user": "Crear el primero usuario administrador:",
+        "email": "Correo",
+        "name": "Nombre",
+        "password": "Contraseña"
+      },
+      "login": {
+        "administrative_area": "Area administrativa",
+        "email": "Correo",
+        "login": "Entrar",
+        "password": "Contraseña"
+      },
+      "menu": {
+        "general": "General",
+        "mailer": "Envio de correo",
+        "manage_users": "Gerenciar usuarios",
+        "settings": "Configuraciones",
+        "users": {
+          "invite": "Inviaciones",
+          "roles": "Permissiones"
+        }
+      },
+      "settings": {
+        "index": {
+          "allow_geofiles_import": "Permitir importacion de archivos geo",
+          "brazilian_portuguese": "Portugués Brasileño",
+          "client_url": "URL del cliente",
+          "english": "Inglés",
+          "general_settings": "Configuraciones generales",
+          "only_invited_can_register": "Solamente invitados puedem registrarse",
+          "server_url": "URL del servidor",
+          "site_description": "Descripción del sitio",
+          "site_language": "Idioma del sitio",
+          "site_title": "Título del sitio",
+          "spanish": "Español",
+          "update": "Actualizar"
+        },
+        "mailer": {
+          "from_address": "Dirección del remetente",
+          "mailer_settings": "Configuraciones de envio de correo",
+          "password": "Contraseña del SMTP",
+          "smtp_host": "Host del SMTP",
+          "smtp_port": "Porta del SMTP",
+          "smtp_user": "Usuario del SMTP",
+          "update": "Actualizar",
+          "use_ssl": "Usar SSL"
+        }
+      },
+      "users": {
+        "new": {
+          "admin": "Administrador",
+          "colaborator": "Colaborador",
+          "editor": "Editor",
+          "email": "Correo",
+          "invite_a_user": "Convidar un usuario:",
+          "name": "Nombre",
+          "role": "Perfil",
+          "send_invitation": "Enviar invitación"
+        },
+        "roles": {
+          "admin": "Administrador",
+          "change": "Alterar",
+          "collaborator": "Colaborador",
+          "editor": "Editor",
+          "email": "Correo",
+          "manage_user_roles": "Gerenciar perfiles de usuario",
+          "name": "Nombre",
+          "role": "Perfil",
+          "there_are_no_users": "No hay usuarios."
+        }
+      }
+    },
+    "includes": {
+      "header": {
+        "admin_area_link": "Ir para la area adminstrativa",
+        "login": "Entrar",
+        "logout": "Salir"
+      }
+    },
+    "layouts": {
+      "admin_area": {
+        "administration": "Administración"
+      }
+    },
+    "mailer": {
+      "contributions": {
+        "new_contributor": {
+          "bye": "Hasta luego!",
+          "intro": "Fuíste invitado por __creator__ a contribuir el la capa __layer.",
+          "salute": "Hola, __username__,",
+          "visit_dashboard": "Visite su painel de control para visualizar sus capas."
+        }
+      },
+      "email": {
+        "change": {
+          "subject": "Confirmación de cambio de dirección de correo",
+          "bye": "Hasta luego!",
+          "intro": "Has solicitado cambio de dirección de correo.",
+          "salute": "Hola, __username__,",
+          "link": "Confirmar el cambio."
+        },
+        "confirm": {
+          "bye": "Hasta luego!",
+          "link": "Confirmar el cambio.",
+          "salute": "Hola, __username__,"
+        }
+      },
+      "password": {
+        "recover": {
+          "ignore": "Si no has solicitado, ignore este correo.",
+          "intro": "Has solicitado cambio de contraseña.",
+          "link": "Segui para el cambio de contraseña.",
+          "salute": "Hola, __username__,",
+          "thanks": "Hasta luego!"
+        },
+        "set": {
+          "intro": "Necesitas una contraseña para aceder la plataforma.",
+          "salute": "Hola, __username__,",
+          "thanks": "Hasta luego!",
+          "token": "Seguir para el cadastro de contraseña."
+        }
+      },
+      "user": {
+        "account": {
+          "migrate": {
+            "bye": "Hasta luego!",
+            "link": "Ir para la migración.",
+            "salute": "Hola, __username__,"
+          }
+        },
+        "invite": {
+          "intro": "Has sido invitado a mapear.",
+          "link": "Siga el enlace para empiezar.",
+          "salute": "Hola, __username__,",
+          "thanks": "Gracias!"
+        }
+      }
+    },
+    "tokens": {
+      "accept_invitation": {
+        "confirm_signup": "Confirmar registro",
+        "define_password": "Definir contraseña",
+        "send": "Enviar",
+        "type_a_password": "Debes indicar una contraseña"
+      }
+    }
+  },
+  "Path `title` is required": "La capa debe tener un titulo."
+}

@@ -7,22 +7,22 @@ html
 		
 		section#login
 			.login-content
-				h1=t('Administrative area')
+				h1=t('views.admin.login.administrative_area')
 				include ../includes/messages
-				.login-form		
+				.login-form
 					form.form-horizontal(action="/admin/session", method="post", role="form")
 						input(type='hidden', name='_csrf', value="#{csrf_token}")
 
 						p.col-sm-offset-2.error= message
 
 						.form-group
-							label.col-sm-2.control-label(for="email")=t('E-mail')
+							label.col-sm-2.control-label(for="email")=t('views.admin.login.email')
 							.col-sm-10
-								input#email.form-control(type="email", placeholder=t('Email'), name="email")
+								input#email.form-control(type="email", placeholder=t('views.admin.login.email'), name="email")
 
 						.form-group
-							label.col-sm-2.control-label(for="password")=t('Password')
+							label.col-sm-2.control-label(for="password")=t('views.admin.login.password')
 							.col-sm-10
-								input#password.form-control(type="password", placeholder=t('"Password"'), name="password")
+								input#password.form-control(type="password", placeholder=t('views.admin.login.password'), name="password")
 
-						input.btn.btn-primary(type='submit' value=t("Log in"))
+						input.btn.btn-primary(type='submit' value=t("views.admin.login.login"))

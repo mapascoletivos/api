@@ -1,12 +1,10 @@
-p Olá, #{locals.user.name}
+p=locals.t('views.mailer.password.recover.salute', { username: locals.contributor.name})
 
-p Foi feita uma solicitação de recuperação de senha para o seu usuário (#{locals.user.email}).
+p=locals.t('views.mailer.password.recover.intro')
 
 p 
-	a(href='#{settings.general.serverUrl}/new_password/#{locals.token._id}') Clique aqui se você quiser alterar sua senha agora.
+	a(href='#{settings.general.serverUrl}/new_password/#{locals.token._id}')=locals.t('views.mailer.password.recover.link', {defaultValue: 'Change password now.')
 
-p
-	Se você não fez esta solicitação, ignore este e-mail. 
+p=locals.t('views.mailer.password.recover.ignore')
 
-p
-	| Obrigado!
+p=locals.t('views.mailer.password.recover.thanks')

@@ -1,16 +1,16 @@
 ul
 	li
-		a(href="/admin/settings")=t('Settings')
+		a(href="/admin/settings")=t('views.admin.menu.settings')
 		ul
 			li
-				a(href="/admin/settings")=t('General')
+				a(href="/admin/settings")=t('views.admin.menu.general')
 			li
-				a(href="/admin/settings/mail")=t('Mailer')
+				a(href="/admin/settings/mail")=t('views.admin.menu.mailer')
 
 	li
-		a(href="/admin/users")=t('Users')
+		a(href="/admin/users")=t('views.admin.menu.manage_users')
 		ul
 			li
-				a(href="/admin/users/invite")=t('Invite new')
+				a(href="/admin/users/invite")=t('views.admin.menu.users.invite')
 			li
-				a(href="/admin/users/roles")=t('Manage roles')
+				a(href="/admin/users/roles")=t('views.admin.menu.users.roles')
