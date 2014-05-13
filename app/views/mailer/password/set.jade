@@ -1,9 +1,9 @@
-p=locals.t('views.mailer.password.set.salute', {defaultValue: 'Hi, __username__,', username: locals.user.name})
+p=locals.t('views.mailer.password.set.salute', {username: locals.user.name})
 
-p=locals.t('views.mailer.password.set.intro', {defaultValue: 'You need a password to access the mapping platform with your email'})
+p=locals.t('views.mailer.password.set.intro')
 
 p 
-	a(href='#{settings.general.serverUrl}/new_password/#{locals.token._id}')=locals.t('views.mailer.password.set.token', {defaultValue: 'Click here to continue'})
+	a(href='#{settings.general.serverUrl}/new_password/#{locals.token._id}')=locals.t('views.mailer.password.set.token')
 
 
 p=locals.t('views.mailer.password.set.thanks', {defaultValue: 'Thank you!'})

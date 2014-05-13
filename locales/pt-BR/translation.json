@@ -334,10 +334,10 @@
     "mailer": {
       "contributions": {
         "new_contributor": {
-          "bye": "",
-          "intro": "",
-          "salute": "",
-          "visit_dashboard": ""
+          "bye": "Bom mapeamento!",
+          "intro": "Você foi convidado por __creator__ a contribuir na camada __layer.",
+          "salute": "Olá, __username__,",
+          "visit_dashboard": "Visite seu painel de controle para visualizar suas camadas."
         }
       },
       "email": {
@@ -349,32 +349,32 @@
           "link": "Clique para proceder com a alteração"
         },
         "confirm": {
-          "bye": "",
-          "link": "",
-          "salute": ""
+          "bye": "Bom mapeamento!",
+          "link": "Prosseguir com a confirmação de e-mail.",
+          "salute": "Olá, __username__,"
         }
       },
       "password": {
         "recover": {
-          "ignore": "",
-          "intro": "",
-          "link": "",
-          "salute": "",
-          "thanks": ""
+          "ignore": "Se você não fez esta solicitação, ignore este e-mail.",
+          "intro": "Você solicitou alteração de senha.",
+          "link": "Prosseguir com alteração de senha.",
+          "salute": "Olá, __username__,",
+          "thanks": "Bom mapeamento!"
         },
         "set": {
-          "intro": "",
-          "salute": "",
-          "thanks": "",
-          "token": ""
+          "intro": "Você precisa de uma senha para acessar a plataforma.",
+          "salute": "Olá, __username__,",
+          "thanks": "Bom mapeamento!",
+          "token": "Clique para continuar."
         }
       },
       "user": {
         "account": {
           "migrate": {
-            "bye": "",
-            "link": "",
-            "salute": ""
+            "bye": "Bom mapeamento!",
+            "link": "Ir para migração.",
+            "salute": "Olá, __username__,"
           }
         },
         "invite": {
