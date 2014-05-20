@@ -23,14 +23,17 @@ var SettingsSchema = new Schema({
 		allowImports: {type: Boolean, default: true}
 	},
 	mailer: {
-		transportMethod: {type: String, default: 'SMTP'},
-		host: { type: String, default: '' },
-		secureConnection: {type: Boolean, default: true}, // use SSL
-		port: {type: Number, default: 465}, // port for secure SMTP
+		provider: {type: String, enum: ['smtp', 'postmark'], default: 'smtp'},
 		from: { type: String, default: '' },
-		auth: {
+		smtp: {
+			host: { type: String },
+			secureConnection: {type: Boolean, default: true}, // use SSL
+			port: {type: Number, default: 465}, // port for secure SMTP
 			user: { type: String, default: '' },
 			pass: { type: String, default: '' }
+		},
+		postmark: {
+			apikey: { type: String, default: '' }
 		}
 	}
 });

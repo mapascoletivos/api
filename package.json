@@ -40,7 +40,6 @@
 		"mongoose-validate": "latest",
 		"crypto": "latest",
 		"validator": "latest",
-		"nodemailer": "latest",
 		"passport": "latest",
 		"passport-local": "latest",
 		"passport-http-bearer": "latest",

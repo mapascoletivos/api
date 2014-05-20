@@ -287,12 +287,14 @@
         "mailer": {
           "from_address": "Endereço do remetente",
           "mailer_settings": "Configurações de envio de e-mail",
-          "password": "Senha do SMTP",
-          "smtp_host": "Host do SMTP",
-          "smtp_port": "Porta do SMTP",
-          "smtp_user": "Usuário do SMTP",
-          "update": "Atualizar",
-          "use_ssl": "Usar SSL"
+          "smtp": {
+            "host": "Host",
+            "port": "Porta",
+            "user": "Usuário",
+            "password": "Senha",
+            "use_ssl": "Usar SSL"
+          },
+          "update": "Atualizar"
         }
       },
       "users": {
