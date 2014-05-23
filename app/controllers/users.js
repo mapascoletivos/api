@@ -73,16 +73,17 @@ exports.create = function (req, res) {
 			if (!user.needsEmailConfirmation) {			
 				return res.json(messages.success(req.i18n.t('user.create.success.without_token')))
 			} else {
-				mailer.confirmEmail({
-					mailSender: req.app.mailer, 
-					user: user,
-					callbackUrl: req.body.callback_url
+
+				// Send e-mail confirmation
+				req.app.locals.mailer.send({
+					type: 'email_confirmation',
+					user: user
 				}, function(err){
 					if (err) 
 						return res.json(messages.mongooseErrors(req.i18n.t, err));
 					else 
 						return res.json(messages.success(req.i18n.t('user.create.success.with_token')));
-				})
+				});
 			}
 		})		
 	}

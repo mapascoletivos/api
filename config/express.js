@@ -4,7 +4,7 @@
 
 var _ = require('underscore');
 var express = require('express');
-var mailer = require('express-mailer');
+
 var mongoStore = require('connect-mongo')(express);
 var helpers = require('view-helpers');
 var lessMiddleware = require('less-middleware');
@@ -14,7 +14,7 @@ var env = process.env.NODE_ENV || 'development';
 var mongoose = require('mongoose');
 var Settings = mongoose.model('Settings');
 var i18n = require('i18next');
-
+var Mailer = require('../lib/mailer');
 
 /*!
  * Expose
@@ -135,8 +135,11 @@ module.exports = function (app, config, passport) {
 				delete settings._id;
 				app.locals({settings: _.extend(app.locals.settings, settings)});
 
-				// Configure mailer (it needs app settings loaded first)
-				mailer.extend(app, settings.mailer);					
+				app.locals.mailer = new Mailer(settings.mailer);
+
+
+				// Configure mailer (it needs app settings  loaded first)
+				// mailer.extend(app, settings.mailer);					
 
 			}
 		})
