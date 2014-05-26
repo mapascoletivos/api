@@ -10,7 +10,8 @@ var
 	validator = require('validator'),
 	mailer = require('../../lib/mailer'),
 	Settings = mongoose.model('Settings'),
-	User = mongoose.model('User');
+	User = mongoose.model('User'),
+	Mailer = require('../../lib/mailer');
 
 /**
  * Form to signup the first admin user
@@ -209,11 +210,11 @@ exports.mail = function(req, res) {
 		if (err) res.render('500');
 		else {
 
-			console.log(req.body.mailer);
-
 			settings.mailing = _.extend(settings.mailer, req.body.mailer);
 			settings.mailing.smtp.secureConnection = req.body.mailer.smtp.secureConnection ? true : false;
 			
+			console.log(settings.mailing);
+
 			settings.save(function(err){
 				if (err) res.render('500');
 				else {
@@ -222,10 +223,10 @@ exports.mail = function(req, res) {
 					req.app.locals({settings: _.extend(req.app.locals.settings, settings)});
 					
 					// Reconfigure mailer with new settings
-					req.app.mailer.update(req.app.locals.settings.mailer, function(err){
-						if (err) res.render('500');
-						else res.render('admin/settings/mailer');
-					});
+					req.app.locals.mailer = new Mailer(settings.mailing);
+
+					res.render('admin/settings/mailer');
+
 				}
 			})
 			
@@ -250,7 +251,6 @@ exports.invite = function(req, res, next) {
 				
 				var 
 					options = {
-						mailSender: req.app.mailer,
 						user: {
 							name: req.body.user.name, 
 							email: req.body.user.email, 
@@ -260,7 +260,7 @@ exports.invite = function(req, res, next) {
 						t: req.i18n.t
 				}
 					
-				mailer.invite(options, function(err) {
+				req.app.locals.mailer.sendEmail(options, function(err) {
 					if (err) {
 						console.log(err);
 						next(err);
