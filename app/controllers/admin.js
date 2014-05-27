@@ -223,7 +223,7 @@ exports.mail = function(req, res) {
 					req.app.locals({settings: _.extend(req.app.locals.settings, settings)});
 					
 					// Reconfigure mailer with new settings
-					req.app.locals.mailer = new Mailer(settings.mailing);
+					req.app.locals.mailer = new Mailer(settings);
 
 					res.render('admin/settings/mailer');
 
@@ -251,6 +251,8 @@ exports.invite = function(req, res, next) {
 				
 				var 
 					options = {
+						type: 'invite_contributor',
+						to: req.body.user.email,
 						user: {
 							name: req.body.user.name, 
 							email: req.body.user.email, 
@@ -260,7 +262,7 @@ exports.invite = function(req, res, next) {
 						t: req.i18n.t
 				}
 					
-				req.app.locals.mailer.sendEmail(options, function(err) {
+				req.app.locals.mailer.sendEmail(options, req.i18n, function(err) {
 					if (err) {
 						console.log(err);
 						next(err);
@@ -287,7 +289,6 @@ exports.changeRole = function(req, res, next) {
 		if (err || !user) res.render('500');
 		else {
 			user.role = req.body.role;
-			console.log(user);
 			user.save(function(err){
 				if (err) {
 					console.log(err);

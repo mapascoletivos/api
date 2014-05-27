@@ -130,16 +130,15 @@ module.exports = function (app, config, passport) {
 		// Load settings from DB
 		Settings.load(function(err, settings){
 			if (!err) {
+				
 				settings = settings.toObject();
 				delete settings.__v;
 				delete settings._id;
+
+				// make global
 				app.locals({settings: _.extend(app.locals.settings, settings)});
 
-				app.locals.mailer = new Mailer(settings.mailer);
-
-
-				// Configure mailer (it needs app settings  loaded first)
-				// mailer.extend(app, settings.mailer);					
+				app.locals.mailer = new Mailer(settings);
 
 			}
 		})

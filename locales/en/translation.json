@@ -390,11 +390,14 @@
                 },
                 "invite": {
                     "subject": "Mapping invitation",
-                    "intro": "You were invited to mapa.",
+                    "intro": "You were invited to map.",
                     "link": "Follow this link to proceed.",
                     "salute": "Hi, __username__,",
                     "thanks": "Thanks!"
                 }
+            },
+            "subjects": {
+                "invite_contributor": "A invitation to map"
             }
         },
         "tokens": {

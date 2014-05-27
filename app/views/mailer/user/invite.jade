@@ -1,8 +1,8 @@
-p=locals.t('views.mailer.user.invite.salute', {defaultValue: 'Hi, __username__,', username: locals.token.data.user.name})
+p=locals.i18n.t('views.mailer.user.invite.salute', {defaultValue: 'Hi, __username__,', username: locals.user.name})
 
-p=locals.t('views.mailer.user.invite.intro', {defaultValue: 'You were invited to map.'})
+p=locals.i18n.t('views.mailer.user.invite.intro', {defaultValue: 'You were invited to map.'})
 
 p 
-	a(href='#{settings.general.serverUrl}/accept_invitation/#{locals.token._id}')=locals.t('views.mailer.user.invite.link', {defaultValue: 'Click here to start.'})
+	a(href='#{locals.serverUrl}/accept_invitation/#{locals.token._id}')=locals.i18n.t('views.mailer.user.invite.link', {defaultValue: 'Click here to start.'})
 
-p=locals.t('views.mailer.user.invite.thanks', {defaultValue: 'Thank you!'})
+p=locals.i18n.t('views.mailer.user.invite.thanks', {defaultValue: 'Thank you!'})
