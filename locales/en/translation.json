@@ -33,7 +33,11 @@
             "successful": "Logout successful."
         }
     },
-    "admin": "admin",
+    "admin": {
+        "invite_user": {
+            "success": "User invited successfully."
+        }
+    },
     "content": {
         "destroy": {
             "success": "Content removed successfully."
