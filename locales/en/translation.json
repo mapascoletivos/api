@@ -351,7 +351,7 @@
             "contributions": {
                 "new_contributor": {
                     "bye": "Bye!",
-                    "intro": "User __creator__ invited you to contribute do layer __layer.",
+                    "intro": "User __creator__ invited you to contribute do layer __layer__.",
                     "salute": "Hi, __username__,",
                     "visit_dashboard": "Visit dashboard to view your layers."
                 }
@@ -404,7 +404,8 @@
             "subjects": {
                 "invite_contributor": "A invitation to map",
                 "password_reset": "Reset password",
-                "email_change": "E-mail address change"
+                "email_change": "E-mail address change",
+                "inform_contributor_permission": "Permission to modify layer"
             }
         },
         "tokens": {

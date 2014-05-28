@@ -270,16 +270,29 @@ exports.addContributor = function (req, res) {
 							.findById(layer._id)
 							.populate('contributors', 'name username email')
 							.exec(function(err, updatedLayer){
-								mailer.informContributorPermission({
-									mailSender: req.app.mailer,
-									t: req.i18n.t,
-									layer: layer, 
+
+								var data = {
+									layer: updatedLayer, 
 									creator: req.user, 
 									contributor: user
-								}, function(err){
+								}
+									
+								req.app.locals.mailer.sendEmail('inform_contributor_permission', user.email, data, req.i18n, function(err) {
+									console.log(err);
 									if (err) res.json(400, messages.error(req.i18n.t("layer.contributor.add.error.email")))
 									else res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.add.success')).messages});
 								});
+
+								// mailer.informContributorPermission({
+								// 	mailSender: req.app.mailer,
+								// 	t: req.i18n.t,
+								// 	layer: layer, 
+								// 	creator: req.user, 
+								// 	contributor: user
+								// }, function(err){
+								// 	if (err) res.json(400, messages.error(req.i18n.t("layer.contributor.add.error.email")))
+								// 	else res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.add.success')).messages});
+								// });
 						});
 				});
 			}

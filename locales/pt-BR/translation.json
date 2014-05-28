@@ -34,9 +34,12 @@
     }
   },
   "admin": {
-      "first_admin": {
-          "success": "Administrador criado com sucesso."
-      }
+    "invite_user": {
+      "success": "Usuário convidado com sucesso."
+    },
+    "first_admin": {
+      "success": "Administrador criado com sucesso."
+    }
   },
   "content": {
     "destroy": {
@@ -341,7 +344,7 @@
       "contributions": {
         "new_contributor": {
           "bye": "Bom mapeamento!",
-          "intro": "Você foi convidado por __creator__ a contribuir na camada __layer.",
+          "intro": "Você foi convidado por __creator__ a contribuir na camada __layer__.",
           "salute": "Olá, __username__,",
           "visit_dashboard": "Visite seu painel de controle para visualizar suas camadas."
         }
@@ -394,7 +397,8 @@
       "subjects": {
           "invite_contributor": "Convite para mapear",
           "password_reset": "Redefinir senha",
-          "email_change": "Mudança de endereço de e-mail"
+          "email_change": "Mudança de endereço de e-mail",
+          "inform_contributor_permission": "Permissão para modificar camada"
       }
     },
     "tokens": {
