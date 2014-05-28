@@ -249,20 +249,16 @@ exports.invite = function(req, res, next) {
 				res.render('admin/users/new', {message: req.i18n.t('admin.invite_user.error.already_active')});
 			} else {
 				
-				var 
-					options = {
-						type: 'invite_contributor',
-						to: req.body.user.email,
+				var data = {
 						user: {
 							name: req.body.user.name, 
 							email: req.body.user.email, 
 							role: req.body.user.role
 						},
-						callbackUrl: req.app.locals.settings.general.clientUrl + '/login',
-						t: req.i18n.t
+						callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
 				}
 					
-				req.app.locals.mailer.sendEmail(options, req.i18n, function(err) {
+				req.app.locals.mailer.sendEmail('invite_contributor', req.body.user.email, data, req.i18n, function(err) {
 					if (err) {
 						console.log(err);
 						next(err);

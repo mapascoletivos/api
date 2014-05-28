@@ -1,10 +1,10 @@
-p=locals.t('views.mailer.password.recover.salute', { username: locals.contributor.name})
+p=locals.i18n.t('views.mailer.password.recover.salute', { username: locals.user.name})
 
-p=locals.t('views.mailer.password.recover.intro')
+p=locals.i18n.t('views.mailer.password.recover.intro')
 
 p 
-	a(href='#{settings.general.serverUrl}/new_password/#{locals.token._id}')=locals.t('views.mailer.password.recover.link', {defaultValue: 'Change password now.')
+	a(href='#{locals.serverUrl}/new_password/#{locals.token._id}')=locals.i18n.t('views.mailer.password.recover.link')
 
-p=locals.t('views.mailer.password.recover.ignore')
+p=locals.i18n.t('views.mailer.password.recover.ignore')
 
-p=locals.t('views.mailer.password.recover.thanks')
+p=locals.i18n.t('views.mailer.password.recover.thanks')

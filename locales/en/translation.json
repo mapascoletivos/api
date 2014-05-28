@@ -218,7 +218,8 @@
                 "title": "Recover password"
             },
             "token": {
-                "success": "Password change token sent successfully."
+                "success": "Password change token sent successfully.",
+                "error": "user.reset_pwd.token.error"
             }
         },
         "update": {
@@ -397,7 +398,9 @@
                 }
             },
             "subjects": {
-                "invite_contributor": "A invitation to map"
+                "invite_contributor": "A invitation to map",
+                "password_reset": "Reset password",
+                "email_change": "E-mail address change"
             }
         },
         "tokens": {
@@ -408,5 +411,6 @@
                 "type_a_password": "Type a password"
             }
         }
-    }
+    },
+    "User not registered": {}
 }

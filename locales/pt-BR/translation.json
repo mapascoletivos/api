@@ -33,7 +33,11 @@
       "successful": "Logout bem sucedido."
     }
   },
-  "admin": "admin",
+  "admin": {
+      "first_admin": {
+          "success": "Administrador criado com sucesso."
+      }
+  },
   "content": {
     "destroy": {
       "success": "Conteúdo removido com sucesso."
@@ -386,6 +390,11 @@
           "salute": "Olá, __username__,",
           "thanks": "Obrigado!"
         }
+      },
+      "subjects": {
+          "invite_contributor": "Convite para mapear",
+          "password_reset": "Redefinir senha",
+          "email_change": "Mudança de endereço de e-mail"
       }
     },
     "tokens": {

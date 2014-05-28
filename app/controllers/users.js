@@ -134,20 +134,20 @@ exports.update = function (req, res) {
 				if (!req.body.callback_url){
 					return res.json(400, messages.error(req.i18n.t('user.update.email.error.missing_callback')));			
 				} else if (!anotherUser) {
-					// console.log(req.locale);
-					mailer.changeEmail({
-						mailSender: req.app.mailer,
+
+					var data = {
 						user: user, 
 						newEmail: req.body.email, 
-						callbackUrl: req.body.callback_url, 
-						t: req.i18n.t
-					}, function(err){
-						if (err) {
+						callbackUrl: req.body.callback_url
+					}
+					
+					req.app.locals.mailer.sendEmail('email_change', req.body.email, data, req.i18n, function(err) {
+						if (err) 
 							return res.json(400, messages.error(req.i18n.t('user.update.email.error.mailer')));
-						} else {
+						else 
 							return res.json(messages.success(req.i18n.t('user.update.email.success')));
-						}
 					});
+
 				} else {
 					return res.json(400, messages.error(req.i18n.t('user.update.email.error.already_used')));			
 				}
@@ -255,16 +255,22 @@ exports.resetPasswordToken = function (req, res) {
 			});
 		else {
 			if (user) {
-				mailer.passwordReset({
-					mailSender: req.app.mailer,
+
+				// will send e-mail
+
+				var data = {
 					user: user,
-					callbackUrl: req.body.callback_url
-				}, function(err){
+					callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
+				}
+					
+				req.app.locals.mailer.sendEmail('password_reset', user.email, data, req.i18n, function(err) {
 					if (err) 
-						return res.json(messages.errors(err));
+						return res.json(messages.error(req.i18n.t('user.reset_pwd.token.error')));
 					else 
 						return res.json(messages.success(req.i18n.t('user.reset_pwd.token.success')));
 				});
+
+				
 			} else {
 				req.flash('error', req.i18n.t('user.reset_pwd.form.error.user.not_found'));
 				res.render('users/forgot_password', {
