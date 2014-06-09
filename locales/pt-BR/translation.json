@@ -19,7 +19,7 @@
     "local": {
       "error": {
         "need_password": "Você precisa de uma senha para acessar seu perfil. Verifique seu e-mail.",
-        "needs_activation": "Perfil de usuário inativo, um e-mail de ativação foi enviado.",
+        "needs_activation": "Você precisa confirmar seu endereço de e-mail, um novo link de confirmação foi enviado.",
         "send_email": "Houve um erro enviando um token de senha para seu e-mail."
       },
       "needs_migration": "Sua conta não foi migrada ainda, por favor visite esta <a href='/migrate' target='_self'>página</a>.",
@@ -359,8 +359,8 @@
         },
         "confirm": {
           "bye": "Bom mapeamento!",
-          "intro": "Um cadastro foi realizado com o seu e-mail. Clique abaixo para continuar.",
-          "link": "Confirmar endereço de e-mail.",
+          "intro": "Precisamos saber se o seu endereço de e-mail é correto.",
+          "link": "Clique para confirmar.",
           "salute": "Olá, __username__,"
         }
       },
@@ -399,7 +399,8 @@
           "invite_contributor": "Convite para mapear",
           "password_reset": "Redefinir senha",
           "email_change": "Mudança de endereço de e-mail",
-          "inform_contributor_permission": "Permissão para modificar camada"
+          "inform_contributor_permission": "Permissão para modificar camada",
+          "confirm_email": "Confirme seu e-mail"
       }
     },
     "tokens": {

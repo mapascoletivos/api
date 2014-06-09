@@ -212,6 +212,7 @@ exports.mail = function(req, res) {
 
 			settings.mailing = _.extend(settings.mailer, req.body.mailer);
 			settings.mailing.smtp.secureConnection = req.body.mailer.smtp.secureConnection ? true : false;
+			settings.mailing.enforceEmailConfirmation = req.body.mailer.enforceEmailConfirmation ? true : false;
 			
 			settings.save(function(err){
 				if (err) res.render('500');

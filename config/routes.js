@@ -49,7 +49,7 @@ module.exports = function (app, passport) {
 	 **/
 	
 	// activate account
-	app.get('/activate_account/:tokenId', token.activateAccount);
+	app.get('/confirm_email/:tokenId', token.confirmEmail);
 
 	// accept invitation
 	app.get('/accept_invitation/:tokenId', token.acceptInvitationForm);

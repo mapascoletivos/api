@@ -20,7 +20,8 @@
             "error": {
                 "need_password": "Your need a password to acccess your profile. Check your e-mail to continue.",
                 "needs_activation": "Profile not active, an activation email was sent.",
-                "send_email": "There was an error while sending a password token to your e-mail."
+                "send_email": "There was an error while sending a password token to your e-mail.",
+                "needs_email_confirmation": "You need to confirm your e-mail address. A link was sent to your e-mail."
             },
             "needs_migration": "Your account wasn't migrated yet, please visit this <a href='/migrate' target='_self'>page</a>.",
             "unauthorized": "Unauthorized."
@@ -134,13 +135,13 @@
             },
             "success": "Profile activated successfully."
         },
-        "activate_account": {
+        "confirm_email": {
             "error": {
                 "invalid": "Invalid token.",
                 "saving": "Error while saving token.",
                 "user": "Can't activate this user."
             },
-            "success": "Profile activated successfully, please wait redirection."
+            "success": "E-mail confirmed successfully, please wait redirection."
         },
         "email_change": {
             "error": {
@@ -150,7 +151,8 @@
         },
         "error": {
             "cant_save": "Can't save token.",
-            "invalid": "Invalid token."
+            "invalid": "Invalid token.",
+            "invalid_type": "token.error.invalid_type"
         },
         "load": {
             "error": {
@@ -294,7 +296,9 @@
                     "site_language": "Idioma padrão",
                     "site_title": "Site Title",
                     "spanish": "Spanish",
-                    "update": "Update"
+                    "update": "Update",
+                    "facebookApiKey": "Facebook API Key",
+                    "googleApiKey": "Google API Key"
                 },
                 "mailer": {
                     "from_address": "Sender e-mail address",
@@ -304,7 +308,8 @@
                     "smtp_port": "SMTP Port",
                     "smtp_user": "SMTP User",
                     "update": "Update",
-                    "use_ssl": "Use SSL"
+                    "use_ssl": "Use SSL",
+                    "enforceEmailConfirmation": "Enforce user e-mail address confirmation"
                 }
             },
             "users": {
@@ -418,7 +423,14 @@
         "errors": {
             "user": {
                 "E-mail address already in use": "E-mail address already in use."
+            },
+            "layer": {
+                "undefined": "mongoose.errors.layer.undefined"
             }
         }
-    }
+    },
+    "Invalid password": {},
+    "Digite seu nome": {},
+    "Entre com um endereço de e-mail": {},
+    "Entre com uma senha": {}
 }

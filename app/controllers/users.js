@@ -58,37 +58,37 @@ exports.create = function (req, res) {
 	else if (user.password.length < 6)
 		preValidationErrors.push(req.i18n.t('user.create.error.password.length'));
 
-	// Avoid e-mail confirmation at development environment
-	if (process.env.NODE_ENV == 'development') {
-		user.needsEmailConfirmation = false;
-	}
-
 	if (preValidationErrors.length > 0){
 		return res.json(400, { messages: messages.errorsArray(req.i18n, preValidationErrors) });
 	} else {
-		user.save(function (err) {
-			if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));		
-
-			// Don't send email if user is active
-			if (!user.needsEmailConfirmation) {			
-				return res.json(messages.success(req.i18n.t('user.create.success.without_token')))
-			} else {
-
-				var data = {
-					user: user,
-					callbackUrl: req.body.callback_url
-				}
-				
-				req.app.locals.mailer.sendEmail('email_confirmation', user.email, data, req.i18n, function(err) {
-					if (err) 
-						return res.json(400, messages.error(req.i18n.t('user.create.email.error.mailer')));
-					else 
-						return res.json(messages.success(req.i18n.t('user.create.email.success')));
-				});
 
 
+		function saveUser() {
+			user.save(function (err) {
+				if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));
+				else return res.json(messages.success(req.i18n.t('user.create.email.success')));
+			});
+		}
+
+		// Send e-mail confirmation if needed
+		if (req.app.locals.settings.mailer.enforceEmailConfirmation) {
+
+			var data = {
+				user: user,
+				callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
 			}
-		})		
+			
+			req.app.locals.mailer.sendEmail('confirm_email', user.email, data, req.i18n, function(err) {
+				if (err) 
+					return res.json(400, messages.error(req.i18n.t('user.create.email.error.mailer')));
+				else 
+					saveUser();				
+			});
+		} else {
+			saveUser();
+		}
+
+
 	}
 }
 

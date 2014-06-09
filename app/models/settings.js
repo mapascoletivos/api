@@ -20,9 +20,12 @@ var SettingsSchema = new Schema({
 		clientUrl: {type: String, default: 'http://localhost:8000'},
 		baseLayerUrl: {type: String, default: ''},
 		onlyInvitedUsers: {type: Boolean, default: false},
-		allowImports: {type: Boolean, default: true}
+		allowImports: {type: Boolean, default: true},
+		facebookApiKey: String,
+		googleApiKey: String
 	},
 	mailer: {
+		enforceEmailConfirmation: {type: Boolean, default: true}, 
 		provider: {type: String, enum: ['smtp', 'postmark'], default: 'smtp'},
 		from: { type: String, default: '' },
 		smtp: {

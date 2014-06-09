@@ -6,7 +6,6 @@ var
 	AccessToken = mongoose.model('AccessToken');
 
 module.exports = function (passport, config) {
-	// require('./initializer')
 
 	// serialize sessions
 	passport.serializeUser(function(user, done) {

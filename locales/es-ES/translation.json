@@ -130,7 +130,7 @@
       },
       "success": "Perfil activado con suceso."
     },
-    "activate_account": {
+    "confirm_email": {
       "error": {
         "invalid": "Token inválido.",
         "saving": "Erro grabando token.",

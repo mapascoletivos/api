@@ -32,7 +32,7 @@ var UserSchema = new Schema({
 	salt: { type: String, default: '' },
 	layers: [{type: Schema.ObjectId, ref: 'Layer'}],
 	authToken: { type: String, default: '' }, 
-	needsEmailConfirmation: {type: Boolean, default: true},	
+	emailConfirmed: {type: Boolean, default: false},	
 	facebook: {},
 	google: {},
 	oldId: Number // to store id used in old Mapas Coletivos

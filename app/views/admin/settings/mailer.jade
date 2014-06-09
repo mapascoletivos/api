@@ -10,6 +10,11 @@ block content
 			table.formsender
 				tr
 					td.label
+						label(for="mailer.enforceEmailConfirmation")=t('views.admin.settings.mailer.enforceEmailConfirmation')
+					td.input
+						input(type="checkbox" name="mailer[enforceEmailConfirmation]" checked=mailer.enforceEmailConfirmation)
+				tr
+					td.label
 						label(for="mailer.from")=t('views.admin.settings.mailer.from_address')
 					td.input
 						input(type="text" name="mailer[from]" value=mailer.from)
