@@ -23,8 +23,13 @@
                 "send_email": "There was an error while sending a password token to your e-mail.",
                 "needs_email_confirmation": "You need to confirm your e-mail address. A link was sent to your e-mail."
             },
-            "needs_migration": "Your account wasn't migrated yet, please visit this <a href='/migrate' target='_self'>page</a>.",
-            "unauthorized": "Unauthorized."
+            "unauthorized": "Unauthorized.",
+            "user_not_registered": "User not registered.",
+            "invalid_password": "Invalid password.",
+            "needs_migration": {
+                "error": "Can't migrate your account, please contact support.",
+                "sent": "You need a new password, please check your e-mail."
+            }
         },
         "logout": {
             "error": {
@@ -390,8 +395,9 @@
                 "account": {
                     "migrate": {
                         "bye": "Bye!",
-                        "link": "Follow this link to proceed.",
-                        "salute": "Hi, __username__,"
+                        "link": "Follow this link to migrate.",
+                        "salute": "Hi, __username__,",
+                        "intro": "Your account wasn't migrated from old Mapas Coletivos."
                     }
                 },
                 "invite": {
@@ -407,7 +413,8 @@
                 "password_reset": "Reset password",
                 "email_change": "E-mail address change",
                 "inform_contributor_permission": "Permission to modify layer",
-                "email_confirmation": "Confirm your e-mail address"
+                "email_confirmation": "Confirm your e-mail address",
+                "please_migrate": "Migrate your account"
             }
         },
         "tokens": {
@@ -428,9 +435,5 @@
                 "undefined": "mongoose.errors.layer.undefined"
             }
         }
-    },
-    "Invalid password": {},
-    "Digite seu nome": {},
-    "Entre com um endereço de e-mail": {},
-    "Entre com uma senha": {}
+    }
 }

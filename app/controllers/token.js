@@ -200,6 +200,10 @@ exports.newPassword = function(req, res){
 			
 			user.password = req.body.password;
 
+			// if user is from old Mapas Coletivos, reset flags
+			user.emailConfirmed = true;
+			user.status = 'active';
+
 			user.save(function(err){
 				if (err)
 					return res.render('tokens/index', {errors: [req.i18n.t('token.new_password.error.generic')]});
@@ -210,41 +214,6 @@ exports.newPassword = function(req, res){
 						autoRedirect: true
 					});
 				}
-			});
-		})
-		
-	}
-}
-
-/**
- * Migrate account
- */
-
-exports.migrateAccount = function(req, res){
-	var
-		token = req.token;
-	
-	// invalid route for token
-	if (token.type != 'migrate_account') {
-		return res.render('tokens/index', {errors: [req.i18n.t('token.error.invalid')]});
-	} else {
-		mongoose.model('User').findById(token.user, function(err, user){
-			if (err) {
-				return res.render('tokens/index', {errors: [req.i18n.t('token.migration.error.generic')]});
-			}
-			
-			user.password = token.data.password;
-			user.status = 'active';
-			user.needsEmailConfirmation = false;
-
-			user.save(function(err){
-				if (err)
-				return res.render('tokens/index', {errors: [req.i18n.t('token.migration.error.generic')]});
-				else {
-					req.flash('info', req.i18n.t('token.migration.success'))
-				}
-
-				return res.redirect('/login');
 			});
 		})
 		

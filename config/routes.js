@@ -32,8 +32,6 @@ module.exports = function (app, passport) {
 	/** 
 	 * Users routes 
 	 **/
-	app.get('/migrate', users.showMigrate);
-	app.post('/migrate', users.migrate);
 	app.post(apiPrefix + '/forgot_password', users.resetPasswordToken);	
 	
 	app.post(apiPrefix + '/users', auth.usersCanSignup, users.create);
@@ -59,9 +57,6 @@ module.exports = function (app, passport) {
 	app.get('/new_password/:tokenId', token.newPasswordForm);
 	app.post('/password_reset/:tokenId', token.newPassword);
 	app.post('/password_needed/:tokenId', token.newPassword);
-	
-	// migrate account
-	app.get('/migrate_account/:tokenId', token.migrateAccount);
 	
 	// change e-mail
 	app.get('/email_change/:tokenId', token.emailChange);

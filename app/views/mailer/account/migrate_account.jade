@@ -1,6 +1,0 @@
-p=locals.t('views.mailer.user.account.migrate.salute', {username: locals.user.name})
-
-p
-	a(href='#{settings.general.serverUrl}/migrate_account/#{locals.token._id}')=locals.t('views.mailer.user.account.migrate.link')
-
-p=locals.t('views.mailer.user.account.migrate.bye')

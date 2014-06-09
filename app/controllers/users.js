@@ -259,8 +259,6 @@ exports.resetPasswordToken = function (req, res) {
 		else {
 			if (user) {
 
-				// will send e-mail
-
 				var data = {
 					user: user,
 					callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
@@ -284,65 +282,3 @@ exports.resetPasswordToken = function (req, res) {
 		}
 	})
 }
-
-
-/**
- * Show migrate form
- */
-
-exports.showMigrate = function (req, res) {
-	res.render('users/migrate');
-}
-
-/**
- * Generate migration token
- */
-
-exports.migrate = function (req, res) {
-	var
-		email = req.body.email,
-		password = req.body.password,
-		errors = [];
-
-	if (!email) {
-		errors.push(req.i18n.t('user.migrate.form.errors.email.missing'));
-	}
-
-	if (!password) {
-		errors.push(req.i18n.t('user.migrate.form.errors.password.missing'));
-	}
-
-	if ((password) && (password.length < 6)) {
-		errors.push(req.i18n.t('user.migrate.form.errors.password.length'));
-	}
-
-	if (errors.length > 0) {
-		res.render('users/migrate', {
-			errors: errors,
-			email: email
-		});
-	} else {
-		User.findOne({email: email, status: 'to_migrate'}, function(err, user){
-			if (err) {
-				res.render('users/migrate', {
-					errors:  utils.errorMessagesFlash(err.errors),
-					email: email
-				});
-			} else if (!user) {
-				res.render('users/migrate', {
-					errors:  [req.i18n.t('user.migrate.form.errors.user.not_found')],
-					email: email
-				});
-			} else {
-				mailer.migrateAccount(user, password, function(err){
-					res.render('users/migrate', {
-						info:  [req.i18n.t('user.migrate.form.success')],
-						email: email
-					});
-				})
-			}
-		})
-	}
-
-}
-
