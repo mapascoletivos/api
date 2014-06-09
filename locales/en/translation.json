@@ -176,7 +176,8 @@
             "error": {
                 "email": {
                     "invalid": "Invalid e-mail address.",
-                    "missing": "Please type an e-mail address."
+                    "missing": "Please type an e-mail address.",
+                    "mailer": "Error while sending e-mail confirmation."
                 },
                 "missing_name": "Please enter your name.",
                 "password": {
@@ -187,6 +188,12 @@
             "success": {
                 "with_token": "User profile created successfully. An activation link was sent.",
                 "without_token": "User profile created successfully."
+            },
+            "email": {
+                "error": {
+                    "mailer": "An error ocurred while send e-mail address confirmation."
+                },
+                "success": "User created successfully, please check your e-mail."
             }
         },
         "load": {
@@ -297,18 +304,7 @@
                     "smtp_port": "SMTP Port",
                     "smtp_user": "SMTP User",
                     "update": "Update",
-                    "use_ssl": "Use SSL",
-                    "provider": "views.admin.settings.mailer.provider",
-                    "smtp": {
-                        "from_address": "views.admin.settings.mailer.smtp.from_address",
-                        "smtp_host": "views.admin.settings.mailer.smtp.smtp_host",
-                        "use_ssl": "views.admin.settings.mailer.smtp.use_ssl",
-                        "smtp_port": "views.admin.settings.mailer.smtp.smtp_port",
-                        "smtp_user": "views.admin.settings.mailer.smtp.smtp_user",
-                        "password": "views.admin.settings.mailer.smtp.password",
-                        "host": "views.admin.settings.mailer.smtp.host",
-                        "user": "views.admin.settings.mailer.smtp.user"
-                    }
+                    "use_ssl": "Use SSL"
                 }
             },
             "users": {
@@ -405,7 +401,8 @@
                 "invite_contributor": "A invitation to map",
                 "password_reset": "Reset password",
                 "email_change": "E-mail address change",
-                "inform_contributor_permission": "Permission to modify layer"
+                "inform_contributor_permission": "Permission to modify layer",
+                "email_confirmation": "Confirm your e-mail address"
             }
         },
         "tokens": {
@@ -417,5 +414,11 @@
             }
         }
     },
-    "User not registered": {}
+    "mongoose": {
+        "errors": {
+            "user": {
+                "E-mail address already in use": "E-mail address already in use."
+            }
+        }
+    }
 }

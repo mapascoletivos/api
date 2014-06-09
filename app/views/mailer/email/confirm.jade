@@ -1,6 +1,6 @@
 p=locals.t('views.mailer.email.confirm.salute', { username: locals.user.name})
 
 p 
-	a(href='#{settings.general.serverUrl}/activate_account/#{locals.token._id}')=p=locals.t('views.mailer.email.confirm.link')
+	a(href='#{locals.serverUrl}/activate_account/#{locals.token._id}')=p=locals.t('views.mailer.email.confirm.link')
 
 p=locals.t('views.mailer.email.confirm.bye')

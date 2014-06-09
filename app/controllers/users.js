@@ -59,9 +59,9 @@ exports.create = function (req, res) {
 		preValidationErrors.push(req.i18n.t('user.create.error.password.length'));
 
 	// Avoid e-mail confirmation at development environment
-	// if (process.env.NODE_ENV == 'development') {
-	// 	user.needsEmailConfirmation = false;
-	// }
+	if (process.env.NODE_ENV == 'development') {
+		user.needsEmailConfirmation = false;
+	}
 
 	if (preValidationErrors.length > 0){
 		return res.json(400, { messages: messages.errorsArray(req.i18n, preValidationErrors) });
@@ -74,16 +74,19 @@ exports.create = function (req, res) {
 				return res.json(messages.success(req.i18n.t('user.create.success.without_token')))
 			} else {
 
-				// Send e-mail confirmation
-				req.app.locals.mailer.send({
-					type: 'email_confirmation',
-					user: user
-				}, function(err){
+				var data = {
+					user: user,
+					callbackUrl: req.body.callback_url
+				}
+				
+				req.app.locals.mailer.sendEmail('email_confirmation', user.email, data, req.i18n, function(err) {
 					if (err) 
-						return res.json(messages.mongooseErrors(req.i18n.t, err));
+						return res.json(400, messages.error(req.i18n.t('user.create.email.error.mailer')));
 					else 
-						return res.json(messages.success(req.i18n.t('user.create.success.with_token')));
+						return res.json(messages.success(req.i18n.t('user.create.email.success')));
 				});
+
+
 			}
 		})		
 	}

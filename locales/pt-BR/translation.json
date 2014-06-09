@@ -359,7 +359,8 @@
         },
         "confirm": {
           "bye": "Bom mapeamento!",
-          "link": "Prosseguir com a confirmação de e-mail.",
+          "intro": "Um cadastro foi realizado com o seu e-mail. Clique abaixo para continuar.",
+          "link": "Confirmar endereço de e-mail.",
           "salute": "Olá, __username__,"
         }
       },
