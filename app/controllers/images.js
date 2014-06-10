@@ -61,7 +61,10 @@ exports.create = function (req, res) {
 
 		image.uploadImageAndSave(req.files.attachment.file, baseUrl, function(err){
 			if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'image'));
-			else  res.json(image);
+			else {
+				image.file.url = req.app.locals.settings.general.serverUrl + image.file.url;
+				res.json(image);
+			}
 		})
 	}
 }
