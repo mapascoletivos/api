@@ -57,7 +57,7 @@ exports.create = function (req, res) {
 		
 		var image = new Image();
 
-		baseUrl = process.env.APP_URL + '/uploads/images/img_';
+		baseUrl = '/uploads/images/img_';
 
 		image.uploadImageAndSave(req.files.attachment.file, baseUrl, function(err){
 			if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'image'));
