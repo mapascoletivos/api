@@ -56,7 +56,6 @@ module.exports = function (app, passport) {
 	// define new passord
 	app.get('/new_password/:tokenId', token.newPasswordForm);
 	app.post('/password_reset/:tokenId', token.newPassword);
-	app.post('/password_needed/:tokenId', token.newPassword);
 	
 	// change e-mail
 	app.get('/email_change/:tokenId', token.emailChange);
