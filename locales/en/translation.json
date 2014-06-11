@@ -432,7 +432,11 @@
                 "E-mail address already in use": "E-mail address already in use."
             },
             "layer": {
-                "undefined": "mongoose.errors.layer.undefined"
+                "undefined": "mongoose.errors.layer.undefined",
+                "Path `title` is required": {}
+            },
+            "feature": {
+                "Path `title` is required": {}
             }
         }
     }

@@ -87,7 +87,6 @@ exports.create = function (req, res) {
 						if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 						else
 							content.save(function(err){
-								// console.log('salvou o content assim\n'+content);
 								if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 								else res.json(content);
 							});

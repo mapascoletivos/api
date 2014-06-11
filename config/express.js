@@ -15,6 +15,7 @@ var mongoose = require('mongoose');
 var Settings = mongoose.model('Settings');
 var i18n = require('i18next');
 var Mailer = require('../lib/mailer');
+var Geocoder = require('../lib/geocoder');
 
 /*!
  * Expose
@@ -85,6 +86,8 @@ module.exports = function (app, config, passport) {
 				collection : 'sessions'
 			}, function(){
 				console.log('MongoDB connected.');
+				// start geocoder
+				new Geocoder();
 			})
 		}));
 
@@ -139,6 +142,7 @@ module.exports = function (app, config, passport) {
 				app.locals({settings: _.extend(app.locals.settings, settings)});
 
 				app.locals.mailer = new Mailer(settings);
+
 
 			}
 		})

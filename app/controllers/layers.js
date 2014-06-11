@@ -19,7 +19,6 @@ var
  */
 
 exports.load = function(req, res, next, id){
-	console.log(req.locale);
 	Layer.load(id, function (err, layer) {
 		if (err) 
 			return res.json(400, messages.error(req.i18n.t('layer.load.error')));
