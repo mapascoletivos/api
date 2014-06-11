@@ -47,8 +47,8 @@ module.exports = function (app, config, passport) {
 	app.set('view engine', 'jade')
 
 	var allowCrossDomain = function(req, res, next) {
-		if (config.allowedDomains) {
-			res.header('Access-Control-Allow-Origin', config.allowedDomains);
+		if (req.app.locals.settings.general.allowedDomains) {
+			res.header('Access-Control-Allow-Origin', req.app.locals.settings.general.allowedDomains);
 			res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
 			res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
 		}

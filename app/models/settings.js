@@ -22,7 +22,8 @@ var SettingsSchema = new Schema({
 		onlyInvitedUsers: {type: Boolean, default: false},
 		allowImports: {type: Boolean, default: true},
 		facebookApiKey: String,
-		googleApiKey: String
+		googleApiKey: String,
+		allowedDomains: {type: String, default: 'http://localhost:8000'}
 	},
 	mailer: {
 		enforceEmailConfirmation: {type: Boolean, default: true}, 

@@ -303,7 +303,8 @@
                     "spanish": "Spanish",
                     "update": "Update",
                     "facebookApiKey": "Facebook API Key",
-                    "googleApiKey": "Google API Key"
+                    "googleApiKey": "Google API Key",
+                    "cors_allowed_domains": "CORS allowed domains"
                 },
                 "mailer": {
                     "from_address": "Sender e-mail address",
