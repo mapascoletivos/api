@@ -19,7 +19,7 @@
     "local": {
       "error": {
         "need_password": "Você precisa de uma senha para acessar seu perfil. Verifique seu e-mail.",
-        "needs_activation": "Perfil de usuário inativo, um e-mail de ativação foi enviado.",
+        "needs_email_confirmation": "",
         "send_email": "Houve um erro enviando um token de senha para seu e-mail."
       },
       "needs_migration": "Sua conta não foi migrada ainda, por favor visite esta <a href='/migrate' target='_self'>página</a>.",
@@ -130,13 +130,12 @@
       },
       "success": "Perfil ativado com sucesso."
     },
-    "activate_account": {
+    "confirm_email": {
       "error": {
-        "invalid": "Token inválido.",
-        "saving": "Erro salvando token.",
-        "user": "Não foi possível ativar usuário."
+        "saving": "Erro grabando token.",
+        "user": "No fue posible activar perfil de usuario."
       },
-      "success": "Perfil atualizado com sucesso, aguarde redirecionamento."
+      "success": "Perfil atualizado con suceso, aguarde redireccionamiento."
     },
     "email_change": {
       "error": {
@@ -146,19 +145,14 @@
     },
     "error": {
       "cant_save": "Erro ao salvar token.",
-      "invalid": "Token inválido."
+      "invalid": "Token inválido.",
+      "invalid_type": ""
     },
     "load": {
       "error": {
         "expired": "Token expirado.",
         "not_found": "Token não encontrado."
       }
-    },
-    "migration": {
-      "error": {
-        "generic": "Um erro ocorreu na migração."
-      },
-      "success": "Conta migrada com sucesso."
     },
     "new_password": {
       "error": {
@@ -169,6 +163,12 @@
   },
   "user": {
     "create": {
+      "email": {
+        "error": {
+          "mailer": ""
+        },
+        "success": ""
+      },
       "error": {
         "email": {
           "invalid": "Endereço de e-mail inválido.",
@@ -179,31 +179,10 @@
           "length": "A senha deve ter no mínimo 6 caracteres.",
           "missing": "Entre com uma senha."
         }
-      },
-      "success": {
-        "with_token": "Perfil de usuário criado com sucesso. Um link de ativação foi enviado.",
-        "without_token": "Perfil de usuário criado com sucesso."
       }
     },
     "load": {
       "error": "Erro ao carregar usuário com id "
-    },
-    "migrate": {
-      "form": {
-        "errors": {
-          "email": {
-            "missing": "Digite um e-mail."
-          },
-          "password": {
-            "length": "A senha deve ter no mínimo 6 caracteres.",
-            "missing": "Entre com uma senha."
-          },
-          "user": {
-            "not_found": "Usuário não encontrado."
-          }
-        },
-        "success": "Um e-mail de ativação foi enviado ao seu e-mail."
-      }
     },
     "reset_pwd": {
       "form": {
@@ -218,6 +197,7 @@
         "title": "Recuperar senha"
       },
       "token": {
+        "error": "",
         "success": "Token de alteração de senha enviado."
       }
     },
@@ -274,8 +254,11 @@
           "allow_geofiles_import": "Permitir importação de arquivo geo",
           "brazilian_portuguese": "Português Brasileiro",
           "client_url": "URL do cliente",
+          "cors_allowed_domains": "",
           "english": "Inglês",
+          "facebookApiKey": "",
           "general_settings": "Configurações gerais",
+          "googleApiKey": "",
           "only_invited_can_register": "Somente convidados podem registrar-se",
           "server_url": "URL do servidor",
           "site_description": "Descrição do site",
@@ -285,14 +268,17 @@
           "update": "Atualizar"
         },
         "mailer": {
+          "enforceEmailConfirmation": "",
           "from_address": "Endereço do remetente",
           "mailer_settings": "Configurações de envio de e-mail",
-          "password": "Senha do SMTP",
-          "smtp_host": "Host do SMTP",
-          "smtp_port": "Porta do SMTP",
-          "smtp_user": "Usuário do SMTP",
-          "update": "Atualizar",
-          "use_ssl": "Usar SSL"
+          "smtp": {
+            "host": "",
+            "password": "",
+            "port": "",
+            "use_ssl": "",
+            "user": ""
+          },
+          "update": "Atualizar"
         }
       },
       "users": {
@@ -342,14 +328,14 @@
       },
       "email": {
         "change": {
-          "subject": "Confirmação de alteração de endereço de e-mail",
           "bye": "Bom mapeamento!",
           "intro": "Você solicitou alteração do seu endereço de e-mail.",
-          "salute": "Olá, __username__,",
-          "link": "Clique para proceder com a alteração"
+          "link": "Clique para proceder com a alteração",
+          "salute": "Olá, __username__,"
         },
         "confirm": {
           "bye": "Bom mapeamento!",
+          "intro": "",
           "link": "Prosseguir com a confirmação de e-mail.",
           "salute": "Olá, __username__,"
         }
@@ -370,15 +356,7 @@
         }
       },
       "user": {
-        "account": {
-          "migrate": {
-            "bye": "Bom mapeamento!",
-            "link": "Ir para migração.",
-            "salute": "Olá, __username__,"
-          }
-        },
         "invite": {
-          "subject": "Convite para o mapa",
           "intro": "Você foi convidado a mapear.",
           "link": "Clique aqui para começar.",
           "salute": "Olá, __username__,",

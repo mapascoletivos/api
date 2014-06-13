@@ -1,0 +1,399 @@
+{
+  "access_token": {
+    "authsocial": {
+      "error": {
+        "load_user": "",
+        "save_user": ""
+      }
+    },
+    "facebook": {
+      "error": {
+        "missing_token": ""
+      }
+    },
+    "google": {
+      "error": {
+        "missing_token": ""
+      }
+    },
+    "local": {
+      "error": {
+        "need_password": "",
+        "needs_email_confirmation": "",
+        "send_email": ""
+      },
+      "needs_migration": "",
+      "unauthorized": ""
+    },
+    "logout": {
+      "error": {
+        "inexistent_token": "",
+        "not_logged": ""
+      },
+      "successful": ""
+    }
+  },
+  "admin": {
+    "api_settings": {
+      "error": {
+        "load": ""
+      }
+    },
+    "first_admin": {
+      "error": {
+        "already_exists": "",
+        "invalid_email": "",
+        "needs_email": "",
+        "needs_name": "",
+        "password_length": "",
+        "password_missing": ""
+      },
+      "success": ""
+    },
+    "invite_user": {
+      "error": {
+        "already_active": ""
+      },
+      "success": ""
+    }
+  },
+  "content": {
+    "destroy": {
+      "success": ""
+    },
+    "load": {
+      "error": {
+        "not_found": ""
+      }
+    }
+  },
+  "feature": {
+    "add_content": {
+      "success": ""
+    },
+    "import": {
+      "error": {
+        "disabled": ""
+      }
+    },
+    "load": {
+      "error": {
+        "cant_find": ""
+      }
+    },
+    "remove_content": {
+      "success": ""
+    }
+  },
+  "image": {
+    "create": {
+      "error": {
+        "not_found": ""
+      }
+    },
+    "destroy": {
+      "success": ""
+    },
+    "load": {
+      "error": {
+        "not_found": ""
+      }
+    }
+  },
+  "layer": {
+    "contributor": {
+      "add": {
+        "error": {
+          "already_exists": "",
+          "dont_exists": "",
+          "email": ""
+        },
+        "success": ""
+      },
+      "remove": {
+        "error": {
+          "invalid_id": ""
+        },
+        "success": ""
+      }
+    },
+    "create": {
+      "missing": "",
+      "success": ""
+    },
+    "destroy": {
+      "success": ""
+    },
+    "load": {
+      "error": "",
+      "not_found": ""
+    },
+    "update": {
+      "success": "",
+      "tilelayer": {
+        "error": ""
+      }
+    }
+  },
+  "map": {
+    "destroy": {
+      "success": ""
+    },
+    "load": {
+      "error": {
+        "not_found": ""
+      }
+    }
+  },
+  "token": {
+    "accept_invitation": {
+      "error": {
+        "invalid_token": "",
+        "user_activation": ""
+      },
+      "success": ""
+    },
+    "confirm_email": {
+      "error": {
+        "saving": "",
+        "user": ""
+      },
+      "success": ""
+    },
+    "email_change": {
+      "error": {
+        "generic": ""
+      },
+      "success": ""
+    },
+    "error": {
+      "cant_save": "",
+      "invalid": "",
+      "invalid_type": ""
+    },
+    "load": {
+      "error": {
+        "expired": "",
+        "not_found": ""
+      }
+    },
+    "new_password": {
+      "error": {
+        "generic": ""
+      },
+      "success": ""
+    }
+  },
+  "user": {
+    "create": {
+      "email": {
+        "error": {
+          "mailer": ""
+        },
+        "success": ""
+      },
+      "error": {
+        "email": {
+          "invalid": "",
+          "missing": ""
+        },
+        "missing_name": "",
+        "password": {
+          "length": "",
+          "missing": ""
+        }
+      }
+    },
+    "load": {
+      "error": ""
+    },
+    "reset_pwd": {
+      "form": {
+        "error": {
+          "user": {
+            "not_found": ""
+          }
+        },
+        "title": ""
+      },
+      "mail": {
+        "title": ""
+      },
+      "token": {
+        "error": "",
+        "success": ""
+      }
+    },
+    "update": {
+      "email": {
+        "error": {
+          "already_associated": "",
+          "already_used": "",
+          "invalid": "",
+          "mailer": "",
+          "missing_callback": ""
+        },
+        "success": ""
+      },
+      "password": {
+        "error": {
+          "dont_match": "",
+          "length": "",
+          "wrong": ""
+        },
+        "success": ""
+      },
+      "success": ""
+    }
+  },
+  "views": {
+    "admin": {
+      "first_admin": {
+        "administrative_area": "",
+        "create_admin": "",
+        "create_first_admin_user": "",
+        "email": "",
+        "name": "",
+        "password": ""
+      },
+      "login": {
+        "administrative_area": "",
+        "email": "",
+        "login": "",
+        "password": ""
+      },
+      "menu": {
+        "general": "",
+        "mailer": "",
+        "manage_users": "",
+        "settings": "",
+        "users": {
+          "invite": "",
+          "roles": ""
+        }
+      },
+      "settings": {
+        "index": {
+          "allow_geofiles_import": "",
+          "brazilian_portuguese": "",
+          "client_url": "",
+          "cors_allowed_domains": "",
+          "english": "",
+          "facebookApiKey": "",
+          "general_settings": "",
+          "googleApiKey": "",
+          "only_invited_can_register": "",
+          "server_url": "",
+          "site_description": "",
+          "site_language": "",
+          "site_title": "",
+          "spanish": "",
+          "update": ""
+        },
+        "mailer": {
+          "enforceEmailConfirmation": "",
+          "from_address": "",
+          "mailer_settings": "",
+          "smtp": {
+            "host": "",
+            "password": "",
+            "port": "",
+            "use_ssl": "",
+            "user": ""
+          },
+          "update": ""
+        }
+      },
+      "users": {
+        "new": {
+          "admin": "",
+          "colaborator": "",
+          "editor": "",
+          "email": "",
+          "invite_a_user": "",
+          "name": "",
+          "role": "",
+          "send_invitation": ""
+        },
+        "roles": {
+          "admin": "",
+          "change": "",
+          "collaborator": "",
+          "editor": "",
+          "email": "",
+          "manage_user_roles": "",
+          "name": "",
+          "role": "",
+          "there_are_no_users": ""
+        }
+      }
+    },
+    "includes": {
+      "header": {
+        "admin_area_link": "",
+        "login": "",
+        "logout": ""
+      }
+    },
+    "layouts": {
+      "admin_area": {
+        "administration": ""
+      }
+    },
+    "mailer": {
+      "contributions": {
+        "new_contributor": {
+          "bye": "",
+          "intro": "",
+          "salute": "",
+          "visit_dashboard": ""
+        }
+      },
+      "email": {
+        "change": {
+          "bye": "",
+          "intro": "",
+          "link": "",
+          "salute": ""
+        },
+        "confirm": {
+          "bye": "",
+          "intro": "",
+          "link": "",
+          "salute": ""
+        }
+      },
+      "password": {
+        "recover": {
+          "ignore": "",
+          "intro": "",
+          "link": "",
+          "salute": "",
+          "thanks": ""
+        },
+        "set": {
+          "intro": "",
+          "salute": "",
+          "thanks": "",
+          "token": ""
+        }
+      },
+      "user": {
+        "invite": {
+          "intro": "",
+          "link": "",
+          "salute": "",
+          "thanks": ""
+        }
+      }
+    },
+    "tokens": {
+      "accept_invitation": {
+        "confirm_signup": "",
+        "define_password": "",
+        "send": "",
+        "type_a_password": ""
+      }
+    }
+  }
+}

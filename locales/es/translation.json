@@ -19,7 +19,7 @@
     "local": {
       "error": {
         "need_password": "Necesitas de una contraseña para activar su perfil. Verifique su correo.",
-        "needs_activation": "Perfil de usuario inacrivo, un correo de activación fue enviado.",
+        "needs_email_confirmation": "",
         "send_email": "Hubo un error al enviar un token de contraseña a su correo."
       },
       "needs_migration": "Su cuenta todavia no fue migrada, por favor visite este <a href='/migrate' target='_self'>enlace</a>.",
@@ -130,13 +130,12 @@
       },
       "success": "Perfil activado con suceso."
     },
-    "activate_account": {
+    "confirm_email": {
       "error": {
-        "invalid": "Token inválido.",
-        "saving": "Erro grabando token.",
-        "user": "No fue posible activar perfil de usuario."
+        "saving": "",
+        "user": ""
       },
-      "success": "Perfil atualizado con suceso, aguarde redireccionamiento."
+      "success": ""
     },
     "email_change": {
       "error": {
@@ -146,19 +145,14 @@
     },
     "error": {
       "cant_save": "Erro ao salvar token.",
-      "invalid": "Token inválido."
+      "invalid": "Token inválido.",
+      "invalid_type": ""
     },
     "load": {
       "error": {
         "expired": "Token expirado.",
         "not_found": "Token no encuentrado."
       }
-    },
-    "migration": {
-      "error": {
-        "generic": "Hubo un error en la migración."
-      },
-      "success": "Conta migrada con suceso."
     },
     "new_password": {
       "error": {
@@ -169,6 +163,12 @@
   },
   "user": {
     "create": {
+      "email": {
+        "error": {
+          "mailer": ""
+        },
+        "success": ""
+      },
       "error": {
         "email": {
           "invalid": "Dirección de correo inválido.",
@@ -179,31 +179,10 @@
           "length": "La contraseña debe contenter un mínimo de 6 caracteres.",
           "missing": "Debes indicar una contraseña."
         }
-      },
-      "success": {
-        "with_token": "Perfil de usuario creado con suceso. Un correo de activación fue enviado.",
-        "without_token": "Perfil de usuario creado con suceso."
       }
     },
     "load": {
       "error": "Error al cargar usuario con el id "
-    },
-    "migrate": {
-      "form": {
-        "errors": {
-          "email": {
-            "missing": "Debes indicar una dirección de correo."
-          },
-          "password": {
-            "length": "La contraseña debe contenter un mínimo de 6 caracteres.",
-            "missing": "Dever indicar una contraseña."
-          },
-          "user": {
-            "not_found": "Usuario no encuentrado."
-          }
-        },
-        "success": "Un correo de activación fue enviado a tu correo."
-      }
     },
     "reset_pwd": {
       "form": {
@@ -218,6 +197,7 @@
         "title": "Recuperar contraseña"
       },
       "token": {
+        "error": "",
         "success": "Token de cambio de contraseña enviado."
       }
     },
@@ -274,8 +254,11 @@
           "allow_geofiles_import": "Permitir importacion de archivos geo",
           "brazilian_portuguese": "Portugués Brasileño",
           "client_url": "URL del cliente",
+          "cors_allowed_domains": "",
           "english": "Inglés",
+          "facebookApiKey": "",
           "general_settings": "Configuraciones generales",
+          "googleApiKey": "",
           "only_invited_can_register": "Solamente invitados puedem registrarse",
           "server_url": "URL del servidor",
           "site_description": "Descripción del sitio",
@@ -285,14 +268,17 @@
           "update": "Actualizar"
         },
         "mailer": {
+          "enforceEmailConfirmation": "",
           "from_address": "Dirección del remetente",
           "mailer_settings": "Configuraciones de envio de correo",
-          "password": "Contraseña del SMTP",
-          "smtp_host": "Host del SMTP",
-          "smtp_port": "Porta del SMTP",
-          "smtp_user": "Usuario del SMTP",
-          "update": "Actualizar",
-          "use_ssl": "Usar SSL"
+          "smtp": {
+            "host": "",
+            "password": "",
+            "port": "",
+            "use_ssl": "",
+            "user": ""
+          },
+          "update": "Actualizar"
         }
       },
       "users": {
@@ -342,14 +328,14 @@
       },
       "email": {
         "change": {
-          "subject": "Confirmación de cambio de dirección de correo",
           "bye": "Hasta luego!",
           "intro": "Has solicitado cambio de dirección de correo.",
-          "salute": "Hola, __username__,",
-          "link": "Confirmar el cambio."
+          "link": "Confirmar el cambio.",
+          "salute": "Hola, __username__,"
         },
         "confirm": {
           "bye": "Hasta luego!",
+          "intro": "",
           "link": "Confirmar el cambio.",
           "salute": "Hola, __username__,"
         }
@@ -370,13 +356,6 @@
         }
       },
       "user": {
-        "account": {
-          "migrate": {
-            "bye": "Hasta luego!",
-            "link": "Ir para la migración.",
-            "salute": "Hola, __username__,"
-          }
-        },
         "invite": {
           "intro": "Has sido invitado a mapear.",
           "link": "Siga el enlace para empiezar.",
@@ -393,6 +372,5 @@
         "type_a_password": "Debes indicar una contraseña"
       }
     }
-  },
-  "Path `title` is required": "La capa debe tener un titulo."
+  }
 }
