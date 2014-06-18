@@ -40,7 +40,7 @@ module.exports = function (passport, config) {
 					req.app.locals.mailer.sendEmail('password_reset', user.email, data, req.i18n, function(err) {
 						console.log(err);
 						if (err) 
-		          			return done(null, false, { message: 'access_token.local.needs_migration.error' })
+		          			return done(err, false, { message: 'access_token.local.needs_migration.error' })
 						else 
 		          			return done(null, false, { message: 'access_token.local.needs_migration.sent' })
 					});

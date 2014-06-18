@@ -58,7 +58,7 @@
 		"forever": "latest"
 	},
 	"devDependencies": {
-		"nodemon": "latest",
+		"nodemon": "1.1.x",
 		"mocha": "latest",
 		"should": "latest",
 		"supertest": "latest",

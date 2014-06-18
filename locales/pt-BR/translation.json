@@ -22,7 +22,12 @@
         "needs_activation": "Você precisa confirmar seu endereço de e-mail, um novo link de confirmação foi enviado.",
         "send_email": "Houve um erro enviando um token de senha para seu e-mail."
       },
-      "needs_migration": "Sua conta não foi migrada ainda, por favor visite esta <a href='/migrate' target='_self'>página</a>.",
+      "user_not_registered": "Usuário não encontrado.",
+      "invalid_password": "Senha inválida.",
+      "needs_migration": {
+          "error": "Não foi possível acessar sua conta, contate o suporte.",
+          "sent": "Você precisa definir uma nova senha, cheque seu e-mail."
+      },
       "unauthorized": "Não autorizado."
     },
     "logout": {
@@ -368,8 +373,8 @@
       "password": {
         "recover": {
           "ignore": "Se você não fez esta solicitação, ignore este e-mail.",
-          "intro": "Você solicitou alteração de senha.",
-          "link": "Prosseguir com alteração de senha.",
+          "intro": "Siga o link abaixo para definir uma nova senha.",
+          "link": "Definir senha.",
           "salute": "Olá, __username__,",
           "thanks": "Bom mapeamento!"
         },
