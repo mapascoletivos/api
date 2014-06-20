@@ -1,6 +1,6 @@
 p=locals.t('views.mailer.contributions.new_contributor.salute', {defaultValue: 'Hi, __username__,', username: locals.contributor.name})
 
-p=locals.t('views.mailer.contributions.new_contributor.intro', {defaultValue: 'Creator __creator__ invited you to contribute to layer __layer__,', creator: locals.creator.name, layer: locals.layer.title})
+p=locals.t('views.mailer.contributions.new_contributor.intro', {creator: locals.creator.name, layer: locals.layer.title})
 
 p=locals.t('views.mailer.contributions.new_contributor.visit_dashboard', {defaultValue: 'Visit your dashboard to start mapping collaboratively'})
 

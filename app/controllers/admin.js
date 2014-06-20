@@ -10,7 +10,8 @@ var
 	validator = require('validator'),
 	mailer = require('../../lib/mailer'),
 	Settings = mongoose.model('Settings'),
-	User = mongoose.model('User');
+	User = mongoose.model('User'),
+	Mailer = require('../../lib/mailer');
 
 /**
  * Form to signup the first admin user
@@ -193,7 +194,7 @@ exports.update = function(req, res, next) {
 }
 
 /**
- * Mail settings form
+ * Transactional mailing settings form
  **/
 
 exports.mailForm = function(req, res) {
@@ -209,9 +210,9 @@ exports.mail = function(req, res) {
 		if (err) res.render('500');
 		else {
 
-
-			settings.mailer = _.extend(settings.mailer, req.body.mailer);
-			settings.mailer.secureConnection = req.body.mailer.secureConnection ? true : false;
+			settings.mailing = _.extend(settings.mailer, req.body.mailer);
+			settings.mailing.smtp.secureConnection = req.body.mailer.smtp.secureConnection ? true : false;
+			settings.mailing.enforceEmailConfirmation = req.body.mailer.enforceEmailConfirmation ? true : false;
 			
 			settings.save(function(err){
 				if (err) res.render('500');
@@ -221,10 +222,10 @@ exports.mail = function(req, res) {
 					req.app.locals({settings: _.extend(req.app.locals.settings, settings)});
 					
 					// Reconfigure mailer with new settings
-					req.app.mailer.update(req.app.locals.settings.mailer, function(err){
-						if (err) res.render('500');
-						else res.render('admin/settings/mailer');
-					});
+					req.app.locals.mailer = new Mailer(settings);
+
+					res.render('admin/settings/mailer');
+
 				}
 			})
 			
@@ -247,19 +248,16 @@ exports.invite = function(req, res, next) {
 				res.render('admin/users/new', {message: req.i18n.t('admin.invite_user.error.already_active')});
 			} else {
 				
-				var 
-					options = {
-						mailSender: req.app.mailer,
+				var data = {
 						user: {
 							name: req.body.user.name, 
 							email: req.body.user.email, 
 							role: req.body.user.role
 						},
-						callbackUrl: req.app.locals.settings.general.clientUrl + '/login',
-						t: req.i18n.t
+						callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
 				}
 					
-				mailer.invite(options, function(err) {
+				req.app.locals.mailer.sendEmail('invite_contributor', req.body.user.email, data, req.i18n, function(err) {
 					if (err) {
 						console.log(err);
 						next(err);
@@ -286,7 +284,6 @@ exports.changeRole = function(req, res, next) {
 		if (err || !user) res.render('500');
 		else {
 			user.role = req.body.role;
-			console.log(user);
 			user.save(function(err){
 				if (err) {
 					console.log(err);

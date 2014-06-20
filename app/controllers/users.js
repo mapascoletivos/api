@@ -58,33 +58,37 @@ exports.create = function (req, res) {
 	else if (user.password.length < 6)
 		preValidationErrors.push(req.i18n.t('user.create.error.password.length'));
 
-	// Avoid e-mail confirmation at development environment
-	// if (process.env.NODE_ENV == 'development') {
-	// 	user.needsEmailConfirmation = false;
-	// }
-
 	if (preValidationErrors.length > 0){
 		return res.json(400, { messages: messages.errorsArray(req.i18n, preValidationErrors) });
 	} else {
-		user.save(function (err) {
-			if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));		
 
-			// Don't send email if user is active
-			if (!user.needsEmailConfirmation) {			
-				return res.json(messages.success(req.i18n.t('user.create.success.without_token')))
-			} else {
-				mailer.confirmEmail({
-					mailSender: req.app.mailer, 
-					user: user,
-					callbackUrl: req.body.callback_url
-				}, function(err){
-					if (err) 
-						return res.json(messages.mongooseErrors(req.i18n.t, err));
-					else 
-						return res.json(messages.success(req.i18n.t('user.create.success.with_token')));
-				})
+
+		function saveUser() {
+			user.save(function (err) {
+				if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));
+				else return res.json(messages.success(req.i18n.t('user.create.email.success')));
+			});
+		}
+
+		// Send e-mail confirmation if needed
+		if (req.app.locals.settings.mailer.enforceEmailConfirmation) {
+
+			var data = {
+				user: user,
+				callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
 			}
-		})		
+			
+			req.app.locals.mailer.sendEmail('confirm_email', user.email, data, req.i18n, function(err) {
+				if (err) 
+					return res.json(400, messages.error(req.i18n.t('user.create.email.error.mailer')));
+				else 
+					saveUser();				
+			});
+		} else {
+			saveUser();
+		}
+
+
 	}
 }
 
@@ -133,20 +137,20 @@ exports.update = function (req, res) {
 				if (!req.body.callback_url){
 					return res.json(400, messages.error(req.i18n.t('user.update.email.error.missing_callback')));			
 				} else if (!anotherUser) {
-					// console.log(req.locale);
-					mailer.changeEmail({
-						mailSender: req.app.mailer,
+					console.log('vai enviar email')
+					var data = {
 						user: user, 
 						newEmail: req.body.email, 
-						callbackUrl: req.body.callback_url, 
-						t: req.i18n.t
-					}, function(err){
-						if (err) {
+						callbackUrl: req.body.callback_url
+					}
+					
+					req.app.locals.mailer.sendEmail('email_change', req.body.email, data, req.i18n, function(err) {
+						if (err) 
 							return res.json(400, messages.error(req.i18n.t('user.update.email.error.mailer')));
-						} else {
+						else 
 							return res.json(messages.success(req.i18n.t('user.update.email.success')));
-						}
 					});
+
 				} else {
 					return res.json(400, messages.error(req.i18n.t('user.update.email.error.already_used')));			
 				}
@@ -254,16 +258,20 @@ exports.resetPasswordToken = function (req, res) {
 			});
 		else {
 			if (user) {
-				mailer.passwordReset({
-					mailSender: req.app.mailer,
+
+				var data = {
 					user: user,
-					callbackUrl: req.body.callback_url
-				}, function(err){
+					callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
+				}
+					
+				req.app.locals.mailer.sendEmail('password_reset', user.email, data, req.i18n, function(err) {
 					if (err) 
-						return res.json(messages.errors(err));
+						return res.json(messages.error(req.i18n.t('user.reset_pwd.token.error')));
 					else 
 						return res.json(messages.success(req.i18n.t('user.reset_pwd.token.success')));
 				});
+
+				
 			} else {
 				req.flash('error', req.i18n.t('user.reset_pwd.form.error.user.not_found'));
 				res.render('users/forgot_password', {
@@ -274,65 +282,3 @@ exports.resetPasswordToken = function (req, res) {
 		}
 	})
 }
-
-
-/**
- * Show migrate form
- */
-
-exports.showMigrate = function (req, res) {
-	res.render('users/migrate');
-}
-
-/**
- * Generate migration token
- */
-
-exports.migrate = function (req, res) {
-	var
-		email = req.body.email,
-		password = req.body.password,
-		errors = [];
-
-	if (!email) {
-		errors.push(req.i18n.t('user.migrate.form.errors.email.missing'));
-	}
-
-	if (!password) {
-		errors.push(req.i18n.t('user.migrate.form.errors.password.missing'));
-	}
-
-	if ((password) && (password.length < 6)) {
-		errors.push(req.i18n.t('user.migrate.form.errors.password.length'));
-	}
-
-	if (errors.length > 0) {
-		res.render('users/migrate', {
-			errors: errors,
-			email: email
-		});
-	} else {
-		User.findOne({email: email, status: 'to_migrate'}, function(err, user){
-			if (err) {
-				res.render('users/migrate', {
-					errors:  utils.errorMessagesFlash(err.errors),
-					email: email
-				});
-			} else if (!user) {
-				res.render('users/migrate', {
-					errors:  [req.i18n.t('user.migrate.form.errors.user.not_found')],
-					email: email
-				});
-			} else {
-				mailer.migrateAccount(user, password, function(err){
-					res.render('users/migrate', {
-						info:  [req.i18n.t('user.migrate.form.success')],
-						email: email
-					});
-				})
-			}
-		})
-	}
-
-}
-

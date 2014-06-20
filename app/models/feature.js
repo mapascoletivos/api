@@ -24,7 +24,7 @@ var FeatureSchema = new Schema({
 	address: [{type: Schema.ObjectId, ref: 'Area'}],
 	version: { type: Number, default: 1},
 	createdAt: {type: Date, default: Date.now},
-	updatedAt: {type: Date, default: Date.now},
+	updatedAt: {type: Date},
 	source: {type: String, required: true, default: 'local'},
 	tags: [String],
 	oldId: Number
@@ -41,25 +41,8 @@ FeatureSchema.index({ loc: '2dsphere' })
  */
 
 FeatureSchema.pre('save', function(next){
-	var self = this;
-
-	if (self.isDirectModified('geometry')) {
-	Area.whichContains(self.geometry, function(err, areas){
-		if (err){
-
-				// Address lookup shouldn't block feature save,
-				// so next() is called without the error
-				next();	
-			} 
-			else {
-				delete self.address
-				self.address = areas;
-				next();
-			}
-	 	}) 		
- 	} else {
- 		next();
- 	}
+	this.updatedAt = new Date();
+	next();
 });
 
 

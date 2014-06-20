@@ -20,17 +20,24 @@ var SettingsSchema = new Schema({
 		clientUrl: {type: String, default: 'http://localhost:8000'},
 		baseLayerUrl: {type: String, default: ''},
 		onlyInvitedUsers: {type: Boolean, default: false},
-		allowImports: {type: Boolean, default: true}
+		allowImports: {type: Boolean, default: true},
+		facebookApiKey: String,
+		googleApiKey: String,
+		allowedDomains: {type: String, default: 'http://localhost:8000'}
 	},
 	mailer: {
-		transportMethod: {type: String, default: 'SMTP'},
-		host: { type: String, default: '' },
-		secureConnection: {type: Boolean, default: true}, // use SSL
-		port: {type: Number, default: 465}, // port for secure SMTP
+		enforceEmailConfirmation: {type: Boolean, default: true}, 
+		provider: {type: String, enum: ['smtp', 'postmark'], default: 'smtp'},
 		from: { type: String, default: '' },
-		auth: {
+		smtp: {
+			host: { type: String },
+			secureConnection: {type: Boolean, default: true}, // use SSL
+			port: {type: Number, default: 465}, // port for secure SMTP
 			user: { type: String, default: '' },
 			pass: { type: String, default: '' }
+		},
+		postmark: {
+			apikey: { type: String, default: '' }
 		}
 	}
 });

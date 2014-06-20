@@ -10,34 +10,52 @@ block content
 			table.formsender
 				tr
 					td.label
+						label(for="mailer.enforceEmailConfirmation")=t('views.admin.settings.mailer.enforceEmailConfirmation')
+					td.input
+						input(type="checkbox" name="mailer[enforceEmailConfirmation]" checked=mailer.enforceEmailConfirmation)
+				tr
+					td.label
 						label(for="mailer.from")=t('views.admin.settings.mailer.from_address')
 					td.input
 						input(type="text" name="mailer[from]" value=mailer.from)
 				tr
-					td.label
-						label(for="mailer[host]")=t('views.admin.settings.mailer.smtp_host')
-					td.input
-						input(name="mailer[host]" value=mailer.host type="text")=mailer.host
+					td
+						input(type="radio" name="mailer[provider]" value='postmark' checked=mailer.provider=='postmark')
+						| Postmark
 				tr
 					td.label
-						label(for="mailer.secureConnection")=t('views.admin.settings.mailer.use_ssl')
+						label(for="mailer.postmark.apikey")='API Key'
 					td.input
-						input(type="checkbox" name="mailer[secureConnection]" checked=mailer.secureConnection)
+						input(type="text" name="mailer[postmark][apikey]" value=mailer.postmark.apikey)
+				tr
+					td
+						input(type="radio" name="mailer[provider]" value='smtp' checked=mailer.provider=='smtp')
+						| SMTP
 				tr
 					td.label
-						label(for="mailer.port")=t('views.admin.settings.mailer.smtp_port')
+						label(for="mailer[smtp][host]")=t('views.admin.settings.mailer.smtp.host')
 					td.input
-						input(type="text" name="mailer[port]" value=mailer.port)		
+						input(name="mailer[smtp][host]" value=mailer.smtp.host type="text")=mailer.smtp.host
 				tr
 					td.label
-						label(for="mailer.auth.user")=t('views.admin.settings.mailer.smtp_user')
+						label(for="mailer.smtp.secureConnection")=t('views.admin.settings.mailer.smtp.use_ssl')
 					td.input
-						input(type="text" name="mailer[auth][user]" value=mailer.auth.user)
+						input(type="checkbox" name="mailer[smtp][secureConnection]" checked=mailer.smtp.secureConnection)
 				tr
 					td.label
-						label(for="mailer.pass")=t('views.admin.settings.mailer.password')
+						label(for="mailer.smtp.port")=t('views.admin.settings.mailer.smtp.port')
 					td.input
-						input(type="password" name="mailer[auth][pass]" value=mailer.auth.pass)
+						input(type="text" name="mailer[smtp][port]" value=mailer.smtp.port)
+				tr
+					td.label
+						label(for="mailer.smtp.user")=t('views.admin.settings.mailer.smtp.user')
+					td.input
+						input(type="text" name="mailer[smtp][user]" value=mailer.smtp.user)
+				tr
+					td.label
+						label(for="mailer.smtp.pass")=t('views.admin.settings.mailer.smtp.password')
+					td.input
+						input(type="password" name="mailer[smtp][pass]" value=mailer.smtp.pass)
 
 
 			input.btn.btn-primary(type='submit' value=t('views.admin.settings.mailer.update'))

@@ -4,7 +4,7 @@
 
 var _ = require('underscore');
 var express = require('express');
-var mailer = require('express-mailer');
+
 var mongoStore = require('connect-mongo')(express);
 var helpers = require('view-helpers');
 var lessMiddleware = require('less-middleware');
@@ -14,7 +14,8 @@ var env = process.env.NODE_ENV || 'development';
 var mongoose = require('mongoose');
 var Settings = mongoose.model('Settings');
 var i18n = require('i18next');
-
+var Mailer = require('../lib/mailer');
+var Geocoder = require('../lib/geocoder');
 
 /*!
  * Expose
@@ -46,8 +47,18 @@ module.exports = function (app, config, passport) {
 	app.set('view engine', 'jade')
 
 	var allowCrossDomain = function(req, res, next) {
-		if (config.allowedDomains) {
-			res.header('Access-Control-Allow-Origin', config.allowedDomains);
+		if (req.app.locals.settings.general.allowedDomains) {
+
+			var domains = req.app.locals.settings.general.allowedDomains.split(',');
+
+			domains = _.map(domains, function(d){return d.trim();})
+
+			if (domains[0] == '*') {
+				res.set('Access-Control-Allow-Origin', req.headers.origin);
+			} else {
+				if (_.contains(domains, req.headers.origin)) 
+					res.header('Access-Control-Allow-Origin', req.headers.origin);
+			}
 			res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
 			res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
 		}
@@ -85,6 +96,8 @@ module.exports = function (app, config, passport) {
 				collection : 'sessions'
 			}, function(){
 				console.log('MongoDB connected.');
+				// start geocoder
+				new Geocoder();
 			})
 		}));
 
@@ -130,13 +143,16 @@ module.exports = function (app, config, passport) {
 		// Load settings from DB
 		Settings.load(function(err, settings){
 			if (!err) {
+				
 				settings = settings.toObject();
 				delete settings.__v;
 				delete settings._id;
+
+				// make global
 				app.locals({settings: _.extend(app.locals.settings, settings)});
 
-				// Configure mailer (it needs app settings loaded first)
-				mailer.extend(app, settings.mailer);					
+				app.locals.mailer = new Mailer(settings);
+
 
 			}
 		})

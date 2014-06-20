@@ -1,398 +1,420 @@
 {
-  "access_token": {
-    "authsocial": {
-      "error": {
-        "load_user": "Error loading user.",
-        "save_user": "Error while saving user."
-      }
-    },
-    "facebook": {
-      "error": {
-        "missing_token": "Missing Facebook authorization token."
-      }
-    },
-    "google": {
-      "error": {
-        "missing_token": "Missing Google authorization token."
-      }
-    },
-    "local": {
-      "error": {
-        "need_password": "Your need a password to acccess your profile. Check your e-mail to continue.",
-        "needs_activation": "Profile not active, an activation email was sent.",
-        "send_email": "There was an error while sending a password token to your e-mail."
-      },
-      "needs_migration": "Your account wasn't migrated yet, please visit this <a href='/migrate' target='_self'>page</a>.",
-      "unauthorized": "Unauthorized."
-    },
-    "logout": {
-      "error": {
-        "inexistent_token": "Can't find access token.",
-        "not_logged": "You are not logged in."
-      },
-      "successful": "Logout successful."
-    }
-  },
-  "admin": "admin",
-  "content": {
-    "destroy": {
-      "success": "Content removed successfully."
-    },
-    "load": {
-      "error": {
-        "not_found": "Content not found."
-      }
-    }
-  },
-  "feature": {
-    "add_content": {
-      "success": "Content added successfully."
-    },
-    "import": {
-      "error": {
-        "disabled": "Geo files import is disabled."
-      }
-    },
-    "load": {
-      "error": {
-        "cant_find": "Can't find feature."
-      }
-    },
-    "remove_content": {
-      "success": "Content removed successfully."
-    }
-  },
-  "image": {
-    "create": {
-      "error": {
-        "not_found": "Image file not found"
-      }
-    },
-    "destroy": {
-      "success": "Image removed successfully."
-    },
-    "load": {
-      "error": {
-        "not_found": "Image not found."
-      }
-    }
-  },
-  "layer": {
-    "contributor": {
-      "add": {
-        "error": {
-          "already_exists": "User is already layer creator.",
-          "dont_exists": "Can't find user with this e-mail.",
-          "email": "Error while sending e-mail to contributor."
+    "access_token": {
+        "authsocial": {
+            "error": {
+                "load_user": "Error loading user.",
+                "save_user": "Error while saving user."
+            }
         },
-        "success": "Contributor added successfully."
-      },
-      "remove": {
-        "error": {
-          "invalid_id": "Invalid contributor id."
+        "facebook": {
+            "error": {
+                "missing_token": "Missing Facebook authorization token."
+            }
         },
-        "success": "Contributor removed successfully."
-      }
-    },
-    "create": {
-      "missing": "Layer type missing.",
-      "success": "Layer created successfully."
-    },
-    "destroy": {
-      "success": "Layer removed successfully."
-    },
-    "load": {
-      "error": "Error loading layer.",
-      "not_found": "Layer not found."
-    },
-    "update": {
-      "success": "Layer updated successfully.",
-      "tilelayer": {
-        "error": "Can't update TileLayer"
-      }
-    }
-  },
-  "map": {
-    "destroy": {
-      "success": "Map removed successfully."
-    },
-    "load": {
-      "error": {
-        "not_found": "Map not found."
-      }
-    }
-  },
-  "token": {
-    "accept_invitation": {
-      "error": {
-        "invalid_token": "Invalid token.",
-        "user_activation": "Can't actived this user."
-      },
-      "success": "Profile activated successfully."
-    },
-    "activate_account": {
-      "error": {
-        "invalid": "Invalid token.",
-        "saving": "Error while saving token.",
-        "user": "Can't activate this user."
-      },
-      "success": "Profile activated successfully, please wait redirection."
-    },
-    "email_change": {
-      "error": {
-        "generic": "Error while changing user e-mail."
-      },
-      "success": "E-mail changed successfully."
-    },
-    "error": {
-      "cant_save": "Can't save token.",
-      "invalid": "Invalid token."
-    },
-    "load": {
-      "error": {
-        "expired": "This token expired.",
-        "not_found": "Token not found."
-      }
-    },
-    "migration": {
-      "error": {
-        "generic": "Error while migrating account."
-      },
-      "success": "Account migrated successfully."
-    },
-    "new_password": {
-      "error": {
-        "generic": "Error while changing password."
-      },
-      "success": "Password changed successfully."
-    }
-  },
-  "user": {
-    "create": {
-      "error": {
-        "email": {
-          "invalid": "Invalid e-mail address.",
-          "missing": "Please type an e-mail address."
+        "google": {
+            "error": {
+                "missing_token": "Missing Google authorization token."
+            }
         },
-        "missing_name": "Please enter your name.",
-        "password": {
-          "length": "Password should have at least 6 characters.",
-          "missing": "Please type a password."
+        "local": {
+            "error": {
+                "need_password": "Your need a password to acccess your profile. Check your e-mail to continue.",
+                "send_email": "There was an error while sending a password token to your e-mail.",
+                "needs_email_confirmation": "You need to confirm your e-mail address. A link was sent to your e-mail."
+            },
+            "unauthorized": "Unauthorized.",
+            "user_not_registered": "User not registered.",
+            "invalid_password": "Invalid password.",
+            "needs_migration": {
+                "error": "Can't migrate your account, please contact support.",
+                "sent": "You need a new password, please check your e-mail."
+            }
+        },
+        "logout": {
+            "error": {
+                "inexistent_token": "Can't find access token.",
+                "not_logged": "You are not logged in."
+            },
+            "successful": "Logout successful."
         }
-      },
-      "success": {
-        "with_token": "User profile created successfully. An activation link was sent.",
-        "without_token": "User profile created successfully."
-      }
     },
-    "load": {
-      "error": "Failed to load user with id "
-    },
-    "migrate": {
-      "form": {
-        "errors": {
-          "email": {
-            "missing": "Please inform an e-mail."
-          },
-          "password": {
-            "length": "Password should have at least 6 characters.",
-            "missing": "Please type a password."
-          },
-          "user": {
-            "not_found": "User not found or migration already done."
-          }
-        },
-        "success": "A activation was sent to your e-mail."
-      }
-    },
-    "reset_pwd": {
-      "form": {
-        "error": {
-          "user": {
-            "not_found": "User not found."
-          }
-        },
-        "title": "Recover password"
-      },
-      "mail": {
-        "title": "Recover password"
-      },
-      "token": {
-        "success": "Password change token sent successfully."
-      }
-    },
-    "update": {
-      "email": {
-        "error": {
-          "already_associated": "E-mail already associated to account.",
-          "already_used": "This e-mail address is already used.",
-          "invalid": "Invalid e-mail address.",
-          "mailer": "Error while sending e-mail confirmation.",
-          "missing_callback": "Missing callback."
-        },
-        "success": "An e-mail was sent to confirm address change."
-      },
-      "password": {
-        "error": {
-          "dont_match": "Passwords don't match.",
-          "length": "Password should be at least 6 characters long.",
-          "wrong": "Wrong password."
-        },
-        "success": "Password changed successfully."
-      },
-      "success": "Profile updated successfully."
-    }
-  },
-  "views": {
     "admin": {
-      "first_admin": {
-        "administrative_area": "Administrative Area",
-        "create_admin": "Create Admin",
-        "create_first_admin_user": "Create first admin user:",
-        "email": "E-mail",
-        "name": "Name",
-        "password": "Password"
-      },
-      "login": {
-        "administrative_area": "Administrative Area",
-        "email": "E-mail",
-        "login": "Login",
-        "password": "Password"
-      },
-      "menu": {
-        "general": "General",
-        "mailer": "Mailer",
-        "manage_users": "Manage users",
-        "settings": "Settings",
-        "users": {
-          "invite": "Invites",
-          "roles": "Roles"
+        "invite_user": {
+            "success": "User invited successfully."
         }
-      },
-      "settings": {
-        "index": {
-          "allow_geofiles_import": "Allow Geofiles import",
-          "brazilian_portuguese": "Brazilian Portuguese",          
-          "client_url": "Client URL",
-          "english": "English",
-          "general_settings": "General Settings",
-          "only_invited_can_register": "Only invited can register",
-          "server_url": "Server URL",
-          "site_description": "Site Description",
-          "site_language": "Idioma padrão",
-          "site_title": "Site Title",
-          "spanish": "Spanish",
-          "update": "Update"
+    },
+    "content": {
+        "destroy": {
+            "success": "Content removed successfully."
+        },
+        "load": {
+            "error": {
+                "not_found": "Content not found."
+            }
+        }
+    },
+    "feature": {
+        "add_content": {
+            "success": "Content added successfully."
+        },
+        "import": {
+            "error": {
+                "disabled": "Geo files import is disabled."
+            }
+        },
+        "load": {
+            "error": {
+                "cant_find": "Can't find feature."
+            }
+        },
+        "remove_content": {
+            "success": "Content removed successfully."
+        }
+    },
+    "image": {
+        "create": {
+            "error": {
+                "not_found": "Image file not found"
+            }
+        },
+        "destroy": {
+            "success": "Image removed successfully."
+        },
+        "load": {
+            "error": {
+                "not_found": "Image not found."
+            }
+        }
+    },
+    "layer": {
+        "contributor": {
+            "add": {
+                "error": {
+                    "already_exists": "User is already layer creator.",
+                    "dont_exists": "Can't find user with this e-mail.",
+                    "email": "Error while sending e-mail to contributor."
+                },
+                "success": "Contributor added successfully."
+            },
+            "remove": {
+                "error": {
+                    "invalid_id": "Invalid contributor id."
+                },
+                "success": "Contributor removed successfully."
+            }
+        },
+        "create": {
+            "missing": "Layer type missing.",
+            "success": "Layer created successfully."
+        },
+        "destroy": {
+            "success": "Layer removed successfully."
+        },
+        "load": {
+            "error": "Error loading layer.",
+            "not_found": "Layer not found."
+        },
+        "update": {
+            "success": "Layer updated successfully.",
+            "tilelayer": {
+                "error": "Can't update TileLayer"
+            }
+        }
+    },
+    "map": {
+        "destroy": {
+            "success": "Map removed successfully."
+        },
+        "load": {
+            "error": {
+                "not_found": "Map not found."
+            }
+        }
+    },
+    "token": {
+        "accept_invitation": {
+            "error": {
+                "invalid_token": "Invalid token.",
+                "user_activation": "Can't actived this user."
+            },
+            "success": "Profile activated successfully."
+        },
+        "confirm_email": {
+            "error": {
+                "invalid": "Invalid token.",
+                "saving": "Error while saving token.",
+                "user": "Can't activate this user."
+            },
+            "success": "E-mail confirmed successfully, please wait redirection."
+        },
+        "email_change": {
+            "error": {
+                "generic": "Error while changing user e-mail."
+            },
+            "success": "E-mail changed successfully."
+        },
+        "error": {
+            "cant_save": "Can't save token.",
+            "invalid": "Invalid token.",
+            "invalid_type": "Invalid token type."
+        },
+        "load": {
+            "error": {
+                "expired": "This token expired.",
+                "not_found": "Token not found."
+            }
+        },
+        "migration": {
+            "error": {
+                "generic": "Error while migrating account."
+            },
+            "success": "Account migrated successfully."
+        },
+        "new_password": {
+            "error": {
+                "generic": "Error while changing password."
+            },
+            "success": "Password changed successfully."
+        }
+    },
+    "user": {
+        "create": {
+            "error": {
+                "email": {
+                    "invalid": "Invalid e-mail address.",
+                    "missing": "Please type an e-mail address.",
+                    "mailer": "Error while sending e-mail confirmation."
+                },
+                "missing_name": "Please enter your name.",
+                "password": {
+                    "length": "Password should have at least 6 characters.",
+                    "missing": "Please type a password."
+                }
+            },
+            "success": {
+                "with_token": "User profile created successfully. An activation link was sent.",
+                "without_token": "User profile created successfully."
+            },
+            "email": {
+                "error": {
+                    "mailer": "An error ocurred while send e-mail address confirmation."
+                },
+                "success": "User created successfully, please check your e-mail."
+            }
+        },
+        "load": {
+            "error": "Failed to load user with id "
+        },
+        "reset_pwd": {
+            "form": {
+                "error": {
+                    "user": {
+                        "not_found": "User not found."
+                    }
+                },
+                "title": "Recover password"
+            },
+            "mail": {
+                "title": "Recover password"
+            },
+            "token": {
+                "success": "Password change link sent successfully.",
+                "error": "Error while sending password change link."
+            }
+        },
+        "update": {
+            "email": {
+                "error": {
+                    "already_associated": "E-mail already associated to account.",
+                    "already_used": "This e-mail address is already used.",
+                    "invalid": "Invalid e-mail address.",
+                    "mailer": "Error while sending e-mail confirmation.",
+                    "missing_callback": "Missing callback."
+                },
+                "success": "An e-mail was sent to confirm address change."
+            },
+            "password": {
+                "error": {
+                    "dont_match": "Passwords don't match.",
+                    "length": "Password should be at least 6 characters long.",
+                    "wrong": "Wrong password."
+                },
+                "success": "Password changed successfully."
+            },
+            "success": "Profile updated successfully."
+        }
+    },
+    "views": {
+        "admin": {
+            "first_admin": {
+                "administrative_area": "Administrative Area",
+                "create_admin": "Create Admin",
+                "create_first_admin_user": "Create first admin user:",
+                "email": "E-mail",
+                "name": "Name",
+                "password": "Password"
+            },
+            "login": {
+                "administrative_area": "Administrative Area",
+                "email": "E-mail",
+                "login": "Login",
+                "password": "Password"
+            },
+            "menu": {
+                "general": "General",
+                "mailer": "Mailer",
+                "manage_users": "Manage users",
+                "settings": "Settings",
+                "users": {
+                    "invite": "Invites",
+                    "roles": "Roles"
+                }
+            },
+            "settings": {
+                "index": {
+                    "allow_geofiles_import": "Allow Geofiles import",
+                    "brazilian_portuguese": "Brazilian Portuguese",
+                    "client_url": "Client URL",
+                    "cors_allowed_domains": "CORS allowed domains",
+                    "english": "English",
+                    "facebookApiKey": "Facebook API key",
+                    "general_settings": "General Settings",
+                    "googleApiKey": "Google API Key",
+                    "only_invited_can_register": "Only invited can register",
+                    "server_url": "Server URL",
+                    "site_description": "Site Description",
+                    "site_language": "Idioma padrão",
+                    "site_title": "Site Title",
+                    "spanish": "Spanish",
+                    "update": "Update"
+                },
+                "mailer": {
+                    "enforceEmailConfirmation": "Enforce user e-mail address confirmation",
+                    "from_address": "Sender e-mail address",
+                    "mailer_settings": "Mailer Settings",
+                    "smtp": {
+                        "password": "SMTP Password",
+                        "host": "SMTP Host",
+                        "port": "SMTP Port",
+                        "user": "SMTP User",
+                        "use_ssl": "Use SSL"
+                    },
+                    "update": "Update"
+                }
+            },
+            "users": {
+                "new": {
+                    "admin": "Admin",
+                    "colaborator": "Colaborator",
+                    "editor": "Editor",
+                    "email": "E-mail",
+                    "invite_a_user": "Invite a user:",
+                    "name": "Name",
+                    "role": "Role",
+                    "send_invitation": "Send invitation"
+                },
+                "roles": {
+                    "admin": "Administrator",
+                    "change": "Change",
+                    "collaborator": "Colaborator",
+                    "editor": "Editor",
+                    "email": "E-mail",
+                    "manage_user_roles": "Manage User Roles",
+                    "name": "Name",
+                    "role": "Role",
+                    "there_are_no_users": "There are no users."
+                }
+            }
+        },
+        "includes": {
+            "header": {
+                "admin_area_link": "Go to Admin Area",
+                "login": "Login",
+                "logout": "Logout"
+            }
+        },
+        "layouts": {
+            "admin_area": {
+                "administration": "Administration"
+            }
         },
         "mailer": {
-          "from_address": "Sender e-mail address",
-          "mailer_settings": "Mailer Settings",
-          "password": "SMTP Password",
-          "smtp_host": "SMTP Host",
-          "smtp_port": "SMTP Port",
-          "smtp_user": "SMTP User",
-          "update": "Update",
-          "use_ssl": "Use SSL"
-        }
-      },
-      "users": {
-        "new": {
-          "admin": "Admin",
-          "colaborator": "Colaborator",
-          "editor": "Editor",
-          "email": "E-mail",
-          "invite_a_user": "Invite a user:",
-          "name": "Name",
-          "role": "Role",
-          "send_invitation": "Send invitation"
+            "contributions": {
+                "new_contributor": {
+                    "bye": "Bye!",
+                    "intro": "User __creator__ invited you to contribute do layer __layer__.",
+                    "salute": "Hi, __username__,",
+                    "visit_dashboard": "Visit dashboard to view your layers."
+                }
+            },
+            "email": {
+                "change": {
+                    "bye": "Bye!",
+                    "intro": "You have asked to change you e-mail address.",
+                    "salute": "Hi, __username__,",
+                    "link": "Follow this link confirm change."
+                },
+                "confirm": {
+                    "bye": "Bye!",
+                    "intro": "An e-mail address confirmation is needed.",
+                    "link": "Follow this link to confirm.",
+                    "salute": "Hi, __username__,"
+                }
+            },
+            "password": {
+                "recover": {
+                    "ignore": "If you didn't asked for password recover, please ignore this e-mail.",
+                    "intro": "There was a request for password recover.",
+                    "link": "Follow this link to proceed.",
+                    "salute": "Hi, __username__,",
+                    "thanks": "Bye!"
+                },
+                "set": {
+                    "intro": "You need a password to access.",
+                    "salute": "Hi, __username__,",
+                    "thanks": "Bye!",
+                    "token": "Follow this link to proceed."
+                }
+            },
+            "user": {
+                "invite": {
+                    "intro": "You were invited to map.",
+                    "link": "Follow this link to proceed.",
+                    "salute": "Hi, __username__,",
+                    "thanks": "Thanks!"
+                }
+            },
+            "subjects": {
+                "invite_contributor": "A invitation to map",
+                "password_reset": "Reset password",
+                "email_change": "E-mail address change",
+                "inform_contributor_permission": "Permission to modify layer",
+                "email_confirmation": "Confirm your e-mail address",
+                "please_migrate": "Migrate your account",
+                "confirm_email": "Confirm your e-mail"
+            }
         },
-        "roles": {
-          "admin": "Administrator",
-          "change": "Change",
-          "collaborator": "Colaborator",
-          "editor": "Editor",
-          "email": "E-mail",
-          "manage_user_roles": "Manage User Roles",
-          "name": "Name",
-          "role": "Role",
-          "there_are_no_users": "There are no users."
+        "tokens": {
+            "accept_invitation": {
+                "confirm_signup": "Sign up confirmation",
+                "define_password": "Define a password:",
+                "send": "Send",
+                "type_a_password": "Type a password"
+            }
         }
-      }
     },
-    "includes": {
-      "header": {
-        "admin_area_link": "Go to Admin Area",
-        "login": "Login",
-        "logout": "Logout"
-      }
-    },
-    "layouts": {
-      "admin_area": {
-        "administration": "Administration"
-      }
-    },
-    "mailer": {
-      "contributions": {
-        "new_contributor": {
-          "bye": "Bye!",
-          "intro": "User __creator__ invited you to contribute do layer __layer.",
-          "salute": "Hi, __username__,",
-          "visit_dashboard": "Visit dashboard to view your layers."
+    "mongoose": {
+        "errors": {
+            "user": {
+                "E-mail address already in use": "E-mail address already in use."
+            },
+            "layer": {
+                "undefined": "Layer is undefined.",
+                "Path `title` is required": "Type a layer title."
+            },
+            "feature": {
+                "Path `title` is required": "Type a feature title."
+            }
         }
-      },
-      "email": {
-        "change": {
-          "subject": "Confirm e-mail address change",
-          "bye": "Bye!",
-          "intro": "You have asked to change you e-mail address.",
-          "salute": "Hi, __username__,",
-          "link": "Follow this link confirm change."
-        },
-        "confirm": {
-          "bye": "Bye!",
-          "link": "Follow this link to confirm.",
-          "salute": "Hi, __username__,"
-        }
-      },
-      "password": {
-        "recover": {
-          "ignore": "If you didn't asked for password recover, please ignore this e-mail.",
-          "intro": "There was a request for password recover.",
-          "link": "Follow this link to proceed.",
-          "salute": "Hi, __username__,",
-          "thanks": "Bye!"
-        },
-        "set": {
-          "intro": "You need a password to access.",
-          "salute": "Hi, __username__,",
-          "thanks": "Bye!",
-          "token": "Follow this link to proceed."
-        }
-      },
-      "user": {
-        "account": {
-          "migrate": {
-            "bye": "Bye!",
-            "link": "Follow this link to proceed.",
-            "salute": "Hi, __username__,"
-          }
-        },
-        "invite": {
-          "subject": "Mapping invitation",
-          "intro": "You were invited to mapa.",
-          "link": "Follow this link to proceed.",
-          "salute": "Hi, __username__,",
-          "thanks": "Thanks!"
-        }
-      }
-    },
-    "tokens": {
-      "accept_invitation": {
-        "confirm_signup": "Sign up confirmation",
-        "define_password": "Define a password:",
-        "send": "Send",
-        "type_a_password": "Type a password"
-      }
     }
-  }
 }

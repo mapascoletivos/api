@@ -35,6 +35,21 @@ block content
 						input(name="settings[clientUrl]" value=settings.clientUrl type="text")
 				tr
 					td.label
+						label(for="settings.allowedDomains")=t('views.admin.settings.index.cors_allowed_domains')
+					td.input
+						input(name="settings[allowedDomains]" value=settings.allowedDomains type="text")
+				tr
+					td.label
+						label(for="settings.facebookApiKey")=t('views.admin.settings.index.facebookApiKey')
+					td.input
+						input(name="settings[facebookApiKey]" value=settings.facebookApiKey type="text")
+				tr
+					td.label
+						label(for="settings.googleApiKey")=t('views.admin.settings.index.googleApiKey')
+					td.input
+						input(name="settings[googleApiKey]" value=settings.googleApiKey type="text")
+				tr
+					td.label
 						label(for="settings.onlyInvitedUsers")=t('views.admin.settings.index.only_invited_can_register')
 					td.input
 						input(type="checkbox" name="settings[onlyInvitedUsers]" checked=settings.onlyInvitedUsers)

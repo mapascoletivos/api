@@ -16,7 +16,7 @@ var mongoose = require('mongoose'),
  */
 
 var UserSchema = new Schema({
-	role: { type: String, enum: ['admin', 'editor', 'collaborator'], default: 'collaborator'},
+	role: { type: String, enum: ['admin', 'editor', 'collaborator'], default: 'editor'},
 	name: { type: String, default: '' },
 	email: { type: String, default: '', validate: [validate.email, 'Invalid e-mail address.'] },
 	token: { type: String },
@@ -28,11 +28,11 @@ var UserSchema = new Schema({
 	localization: String,
 	bio: {type: String, default: '' },
 	web: String,
-	status: {type: String, enum: ['to_migrate', 'inactive', 'active'], default: 'inactive' },
+	status: {type: String, enum: ['to_migrate', 'inactive', 'active'], default: 'active' },
 	salt: { type: String, default: '' },
 	layers: [{type: Schema.ObjectId, ref: 'Layer'}],
 	authToken: { type: String, default: '' }, 
-	needsEmailConfirmation: {type: Boolean, default: true},	
+	emailConfirmed: {type: Boolean, default: false},	
 	facebook: {},
 	google: {},
 	oldId: Number // to store id used in old Mapas Coletivos

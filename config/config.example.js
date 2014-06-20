@@ -23,7 +23,6 @@ var
 
 module.exports = {
 	development: {
-		allowedDomains: '*',
 		root: rootPath,
 		db: 'mongodb://localhost/yby_dev',
 		i18n: i18n
@@ -34,7 +33,6 @@ module.exports = {
 		i18n: i18n
 	},
 	production: {
-		allowedDomains: '*', // temporary
 		root: rootPath,
 		db: process.env.MONGOLAB_URI || 'mongodb://localhost/yby_production',
 		i18n: i18n

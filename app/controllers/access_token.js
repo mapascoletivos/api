@@ -154,7 +154,7 @@ exports.local = function(req, res, next) {
 
 		// Unknown error  
 		if (err) { 
-			return res.json(400, messages.mongooseError(req.i18n, err));
+			return res.json(400, messages.error(req.i18n, err));
 
 		// Error raised by passport
 		} else if (info && info.message) { 
@@ -178,17 +178,23 @@ exports.local = function(req, res, next) {
 					return res.json(400, messages.error(req.i18n.t("access_token.local.error.need_password"))); 
 			});				
 	
-		// User needs to confirm his email
-		} else if (user.needsEmailConfirmation) {
-			mailer.confirmEmail(user, req.app.locals.settings.general.serverUrl, req.body.callback_url, function(err){
+		// User needs to confirm his email, send another e-mail
+		} else if (req.app.locals.settings.mailer.enforceEmailConfirmation && !user.emailConfirmed) {
+
+			var data = {
+				user: user,
+				callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
+			}
+
+			req.app.locals.mailer.sendEmail('confirm_email', user.email, data, req.i18n, function(err) {
 				if (err)
 					return res.json(400, messages.error(req.i18n.t("access_token.local.error.send_email"))); 
 				else
-					return res.json(400, messages.error(req.i18n.t("access_token.local.error.needs_activation"))); 
+					return res.json(400, messages.error(req.i18n.t("access_token.local.error.needs_email_confirmation"))); 
 			});
 
 		// Login successful, proceed with token 
-		} else {
+		} else if (user) {
 			generateAccessToken(user, res);
 		}
 
@@ -208,7 +214,6 @@ exports.logout = function(req, res, next) {
 		AccessToken.findOne({_id: access_token}, function(err, at){
 			if (err) return res.json(400, err);
 			if (!at) return res.json(400, messages.error(req.i18n.t("access_token.logout.error.inexistent_token")));
-
 			at.expired = true;
 			at.save(function(err){
 				if (err) return res.json(400, err);

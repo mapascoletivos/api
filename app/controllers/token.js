@@ -35,33 +35,32 @@ exports.load = function(req, res, next, id){
 }
 
 /**
- * Activate Account Token
+ * Confirm E-mail Token
  */
 
-exports.activateAccount = function(req, res){
+exports.confirmEmail = function(req, res){
 	var
 		token = req.token;
 		
 	// invalid route for token
-	if (token.type != 'activateAccount') {
-		return res.render('tokens/index', {errors: [req.i18n.t('token.activate_account.error.invalid')]});	
+	if (token.type != 'confirm_email') {
+		return res.render('tokens/index', {errors: [req.i18n.t('token.error.invalid_type')]});	
 	} else {
 		mongoose.model('User').findById(token.user, function(err, user){
 			if (err) {
 				return res.render('tokens/index', {
-					errors: [req.i18n.t('token.activate_account.error.user')],
+					errors: [req.i18n.t('token.confirm_email.error.user')],
 					callbackUrl: token.callbackUrl,					
 					autoRedirect: false
 				});
 			}
 			
-			user.status = 'active';
-			user.needsEmailConfirmation = false;
+			user.emailConfirmed = true;
 
 			user.save(function(err){
 				if (err)
 					return res.render('tokens/index', {
-						errors: [req.i18n.t('token.activate_account.error.user')],
+						errors: [req.i18n.t('token.confirm_email.error.user')],
 						callbackUrl: token.callbackUrl,
 						autoRedirect: false
 					});
@@ -69,16 +68,15 @@ exports.activateAccount = function(req, res){
 
 					token.expired = true;
 					token.save(function(err){
-						console.log(err);
 						if (err)
 							return res.render('tokens/index', {
-								errors: [req.i18n.t('token.activate_account.error.saving')],
+								errors: [req.i18n.t('token.confirm_email.error.saving')],
 								callbackUrl: token.callbackUrl,
 								autoRedirect: false
 							})
 						else
 							return res.render('tokens/index', {
-								success: [req.i18n.t('token.activate_account.success')],
+								success: [req.i18n.t('token.confirm_email.success')],
 								callbackUrl: token.callbackUrl,
 								autoRedirect: true
 							});
@@ -88,6 +86,7 @@ exports.activateAccount = function(req, res){
 		})
 	}
 }
+
 
 /**
  * Accept Invitation
@@ -135,7 +134,6 @@ exports.acceptInvitation = function(req, res){
 
 			user.save(function(err){
 				if (err) {
-					console.log(err);
 					return res.render('tokens/index', {
 						errors: [req.i18n.t('token.accept_invitation.error.user_activation')],
 						callbackUrl: token.callbackUrl,
@@ -146,7 +144,6 @@ exports.acceptInvitation = function(req, res){
 
 					token.expired = true;
 					token.save(function(err){
-						console.log(err);
 						if (err)
 							return res.render('tokens/index', {
 								errors: [req.i18n.t('token.error.cant_save')],
@@ -203,6 +200,10 @@ exports.newPassword = function(req, res){
 			
 			user.password = req.body.password;
 
+			// if user is from old Mapas Coletivos, reset flags
+			user.emailConfirmed = true;
+			user.status = 'active';
+
 			user.save(function(err){
 				if (err)
 					return res.render('tokens/index', {errors: [req.i18n.t('token.new_password.error.generic')]});
@@ -213,41 +214,6 @@ exports.newPassword = function(req, res){
 						autoRedirect: true
 					});
 				}
-			});
-		})
-		
-	}
-}
-
-/**
- * Migrate account
- */
-
-exports.migrateAccount = function(req, res){
-	var
-		token = req.token;
-	
-	// invalid route for token
-	if (token.type != 'migrate_account') {
-		return res.render('tokens/index', {errors: [req.i18n.t('token.error.invalid')]});
-	} else {
-		mongoose.model('User').findById(token.user, function(err, user){
-			if (err) {
-				return res.render('tokens/index', {errors: [req.i18n.t('token.migration.error.generic')]});
-			}
-			
-			user.password = token.data.password;
-			user.status = 'active';
-			user.needsEmailConfirmation = false;
-
-			user.save(function(err){
-				if (err)
-				return res.render('tokens/index', {errors: [req.i18n.t('token.migration.error.generic')]});
-				else {
-					req.flash('info', req.i18n.t('token.migration.success'))
-				}
-
-				return res.redirect('/login');
 			});
 		})
 		
