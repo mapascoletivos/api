@@ -390,7 +390,8 @@
         "email_change": "Alterar endereço de e-mail",
         "inform_contributor_permission": "Permissão para modificar camada",
         "email_confirmation": "Confirme seu endereço de e-mail",
-        "please_migrate": "Migre sua conta"
+        "please_migrate": "Migre sua conta",
+        "confirm_email": "Confirme seu e-mail"
       }
     },
     "tokens": {

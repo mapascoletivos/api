@@ -48,7 +48,17 @@ module.exports = function (app, config, passport) {
 
 	var allowCrossDomain = function(req, res, next) {
 		if (req.app.locals.settings.general.allowedDomains) {
-			res.header('Access-Control-Allow-Origin', req.app.locals.settings.general.allowedDomains);
+
+			var domains = req.app.locals.settings.general.allowedDomains.split(',');
+
+			domains = _.map(domains, function(d){return d.trim();})
+
+			if (domains[0] == '*') {
+				res.set('Access-Control-Allow-Origin', req.headers.origin);
+			} else {
+				if (_.contains(domains, req.headers.origin)) 
+					res.header('Access-Control-Allow-Origin', req.headers.origin);
+			}
 			res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
 			res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
 		}

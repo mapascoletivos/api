@@ -154,7 +154,7 @@ exports.local = function(req, res, next) {
 
 		// Unknown error  
 		if (err) { 
-			return res.json(400, messages.mongooseError(req.i18n, err));
+			return res.json(400, messages.error(req.i18n, err));
 
 		// Error raised by passport
 		} else if (info && info.message) { 
@@ -194,7 +194,7 @@ exports.local = function(req, res, next) {
 			});
 
 		// Login successful, proceed with token 
-		} else {
+		} else if (user) {
 			generateAccessToken(user, res);
 		}
 
@@ -214,7 +214,6 @@ exports.logout = function(req, res, next) {
 		AccessToken.findOne({_id: access_token}, function(err, at){
 			if (err) return res.json(400, err);
 			if (!at) return res.json(400, messages.error(req.i18n.t("access_token.logout.error.inexistent_token")));
-
 			at.expired = true;
 			at.save(function(err){
 				if (err) return res.json(400, err);

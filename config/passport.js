@@ -30,7 +30,7 @@ module.exports = function (passport, config) {
 					return done(err)
 				else if (!user) 
 					return done(null, false, { message: 'access_token.local.user_not_registered' })
-				else if (user.status == 'to_migrate') {
+				else if (user.status == 'to_migrate' || !user.hashed_password) {
 
 					var data = {
 						user: user,
@@ -38,7 +38,6 @@ module.exports = function (passport, config) {
 					}
 
 					req.app.locals.mailer.sendEmail('password_reset', user.email, data, req.i18n, function(err) {
-						console.log(err);
 						if (err) 
 		          			return done(err, false, { message: 'access_token.local.needs_migration.error' })
 						else 

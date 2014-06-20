@@ -385,12 +385,13 @@
                 }
             },
             "subjects": {
-              "invite_contributor": "A invitation to map",
-              "password_reset": "Reset password",
-              "email_change": "E-mail address change",
-              "inform_contributor_permission": "Permission to modify layer",
-              "email_confirmation": "Confirm your e-mail address",
-              "please_migrate": "Migrate your account"
+                "invite_contributor": "A invitation to map",
+                "password_reset": "Reset password",
+                "email_change": "E-mail address change",
+                "inform_contributor_permission": "Permission to modify layer",
+                "email_confirmation": "Confirm your e-mail address",
+                "please_migrate": "Migrate your account",
+                "confirm_email": "Confirm your e-mail"
             }
         },
         "tokens": {
