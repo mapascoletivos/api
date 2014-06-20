@@ -92,10 +92,11 @@ AreaSchema.statics = {
 				if (parent)
 					area_properties.parent = parent;
 
+
 				Area.upsertArea(area_properties, function(err, area){
 					if (err){
 						console.log('erro no upsert' + err);
-						doneCreatingArea(err);	
+						doneWhichContains(err);	
 					} 
 					else {
 
