@@ -19,11 +19,16 @@
     "local": {
       "error": {
         "need_password": "Você precisa de uma senha para acessar seu perfil. Verifique seu e-mail.",
-        "needs_email_confirmation": "",
+        "needs_email_confirmation": "Verifique sua caixa de e-mail para confirmar sua conta.",
         "send_email": "Houve um erro enviando um token de senha para seu e-mail."
       },
-      "needs_migration": "Sua conta não foi migrada ainda, por favor visite esta <a href='/migrate' target='_self'>página</a>.",
-      "unauthorized": "Não autorizado."
+      "unauthorized": "Não autorizado.",
+      "user_not_registered": "Usuário não encontrado.",
+      "invalid_password": "Senha inválida.",
+      "needs_migration": {
+          "error": "Não foi possível acessar sua conta, contate o suporte.",
+          "sent": "Você precisa definir uma nova senha, cheque seu e-mail."
+      }
     },
     "logout": {
       "error": {
@@ -33,7 +38,11 @@
       "successful": "Logout bem sucedido."
     }
   },
-  "admin": "admin",
+  "admin": {
+      "invite_user": {
+          "success": "Usuário convidado com sucesso."
+      }
+  },
   "content": {
     "destroy": {
       "success": "Conteúdo removido com sucesso."
@@ -132,6 +141,7 @@
     },
     "confirm_email": {
       "error": {
+        "invalid": "Token inválido.",
         "saving": "Erro grabando token.",
         "user": "No fue posible activar perfil de usuario."
       },
@@ -146,13 +156,19 @@
     "error": {
       "cant_save": "Erro ao salvar token.",
       "invalid": "Token inválido.",
-      "invalid_type": ""
+      "invalid_type": "Tipo de token inválido."
     },
     "load": {
       "error": {
         "expired": "Token expirado.",
         "not_found": "Token não encontrado."
       }
+    },
+    "migration": {
+      "error": {
+        "generic": "Erro migrando conta."
+      },
+      "success": "Conta migrada com sucesso."
     },
     "new_password": {
       "error": {
@@ -163,22 +179,27 @@
   },
   "user": {
     "create": {
-      "email": {
-        "error": {
-          "mailer": ""
-        },
-        "success": ""
-      },
       "error": {
         "email": {
           "invalid": "Endereço de e-mail inválido.",
-          "missing": "Entre com um endereço de e-mail."
+          "missing": "Entre com um endereço de e-mail.",
+          "mailer": "Erro no envio de e-mail de confirmação."
         },
         "missing_name": "Digite seu nome.",
         "password": {
           "length": "A senha deve ter no mínimo 6 caracteres.",
           "missing": "Entre com uma senha."
         }
+      },
+      "success": {
+        "with_token": "Perfil de usuário criado com sucesso, um link de ativação foi enviado.",
+        "without_token": "Perfil de usuário criado com sucesso."
+      },
+      "email": {
+        "error": {
+          "mailer": "Um erro ocorreu ao enviar confirmação de endereço."
+        },
+        "success": "Usuário criado com sucesso, verifique seu e-mail."
       }
     },
     "load": {
@@ -197,8 +218,8 @@
         "title": "Recuperar senha"
       },
       "token": {
-        "error": "",
-        "success": "Token de alteração de senha enviado."
+        "error": "Erro ao enviar link de mudança de senha.",
+        "success": "Link de alteração de senha enviado para seu e-mail."
       }
     },
     "update": {
@@ -254,11 +275,11 @@
           "allow_geofiles_import": "Permitir importação de arquivo geo",
           "brazilian_portuguese": "Português Brasileiro",
           "client_url": "URL do cliente",
-          "cors_allowed_domains": "",
+          "cors_allowed_domains": "Domínio permitidos para CORS",
           "english": "Inglês",
-          "facebookApiKey": "",
+          "facebookApiKey": "API key do Facebook",
           "general_settings": "Configurações gerais",
-          "googleApiKey": "",
+          "googleApiKey": "API key do Google",
           "only_invited_can_register": "Somente convidados podem registrar-se",
           "server_url": "URL do servidor",
           "site_description": "Descrição do site",
@@ -268,15 +289,15 @@
           "update": "Atualizar"
         },
         "mailer": {
-          "enforceEmailConfirmation": "",
+          "enforceEmailConfirmation": "Forçar confirmação de e-mail.",
           "from_address": "Endereço do remetente",
           "mailer_settings": "Configurações de envio de e-mail",
           "smtp": {
-            "host": "",
-            "password": "",
-            "port": "",
-            "use_ssl": "",
-            "user": ""
+            "host": "Host",
+            "password": "Senha",
+            "port": "Porta",
+            "use_ssl": "Usar SSL",
+            "user": "Usuário"
           },
           "update": "Atualizar"
         }
@@ -321,7 +342,7 @@
       "contributions": {
         "new_contributor": {
           "bye": "Bom mapeamento!",
-          "intro": "Você foi convidado por __creator__ a contribuir na camada __layer.",
+          "intro": "Você foi convidado por __creator__ a contribuir na camada __layer__.",
           "salute": "Olá, __username__,",
           "visit_dashboard": "Visite seu painel de controle para visualizar suas camadas."
         }
@@ -335,16 +356,16 @@
         },
         "confirm": {
           "bye": "Bom mapeamento!",
-          "intro": "",
-          "link": "Prosseguir com a confirmação de e-mail.",
+          "intro": "É necessária confirmação de seu endereço de e-mail.",
+          "link": "Clique para confirmar.",
           "salute": "Olá, __username__,"
         }
       },
       "password": {
         "recover": {
           "ignore": "Se você não fez esta solicitação, ignore este e-mail.",
-          "intro": "Você solicitou alteração de senha.",
-          "link": "Prosseguir com alteração de senha.",
+          "intro": "Siga o link abaixo para definir uma nova senha.",
+          "link": "Definir senha.",
           "salute": "Olá, __username__,",
           "thanks": "Bom mapeamento!"
         },
@@ -362,6 +383,14 @@
           "salute": "Olá, __username__,",
           "thanks": "Obrigado!"
         }
+      },
+      "subjects": {
+        "invite_contributor": "Convite para mapeamento",
+        "password_reset": "Redefinir senha",
+        "email_change": "Alterar endereço de e-mail",
+        "inform_contributor_permission": "Permissão para modificar camada",
+        "email_confirmation": "Confirme seu endereço de e-mail",
+        "please_migrate": "Migre sua conta"
       }
     },
     "tokens": {
@@ -370,6 +399,20 @@
         "define_password": "Defina uma senha:",
         "send": "Enviar",
         "type_a_password": "Digite uma senha"
+      }
+    }
+  },
+  "mongoose": {
+    "errors": {
+      "user": {
+        "E-mail address already in use": "Enedereço de e-mail já cadastrado."
+      },
+      "layer": {
+        "undefined": "Camada não está definida.",
+        "Path `title` is required": "Entre com um título para camada."
+      },
+      "feature": {
+        "Path `title` is required": "Entre com um título para o local."
       }
     }
   }

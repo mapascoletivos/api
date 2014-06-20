@@ -16,7 +16,7 @@ var mongoose = require('mongoose'),
  */
 
 var UserSchema = new Schema({
-	role: { type: String, enum: ['admin', 'editor', 'collaborator'], default: 'collaborator'},
+	role: { type: String, enum: ['admin', 'editor', 'collaborator'], default: 'editor'},
 	name: { type: String, default: '' },
 	email: { type: String, default: '', validate: [validate.email, 'Invalid e-mail address.'] },
 	token: { type: String },

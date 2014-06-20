@@ -61,7 +61,6 @@ AreaSchema.statics = {
 				var 
 					entry = entries_list.pop();
 
-
 				// Ignore postcodes because they don't appear in hierarchical order
 				if (entry.type == 'postcode') {
 					entry = entries_list.pop();
@@ -71,10 +70,11 @@ AreaSchema.statics = {
 					
 					area_properties = {
 						type: 'country',
-						code: entry.value.toUpperCase() 
+						code: entry.value.toUpperCase(),
+						name: entry.value.toUpperCase()
 					} 
 
-					// next entry is the contry name
+					// next entry is possible the contry name
 					entry = entries_list.pop();
 					if (entry.type == 'country') {
 						area_properties.name = entry.value;
@@ -92,10 +92,8 @@ AreaSchema.statics = {
 				if (parent)
 					area_properties.parent = parent;
 
-
 				Area.upsertArea(area_properties, function(err, area){
 					if (err){
-						console.log('erro no upsert' + err);
 						doneWhichContains(err);	
 					} 
 					else {
@@ -157,7 +155,10 @@ AreaSchema.statics = {
 
 				response.on('end', function(){
 					var response = JSON.parse(body);
-					createAreasFromNominatim(response.address, doneWhichContains);
+					if (response.address)
+						createAreasFromNominatim(response.address, doneWhichContains);
+					else
+						doneWhichContains();
 				});
 
 			} else {
