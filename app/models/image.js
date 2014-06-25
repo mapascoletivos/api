@@ -51,13 +51,14 @@ ImageSchema.methods = {
 			self = this;
 
 		imager.upload([sourcefile], function (err, cdnUri, uploaded) {
+			console.log(uploaded);
 			if (err) next(err);
 			else {
 				self.file.name = uploaded[uploaded.length-1];
 				self.file.url = baseUrl + self.file.name;
 				self.save(done);
 			}
-		}, 'img');
+		}, 'items');
 	}
 }
 

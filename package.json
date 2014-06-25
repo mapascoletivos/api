@@ -1,73 +1,76 @@
 {
-	"name": "yby",
-	"description": "A collaborative mapping platform",
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/oeco/yby.git"
-	},
-	"version": "0.1.0",
-	"author": "Ecolab <gustavo.faleiros@gmail.com>",
-	"contributors": [
-		{
-			"name": "Miguel Peixe",
-			"email": "miguel@cardume.art.br"
-		},
-		{
-			"name": "Vitor George",
-			"email": "vitor.george@gmail.com"
-		}
-	],
-	"engines": {
-		"node": "0.10.x",
-		"npm": "1.2.x"
-	},
-	"main": "web.js",
-	"scripts": {
-		"watch": "NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon --watch web.js",
-		"forever": "NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/forever start -w --spinSleepTime web.js",
-		"start": "NODE_PATH=./app/controllers node web.js",
-		"test": "make test",
-		"i18n": "./node_modules/.bin/i18next app/ -o locales/ -r -l en-US,es,es-ES,pt,pt-BR"
-	},
-	"dependencies": {
-		"dotenv": "latest",
-		"moment": "latest",
-		"express": "3.x",
-		"express-namespace": "latest",
-		"nodemailer": "latest",
-		"postmark": "latest",
-		"mysql": "latest",
-		"mongoose": "latest",
-		"mongoose-user": "latest",
-		"mongoose-validate": "latest",
-		"crypto": "latest",
-		"validator": "latest",
-		"passport": "latest",
-		"passport-local": "latest",
-		"passport-http-bearer": "latest",
-		"connect-mongo": "latest",
-		"connect-flash": "latest",
-		"view-helpers": "latest",
-		"jade": "latest",
-		"less": "latest",
-		"less-middleware": "~0.1.15",
-		"async": "latest",
-		"underscore": "latest",
-		"imager": "latest",
-		"i18next": "1.7.0",
-		"forever": "latest"
-	},
-	"devDependencies": {
-		"nodemon": "1.1.x",
-		"mocha": "latest",
-		"should": "latest",
-		"supertest": "latest",
-		"factory-lady": "latest",
-		"i18next-parser": "latest"
-	},
-	"keywords": [
-		"mapas",
-		"yby",
-		"openstreetmap"
-	]
+  "name": "yby",
+  "description": "A collaborative mapping platform",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/oeco/yby.git"
+  },
+  "version": "0.1.0",
+  "author": "Ecolab <gustavo.faleiros@gmail.com>",
+  "contributors": [
+    {
+      "name": "Miguel Peixe",
+      "email": "miguel@cardume.art.br"
+    },
+    {
+      "name": "Vitor George",
+      "email": "vitor.george@gmail.com"
+    }
+  ],
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  },
+  "main": "web.js",
+  "scripts": {
+    "watch": "NODE_ENV=development ./node_modules/.bin/nodemon --watch web.js",
+    "forever": "NODE_ENV=development ./node_modules/.bin/forever start -w --spinSleepTime web.js",
+    "start": "node web.js",
+    "test": "NODE_ENV=test mocha test/",
+    "i18n": "./node_modules/.bin/i18next app/ -o locales/ -r -l en-US,es,es-ES,pt,pt-BR"
+  },
+  "dependencies": {
+    "dotenv": "latest",
+    "moment": "latest",
+    "express": "3.x",
+    "express-namespace": "latest",
+    "nodemailer": "latest",
+    "postmark": "latest",
+    "mysql": "latest",
+    "mongoose": "latest",
+    "mongoose-user": "latest",
+    "mongoose-validate": "latest",
+    "crypto": "latest",
+    "validator": "latest",
+    "passport": "latest",
+    "passport-local": "latest",
+    "passport-http-bearer": "latest",
+    "connect-mongo": "latest",
+    "connect-flash": "latest",
+    "view-helpers": "latest",
+    "jade": "latest",
+    "less": "latest",
+    "less-middleware": "~0.1.15",
+    "async": "latest",
+    "underscore": "latest",
+    "imager": "latest",
+    "i18next": "1.7.0",
+    "forever": "latest"
+  },
+  "devDependencies": {
+    "nodemon": "latest",
+    "mocha": "latest",
+    "should": "latest",
+    "supertest": "latest",
+    "factory-lady": "latest",
+    "i18next-parser": "latest",
+    "grunt": "latest",
+    "grunt-mocha": "~0.4.11",
+    "lorem-ipsum": "~1.0.1"
+  },
+  "keywords": [
+    "mapas",
+    "yby",
+    "openstreetmap"
+  ]
 }

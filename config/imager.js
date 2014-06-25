@@ -1,14 +1,16 @@
 module.exports = {
 	variants: {
-		img: {
-			resizeAndCrop: {
-				img: {
-					resize: '1000x1000',
-					crop: '900x900'
-				}
+		items: {
+			resize: {
+				mini : "200x200",
+				default: "800x600",
+				large: "1280x1280"
+			},
+			thumbnail: {
+				thumb: "100x100 Center"
 			}
 		}
-	},
+  	},
 
 	storage: {
 		Local: {

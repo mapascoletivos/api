@@ -38,3 +38,7 @@ Access the administrative area at [http://localhost:3000/admin](http://localhost
   - **Collaborator**: can create features and contents;
   - **Editor**: same as collaborator, plus can create new layers and maps;
   - **Admin**: same as editor, plus access to admin area.
+
+## Developement
+
+Write tests and run `npm test`.

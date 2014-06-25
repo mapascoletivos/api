@@ -10,15 +10,15 @@ var mongoose = require('mongoose');
  */
 
 var 
-	token = require('token'),
-	accessToken = require('access_token')
-	maps = require('maps'),
-	layers = require('layers'),
-	features = require('features'),
-	contents = require('contents'),
-	images = require('images'),
-	users = require('users'),
-	admin = require('admin'),
+	token = require('../app/controllers/token'),
+	accessToken = require('../app/controllers/access_token')
+	maps = require('../app/controllers/maps'),
+	layers = require('../app/controllers/layers'),
+	features = require('../app/controllers/features'),
+	contents = require('../app/controllers/contents'),
+	images = require('../app/controllers/images'),
+	users = require('../app/controllers/users'),
+	admin = require('../app/controllers/admin'),
 	auth = require('./middlewares/authorization');
 
 /**
