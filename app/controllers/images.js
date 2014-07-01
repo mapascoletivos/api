@@ -6,6 +6,7 @@
 var 
 	fs = require('fs'),
 	_ = require('underscore'),
+	messages = require('../../lib/messages'),
 	Imager = require('imager'),
 	imagerConfig = require('../../config/imager.js'),
 	imager = new Imager(imagerConfig, 'Local'),
@@ -51,13 +52,14 @@ exports.showForm = function (req, res) {
 
 exports.create = function (req, res) {
 
-	if (!req.files.attachment.file) 
+	if (!req.files.attachment.file) {
 		return res.json(400, messages.error(req.i18n.t('image.create.error.not_found')));
+	}
 	else {
 		
 		var image = new Image();
 
-		baseUrl = '/uploads/images/img_';
+		var baseUrl = '/uploads/images/img_';
 
 		image.uploadImageAndSave(req.files.attachment.file, baseUrl, function(err){
 			if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'image'));

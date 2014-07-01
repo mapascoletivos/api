@@ -3,34 +3,39 @@
  */
 
 var 
+	fs = require('fs'),
 	should = require('should'),
 	request = require('supertest'),
 	app = require('../../web'),
 	mongoose = require('mongoose'),
 	Image = mongoose.model('Image'),
 	Factory = require('../../lib/factory'),
-	clearDb = require('../../lib/clearDb');
+	messages = require('../../lib/messages'),
+	clear = require('../../lib/clear');
 
 var
 	apiPrefix = '/api/v1',
-	imageFile = 'fixtures/ecolab.png';
+	imageFixturePath = __dirname + '/../../fixtures/ecolab.png',
+	uploadedImagesPath = __dirname + '/../../public/uploads/images',
+	userAccessToken,
+	userModel;
 
 /*
- * Helper function to log a user
+ * Helper function to log in a user
  */
 
-function loginUser(agent, user){
-	return function(done) {
-		agent
+function login(user, callback){
+	request(app)
 		.post(apiPrefix + '/access_token/local')
 		.send({ email: user.email, password: user.password })
 		.end(onResponse);
 
-		function onResponse(err, res) {
-			should.not.exist(err);
-			should(res).have.property('status', 200);
-			return done();
-		}
+	function onResponse(err, res) {
+		should.not.exist(err);
+		should(res).have.property('status', 200);
+		should.exist(res.body.accessToken);
+		userAccessToken = 'Bearer '+ res.body.accessToken;
+		callback();
 	}
 }
 
@@ -38,28 +43,25 @@ function loginUser(agent, user){
 
 describe('Images API', function(){
 
-	var 
-		loggedAgent = request.agent(app),
-		user1;
 
 	before(function (done) {
 		mongoose.connection.on('open', function(){
-			clearDb.run(function(err){
+			clear.all(function(err){
 				should.not.exist(err);
 				Factory.create('User', function(user){
-					user1 = user;
-					return loginUser(loggedAgent,user1)(done);
+					userModel = user;
+					login(userModel, done);
 				});			
-		  	})			
+			});
 		});
 	})
 
 
 	after(function (done) {
-		clearDb.run(function(err){
+		clear.all(function(err){
 			should.not.exist(err);
 			done(err);
-	  	});
+		});
 	})
 
 	/**
@@ -75,6 +77,53 @@ describe('Images API', function(){
 					.end(done)
 			});
 		});	
+
+		context('logged in', function(){
+			it('valid image creation request', function (done) {
+				request(app)
+					.post(apiPrefix + '/images')
+					.set('Authorization', userAccessToken)
+					.attach('attachment[file]', imageFixturePath) // attach like SirTrevo does
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(onResponse);
+
+					function onResponse(err, res) {
+
+						should.not.exist(err);
+						should.exist(res.body.file.name);
+
+						// thumb image file is saved properly
+						var thumbFilename = uploadedImagesPath + '/thumb_' + res.body.file.name;
+						fs.existsSync(thumbFilename).should.be.true;
+						var thumbSize = fs.statSync(thumbFilename).size; 
+						thumbSize.should.be.above(0);
+
+						// mini image file is saved properly
+						var miniFilename = uploadedImagesPath + '/mini_' + res.body.file.name;
+						fs.existsSync(miniFilename).should.be.true;
+						var miniSize = fs.statSync(miniFilename).size; 
+						miniSize.should.be.above(thumbSize);
+
+						// default image file is saved properly
+						var defaultFilename = uploadedImagesPath + '/default_' + res.body.file.name;
+						fs.existsSync(defaultFilename).should.be.true;
+						var defaultSize = fs.statSync(defaultFilename).size; 
+						defaultSize.should.be.above(miniSize);
+
+						// large image file is saved properly
+						var largeFilename = uploadedImagesPath + '/large_' + res.body.file.name;
+						fs.existsSync(largeFilename).should.be.true;
+						var largeSize = fs.statSync(largeFilename).size; 
+						largeSize.should.be.above(defaultSize);
+
+						done();
+					}
+			});
+
+			it('missing attachment');
+			it('invalid image');
+		});	
 	});	
 
 	/**
@@ -87,7 +136,12 @@ describe('Images API', function(){
 					.del(apiPrefix + '/images')
 					.expect('Content-Type', /json/)
 					.expect(403)
-					.end(done)
+					.end(onResponse)
+
+				function onResponse(err, res) {
+					should(messages.hasValidMessages(res.body)).be.true;
+					done(err);
+				}
 			});
 		});	
 	});	

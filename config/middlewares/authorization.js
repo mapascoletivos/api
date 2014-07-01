@@ -21,11 +21,11 @@ exports.requiresLogin = function (req, res, next) {
 		}  
 
 		if (err) {
-			return res.send(403, { error: 'Error: ' + info });        
+			return res.send(403, messages.error(info));        
 		}
 
 		if (!user) {
-			return res.send(403, { error: 'Invalid token' });
+			return res.send(403, messages.error('Invalid token'));
 		}
 
 		if (user) {
@@ -34,7 +34,7 @@ exports.requiresLogin = function (req, res, next) {
 		}
 
 		// (default res.forbidden() behavior can be overridden in `config/403.js`)
-		return res.forbidden('You are not permitted to perform this action.');    
+		return res.forbidden('You are not allowed to perform this action.');    
 
 	})(req, res, next);
 
