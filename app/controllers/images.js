@@ -59,15 +59,12 @@ exports.create = function (req, res) {
 		
 		var image = new Image();
 
-		var baseUrl = '/uploads/images/img_';
+		image.creator = req.user;
 
-		image.uploadImageAndSave(req.files.attachment.file, baseUrl, function(err){
+		image.uploadImageAndSave(req.files.attachment.file, function(err){
 			if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'image'));
-			else {
-				image.file.url = req.app.locals.settings.general.serverUrl + image.file.url;
-				res.json(image);
-			}
-		})
+			else return res.json(image);
+		});
 	}
 }
 

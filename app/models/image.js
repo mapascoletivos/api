@@ -15,12 +15,8 @@ var mongoose = require('mongoose'),
 
 var ImageSchema = new Schema({
 	creator: {type: Schema.ObjectId, ref: 'User'},
-	content: {type: Schema.ObjectId, ref: 'Content'},
 	uploadedAt: {type: Date, default: Date.now},
-	file: {
-		name: String,
-		url: String
-	}
+	filename: String
 });
 
 /**
@@ -46,16 +42,14 @@ ImageSchema.pre('remove', function(next){
 
 ImageSchema.methods = {
 
-	uploadImageAndSave: function(sourcefile, baseUrl, done){
+	uploadImageAndSave: function(sourcefile, done){
 		var 
 			self = this;
 
 		imager.upload([sourcefile], function (err, cdnUri, uploaded) {
-			console.log(uploaded);
 			if (err) next(err);
 			else {
-				self.file.name = uploaded[uploaded.length-1];
-				self.file.url = baseUrl + self.file.name;
+				self.filename = uploaded[uploaded.length-1];
 				self.save(done);
 			}
 		}, 'items');

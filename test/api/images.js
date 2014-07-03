@@ -18,7 +18,10 @@ var
 	imageFixturePath = __dirname + '/../../fixtures/ecolab.png',
 	uploadedImagesPath = __dirname + '/../../public/uploads/images',
 	userAccessToken,
-	userModel;
+	userModel,
+	userId,
+	layerModel,
+	contentModel;
 
 /*
  * Helper function to log in a user
@@ -44,14 +47,38 @@ function login(user, callback){
 describe('Images API', function(){
 
 
-	before(function (done) {
+	before(function (doneBefore) {
+
+		function createUser(callback) {
+			Factory.create('User', function(user){
+				userModel = user;
+				userId = user._id.toHexString();
+				console.log('create user');
+				login(userModel, callback);
+			});			
+		}
+
+		function createContent(callback){
+			Factory.build('Content', {creator: userModel, layer: layerModel}, function(content){
+				content.save(function(err){
+					should.not.exist(err);
+					contentModel = content;
+					callback()
+				});
+			});						
+		}
+
+		function createLayer(callback){
+			Factory.create('Layer', function(layer){
+				layerModel = layer;
+				callback()
+			});						
+		}
+
 		mongoose.connection.on('open', function(){
 			clear.all(function(err){
 				should.not.exist(err);
-				Factory.create('User', function(user){
-					userModel = user;
-					login(userModel, done);
-				});			
+				createUser(doneBefore);
 			});
 		});
 	})
@@ -79,11 +106,11 @@ describe('Images API', function(){
 		});	
 
 		context('logged in', function(){
-			it('valid image creation request', function (done) {
+			it('accepts a valid image creation request', function (done) {
 				request(app)
 					.post(apiPrefix + '/images')
 					.set('Authorization', userAccessToken)
-					.attach('attachment[file]', imageFixturePath) // attach like SirTrevo does
+					.attach('attachment[file]', imageFixturePath) // attach like SirTrevor does
 					.expect('Content-Type', /json/)
 					.expect(200)
 					.end(onResponse);
@@ -91,33 +118,48 @@ describe('Images API', function(){
 					function onResponse(err, res) {
 
 						should.not.exist(err);
-						should.exist(res.body.file.name);
+						should.exist(res.body.filename);
+						userModel._id.equals(res.body.creator).should.be.true;
 
 						// thumb image file is saved properly
-						var thumbFilename = uploadedImagesPath + '/thumb_' + res.body.file.name;
+						var thumbFilename = uploadedImagesPath + '/thumb_' + res.body.filename;
 						fs.existsSync(thumbFilename).should.be.true;
 						var thumbSize = fs.statSync(thumbFilename).size; 
 						thumbSize.should.be.above(0);
 
 						// mini image file is saved properly
-						var miniFilename = uploadedImagesPath + '/mini_' + res.body.file.name;
+						var miniFilename = uploadedImagesPath + '/mini_' + res.body.filename;
 						fs.existsSync(miniFilename).should.be.true;
 						var miniSize = fs.statSync(miniFilename).size; 
 						miniSize.should.be.above(thumbSize);
 
 						// default image file is saved properly
-						var defaultFilename = uploadedImagesPath + '/default_' + res.body.file.name;
+						var defaultFilename = uploadedImagesPath + '/default_' + res.body.filename;
 						fs.existsSync(defaultFilename).should.be.true;
 						var defaultSize = fs.statSync(defaultFilename).size; 
 						defaultSize.should.be.above(miniSize);
 
 						// large image file is saved properly
-						var largeFilename = uploadedImagesPath + '/large_' + res.body.file.name;
+						var largeFilename = uploadedImagesPath + '/large_' + res.body.filename;
 						fs.existsSync(largeFilename).should.be.true;
 						var largeSize = fs.statSync(largeFilename).size; 
 						largeSize.should.be.above(defaultSize);
 
-						done();
+						Image.findOne({}, function(err, img){
+							should.not.exist(err);
+
+							userModel._id.equals(img.creator).should.be.true;
+							
+							userModel._id.equals(img.creator).should.be.true;
+							should(img.filename).equal(res.body.filename);
+
+							// old properties that should be gone
+							should.not.exist(img.file);
+							should.not.exist(img.content);
+
+							done();
+						});
+
 					}
 			});
 
