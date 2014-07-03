@@ -9,37 +9,15 @@ var
 	app = require('../../web'),
 	mongoose = require('mongoose'),
 	Image = mongoose.model('Image'),
+	helper = require('../../lib/tests-helper'),
 	Factory = require('../../lib/factory'),
 	messages = require('../../lib/messages'),
-	clear = require('../../lib/clear');
-
-var
+	clear = require('../../lib/clear'),
 	apiPrefix = '/api/v1',
 	imageFixturePath = __dirname + '/../../fixtures/ecolab.png',
 	uploadedImagesPath = __dirname + '/../../public/uploads/images',
 	userAccessToken,
-	userModel,
-	userId;
-
-/*
- * Helper function to log in a user
- */
-
-function login(user, callback){
-	request(app)
-		.post(apiPrefix + '/access_token/local')
-		.send({ email: user.email, password: user.password })
-		.end(onResponse);
-
-	function onResponse(err, res) {
-		should.not.exist(err);
-		should(res).have.property('status', 200);
-		should.exist(res.body.accessToken);
-		userAccessToken = 'Bearer '+ res.body.accessToken;
-		callback();
-	}
-}
-
+	userModel;
 
 
 describe('Images API', function(){
@@ -50,26 +28,28 @@ describe('Images API', function(){
 		function createUser(callback) {
 			Factory.create('User', function(user){
 				userModel = user;
-				userId = user._id.toHexString();
-				console.log('create user');
-				login(userModel, callback);
+				helper.login(user.email, user.password, function(token){
+					userAccessToken = token;
+					callback();
+				});
 			});			
 		}		
 
+		// helper.whenExpressReady(function(){
 		mongoose.connection.on('open', function(){
 			clear.all(function(err){
 				should.not.exist(err);
 				createUser(doneBefore);
 			});
 		});
-	})
+	});
 
 	after(function (done) {
 		clear.all(function(err){
 			should.not.exist(err);
 			done(err);
 		});
-	})
+	});
 
 	/**
 	 * Create Image
