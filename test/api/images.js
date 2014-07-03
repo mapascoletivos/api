@@ -19,9 +19,7 @@ var
 	uploadedImagesPath = __dirname + '/../../public/uploads/images',
 	userAccessToken,
 	userModel,
-	userId,
-	layerModel,
-	contentModel;
+	userId;
 
 /*
  * Helper function to log in a user
@@ -56,24 +54,7 @@ describe('Images API', function(){
 				console.log('create user');
 				login(userModel, callback);
 			});			
-		}
-
-		function createContent(callback){
-			Factory.build('Content', {creator: userModel, layer: layerModel}, function(content){
-				content.save(function(err){
-					should.not.exist(err);
-					contentModel = content;
-					callback()
-				});
-			});						
-		}
-
-		function createLayer(callback){
-			Factory.create('Layer', function(layer){
-				layerModel = layer;
-				callback()
-			});						
-		}
+		}		
 
 		mongoose.connection.on('open', function(){
 			clear.all(function(err){
@@ -82,7 +63,6 @@ describe('Images API', function(){
 			});
 		});
 	})
-
 
 	after(function (done) {
 		clear.all(function(err){
@@ -186,6 +166,5 @@ describe('Images API', function(){
 				}
 			});
 		});	
-	});	
-	
+	});
 });
