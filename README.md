@@ -11,7 +11,7 @@ The platform has a decoupled client/server architecture. You can use [Yby Client
 
 ## Install
 
-Install [MongoDB](http://www.mongodb.org), [Node.js](http://nodejs.org) and [Git](https://help.github.com/articles/set-up-git), clone this repository locally and install dependencies by running this command at application directory:
+Install [MongoDB](http://www.mongodb.org), [Node.js](http://nodejs.org), [ImageMagick](http://www.imagemagick.org) and [Git](https://help.github.com/articles/set-up-git), clone this repository locally and install dependencies by running this command at application directory:
 
     npm install
 

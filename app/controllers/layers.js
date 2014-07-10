@@ -174,10 +174,8 @@ exports.update = function(req, res){
 	layer.save(function(err) {
 		if (!err) {
 			res.json({ layer: layer,  messages: messages.success(req.i18n.t('layer.update.success')).messages});
-		} else {
-			console.log(err);
+		} else 
 			res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
-		}
 	})
 }
 
@@ -282,16 +280,6 @@ exports.addContributor = function (req, res) {
 									else res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.add.success')).messages});
 								});
 
-								// mailer.informContributorPermission({
-								// 	mailSender: req.app.mailer,
-								// 	t: req.i18n.t,
-								// 	layer: layer, 
-								// 	creator: req.user, 
-								// 	contributor: user
-								// }, function(err){
-								// 	if (err) res.json(400, messages.error(req.i18n.t("layer.contributor.add.error.email")))
-								// 	else res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.add.success')).messages});
-								// });
 						});
 				});
 			}

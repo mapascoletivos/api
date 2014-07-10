@@ -68,11 +68,10 @@ module.exports = function (app, config, passport) {
 	app.configure(function () {
 
 		// setup less
-		app.use(lessMiddleware({
-			src: config.root + '/public',
+		app.use(lessMiddleware(config.root + '/public', [{
 			compress: true,
 			force: true
-		}));
+		}]));
 		
 		app.use(express.static(config.root + '/public'))	 
 

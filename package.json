@@ -50,7 +50,7 @@
     "view-helpers": "latest",
     "jade": "latest",
     "less": "latest",
-    "less-middleware": "~0.1.15",
+    "less-middleware": "latest",
     "async": "latest",
     "underscore": "latest",
     "imager": "latest",

@@ -47,7 +47,10 @@ ImageSchema.methods = {
 			self = this;
 
 		imager.upload([sourcefile], function (err, cdnUri, uploaded) {
-			if (err) next(err);
+			console.log('errou no imager');
+			console.log(err);
+			if (err) 
+				done(err);
 			else {
 				self.filename = uploaded[uploaded.length-1];
 				self.save(done);

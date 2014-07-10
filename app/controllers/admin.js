@@ -258,10 +258,7 @@ exports.invite = function(req, res, next) {
 				}
 					
 				req.app.locals.mailer.sendEmail('invite_contributor', req.body.user.email, data, req.i18n, function(err) {
-					if (err) {
-						console.log(err);
-						next(err);
-					}
+					if (err) return next(err);
 					else return res.render('admin/users/new', messages.success(req.i18n.t('admin.invite_user.success')));
 				});
 			}
@@ -285,10 +282,8 @@ exports.changeRole = function(req, res, next) {
 		else {
 			user.role = req.body.role;
 			user.save(function(err){
-				if (err) {
-					console.log(err);
+				if (err) 
 					res.render('500');
-				}
 				else {
 					User.find({}, function(err, users){
 						if (err) res.render('500');

@@ -24,7 +24,6 @@ describe('Images API', function(){
 
 
 	before(function (doneBefore) {
-
 		function createUser(callback) {
 			Factory.create('User', function(user){
 				userModel = user;
@@ -35,8 +34,7 @@ describe('Images API', function(){
 			});			
 		}		
 
-		// helper.whenExpressReady(function(){
-		mongoose.connection.on('open', function(){
+		helper.whenExpressReady(function(){
 			clear.all(function(err){
 				should.not.exist(err);
 				createUser(doneBefore);

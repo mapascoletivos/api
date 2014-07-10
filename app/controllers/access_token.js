@@ -22,10 +22,8 @@ var generateAccessToken = function(user, res) {
 	token._id = crypto.createHash('sha1').update(seed).digest('hex');
 
 	token.save(function(err) {
-		if (err) {
-			console.log(err);
+		if (err) 
 			return res.json(401, messages.mongooseErrors(req.i18n.t, err, 'accessToken'));
-		}
 
 		var response = _.extend({
 			accessToken: token._id

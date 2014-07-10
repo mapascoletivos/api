@@ -61,7 +61,7 @@ exports.create = function (req, res) {
 
 		image.creator = req.user;
 
-		image.uploadImageAndSave(req.files.attachment.file, function(err){
+		image.uploadImageAndSave(req.files.attachment.file.path, function(err){
 			if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'image'));
 			else return res.json(image);
 		});
