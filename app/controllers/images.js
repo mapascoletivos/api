@@ -57,24 +57,15 @@ exports.create = function (req, res) {
 	}
 	else {
 		
-		var image = new Image();
+		var image = new Image({
+			creator: req.user,
+			sourcefile: req.files.attachment.file.path
+		});
 
-		image.creator = req.user;
-
-		image.uploadImageAndSave(req.files.attachment.file.path, function(err){
+		image.save(function(err){
 			if (err) return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'image'));
 			else return res.json(image);
-		});
+		})
+
 	}
-}
-
-/**
- * Destroy image
- */
-
-exports.destroy = function (req, res) {
-	req.image.remove(function(err) {
-		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'image'));
-		else res.json(messages.success(req.i18n.t('image.destroy.success')));
-	});
 }

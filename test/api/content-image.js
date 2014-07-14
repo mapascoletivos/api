@@ -8,8 +8,10 @@ var
 	request = require('supertest'),
 	app = require('../../web'),
 	mongoose = require('mongoose'),
+	Content = mongoose.model('Content'),
 	Factory = require('../../lib/factory'),
 	messages = require('../../lib/messages'),
+	helper = require('../../lib/test-helper'),
 	clear = require('../../lib/clear');
 
 var
@@ -18,54 +20,59 @@ var
 	uploadedImagesPath = __dirname + '/../../public/uploads/images',
 	userAccessToken,
 	userModel,
-	layerModel;
+	layerModel,
+	imageModel;
 
 
 describe('Content x Image', function(){
 
 
-	// before(function(doneBefore) {
 
-	// 	function createUser(callback) {
-	// 		Factory.create('User', function(user){
-	// 			console.log('criou usuário')
-	// 			userModel = user;
-	// 			login(userModel, callback);
-	// 		});			
-	// 	}		
+	before(function (doneBefore) {
+		function createUser(callback) {
+			Factory.create('User', function(user){
+				userModel = user;
+				helper.login(user.email, user.password, function(token){
+					userAccessToken = token;
+					callback();
+				});
+			});			
+		}
 
-	// 	function createLayer(callback) {
-	// 		Factory.build('Layer', function(l){
-	// 			console.log('layer')
-	// 			l.creator = userModel;
-	// 			l.save(callback);
-	// 		});			
-	// 	}
+		function createLayer(callback) {
+			Factory.build('Layer', function(layer){
+				layer.creator = userModel;
+				layer.save(function(err){
+					should.not.exist(err);
+					layerModel = layer;
+					callback()	
+				})
+			});			
+		}
 
-	// 	function createImage(callback) {
-	// 		Factory.build('Image', function(l){
-	// 			console.log('image')
-	// 			l.creator = userModel;
-	// 			l.save(callback);
-	// 		});			
-	// 	}
+		function createImage(callback) {
+			Factory.create('Image', function(img){
+				imageModel = img;
+				callback();
+			});
+		}
 
-	// 	mongoose.connection.on('open', function(){
-	// 		clear.all(function(err){
-	// 			should.not.exist(err);
-	// 			async.series([createUser, createLayer, createImage], doneBefore);
-	// 		});
-	// 	});
-	// })
 
-	// after(function (done) {
-	// 	clear.all(function(err){
-	// 		should.not.exist(err);
-	// 		done(err);
-	// 	});
-	// })
-
-	describe('POST /Content', function(){
-		it('should append image properly');
+		helper.whenExpressReady(function(){
+			clear.all(function(err){
+				should.not.exist(err);
+				createUser(function(){
+					async.parallel([createLayer, createImage], doneBefore)
+				})
+			});
+		});
 	});
+
+	after(function (done) {
+		clear.all(function(err){
+			should.not.exist(err);
+			done(err);
+		});
+	});
+
 });

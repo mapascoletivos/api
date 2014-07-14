@@ -62,7 +62,7 @@
     "mocha": "latest",
     "should": "latest",
     "supertest": "latest",
-    "factory-lady": "latest",
+    "rosie": "latest",
     "i18next-parser": "latest",
     "grunt": "latest",
     "grunt-mocha": "~0.4.11",

@@ -4,40 +4,80 @@
 
 var 
 	fs = require('fs'),
+	async = require('async'),
 	should = require('should'),
 	request = require('supertest'),
 	app = require('../../web'),
 	mongoose = require('mongoose'),
+	User = mongoose.model('User'),
 	Image = mongoose.model('Image'),
-	helper = require('../../lib/tests-helper'),
+	Content = mongoose.model('Content'),
+	Layer = mongoose.model('Layer'),
+	helper = require('../../lib/test-helper'),
 	Factory = require('../../lib/factory'),
 	messages = require('../../lib/messages'),
-	clear = require('../../lib/clear'),
-	apiPrefix = '/api/v1',
-	imageFixturePath = __dirname + '/../../fixtures/ecolab.png',
-	uploadedImagesPath = __dirname + '/../../public/uploads/images',
-	userAccessToken,
-	userModel;
+	clear = require('../../lib/clear');
 
+
+/**
+ * Config
+ */
+
+var 
+	apiPrefix = '/api/v1',
+	imageFixturePath = __dirname + '/../../fixtures/image-1.png',
+	uploadedImagesPath = __dirname + '/../../public/uploads/images';
+
+/**
+ * Local variables
+ */
+
+var	
+	userAccessToken,
+	user1,
+	image1,
+	content1,
+	layer1;
+
+/**
+ * The tests
+ */
 
 describe('Images API', function(){
 
 
 	before(function (doneBefore) {
-		function createUser(callback) {
-			Factory.create('User', function(user){
-				userModel = user;
-				helper.login(user.email, user.password, function(token){
+		function createUserAndLogin(doneCreateUserAndLogin) {
+
+			user1 = new User(Factory.build('User'));
+
+			user1.save(function(err){
+				should.not.exist(err);
+				helper.login(user1.email, user1.password, function(token){
 					userAccessToken = token;
-					callback();
+					doneCreateUserAndLogin();
 				});
-			});			
+			})
 		}		
+
+		// setup a layer to recieve the content and images
+
+		function setupLayer(doneSetupLayer){
+
+			// create layer 
+			layer1 = new Layer(Factory.build('Layer', {creator: user1}));
+
+			layer1.save(function(err){
+				should.not.exist(err);
+				doneSetupLayer();
+			})
+		}
+
 
 		helper.whenExpressReady(function(){
 			clear.all(function(err){
 				should.not.exist(err);
-				createUser(doneBefore);
+				async.series([createUserAndLogin, setupLayer], doneBefore)
 			});
 		});
 	});
@@ -77,7 +117,7 @@ describe('Images API', function(){
 
 						should.not.exist(err);
 						should.exist(res.body.filename);
-						userModel._id.equals(res.body.creator).should.be.true;
+						user1._id.equals(res.body.creator).should.be.true;
 
 						// thumb image file is saved properly
 						var thumbFilename = uploadedImagesPath + '/thumb_' + res.body.filename;
@@ -106,14 +146,17 @@ describe('Images API', function(){
 						Image.findOne({}, function(err, img){
 							should.not.exist(err);
 
-							userModel._id.equals(img.creator).should.be.true;
+							user1._id.equals(img.creator).should.be.true;
 							
-							userModel._id.equals(img.creator).should.be.true;
+							user1._id.equals(img.creator).should.be.true;
 							should(img.filename).equal(res.body.filename);
 
 							// old properties that should be gone
 							should.not.exist(img.file);
 							should.not.exist(img.content);
+
+							// keep image object to test file removal
+							image1 = img;
 
 							done();
 						});
@@ -126,23 +169,84 @@ describe('Images API', function(){
 		});	
 	});	
 
-	/**
-	 * Delete Image
-	 */
-	describe('DEL /images', function(){
+	describe('POST /content with image', function(){
 		context('not logged in', function(){
 			it('should return forbidden', function (done) {
 				request(app)
-					.del(apiPrefix + '/images')
+					.post(apiPrefix + '/content')
 					.expect('Content-Type', /json/)
 					.expect(403)
+					.end(done)
+			});
+		});	
+
+		context('logged in', function(){
+			it('should hage image item properly', function (done) {
+
+				var payload = {
+					layer: layer1._id,
+					type: 'Post',
+					title: 'A content',
+					sirTrevorData: [{
+						type: 'text',
+						data: {
+							text: 'Some text'
+						}
+					},
+					{
+						type: 'image',
+						data: {
+							_id: image1._id
+						}
+					}]
+				}
+
+				// console.log(payload);
+
+				request(app)
+					.post(apiPrefix + '/contents')
+					.set('Authorization', userAccessToken)
+					.send(payload)
+					.expect('Content-Type', /json/)
+					.expect(200)
 					.end(onResponse)
 
+
+
 				function onResponse(err, res) {
-					should(messages.hasValidMessages(res.body)).be.true;
-					done(err);
+					console.log(err);
+					console.log(res.body);
+					should.not.exist(err);
+					done();
+
+					// content should exist
+
+
 				}
 			});
 		});	
+
+
+	})
+
+	/**
+	 * Delete images when content is removed
+	 */
+	describe('DEL /content', function(){
+
+
+		context('logged in', function(){
+			it('should delete images when content is deleted', function(done){
+
+
+				// post content with image
+
+
+				done();
+				// setupContent(done);
+								
+
+			});
+		})
 	});
 });

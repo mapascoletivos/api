@@ -70,7 +70,7 @@ exports.create = function (req, res) {
 	delete req.body['creator'];
 
 	var 
-		content = new Content(req.body)
+		content = new Content(req.body),
 		newFeaturesArray = req.body.features;
 		
 	// associate content to user originating request
