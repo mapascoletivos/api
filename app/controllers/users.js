@@ -137,7 +137,6 @@ exports.update = function (req, res) {
 				if (!req.body.callback_url){
 					return res.json(400, messages.error(req.i18n.t('user.update.email.error.missing_callback')));			
 				} else if (!anotherUser) {
-					console.log('vai enviar email')
 					var data = {
 						user: user, 
 						newEmail: req.body.email, 

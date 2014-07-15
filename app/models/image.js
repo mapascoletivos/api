@@ -16,22 +16,12 @@ var mongoose = require('mongoose'),
 var ImageSchema = new Schema({
 	creator: {type: Schema.ObjectId, ref: 'User'},
 	uploadedAt: {type: Date, default: Date.now},
-	filename: String,
-	sourcefile: String
-});
-
-/**
- * Virtuals
- */
-
-ImageSchema.virtual('thumb').get(function () {
-  return 'thumb_' + this.filename;
-});
-ImageSchema.virtual('mini').get(function () {
-  return 'mini_' + this.filename;
-});
-ImageSchema.virtual('large').get(function () {
-  return 'large_' + this.filename;
+	files: {
+		thumb: String,
+		mini: String,
+		default: String,
+		large: String
+	}
 });
 
 /**
@@ -54,11 +44,16 @@ ImageSchema.pre('remove', function(next){
 ImageSchema.pre('save', function(next){
 	var self = this;
 	if (self.isNew) {
-		imager.upload([self.sourcefile], function (err, cdnUri, uploaded) {
+		imager.upload([self.files.default], function (err, cdnUri, uploaded) {
 				if (err) return done(err);
 				else {
-					console.log(uploaded);
-					self.filename = 'default_' + uploaded[uploaded.length-1];
+
+					// save filesnames
+					self.files.thumb = 'thumb_' + uploaded[uploaded.length-1];
+					self.files.mini = 'mini_' + uploaded[uploaded.length-1];
+					self.files.default = 'default_' + uploaded[uploaded.length-1];
+					self.files.large = 'large_' + uploaded[uploaded.length-1];
+
 
 					// This is a auxiliary attribute. It has to be declared at the model
 					// because of mongoose but isn't needed after image upload.
@@ -68,28 +63,6 @@ ImageSchema.pre('save', function(next){
 			}, 'items');			
 	} else next();
 });
-
-/**
- * Methods
- */
-
-// ImageSchema.methods = {
-
-// 	uploadImageAndSave: function(sourcefile, done){
-// 		var 
-// 			self = this;
-
-// 		imager.upload([sourcefile], function (err, cdnUri, uploaded) {
-// 			if (err) 
-// 				done(err);
-// 			else {
-// 				self.filename = uploaded[uploaded.length-1];
-// 				self.save(done);
-// 			}
-// 		}, 'items');
-// 	}
-// }
-
 
 
 mongoose.model('Image', ImageSchema);

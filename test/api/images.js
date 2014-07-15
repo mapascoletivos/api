@@ -26,7 +26,7 @@ var
 var 
 	apiPrefix = '/api/v1',
 	imageFixturePath = __dirname + '/../../fixtures/image-1.png',
-	uploadedImagesPath = __dirname + '/../../public/uploads/images';
+	uploadedImagesPath = __dirname + '/../../public/uploads/images/';
 
 /**
  * Local variables
@@ -116,29 +116,32 @@ describe('Images API', function(){
 					function onResponse(err, res) {
 
 						should.not.exist(err);
-						should.exist(res.body.filename);
+						should.exist(res.body.files.mini);
+						should.exist(res.body.files.thumb);
+						should.exist(res.body.files.default);
+						should.exist(res.body.files.large);
 						user1._id.equals(res.body.creator).should.be.true;
 
 						// thumb image file is saved properly
-						var thumbFilename = uploadedImagesPath + '/thumb_' + res.body.filename;
+						var thumbFilename = uploadedImagesPath + res.body.files.thumb;
 						fs.existsSync(thumbFilename).should.be.true;
 						var thumbSize = fs.statSync(thumbFilename).size; 
 						thumbSize.should.be.above(0);
 
 						// mini image file is saved properly
-						var miniFilename = uploadedImagesPath + '/mini_' + res.body.filename;
+						var miniFilename = uploadedImagesPath + res.body.files.mini;
 						fs.existsSync(miniFilename).should.be.true;
 						var miniSize = fs.statSync(miniFilename).size; 
 						miniSize.should.be.above(thumbSize);
 
 						// default image file is saved properly
-						var defaultFilename = uploadedImagesPath + '/default_' + res.body.filename;
+						var defaultFilename = uploadedImagesPath + res.body.files.default;
 						fs.existsSync(defaultFilename).should.be.true;
 						var defaultSize = fs.statSync(defaultFilename).size; 
 						defaultSize.should.be.above(miniSize);
 
 						// large image file is saved properly
-						var largeFilename = uploadedImagesPath + '/large_' + res.body.filename;
+						var largeFilename = uploadedImagesPath + res.body.files.large;
 						fs.existsSync(largeFilename).should.be.true;
 						var largeSize = fs.statSync(largeFilename).size; 
 						largeSize.should.be.above(defaultSize);
@@ -236,17 +239,7 @@ describe('Images API', function(){
 
 
 		context('logged in', function(){
-			it('should delete images when content is deleted', function(done){
-
-
-				// post content with image
-
-
-				done();
-				// setupContent(done);
-								
-
-			});
+			it('should delete images when content is deleted');
 		})
 	});
 });

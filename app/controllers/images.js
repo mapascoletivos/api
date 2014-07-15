@@ -59,7 +59,8 @@ exports.create = function (req, res) {
 		
 		var image = new Image({
 			creator: req.user,
-			sourcefile: req.files.attachment.file.path
+			// will store uploaded file path, which will be saved at pre-save hook
+			files: {default: req.files.attachment.file.path} 
 		});
 
 		image.save(function(err){
