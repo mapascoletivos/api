@@ -276,6 +276,7 @@
           "brazilian_portuguese": "Português Brasileiro",
           "client_url": "URL do cliente",
           "cors_allowed_domains": "Domínio permitidos para CORS",
+          "cnd_url": "URL do CDN",
           "english": "Inglês",
           "facebookApiKey": "API key do Facebook",
           "general_settings": "Configurações gerais",

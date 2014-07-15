@@ -40,6 +40,11 @@ block content
 						input(name="settings[allowedDomains]" value=settings.allowedDomains type="text")
 				tr
 					td.label
+						label(for="settings.cdnUrl")=t('views.admin.settings.index.cdn_url')
+					td.input
+						input(name="settings[cdnUrl]" value=settings.cdnUrl type="text")
+				tr
+					td.label
 						label(for="settings.facebookApiKey")=t('views.admin.settings.index.facebookApiKey')
 					td.input
 						input(name="settings[facebookApiKey]" value=settings.facebookApiKey type="text")

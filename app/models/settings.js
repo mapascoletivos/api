@@ -18,6 +18,7 @@ var SettingsSchema = new Schema({
 		language: {type: String, default: 'en'},
 		serverUrl: {type: String, default: 'http://localhost:3000'},
 		clientUrl: {type: String, default: 'http://localhost:8000'},
+		cdnUrl: {type: String, default: 'http://localhost:3000/uploads'},
 		baseLayerUrl: {type: String, default: ''},
 		onlyInvitedUsers: {type: Boolean, default: false},
 		allowImports: {type: Boolean, default: true},
