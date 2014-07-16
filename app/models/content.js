@@ -15,6 +15,7 @@ var
 
 var ContentSchema = new Schema({
 	title: { type: String, required: true },
+	sections: [],
 	sirTrevorData: [],
 	sirTrevor: String,
 	creator: {type: Schema.ObjectId, ref: 'User'},
@@ -24,6 +25,42 @@ var ContentSchema = new Schema({
 	updatedAt: {type: Date, default: Date.now},
 	tags: [String]
 });
+
+/*
+ * Validator
+ */
+
+ContentSchema.path('sections').validate(function (sections) {
+	console.log('validation');
+
+	console.log(JSON.stringify(sections))
+
+	// check if section is compatible to sirTrevor 
+	if (sections.length > 0) {
+		console.log('length > 0')
+		_.each(sections, function(section){
+			console.log('length > 0')
+			console.log(section.type)
+			switch (section.type) {
+				case 'yby_image':
+					if (!(section.data && section.data.id)) return false;
+					break;
+				case 'text':
+					console.log('passou por aqui!!!!')
+					if (!(section.data && section.data.text)) return false;
+					break;
+				case 'video':
+					if (!(section.data && section.data.source && section.data.remove_id)) return false;
+					break;
+				default:
+					return false;
+			}
+		});
+	} 
+
+	return true;
+}, 'Invalid sections array');
+
 
 /**
  * Methods

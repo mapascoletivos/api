@@ -197,7 +197,7 @@ describe('Images API', function(){
 						}
 					},
 					{
-						type: 'image',
+						type: 'yby_image',
 						data: {
 							_id: image1._id
 						}
@@ -213,8 +213,6 @@ describe('Images API', function(){
 					.expect('Content-Type', /json/)
 					.expect(200)
 					.end(onResponse)
-
-
 
 				function onResponse(err, res) {
 					console.log(err);
