@@ -14,16 +14,39 @@ var
  */
 
 var ContentSchema = new Schema({
-	title: { type: String, required: true },
-	sections: [],
-	sirTrevorData: [],
-	sirTrevor: String,
-	creator: {type: Schema.ObjectId, ref: 'User'},
-	features: [{type: Schema.ObjectId, ref: 'Feature'}],
-	layer: {type: Schema.ObjectId, ref: 'Layer', required: true},
-	createdAt: {type: Date, default: Date.now},
-	updatedAt: {type: Date, default: Date.now},
-	tags: [String]
+		title: { type: String, required: true },
+		sections: [],
+		// sirTrevorData: [],
+		// sirTrevor: String,
+		creator: {type: Schema.ObjectId, ref: 'User'},
+		features: [{type: Schema.ObjectId, ref: 'Feature'}],
+		layer: {type: Schema.ObjectId, ref: 'Layer', required: true},
+		createdAt: {type: Date, default: Date.now},
+		updatedAt: {type: Date, default: Date.now},
+		tags: [String]
+	}, {
+		toObject: { virtuals: true },
+	    toJSON: { virtuals: true }	
+	});
+
+/*
+ * Hooks
+ */
+
+ContentSchema.pre('save', function(next){
+	var self = this;
+	if (self.isNew) {
+		console.log('the layer');
+		console.log(self.layer);
+		// add content to layer
+		mongoose.model('Layer').findById(self.layer, function(err, layer){
+			if (err) return next(err);
+			else {
+				layer.contents.addToSet(self);
+				layer.save(next);
+			}
+		});
+	} else next();
 });
 
 /*
@@ -61,6 +84,12 @@ ContentSchema.path('sections').validate(function (sections) {
 	return true;
 }, 'Invalid sections array');
 
+/*
+ * Virtuals
+ */
+ContentSchema.virtual('sirTrevorData').get(function () {
+  return JSON.stringify(this.sections);
+});
 
 /**
  * Methods
@@ -73,11 +102,7 @@ ContentSchema.methods = {
 			self = this,
 			imagesToRemove,
 			imagesToAdd;
-			
-		// console.log('self\n'+self);
-		console.log('sirTrevorData no updateSirTrevor\n'+sirTrevorData.length);
-		console.log('self.sirTrevorData\n'+this.sirTrevorData);		
-		
+					
 		function getRemovedImages(sirTrevorData){
 			var removedImages = [];
 			console.log('entrou no getRemovedImages');
@@ -172,6 +197,7 @@ ContentSchema.statics = {
 			.populate('creator', 'name username email')
 			.populate('layer')
 			.populate('features')
+			.populate('sirTrevorData')
 			.exec(cb)
 	},
 	

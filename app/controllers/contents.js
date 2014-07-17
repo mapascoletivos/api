@@ -66,34 +66,22 @@ exports.index = function(req, res){
 
 exports.create = function (req, res) {
 
-	// clear field from body that should be handled internally
+	// clear creator field to avoid faking
 	delete req.body['creator'];
 
 	var 
-		content = new Content(req.body),
-		newFeaturesArray = req.body.features;
+		content = new Content(req.body);
 		
 	// associate content to user originating request
 	content.creator = req.user;
+
+	// move sirTrevorData to sections property
+	if (req.body.sirTrevorData) 
+		content.sections = req.body.sirTrevorData;
 	
-	Layer.findById(req.body['layer'], function(err, layer){
-		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
-		else {
-			layer.contents.addToSet(content);
-			layer.save(function(err){
-				if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
-				else {
-					content.updateSirTrevor(req.body.sirTrevorData, function(err, ct){
-						if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
-						else
-							content.save(function(err){
-								if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
-								else res.json(content);
-							});
-					});
-				}
-			});
-		}
+	content.save(function(err){
+		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
+		else res.json(content);
 	});
 }
 

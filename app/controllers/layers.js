@@ -19,12 +19,15 @@ var
  */
 
 exports.load = function(req, res, next, id){
+	
 	Layer.load(id, function (err, layer) {
 		if (err) 
 			return res.json(400, messages.error(req.i18n.t('layer.load.error')));
 		else if (!layer) 
 			return res.json(400, messages.error(req.i18n.t('layer.load.not_found')));
 		else {
+			console.log('aqui deu load');
+			console.log(layer);		
 			req.layer = layer
 			next()
 		}
@@ -83,7 +86,9 @@ exports.show = function(req, res){
 		layer = req.layer.toObject(),
 		features = [];
 		
-	
+	console.log('aqui tá no show');
+	console.log(req.layer);
+
 	// This step is needed to populate features with related contents
 	// as they are not part of feature model.
 	async.each(layer.features, function(feature, callback){

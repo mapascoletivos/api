@@ -14,28 +14,31 @@ var
  */
 
 var LayerSchema = new Schema({
-	title: { type: String, required: true },
-	description: String,
-	creator: {type: Schema.ObjectId, ref: 'User'},
-	maps: [{type: Schema.ObjectId, ref: 'Map'}],
-	createdAt: {type: Date, default: Date.now},
-	updatedAt: {type: Date, default: Date.now},
-	visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
-	type: { type: String, enum: ['FeatureLayer', 'TileLayer'], default: 'FeatureLayer'},
+		title: { type: String, required: true },
+		description: String,
+		creator: {type: Schema.ObjectId, ref: 'User'},
+		maps: [{type: Schema.ObjectId, ref: 'Map'}],
+		createdAt: {type: Date, default: Date.now},
+		updatedAt: {type: Date, default: Date.now},
+		visibility: { type: String, enum: ['Public', 'Visible', 'Private'], default: 'Private'},
+		type: { type: String, enum: ['FeatureLayer', 'TileLayer'], default: 'FeatureLayer'},
 
-	// Content Layer Attributes
-	contributors: [{type: Schema.ObjectId, ref: 'User'}],
-	features: [{type: Schema.ObjectId, ref: 'Feature'}],
-	styles: {},
-	contents: [{type: Schema.ObjectId, ref: 'Content'}],
-	isDraft: {type: Boolean, default: true},
-	oldId: Number,
+		// Content Layer Attributes
+		contributors: [{type: Schema.ObjectId, ref: 'User'}],
+		features: [{type: Schema.ObjectId, ref: 'Feature'}],
+		styles: {},
+		contents: [{type: Schema.ObjectId, ref: 'Content'}],
+		isDraft: {type: Boolean, default: true},
+		oldId: Number,
 
-	// Tile Layer Attributes 
-	url: String,
-	properties: {}
+		// Tile Layer Attributes 
+		url: String,
+		properties: {}
 
-});
+	}, {
+		toObject: { virtuals: true },
+	    toJSON: { virtuals: true }	
+	});
 
 /**
  * Hooks
@@ -123,10 +126,17 @@ LayerSchema.statics = {
 					}
 							
 					var populateContentsCreator = function(contents, donePopulateContents) {
+						
+
+
 						var populatedContents = [];
 						async.each(contents, function(content, cb){
-							content.populate('creator', 'name username email', function(err, content){
-								populatedContents.push(content);
+							content.populate('creator', 'name username email', function(err, ctt){
+							// content.populate('sirTrevorData', function(err, ctt){
+
+								// console.log('sirTrevorData');
+								console.log(ctt);
+								populatedContents.push(ctt);
 								cb();
 							})
 						}, function(err){
@@ -143,11 +153,18 @@ LayerSchema.statics = {
 							},
 							function(cb){
 								populateContentsCreator(layer.contents, function(err, contents){
+									console.log('depois de popular');
+								
+									console.log(contents);
 									layer.contents = contents;
+									console.log('ainda no populate');
+									console.log(layer);
 									cb(err)
 								})
 							}
 					], function(err){
+						console.log('no callback');
+						console.log(layer);
 						doneLoading(err, layer);
 					});
 				}
