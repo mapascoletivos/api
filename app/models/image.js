@@ -3,11 +3,20 @@
  * Module dependencies
  */
 
-var mongoose = require('mongoose'),
+var 
+	async = require('async'),
+	fs = require('fs'),
+	mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	Imager = require('imager'),
 	imagerConfig = require('../../config/imager.js'),
 	imager = new Imager(imagerConfig, 'Local');
+
+/**
+ * Config
+ */
+
+var imagesPath = __dirname + '/../../public/uploads/images'
 
 /**
  * Layer schema
@@ -30,15 +39,11 @@ var ImageSchema = new Schema({
 
 ImageSchema.pre('remove', function(next){
 	var self = this;
-	imager.remove([self.file.name], function(err){
-		if ((!err) && (self.content)) {
-			mongoose.model('Content').findById(self.content, function(err, ct){
-				ct.removeImageAndSave(self._id, next);
-			});
-		}
-		else 
-			next(err);
-	}, 'img');
+
+	async.each(['thumb', 'mini', 'default', 'large'], function(size, doneEach){
+		fs.unlink(imagesPath + '/' + self.files[size], doneEach);
+	}, next)
+
 });
 
 ImageSchema.pre('save', function(next){

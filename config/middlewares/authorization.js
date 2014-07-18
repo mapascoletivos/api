@@ -208,9 +208,9 @@ exports.content = {
 
 		var checkPermission = function(layer, content, user){
 
-			layerCreatorId = (layer.creator._id || layer.creator).toHexString(); 
-			contentCreatorId = (content.creator._id || content.creator).toHexString();
-			userId = user._id.toHexString();
+			var layerCreatorId = (layer.creator._id || layer.creator).toHexString(); 
+			var contentCreatorId = (content.creator._id || content.creator).toHexString();
+			var userId = user._id.toHexString();
 
 			// is admin
 			if (req.user && req.user.role == 'admin') {

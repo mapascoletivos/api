@@ -208,7 +208,7 @@ describe('Images API', function(){
 					{
 						type: 'yby_image',
 						data: {
-							_id: image1._id
+							id: image1.id
 						}
 					}]
 				}

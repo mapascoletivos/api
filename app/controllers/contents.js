@@ -73,10 +73,6 @@ exports.create = function (req, res) {
 		
 	// associate content to user originating request
 	content.creator = req.user;
-
-	// move sirTrevorData to sections property
-	if (req.body.sirTrevorData) 
-		content.sections = req.body.sirTrevorData;
 	
 	content.save(function(err){
 		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
@@ -125,24 +121,8 @@ exports.show = function(req, res){
  */
 
 exports.destroy = function(req, res){
-	var 
-		content = req.content;
-
-	mongoose.model('Layer').findById(content.layer._id, function(err, layer){
-		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
-		else {
-
-			layer.contents.pull({_id: content._id});
-
-			layer.save(function(err){
-				if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
-				else {
-					content.remove(function(err){
-						if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
-						else res.json(messages.success(req.i18n.t('content.destroy.success')));
-					})
-				}
-			})
-		}
-	})
+	req.content.remove(function(err){
+		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
+		else res.json(messages.success(req.i18n.t('content.destroy.success')));
+	});
 }

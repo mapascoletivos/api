@@ -4,6 +4,7 @@
 
 var 
 	fs = require('fs'),
+	_ = require('underscore'),
 	async = require('async'),
 	should = require('should'),
 	request = require('supertest'),
@@ -26,6 +27,7 @@ var
 var 
 	apiPrefix = '/api/v1',
 	imageFixturePath = __dirname + '/../../fixtures/image-1.png',
+	uploadedImagesPath = __dirname + '/../../public/uploads/images/',	
 	config = require('../../config/config')['test'];
 
 i18n.init(config.i18n);
@@ -40,7 +42,12 @@ var
 	user2,
 	admin,
 	content1,
+	content1Id,
 	image1,
+	image1Id,
+	image2,
+	image2Id,
+	imageFilenames = [],
 	layer1,
 	layer2;
 
@@ -106,22 +113,38 @@ describe('Contents', function(){
 		/*
 		 * Create image
 		 */
-		function createImage(doneCreateImage){
-			image1 = new Image({
-				creator: user1,
-				// will store uploaded file path, which will be saved at pre-save hook
-				files: {default: imageFixturePath} 
-			});
-			image1.save(function(err){
-				should.not.exist(err);
-				doneCreateImage();
-			})
+		function createImages(doneCreateImages){
+
+			async.parallel([function(done){
+				image1 = new Image({
+					creator: user1,
+					// will store uploaded file path, which will be saved at pre-save hook
+					files: {default: imageFixturePath} 
+				});
+				image1.save(function(err){
+					should.not.exist(err);
+					image1Id = image1.id;
+					done();
+				})
+			}, function(done){
+				image2 = new Image({
+					creator: user1,
+					// will store uploaded file path, which will be saved at pre-save hook
+					files: {default: imageFixturePath} 
+				});
+				image2.save(function(err){
+					should.not.exist(err);
+					image2Id = image2.id;
+					done();
+				})
+			}], doneCreateImages)
+
 		}
 
 		helper.whenExpressReady(function(){
 			clear.all(function(err){
 				should.not.exist(err);
-				async.series([createUsers, createLayers, createImage], doneBefore)
+				async.series([createUsers, createLayers, createImages], doneBefore)
 			});
 		});
 	});
@@ -136,7 +159,7 @@ describe('Contents', function(){
 	/**
 	 * Create content
 	 */
-	describe('POST /content', function(){
+	describe('POST /contents', function(){
 		context('not logged in', function(){
 			it('should return forbidden', function (done) {
 				request(app)
@@ -162,7 +185,7 @@ describe('Contents', function(){
 				var payload = {
 					layer: layer1._id,
 					title: 'Content title',
-					sirTrevorData: [{
+					sections: [{
 						type: 'text',
 						data: {
 							text: 'Some text'
@@ -172,16 +195,21 @@ describe('Contents', function(){
 						data: {
 							id: image1._id
 						}
-					}, {
+					},{
 						type: 'video',
 						data: {
 							source: 'youtube',
 							remote_id: 'M4spK4QeUKY'
 						}
-					}, {
+					},{
 						type: 'list',
 						data: {
 							text: 'list items'
+						}
+					},{
+						type: 'yby_image',
+						data: {
+							id: image2._id
 						}
 					}]
 				}
@@ -210,10 +238,7 @@ describe('Contents', function(){
 					body.should.have.property('layer', layer1.id);
 
 					// sections should be valid
-					body.sections.should.be.instanceof(Array).and.have.lengthOf(4);
-
-					// sirTrevor string presence
-					body.should.have.property('sirTrevor', JSON.stringify(payload.sirTrevorData));
+					body.sections.should.be.instanceof(Array).and.have.lengthOf(5);
 
 					// first section
 					section = body.sections[0];
@@ -224,6 +249,12 @@ describe('Contents', function(){
 					section = body.sections[1];
 					section.should.have.property('type', 'yby_image');
 					section.data.should.have.property('id', image1.id);
+					section.data.should.have.property('files');
+					
+					// keep image filenames to check after removal
+					_.each(section.data.files, function(file){
+						imageFilenames.push(file);
+					});
 
 					// third section
 					section = body.sections[2];
@@ -236,10 +267,60 @@ describe('Contents', function(){
 					section.should.have.property('type', 'list');
 					section.data.should.have.property('text', 'list items');
 
+					// fifth section
+					section = body.sections[4];
+					section.should.have.property('type', 'yby_image');
+					section.data.should.have.property('id', image2.id);
+					section.data.should.have.property('files');
+
+					// keep image filenames to check after removal
+					_.each(section.data.files, function(file){
+						imageFilenames.push(file);
+					});					
+
+					// save content id for later loading
+					content1Id = res.body._id;
+
 					done();
 
 				}
 			});
+
+			// it('should return error when section as invalid image data', function (done) {
+
+			// 	var payload = {
+			// 		layer: layer1._id,
+			// 		title: 'Content title',
+			// 		sirTrevorData: [{
+			// 			type: 'text',
+			// 			data: {
+			// 				text: 'Some text'
+			// 			}
+			// 		},{
+			// 			type: 'yby_image',
+			// 			data: {
+			// 				lalaid: image1._id
+			// 			}
+			// 		}]
+			// 	}
+
+			// 	request(app)
+			// 		.post(apiPrefix + '/contents')
+			// 		.set('Authorization', user1AccessToken)
+			// 		.send(payload)
+			// 		.expect('Content-Type', /json/)
+			// 		.expect(400)
+			// 		.end(onResponse);
+
+			// 	function onResponse(err, res) {
+			// 		should.not.exist(err);
+			// 		res.body.messages.should.have.lengthOf(1);
+			// 		messages.hasValidMessages(res.body).should.be.true;
+			// 		res.body.messages[0].should.have.property('text', i18n.t('content.create.error.sections_validation'));
+			// 		done();
+			// 	}
+			// });
+
 
 			it('should return error when layer is invalid', function (done) {
 
@@ -265,7 +346,7 @@ describe('Contents', function(){
 				}
 			});
 
-			it('should return error when user not own layer', function (done) {
+			it('should return error when user do not own layer', function (done) {
 
 				var payload = {
 					layer: layer2.id,
@@ -287,6 +368,88 @@ describe('Contents', function(){
 					messages.hasValidMessages(res.body).should.be.true;
 					res.body.messages[0].should.have.property('text', i18n.t('content.create.error.layer_not_owned'));
 					done();
+				}
+			});
+
+		});
+	});
+
+	describe('PUT /contents', function(){
+		context('not logged in', function(){
+			it('should return forbidden');
+		});
+
+		context('logged in', function(){
+			it('should change content sections accordanly');
+		});
+
+	});
+
+	describe('DEL /contents', function(){
+
+		context('not logged in', function(){
+			it('should return forbidden', function (done) {
+				request(app)
+					.del(apiPrefix + '/contents/' + content1Id)
+					.expect(401)
+					.end(function(err,res){
+						should.not.exist(err);
+						res.body.messages.should.have.lengthOf(1);
+						messages.hasValidMessages(res.body).should.be.true;
+						res.body.messages[0].should.have.property('text', i18n.t('access_token.unauthorized'));
+						done();
+					});
+			});
+		});
+
+		context('when logged in', function(){
+			it('should delete content and images', function(doneIt){
+
+				request(app)
+					.del(apiPrefix + '/contents/' + content1Id)
+					.set('Authorization', user1AccessToken)
+					.expect(200)
+					.end(onResponse);
+
+				function onResponse(err, res) {
+					should.not.exist(err);
+
+					res.body.messages.should.have.lengthOf(1);
+					messages.hasValidMessages(res.body).should.be.true;
+					res.body.messages[0].should.have.property('text', i18n.t('content.destroy.success'));
+
+					function checkImageObjectsExistence(doneCheckImageObjectsExistence){
+						async.eachSeries([image1, image2], function(imgId, doneEach){
+							Image.findById(imgId, function(err, img){
+								should.not.exist(err);
+								should.not.exist(img);
+								doneEach()
+							})	
+						}, doneCheckImageObjectsExistence)
+					}
+
+					function checkImageFilesExistence(doneCheckImageFilesExistence) {
+						async.eachSeries(imageFilenames, function(filename, doneEach){
+							var filepath = uploadedImagesPath + filename;
+							fs.existsSync(filepath).should.be.false;
+							doneEach();
+						}, doneCheckImageFilesExistence);						
+					}
+
+					function checkRemovedFromLayer(doneCheckRemovedFromLayer){
+						Layer.findById(layer1.id, function(err, layer){
+							should.not.exist(err);
+							should.exist(layer);
+							layer.contents.should.not.containEql(content1Id);
+							doneCheckRemovedFromLayer();
+						});
+					}
+
+					async.series([
+						checkImageObjectsExistence, 
+						checkImageFilesExistence, 
+						checkRemovedFromLayer
+					], doneIt);
 				}
 			});
 		});

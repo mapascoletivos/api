@@ -8,7 +8,6 @@ var
 	async = require('async'),
 	mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
-
 /**
  * Layer schema
  */
@@ -34,15 +33,47 @@ var ContentSchema = new Schema({
 ContentSchema.pre('save', function(next){
 	var self = this;
 	if (self.isNew) {
-		// add content to layer
-		mongoose.model('Layer').findById(self.layer, function(err, layer){
-			if (err) return next(err);
-			else {
-				layer.contents.addToSet(self);
-				layer.save(next);
-			}
-		});
+
+		function addImageFilesReferencesToSections(done){
+			async.eachSeries(self.sections, function(section, doneEach){
+				if (section.type == 'yby_image'){
+					mongoose.model('Image').findById(section.data.id, function(err, img){
+						if (err) return next(err);
+						section.data.files = img.files;
+						doneEach();
+					})
+				} else doneEach();
+			}, done)
+		}
+
+		function addToLayer(done){
+			mongoose.model('Layer').findById(self.layer, function(err, layer){
+				if (err) return next(err);
+				else {
+					layer.contents.addToSet(self);
+					layer.save(done);
+				}
+			});
+
+		}
+
+		async.series([addImageFilesReferencesToSections, addToLayer], next);
+
 	} else next();
+});
+
+ContentSchema.pre('remove', function(donePre){
+	var self = this;
+
+	async.eachSeries(self.sections, function(section, doneEach){
+		if (section.type == 'yby_image'){
+			mongoose.model('Image').findOne({_id: section.data.id}, function(err, img){
+				if (err) donePre(err);
+				else img.remove(doneEach);
+			})
+		} else doneEach();
+	}, donePre);
+
 });
 
 /*
@@ -75,13 +106,6 @@ ContentSchema.path('sections').validate(function (sections) {
 
 	return true;
 }, 'Invalid sections array');
-
-/*
- * Virtuals
- */
-ContentSchema.virtual('sirTrevor').get(function () {
-  return JSON.stringify(this.sections);
-});
 
 /**
  * Methods
