@@ -132,10 +132,6 @@ LayerSchema.statics = {
 						var populatedContents = [];
 						async.each(contents, function(content, cb){
 							content.populate('creator', 'name username email', function(err, ctt){
-							// content.populate('sirTrevorData', function(err, ctt){
-
-								// console.log('sirTrevorData');
-								console.log(ctt);
 								populatedContents.push(ctt);
 								cb();
 							})
@@ -153,18 +149,11 @@ LayerSchema.statics = {
 							},
 							function(cb){
 								populateContentsCreator(layer.contents, function(err, contents){
-									console.log('depois de popular');
-								
-									console.log(contents);
 									layer.contents = contents;
-									console.log('ainda no populate');
-									console.log(layer);
 									cb(err)
 								})
 							}
 					], function(err){
-						console.log('no callback');
-						console.log(layer);
 						doneLoading(err, layer);
 					});
 				}

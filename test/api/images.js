@@ -7,6 +7,7 @@ var
 	async = require('async'),
 	should = require('should'),
 	request = require('supertest'),
+	i18n = require('i18next'),
 	app = require('../../web'),
 	mongoose = require('mongoose'),
 	User = mongoose.model('User'),
@@ -14,7 +15,7 @@ var
 	Content = mongoose.model('Content'),
 	Layer = mongoose.model('Layer'),
 	helper = require('../../lib/test-helper'),
-	Factory = require('../../lib/factory'),
+	factory = require('../../lib/factory'),
 	messages = require('../../lib/messages'),
 	clear = require('../../lib/clear');
 
@@ -26,14 +27,18 @@ var
 var 
 	apiPrefix = '/api/v1',
 	imageFixturePath = __dirname + '/../../fixtures/image-1.png',
-	uploadedImagesPath = __dirname + '/../../public/uploads/images/';
+	uploadedImagesPath = __dirname + '/../../public/uploads/images/',
+	config = require('../../config/config')['test'];
+
+i18n.init(config.i18n);
+
 
 /**
  * Local variables
  */
 
 var	
-	userAccessToken,
+	user1AccessToken,
 	user1,
 	image1,
 	content1,
@@ -47,37 +52,31 @@ describe('Images API', function(){
 
 
 	before(function (doneBefore) {
+
 		function createUserAndLogin(doneCreateUserAndLogin) {
-
-			user1 = new User(Factory.build('User'));
-
-			user1.save(function(err){
+			factory.createUser(function(err,usr){
 				should.not.exist(err);
+				user1 = usr;
 				helper.login(user1.email, user1.password, function(token){
-					userAccessToken = token;
+					user1AccessToken = token;						
 					doneCreateUserAndLogin();
 				});
-			})
+			});
 		}		
 
-		// setup a layer to recieve the content and images
-
-		function setupLayer(doneSetupLayer){
-
-			// create layer 
-			layer1 = new Layer(Factory.build('Layer', {creator: user1}));
-
-			layer1.save(function(err){
+		function createLayer(doneCreateLayer){
+			factory.createLayer(user1, function(err,layer){
 				should.not.exist(err);
-				doneSetupLayer();
-			})
+				layer1 = layer;
+				doneCreateLayer();
+			});
 		}
 
 
 		helper.whenExpressReady(function(){
 			clear.all(function(err){
 				should.not.exist(err);
-				async.series([createUserAndLogin, setupLayer], doneBefore)
+				async.series([createUserAndLogin, createLayer], doneBefore)
 			});
 		});
 	});
@@ -94,12 +93,17 @@ describe('Images API', function(){
 	 */
 	describe('POST /images', function(){
 		context('not logged in', function(){
-			it('should return forbidden', function (done) {
+			it('should return unauthorized', function (done) {
 				request(app)
 					.post(apiPrefix + '/images')
-					.expect('Content-Type', /json/)
-					.expect(403)
-					.end(done)
+					.expect(401)
+					.end(function(err,res){
+						should.not.exist(err);
+						res.body.messages.should.have.lengthOf(1);
+						messages.hasValidMessages(res.body).should.be.true;
+						res.body.messages[0].should.have.property('text', i18n.t('access_token.unauthorized'));
+						done();
+					})
 			});
 		});	
 
@@ -107,7 +111,7 @@ describe('Images API', function(){
 			it('accepts a valid image creation request', function (done) {
 				request(app)
 					.post(apiPrefix + '/images')
-					.set('Authorization', userAccessToken)
+					.set('Authorization', user1AccessToken)
 					.attach('attachment[file]', imageFixturePath) // attach like SirTrevor does
 					.expect('Content-Type', /json/)
 					.expect(200)
@@ -163,7 +167,6 @@ describe('Images API', function(){
 
 							done();
 						});
-
 					}
 			});
 
@@ -176,10 +179,16 @@ describe('Images API', function(){
 		context('not logged in', function(){
 			it('should return forbidden', function (done) {
 				request(app)
-					.post(apiPrefix + '/content')
-					.expect('Content-Type', /json/)
-					.expect(403)
-					.end(done)
+					.post(apiPrefix + '/contents')
+					.expect(401)
+					.end(function(err,res){
+						should.not.exist(err);
+						res.body.messages.should.have.lengthOf(1);
+						messages.hasValidMessages(res.body).should.be.true;
+						res.body.messages[0].should.have.property('text', i18n.t('access_token.unauthorized'));
+						done();
+					})
+
 			});
 		});	
 
@@ -204,23 +213,17 @@ describe('Images API', function(){
 					}]
 				}
 
-				// console.log(payload);
-
 				request(app)
 					.post(apiPrefix + '/contents')
-					.set('Authorization', userAccessToken)
+					.set('Authorization', user1AccessToken)
 					.send(payload)
 					.expect('Content-Type', /json/)
 					.expect(200)
 					.end(onResponse)
 
 				function onResponse(err, res) {
-					console.log(err);
-					console.log(res.body);
 					should.not.exist(err);
 					done();
-
-					// content should exist
 
 
 				}

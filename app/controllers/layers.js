@@ -26,8 +26,6 @@ exports.load = function(req, res, next, id){
 		else if (!layer) 
 			return res.json(400, messages.error(req.i18n.t('layer.load.not_found')));
 		else {
-			console.log('aqui deu load');
-			console.log(layer);		
 			req.layer = layer
 			next()
 		}
@@ -86,9 +84,6 @@ exports.show = function(req, res){
 		layer = req.layer.toObject(),
 		features = [];
 		
-	console.log('aqui tá no show');
-	console.log(req.layer);
-
 	// This step is needed to populate features with related contents
 	// as they are not part of feature model.
 	async.each(layer.features, function(feature, callback){
@@ -280,7 +275,6 @@ exports.addContributor = function (req, res) {
 								}
 									
 								req.app.locals.mailer.sendEmail('inform_contributor_permission', user.email, data, req.i18n, function(err) {
-									console.log(err);
 									if (err) res.json(400, messages.error(req.i18n.t("layer.contributor.add.error.email")))
 									else res.json({ layer: updatedLayer, messages: messages.success(req.i18n.t('layer.contributor.add.success')).messages});
 								});

@@ -21,11 +21,11 @@ exports.requiresLogin = function (req, res, next) {
 		}  
 
 		if (err) {
-			return res.send(403, messages.error(info));        
+			return res.send(401, messages.error(info));        
 		}
 
 		if (!user) {
-			return res.send(403, messages.error('Invalid token'));
+			return res.send(401, messages.error(req.i18n.t('access_token.unauthorized')));
 		}
 
 		if (user) {
@@ -266,21 +266,11 @@ exports.content = {
 		
 		Layer.findById(req.body.layer, function(err, layer){
 			if ((err) || (!layer)){
-				return res.json(403, {
-					messages: [{
-						status: 'error',
-						text: 'Erro ao carregar a camada.'
-					}]
-				});
+				return res.json(400, messages.error(req.i18n.t('content.create.error.invalid_layer')));
 			} else if (req.user && req.user.role == 'admin') {
 				next();
 			} else if (typeof isContributor(layer, req.user) == 'undefined' && !isCreator(layer, req.user)) {
-				return res.json(403, {
-					messages: [{
-						status: 'error',
-						text: 'Você não tem permissão para fazer isso.'
-					}]
-				});
+				return res.json(403, messages.error(req.i18n.t('content.create.error.layer_not_owned')));
 			} else {
 				next();
 			}			

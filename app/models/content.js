@@ -16,8 +16,6 @@ var
 var ContentSchema = new Schema({
 		title: { type: String, required: true },
 		sections: [],
-		// sirTrevorData: [],
-		// sirTrevor: String,
 		creator: {type: Schema.ObjectId, ref: 'User'},
 		features: [{type: Schema.ObjectId, ref: 'Feature'}],
 		layer: {type: Schema.ObjectId, ref: 'Layer', required: true},
@@ -36,8 +34,6 @@ var ContentSchema = new Schema({
 ContentSchema.pre('save', function(next){
 	var self = this;
 	if (self.isNew) {
-		console.log('the layer');
-		console.log(self.layer);
 		// add content to layer
 		mongoose.model('Layer').findById(self.layer, function(err, layer){
 			if (err) return next(err);
@@ -54,22 +50,18 @@ ContentSchema.pre('save', function(next){
  */
 
 ContentSchema.path('sections').validate(function (sections) {
-	console.log('validation');
-
-	console.log(JSON.stringify(sections))
 
 	// check if section is compatible to sirTrevor 
 	if (sections.length > 0) {
-		console.log('length > 0')
 		_.each(sections, function(section){
-			console.log('length > 0')
-			console.log(section.type)
 			switch (section.type) {
 				case 'yby_image':
 					if (!(section.data && section.data.id)) return false;
 					break;
 				case 'text':
-					console.log('passou por aqui!!!!')
+					if (!(section.data && section.data.text)) return false;
+					break;
+				case 'list':
 					if (!(section.data && section.data.text)) return false;
 					break;
 				case 'video':
@@ -87,7 +79,7 @@ ContentSchema.path('sections').validate(function (sections) {
 /*
  * Virtuals
  */
-ContentSchema.virtual('sirTrevorData').get(function () {
+ContentSchema.virtual('sirTrevor').get(function () {
   return JSON.stringify(this.sections);
 });
 
@@ -105,9 +97,7 @@ ContentSchema.methods = {
 					
 		function getRemovedImages(sirTrevorData){
 			var removedImages = [];
-			console.log('entrou no getRemovedImages');
 			_.each(self.sirTrevorData, function(item){
-				console.log('item dentro do getRemoveImages\n'+item.data);
 				if (!item._id)
 					item._id = item.data._id;
 				if ((item.type == 'image') && !_.contains(sirTrevorData, item)) {
@@ -120,7 +110,6 @@ ContentSchema.methods = {
 		function getAddedImages(sirTrevorData){
 			var addedImages = [];
 			_.each(sirTrevorData, function(item){
-				console.log('item dentro do getAddedImages\n'+item.data);
 				if (!item._id)
 					item._id = item.data._id;
 				if ((item.type == 'image') && !_.contains(self.sirTrevorData, item._id)) {
@@ -133,8 +122,6 @@ ContentSchema.methods = {
 		imagesToRemove = getRemovedImages(sirTrevorData);
 		imagesToAdd = getAddedImages(sirTrevorData);
 		
-		console.log('imagesToAdd\n'+imagesToAdd);
-		console.log('imagesToRemove\n'+imagesToRemove);
 		
 		async.parallel([
 			function(callback){
@@ -142,7 +129,6 @@ ContentSchema.methods = {
 					callback();
 				else
 					async.each(imagesToRemove, function(item, cb){
-						console.log('should remove item\n'+item);
 						mongoose.model('Image').findById(item.data._id).remove(cb)
 					}, callback);
 			},

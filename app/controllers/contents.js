@@ -69,8 +69,7 @@ exports.create = function (req, res) {
 	// clear creator field to avoid faking
 	delete req.body['creator'];
 
-	var 
-		content = new Content(req.body);
+	var content = new Content(req.body);
 		
 	// associate content to user originating request
 	content.creator = req.user;
