@@ -35,7 +35,7 @@ ContentSchema.pre('save', function(next){
 	if (self.isNew) {
 
 		function addImageFilesReferencesToSections(done){
-			async.eachSeries(self.sections, function(section, doneEach){
+			async.mapSeries(self.sections, function(section, doneEach){
 				if (section.type == 'yby_image'){
 					var id = section.data._id || section.data.id;
 					mongoose.model('Image').findById(id, function(err, img){
@@ -47,11 +47,14 @@ ContentSchema.pre('save', function(next){
 								files: img.files
 							}
 						}
-						doneEach();
+						doneEach(null, section);
 					})
-
-				} else doneEach();
-			}, done)
+				} else doneEach(null, section);
+			}, function(err, results){
+				if (err) return next(err);
+				self.sections = results;
+				done();
+			})
 		}
 
 		function addToLayer(done){
@@ -91,14 +94,13 @@ ContentSchema.pre('remove', function(donePre){
 
 ContentSchema.path('sections').validate(function (sections) {
 	var errors = [];
-	console.log(sections);
 	if (sections.length > 0) {
 		_.each(sections, function(section){
 			if (!section.hasOwnProperty('type')) errors.push('missing type');
 			if (!section.hasOwnProperty('data')) errors.push('missing data');
 			switch (section.type) {
 				case 'yby_image':
-					if (!section.data.hasOwnProperty('_id')) errors.push('missing id');
+					if (!section.data.hasOwnProperty('_id') && !section.data.hasOwnProperty('id')) errors.push('missing id');
 					break;
 				case 'text':
 					if (!section.data.hasOwnProperty('text')) errors.push('text');

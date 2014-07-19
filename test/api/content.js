@@ -249,6 +249,7 @@ describe('Contents', function(){
 					section = body.sections[1];
 					section.should.have.property('type', 'yby_image');
 					section.data.should.have.property('id', image1.id);
+					console.log(section.data);
 					section.data.should.have.property('files');
 					
 					// keep image filenames to check after removal
