@@ -286,40 +286,40 @@ describe('Contents', function(){
 				}
 			});
 
-			// it('should return error when section as invalid image data', function (done) {
+			it('should return error when section as invalid image data', function (done) {
 
-			// 	var payload = {
-			// 		layer: layer1._id,
-			// 		title: 'Content title',
-			// 		sirTrevorData: [{
-			// 			type: 'text',
-			// 			data: {
-			// 				text: 'Some text'
-			// 			}
-			// 		},{
-			// 			type: 'yby_image',
-			// 			data: {
-			// 				lalaid: image1._id
-			// 			}
-			// 		}]
-			// 	}
+				var payload = {
+					layer: layer1._id,
+					title: 'Content title',
+					sections: [{
+						type: 'text',
+						data: {
+							text: 'Some text'
+						}
+					},{
+						type: 'yby_image',
+						data: {
+							noid: 'noid'
+						}
+					}]
+				}
 
-			// 	request(app)
-			// 		.post(apiPrefix + '/contents')
-			// 		.set('Authorization', user1AccessToken)
-			// 		.send(payload)
-			// 		.expect('Content-Type', /json/)
-			// 		.expect(400)
-			// 		.end(onResponse);
+				request(app)
+					.post(apiPrefix + '/contents')
+					.set('Authorization', user1AccessToken)
+					.send(payload)
+					.expect('Content-Type', /json/)
+					.expect(400)
+					.end(onResponse);
 
-			// 	function onResponse(err, res) {
-			// 		should.not.exist(err);
-			// 		res.body.messages.should.have.lengthOf(1);
-			// 		messages.hasValidMessages(res.body).should.be.true;
-			// 		res.body.messages[0].should.have.property('text', i18n.t('content.create.error.sections_validation'));
-			// 		done();
-			// 	}
-			// });
+				function onResponse(err, res) {
+					should.not.exist(err);
+					res.body.messages.should.have.lengthOf(1);
+					messages.hasValidMessages(res.body).should.be.true;
+					res.body.messages[0].should.have.property('text', i18n.t('mongoose.errors.content.malformed_sections'));
+					done();
+				}
+			});
 
 
 			it('should return error when layer is invalid', function (done) {

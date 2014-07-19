@@ -81,31 +81,30 @@ ContentSchema.pre('remove', function(donePre){
  */
 
 ContentSchema.path('sections').validate(function (sections) {
-
-	// check if section is compatible to sirTrevor 
+	var errors = [];
 	if (sections.length > 0) {
 		_.each(sections, function(section){
+			if (!section.hasOwnProperty('type')) errors.push('missing type');
+			if (!section.hasOwnProperty('data')) errors.push('missing data');
 			switch (section.type) {
 				case 'yby_image':
-					if (!(section.data && section.data.id)) return false;
+					if (!section.data.hasOwnProperty('id')) errors.push('missing id');
 					break;
 				case 'text':
-					if (!(section.data && section.data.text)) return false;
+					if (!section.data.hasOwnProperty('text')) errors.push('text');
 					break;
 				case 'list':
-					if (!(section.data && section.data.text)) return false;
+					if (!section.data.hasOwnProperty('text')) errors.push('text');
 					break;
 				case 'video':
-					if (!(section.data && section.data.source && section.data.remove_id)) return false;
+					if (!section.data.hasOwnProperty('source')) errors.push('source');
+					if (!section.data.hasOwnProperty('remote_id')) errors.push('remote_id');
 					break;
-				default:
-					return false;
 			}
 		});
-	} 
-
-	return true;
-}, 'Invalid sections array');
+	}
+	return (errors.length == 0);
+}, 'malformed_sections');
 
 /**
  * Methods
