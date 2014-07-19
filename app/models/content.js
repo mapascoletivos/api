@@ -37,11 +37,19 @@ ContentSchema.pre('save', function(next){
 		function addImageFilesReferencesToSections(done){
 			async.eachSeries(self.sections, function(section, doneEach){
 				if (section.type == 'yby_image'){
-					mongoose.model('Image').findById(section.data.id, function(err, img){
+					var id = section.data._id || section.data.id;
+					mongoose.model('Image').findById(id, function(err, img){
 						if (err) return next(err);
-						section.data.files = img.files;
+						section = {
+							type: 'yby_image',
+							data: {
+								id: id,
+								files: img.files
+							}
+						}
 						doneEach();
 					})
+
 				} else doneEach();
 			}, done)
 		}
@@ -67,7 +75,8 @@ ContentSchema.pre('remove', function(donePre){
 
 	async.eachSeries(self.sections, function(section, doneEach){
 		if (section.type == 'yby_image'){
-			mongoose.model('Image').findOne({_id: section.data.id}, function(err, img){
+			var id = section.data._id || section.data.id;
+			mongoose.model('Image').findById(id, function(err, img){
 				if (err) donePre(err);
 				else img.remove(doneEach);
 			})
@@ -82,13 +91,14 @@ ContentSchema.pre('remove', function(donePre){
 
 ContentSchema.path('sections').validate(function (sections) {
 	var errors = [];
+	console.log(sections);
 	if (sections.length > 0) {
 		_.each(sections, function(section){
 			if (!section.hasOwnProperty('type')) errors.push('missing type');
 			if (!section.hasOwnProperty('data')) errors.push('missing data');
 			switch (section.type) {
 				case 'yby_image':
-					if (!section.data.hasOwnProperty('id')) errors.push('missing id');
+					if (!section.data.hasOwnProperty('_id')) errors.push('missing id');
 					break;
 				case 'text':
 					if (!section.data.hasOwnProperty('text')) errors.push('text');
