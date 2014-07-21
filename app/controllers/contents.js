@@ -4,6 +4,7 @@
  */
 
 var 
+	async = require('async'), 
 	messages = require('../../lib/messages'),
 	mongoose = require('mongoose'), 
 	Content = mongoose.model('Content'),
@@ -88,21 +89,66 @@ exports.update = function(req, res){
 	
 	var 
 		content = req.content,
-		updatedSirTrevor = req.body.sirTrevorData,
-		updatedFeatures = req.body.features;
+		currentImagesList = [],
+		newImagesList = [];
 	
 	delete req.body['creator'];
-	delete req.body.layer;
+	delete req.body['layer'];
+
+	// get the list of images that content has
+	if (content.sections) {
+		_.each(content.sections, function(section){
+			if (section.type == 'yby_image') {
+				currentImagesList.push(section.data.id || section.data._id);
+			}
+		})
+	}
+
+	// get the list of images being put
+	if (req.body.sections) {
+		_.each(req.body.sections, function(section){
+			if (section.type == 'yby_image') {
+				newImagesList.push(section.data.id || section.data._id);
+			}
+		})
+	}
+
+	var deletedImages = _.reject(currentImagesList, function(image){
+		return _.contains(newImagesList, image);
+	})
+
+
+	function removeImages(doneRemoveImages){
+		async.each(deletedImages, function(imageId, doneEach){
+			console.log('vai apagar '+ imageId);
+			mongoose.model('Image').findById(imageId, function(err, img){
+				if (err) return doneRemoveImages(err);
+				else img.remove(doneEach);
+			})
+		}, doneRemoveImages);
+	}
+
+	console.log('current list');
+	console.log(currentImagesList);
+	console.log('new list');
+	console.log(newImagesList);
+	console.log('images to remove');
+	console.log(deletedImages);
+
 
 	content = _.extend(content, req.body)
 
-	content.updateSirTrevor(updatedSirTrevor, function(err, ct){
-		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
-		else
-			ct.save(function(err){
+	removeImages(function(err){
+		if (err) res.json(400, messages.error(req.i18n.t('content.update.error.image')))
+		else {
+			console.log('aqui foi beleza');
+			content.save(function(err){
+				console.log('será?');
+				console.log(err);
 				if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
-				else res.json(ct);
+				else res.json(content);
 			});
+		}
 	});
 }
 

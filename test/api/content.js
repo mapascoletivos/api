@@ -47,6 +47,8 @@ var
 	image1Id,
 	image2,
 	image2Id,
+	image3,
+	image3Id,
 	imageFilenames = [],
 	layer1,
 	layer2;
@@ -129,12 +131,21 @@ describe('Contents', function(){
 			}, function(done){
 				image2 = new Image({
 					creator: user1,
-					// will store uploaded file path, which will be saved at pre-save hook
 					files: {default: imageFixturePath} 
 				});
 				image2.save(function(err){
 					should.not.exist(err);
 					image2Id = image2.id;
+					done();
+				})
+			}, function(done){
+				image3 = new Image({
+					creator: user1,
+					files: {default: imageFixturePath} 
+				});
+				image3.save(function(err){
+					should.not.exist(err);
+					image3Id = image3.id;
 					done();
 				})
 			}], doneCreateImages)
@@ -249,7 +260,6 @@ describe('Contents', function(){
 					section = body.sections[1];
 					section.should.have.property('type', 'yby_image');
 					section.data.should.have.property('id', image1.id);
-					console.log(section.data);
 					section.data.should.have.property('files');
 					
 					// keep image filenames to check after removal
@@ -377,11 +387,126 @@ describe('Contents', function(){
 
 	describe('PUT /contents', function(){
 		context('not logged in', function(){
-			it('should return forbidden');
+			it('should return forbidden', function(done){
+				request(app)
+					.put(apiPrefix + '/contents/' + content1Id)
+					.expect(401)
+					.end(function(err,res){
+						should.not.exist(err);
+						res.body.messages.should.have.lengthOf(1);
+						messages.hasValidMessages(res.body).should.be.true;
+						res.body.messages[0].should.have.property('text', i18n.t('access_token.unauthorized'));
+						done();
+					});
+
+			});
 		});
 
 		context('logged in', function(){
-			it('should change content sections accordanly');
+			it('should change content sections accordingly', function(){
+
+				var payload = {
+					layer: 'oaiosdiasodi', // this attribute shouldn't be changed
+					title: 'Content title',
+					sections: [{
+						type: 'text',
+						data: {
+							text: 'Lorem ipsum'
+						}
+					},{
+						type: 'video',
+						data: {
+							source: 'youtube',
+							remote_id: 'M4spK4QeUKY'
+						}
+					},{
+						type: 'yby_image',
+						data: {
+							id: image1._id
+						}
+					},{
+						type: 'yby_image',
+						data: {
+							id: image3._id
+						}
+					},{
+						type: 'list',
+						data: {
+							text: 'list items'
+						}
+					}]
+				}
+
+
+				request(app)
+					.put(apiPrefix + '/contents/' + content1Id)
+					.set('Authorization', user1AccessToken)
+					.send(payload)
+					.expect(200)
+					.end(onResponse);
+
+				function onResponse(err, res) {
+					should.not.exist(err);
+
+					var 
+						body = res.body,
+						section;
+
+					// creator should be valid
+					body.should.have.property('creator');
+					body.creator.should.have.property('_id', user1.id);
+					body.creator.should.have.property('name', user1.name);
+					body.creator.should.have.property('email', user1.email);
+
+					// layer should be valid
+					body.should.have.property('layer');
+					body.layer.should.have.property('_id', layer1.id);
+
+					// sections should be valid
+					body.sections.should.be.instanceof(Array).and.have.lengthOf(5);
+
+					// section 1
+					section = body.sections[0];
+					section.should.have.property('type', 'text');
+					section.data.should.have.property('text', 'Lorem ipsum');
+
+					// section 2
+					section = body.sections[1];
+					section.should.have.property('type', 'video');
+					section.data.should.have.property('source', 'youtube');
+					section.data.should.have.property('remote_id', 'M4spK4QeUKY');
+
+					// section 3
+					section = body.sections[2];
+					section.should.have.property('type', 'yby_image');
+					section.data.should.have.property('id', image1.id);
+					section.data.should.have.property('files');
+					
+					// section 4
+					section = body.sections[3];
+					section.should.have.property('type', 'yby_image');
+					section.data.should.have.property('id', image3.id);
+					section.data.should.have.property('files');
+					
+					// keep image filenames to check after removal
+					_.each(section.data.files, function(file){
+						imageFilenames.push(file);
+					});
+
+					// section 5
+					section = body.sections[4];
+					section.should.have.property('type', 'list');
+					section.data.should.have.property('text', 'list items');
+
+					// check if image2 files where removed
+					async.eachSeries(image2.files, function(filename, doneEach){
+						var filepath = uploadedImagesPath + filename;
+						fs.existsSync(filepath).should.be.false;
+						doneEach();
+					}, done);
+
+				}				
+			});
 		});
 
 	});
