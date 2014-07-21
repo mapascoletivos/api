@@ -204,7 +204,7 @@ describe('Contents', function(){
 					},{
 						type: 'yby_image',
 						data: {
-							id: image1._id
+							_id: image1._id
 						}
 					},{
 						type: 'video',
@@ -220,7 +220,7 @@ describe('Contents', function(){
 					},{
 						type: 'yby_image',
 						data: {
-							id: image2._id
+							_id: image2._id
 						}
 					}]
 				}
@@ -259,7 +259,7 @@ describe('Contents', function(){
 					// second section
 					section = body.sections[1];
 					section.should.have.property('type', 'yby_image');
-					section.data.should.have.property('id', image1.id);
+					section.data.should.have.property('_id', image1.id);
 					section.data.should.have.property('files');
 					
 					// keep image filenames to check after removal
@@ -281,7 +281,7 @@ describe('Contents', function(){
 					// fifth section
 					section = body.sections[4];
 					section.should.have.property('type', 'yby_image');
-					section.data.should.have.property('id', image2.id);
+					section.data.should.have.property('_id', image2.id);
 					section.data.should.have.property('files');
 
 					// keep image filenames to check after removal
@@ -403,7 +403,7 @@ describe('Contents', function(){
 		});
 
 		context('logged in', function(){
-			it('should change content sections accordingly', function(){
+			it('should change content sections accordingly', function(doneIt){
 
 				var payload = {
 					layer: 'oaiosdiasodi', // this attribute shouldn't be changed
@@ -422,12 +422,12 @@ describe('Contents', function(){
 					},{
 						type: 'yby_image',
 						data: {
-							id: image1._id
+							_id: image1._id
 						}
 					},{
 						type: 'yby_image',
 						data: {
-							id: image3._id
+							_id: image3._id
 						}
 					},{
 						type: 'list',
@@ -436,6 +436,8 @@ describe('Contents', function(){
 						}
 					}]
 				}
+
+				console.log('aqui deveria apagar o img2 e adicionar o 3');
 
 
 				request(app)
@@ -479,13 +481,13 @@ describe('Contents', function(){
 					// section 3
 					section = body.sections[2];
 					section.should.have.property('type', 'yby_image');
-					section.data.should.have.property('id', image1.id);
+					section.data.should.have.property('_id', image1.id);
 					section.data.should.have.property('files');
 					
 					// section 4
 					section = body.sections[3];
 					section.should.have.property('type', 'yby_image');
-					section.data.should.have.property('id', image3.id);
+					section.data.should.have.property('_id', image3.id);
 					section.data.should.have.property('files');
 					
 					// keep image filenames to check after removal
@@ -503,7 +505,7 @@ describe('Contents', function(){
 						var filepath = uploadedImagesPath + filename;
 						fs.existsSync(filepath).should.be.false;
 						doneEach();
-					}, done);
+					}, doneIt);
 
 				}				
 			});

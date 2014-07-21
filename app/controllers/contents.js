@@ -99,7 +99,7 @@ exports.update = function(req, res){
 	if (content.sections) {
 		_.each(content.sections, function(section){
 			if (section.type == 'yby_image') {
-				currentImagesList.push(section.data.id || section.data._id);
+				currentImagesList.push((section.data.id || section.data._id).toString());
 			}
 		})
 	}
@@ -108,7 +108,7 @@ exports.update = function(req, res){
 	if (req.body.sections) {
 		_.each(req.body.sections, function(section){
 			if (section.type == 'yby_image') {
-				newImagesList.push(section.data.id || section.data._id);
+				newImagesList.push((section.data.id || section.data._id).toString());
 			}
 		})
 	}
@@ -117,34 +117,21 @@ exports.update = function(req, res){
 		return _.contains(newImagesList, image);
 	})
 
-
 	function removeImages(doneRemoveImages){
 		async.each(deletedImages, function(imageId, doneEach){
-			console.log('vai apagar '+ imageId);
 			mongoose.model('Image').findById(imageId, function(err, img){
-				if (err) return doneRemoveImages(err);
+				if (err) return doneEach(err);
 				else img.remove(doneEach);
 			})
 		}, doneRemoveImages);
 	}
-
-	console.log('current list');
-	console.log(currentImagesList);
-	console.log('new list');
-	console.log(newImagesList);
-	console.log('images to remove');
-	console.log(deletedImages);
-
 
 	content = _.extend(content, req.body)
 
 	removeImages(function(err){
 		if (err) res.json(400, messages.error(req.i18n.t('content.update.error.image')))
 		else {
-			console.log('aqui foi beleza');
 			content.save(function(err){
-				console.log('será?');
-				console.log(err);
 				if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 				else res.json(content);
 			});

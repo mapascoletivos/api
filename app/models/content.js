@@ -21,9 +21,6 @@ var ContentSchema = new Schema({
 		createdAt: {type: Date, default: Date.now},
 		updatedAt: {type: Date, default: Date.now},
 		tags: [String]
-	}, {
-		toObject: { virtuals: true },
-	    toJSON: { virtuals: true }	
 	});
 
 /*
@@ -31,37 +28,30 @@ var ContentSchema = new Schema({
  */
 
 ContentSchema.pre('save', function(next){
-	var self = this;
+	var 
+		self = this,
+		Image = mongoose.model('Image');
 
 	function addImageFilesReferencesToSections(done){
-		async.mapSeries(self.sections, function(section, doneEach){
+		var i = 0;
+		async.eachSeries(self.sections, function(section, doneEach){
+			i++;
 			if (section.type == 'yby_image'){
 				var id = section.data._id || section.data.id;
-				mongoose.model('Image').findById(id, function(err, img){
-					if (err) return next(err);
-					section = {
-						type: 'yby_image',
-						data: {
-							id: id,
-							files: img.files
-						}
-					}
-					doneEach(null, section);
+				Image.findById(id).lean().exec(function(err, img) {
+					if (err) return doneEach(err);
+					if (!img) return doneEach(new Error('image not found'));
+					self.sections[i-1]['data'] = img;
+					doneEach();
 				})
-			} else doneEach(null, section);
+			} else doneEach();
 		}, function(err, results){
-			
 			if (err) return next(err);
-			console.log('sections');
-			console.log(JSON.stringify(self.sections));
-			self.sections = results;
 			done();
 		})
 	}
 
 	if (self.isNew) {
-
-		
 		function addToLayer(done){
 			mongoose.model('Layer').findById(self.layer, function(err, layer){
 				if (err) return next(err);
@@ -75,8 +65,8 @@ ContentSchema.pre('save', function(next){
 
 		async.series([addImageFilesReferencesToSections, addToLayer], next);
 
+	// } else next();
 	} else {
-
 		addImageFilesReferencesToSections(function(err){
 			next(err);
 		});
