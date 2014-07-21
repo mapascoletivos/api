@@ -92,6 +92,7 @@ exports.update = function(req, res){
 		currentImagesList = [],
 		newImagesList = [];
 	
+	delete req.body['__v'];
 	delete req.body['creator'];
 	delete req.body['layer'];
 
