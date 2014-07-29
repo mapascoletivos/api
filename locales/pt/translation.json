@@ -277,6 +277,7 @@
           "client_url": "URL do cliente",
           "cors_allowed_domains": "Domínio permitidos para CORS",
           "cnd_url": "URL do CDN",
+          "base_layer_url": "URL da camada base",
           "english": "Inglês",
           "facebookApiKey": "API key do Facebook",
           "general_settings": "Configurações gerais",

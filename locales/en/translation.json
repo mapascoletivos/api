@@ -276,6 +276,7 @@
                     "brazilian_portuguese": "Brazilian Portuguese",
                     "client_url": "Client URL",
                     "cors_allowed_domains": "CORS allowed domains",
+                    "base_layer_url": "Base layer URL",
                     "cdn_url": "CDN URL",
                     "english": "English",
                     "facebookApiKey": "Facebook API key",
