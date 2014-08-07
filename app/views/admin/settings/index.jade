@@ -35,6 +35,11 @@ block content
 						input(name="settings[clientUrl]" value=settings.clientUrl type="text")
 				tr
 					td.label
+						label(for="settings.cdnUrl")=t('views.admin.settings.index.cdn_url')
+					td.input
+						input(name="settings[cdnUrl]" value=settings.cdnUrl type="text")
+				tr
+					td.label
 						label(for="settings.allowedDomains")=t('views.admin.settings.index.cors_allowed_domains')
 					td.input
 						input(name="settings[allowedDomains]" value=settings.allowedDomains type="text")
