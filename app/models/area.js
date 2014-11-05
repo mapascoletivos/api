@@ -3,7 +3,7 @@
  * Module dependencies
  */
 
-var 
+var
 	_ = require('underscore'),
 	https = require('https'),
 	url = require('url'),
@@ -13,7 +13,7 @@ var
 var AreaSchema = new Schema({
 	name: {type: String, required: true},
 	code: String,
-	type: {type: String, required: true}, 
+	type: {type: String, required: true},
 	parent: {type: Schema.ObjectId, ref: 'Area'}
 });
 
@@ -28,9 +28,9 @@ AreaSchema.statics = {
 		var Area = this;
 
 		Area.findOne({name: properties.name, type: properties.type}, function(err, area){
-			if (err) 
+			if (err)
 				doneUpsert(err);
-			else if (area) 
+			else if (area)
 				doneUpsert(null, area);
 			else {
 				area = new Area(properties);
@@ -38,7 +38,7 @@ AreaSchema.statics = {
 					if (err) doneUpsert(err);
 					else doneUpsert(null, area)
 				});
-			} 
+			}
 		});
 	},
 	whichContains: function(geometry, doneWhichContains) {
@@ -46,7 +46,7 @@ AreaSchema.statics = {
 
 
 		var createAreasFromNominatim = function(address_entries, doneCreatingAreas){
-			var 
+			var
 				entries = [],
 				areas_objects = [];
 
@@ -58,21 +58,25 @@ AreaSchema.statics = {
 
 			var parseEntries = function(entries_list, parent ) {
 
-				var 
+				var
 					entry = entries_list.pop();
 
 				// Ignore postcodes because they don't appear in hierarchical order
-				if (entry.type == 'postcode') {
-					entry = entries_list.pop();
+				if (entry.type == 'postcode' ) {
+					if (entries_list.length > 0) {
+						entry = entries_list.pop();
+					} else {
+						doneWhichContains(null, areas_objects);
+					}
 				}
 
 				if (entry.type == 'country_code') {
-					
+
 					area_properties = {
 						type: 'country',
 						code: entry.value.toUpperCase(),
 						name: entry.value.toUpperCase()
-					} 
+					}
 
 					// next entry is possible the contry name
 					entry = entries_list.pop();
@@ -94,8 +98,8 @@ AreaSchema.statics = {
 
 				Area.upsertArea(area_properties, function(err, area){
 					if (err){
-						doneWhichContains(err);	
-					} 
+						doneWhichContains(err);
+					}
 					else {
 
 						areas_objects.push(area);
@@ -114,7 +118,7 @@ AreaSchema.statics = {
 		}
 
 
-		var 
+		var
 			nominatim_query = {
 				protocol: 'https:',
 				host: 'nominatim.openstreetmap.org',
