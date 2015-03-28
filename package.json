@@ -3,10 +3,10 @@
   "description": "A collaborative mapping platform",
   "repository": {
     "type": "git",
-    "url": "git://github.com/oeco/yby.git"
+    "url": "git://github.com/codigourbano/yby.git"
   },
   "version": "0.1.0",
-  "author": "Ecolab <gustavo.faleiros@gmail.com>",
+  "author": "Código Urbano <contato@codigourbano.org>",
   "contributors": [
     {
       "name": "Miguel Peixe",
