@@ -30,7 +30,7 @@ Run the server:
 
 ## Configure
 
-Access the administrative area at [http://localhost:3000/admin](http://localhost:3000/admin). After creating an user with adminstrative role, you will be presented to the sections described bellow:
+Access the administrative area at [http://localhost:3000/admin](http://localhost:3000/admin). After creating an user with administrative role, you will be presented to the sections described bellow:
 
 1. **General settings:**
   - Setup site title and description, which will be exposed to the client via API.
