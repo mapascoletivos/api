@@ -11,8 +11,10 @@ RUN apk -U upgrade \
      git \
      su-exec \
      tini \
+     build-base \
+     python \
      imagemagick \
-  && npm install -g yarn nodemon \
+  && npm install -g nodemon yarn node-gyp \
   && update-ca-certificates \
   && rm -rf /tmp/* /var/cache/apk/*
 

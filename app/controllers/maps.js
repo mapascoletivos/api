@@ -3,11 +3,12 @@
  * Module dependencies.
  */
 
-var 
+var
 	_ = require('underscore'),
 	mongoose = require('mongoose'),
 	Map = mongoose.model('Map'),
-	extend = require('util')._extend;
+	extend = require('util')._extend,
+	messages = require('../../lib/messages');
 
 /**
  * Load
@@ -70,9 +71,9 @@ exports.show = function(req, res){
  */
 
 exports.create = function (req, res) {
-	var 
+	var
 		map = new Map(req.body);
-	
+
 	map.creator = req.user;
 
 	// save map
@@ -87,7 +88,7 @@ exports.create = function (req, res) {
  */
 
 exports.update = function(req, res){
-	var 
+	var
 		map = req.map,
 		newLayerSet = req.body.layers;
 

@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-var 
-	async = require('async'), 
+var
+	async = require('async'),
 	messages = require('../../lib/messages'),
-	mongoose = require('mongoose'), 
+	mongoose = require('mongoose'),
 	Content = mongoose.model('Content'),
 	Layer = mongoose.model('Layer'),
 	_ = require('underscore');
@@ -71,10 +71,10 @@ exports.create = function (req, res) {
 	delete req.body['creator'];
 
 	var content = new Content(req.body);
-		
+
 	// associate content to user originating request
 	content.creator = req.user;
-	
+
 	content.save(function(err){
 		if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
 		else res.json(content);
@@ -86,12 +86,12 @@ exports.create = function (req, res) {
  */
 
 exports.update = function(req, res){
-	
-	var 
+
+	var
 		content = req.content,
 		currentImagesList = [],
 		newImagesList = [];
-	
+
 	delete req.body['__v'];
 	delete req.body['creator'];
 	delete req.body['layer'];

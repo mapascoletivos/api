@@ -14,6 +14,6 @@ services:
       NODE_ENV: development
       MONGODB_URI: mongodb://mongo/yby
   mongo:
-    image: mongo
+    image: mongo:3.2
     ports:
     - 27018:27017
