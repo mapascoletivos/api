@@ -4,7 +4,6 @@
  */
 
 var mongoose = require('mongoose'),
-	validate = require('mongoose-validate'),
 	Schema = mongoose.Schema,
 	crypto = require('crypto'),
 	moment = require('moment'),
@@ -18,7 +17,7 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
 	role: { type: String, enum: ['admin', 'editor', 'collaborator'], default: 'editor'},
 	name: { type: String, default: '' },
-	email: { type: String, default: '', validate: [validate.email, 'Invalid e-mail address.'] },
+	email: { type: String, default: '' },
 	token: { type: String },
 	username: String,
 	hashed_password: { type: String, default: '' },
@@ -31,8 +30,8 @@ var UserSchema = new Schema({
 	status: {type: String, enum: ['to_migrate', 'inactive', 'active'], default: 'active' },
 	salt: { type: String, default: '' },
 	layers: [{type: Schema.ObjectId, ref: 'Layer'}],
-	authToken: { type: String, default: '' }, 
-	emailConfirmed: {type: Boolean, default: false},	
+	authToken: { type: String, default: '' },
+	emailConfirmed: {type: Boolean, default: false},
 	facebook: {},
 	google: {},
 	oldId: Number // to store id used in old Mapas Coletivos
@@ -78,7 +77,7 @@ UserSchema.path('email').validate(function (email, fn) {
 		User.find({ email: email }).exec(function (err, users) {
 			fn(!err && users.length === 0)
 		})
-	} else 
+	} else
 		fn(true);
 }, 'E-mail address already in use.');
 
@@ -90,7 +89,7 @@ UserSchema.path('username').validate(function (username, fn) {
 		User.find({ username: username }).exec(function (err, users) {
 			fn(!err && users.length === 0)
 		})
-	} else 
+	} else
 		fn(true);
 }, 'Username already in use.');
 
@@ -171,22 +170,22 @@ UserSchema.methods = {
 	 */
 
 	sendResetToken: function() {
-		var 
+		var
 			Token = mongoose.model('Token'),
 			self = this,
 			token;
 
-			
+
 		if (self.doesNotRequireValidation){
 			var seed = crypto.randomBytes(20);
 			var id = crypto.createHash('sha1').update(seed).digest('hex');
-			
+
 			token = new Token({
 				_id: id,
 				user: self,
 				expiresAt: moment().add('hour', 1).toDate()
 			}).save();
-		} 
+		}
 	},
 
 	/**
@@ -210,7 +209,7 @@ UserSchema.static({
 			.select('email name username bio status needsEmailsConfirmation role')
 			.exec(cb)
 	},
-	
+
 	getAdmin: function(done) {
 		this.findOne({role: 'admin'}, done);
 	}

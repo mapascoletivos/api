@@ -1,0 +1,19 @@
+version: '2'
+services:
+  app:
+    build: .
+    command: nodemon web.js
+    links:
+      - mongo
+    ports:
+    - 3000:3000
+    volumes:
+    - /src/node_modules
+    - .:/src
+    environment:
+      NODE_ENV: development
+      MONGODB_URI: mongodb://mongo/yby
+  mongo:
+    image: mongo
+    ports:
+    - 27018:27017

@@ -41,6 +41,9 @@
   "admin": {
       "invite_user": {
           "success": "Usuário convidado com sucesso."
+      },
+      "first_admin": {
+          "success": "Administrador criado com sucesso."
       }
   },
   "content": {

@@ -2,8 +2,10 @@
  * Load environment variables
  */
 
-var dotenv = require('dotenv');
-dotenv.load();
+var fs = require('fs');
+if(fs.existsSync('./.env')) {
+  require('dotenv').load();
+}
 
 /**
  * Module dependencies
