@@ -11,7 +11,7 @@ The platform has a decoupled client/server architecture. You can use [Yby Client
 
 ## Install
 
-Dependencies:
+Requirements:
 
 * [Git](https://help.github.com/articles/set-up-git)
 * [Node.js](http://nodejs.org)
@@ -23,6 +23,10 @@ Clone this repository locally and install dependencies by running this command a
     npm install
 
 Copy `config/config.example.js` to `config/config.js` and set basic configuration options, like the database name.
+
+Init database:
+
+    docker-compose up mongodb
 
 Run the server:
 
