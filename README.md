@@ -16,13 +16,11 @@ Requirements:
 * [Git](https://help.github.com/articles/set-up-git)
 * [Node.js](http://nodejs.org)
 * [MongoDB](http://www.mongodb.org)
-* [ImageMagick](http://www.imagemagick.org) (OSX: `brew install image`  Ubuntu: `sudo apt-get install imagemagick`)
+* [ImageMagick](http://www.imagemagick.org) (OSX: `brew install imagemagick`  Ubuntu: `sudo apt-get install imagemagick`)
 
 Clone this repository locally and install dependencies by running this command at application directory:
 
     npm install
-
-Copy `config/config.example.js` to `config/config.js` and set basic configuration options, like the database name.
 
 Init database:
 

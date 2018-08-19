@@ -4,7 +4,7 @@ services:
     build: .
     command: nodemon web.js
     links:
-      - mongo
+      - mongodb
     ports:
     - 3000:3000
     volumes:
@@ -13,7 +13,7 @@ services:
     environment:
       NODE_ENV: development
       MONGODB_URI: mongodb://mongo/yby
-  mongo:
+  mongodb:
     image: mongo:3.2
     ports:
     - 27018:27017
