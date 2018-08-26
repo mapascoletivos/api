@@ -1,13 +1,12 @@
-# Yby
+# Mapas Coletivos API Service
 
-Yby is a collaborative mapping platform. It allows users to draw points, polygons and areas, and associate media content to them. These are projects based on Yby platform:
+Mapas Coletivos is a collaborative mapping platform. It allows users to draw points, polygons and areas, and associate media content to them. Visit the website:
 
-* http://www.mapascoletivos.com.br
-* http://agua.infoamazonia.org
+[www.mapascoletivos.com.br](http://www.mapascoletivos.com.br)
 
 ## Architecture
 
-The platform has a decoupled client/server architecture. You can use [Yby Client](https://github.com/oeco/yby-client), a generic client made in [Angular.js](http://angularjs.org) that allow users to view and create maps.
+The platform has a decoupled client/server architecture. You can use the [web app](https://github.com/mapascoletivos/webapp) to view and create maps.
 
 ## Install
 
@@ -51,3 +50,7 @@ Access the administrative area at [http://localhost:3000/admin](http://localhost
 ## Developement
 
 Write tests and run `npm test`.
+
+## License
+
+[MIT](LICENSE)
