@@ -1,17 +1,17 @@
 # Mapas Coletivos API Service
 
-Mapas Coletivos is a collaborative mapping platform. It allows users to draw points, polygons and areas, and associate media content to them. Visit the website:
-
-[www.mapascoletivos.com.br](http://www.mapascoletivos.com.br)
+A colaboration platform for maps.
 
 ## Getting started
 
 To set up a development environment install the following on your system:
 
 * [Git](https://help.github.com/articles/set-up-git)
-* [ImageMagick](http://www.imagemagick.org) (OSX: `brew install imagemagick`  Ubuntu: `sudo apt-get install imagemagick`)
+* [ImageMagick](http://www.imagemagick.org) 
+  * On OSX: `brew install imagemagick`  
+  * On Ubuntu: `sudo apt-get install imagemagick`
 * [nvm](https://github.com/creationix/nvm) or Node.js version available at [.nvmrc](.nvmrc)
-- [Docker](https://www.docker.com/)
+* [Docker](https://www.docker.com/)
 
 Clone this repository locally and activate target Node.js version:
 
@@ -25,15 +25,35 @@ Install Node.js dependencies:
 npm install
 ```
 
-## Testing
+### Development
 
-Init database:
+Init development database:
 
-    docker-compose up mongodb
+    npm run init-dev-db
 
-Run the server:
+Start development server with changes monitoring:
 
-    npm run watch
+    npm run dev
+
+Access the service at [localhost:3000](http://localhost:3000)
+
+Stop development database:
+
+    npm run stop-dev-db
+
+### Testing
+
+Start test database:
+
+    npm run init-test-db
+
+Run tests:
+
+    npm run test
+
+Stop database container:
+
+    npm run stop-test-db
 
 ## Configure
 
