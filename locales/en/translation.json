@@ -5,7 +5,8 @@
                 "undefined": "mongoose.errors.map.undefined"
             },
             "content": {
-                "undefined": "mongoose.errors.content.undefined"
+                "undefined": "mongoose.errors.content.undefined",
+                "malformed_sections": "mongoose.errors.content.malformed_sections"
             },
             "layer": {
                 "undefined": "mongoose.errors.layer.undefined"
@@ -32,6 +33,18 @@
             "error": {
                 "send_email": "access_token.local.error.send_email"
             }
+        },
+        "unauthorized": "access_token.unauthorized"
+    },
+    "content": {
+        "create": {
+            "error": {
+                "invalid_layer": "content.create.error.invalid_layer",
+                "layer_not_owned": "content.create.error.layer_not_owned"
+            }
+        },
+        "destroy": {
+            "success": "content.destroy.success"
         }
     }
 }

@@ -29,7 +29,7 @@
     "start-test-db": "docker-compose --project-name gep-test -f docker-compose-test.yml up -d",
     "stop-test-db": "docker-compose --project-name gep-test -f docker-compose-test.yml down",
     "test": "NODE_ENV=test mocha test/",
-    "lint": "node_modules/.bin/eslint app/ test/ seeds/ migrations/ --ext .js"
+    "lint": "node_modules/.bin/eslint app/ test/ --ext .js"
   },
   "dependencies": {
     "async": "^2.6.1",
