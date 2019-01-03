@@ -24,10 +24,10 @@
   "scripts": {
     "start": "node web.js",
     "dev": "NODE_ENV=development node_modules/.bin/nodemon web.js",
-    "start-dev-db": "docker-compose --project-name gep-dev -f docker-compose-dev.yml up -d",
-    "stop-dev-db": "docker-compose --project-name gep-dev -f docker-compose-dev.yml down",
-    "start-test-db": "docker-compose --project-name gep-test -f docker-compose-test.yml up -d",
-    "stop-test-db": "docker-compose --project-name gep-test -f docker-compose-test.yml down",
+    "start-dev-db": "docker-compose --project-name mc-dev -f docker-compose-dev.yml up -d",
+    "stop-dev-db": "docker-compose --project-name mc-dev -f docker-compose-dev.yml down",
+    "start-test-db": "docker-compose --project-name mc-test -f docker-compose-test.yml up -d",
+    "stop-test-db": "docker-compose --project-name mc-test -f docker-compose-test.yml down",
     "test": "NODE_ENV=test mocha test/",
     "lint": "node_modules/.bin/eslint app/ test/ --ext .js"
   },
