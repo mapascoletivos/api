@@ -22,11 +22,14 @@
   },
   "main": "web.js",
   "scripts": {
-    "watch": "NODE_ENV=development nodemon --watch web.js",
-    "forever": "NODE_ENV=development forever start -w --spinSleepTime web.js",
     "start": "node web.js",
+    "dev": "NODE_ENV=development node_modules/.bin/nodemon web.js",
+    "start-dev-db": "docker-compose --project-name gep-dev -f docker-compose-dev.yml up -d",
+    "stop-dev-db": "docker-compose --project-name gep-dev -f docker-compose-dev.yml down",
+    "start-test-db": "docker-compose --project-name gep-test -f docker-compose-test.yml up -d",
+    "stop-test-db": "docker-compose --project-name gep-test -f docker-compose-test.yml down",
     "test": "NODE_ENV=test mocha test/",
-    "i18n": "i18next app/ -o locales/ -r -l en-US,es,es-ES,pt,pt-BR"
+    "lint": "node_modules/.bin/eslint app/ test/ seeds/ migrations/ --ext .js"
   },
   "dependencies": {
     "async": "^2.6.1",

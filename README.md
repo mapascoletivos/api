@@ -4,22 +4,28 @@ Mapas Coletivos is a collaborative mapping platform. It allows users to draw poi
 
 [www.mapascoletivos.com.br](http://www.mapascoletivos.com.br)
 
-## Architecture
+## Getting started
 
-The platform has a decoupled client/server architecture. You can use the [web app](https://github.com/mapascoletivos/webapp) to view and create maps.
-
-## Install
-
-Requirements:
+To set up a development environment install the following on your system:
 
 * [Git](https://help.github.com/articles/set-up-git)
-* [Node.js](http://nodejs.org)
-* [MongoDB](http://www.mongodb.org)
 * [ImageMagick](http://www.imagemagick.org) (OSX: `brew install imagemagick`  Ubuntu: `sudo apt-get install imagemagick`)
+* [nvm](https://github.com/creationix/nvm) or Node.js version available at [.nvmrc](.nvmrc)
+- [Docker](https://www.docker.com/)
 
-Clone this repository locally and install dependencies by running this command at application directory:
+Clone this repository locally and activate target Node.js version:
 
-    npm install
+```
+nvm install
+```
+
+Install Node.js dependencies:
+
+```
+npm install
+```
+
+## Testing
 
 Init database:
 

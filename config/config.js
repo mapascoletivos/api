@@ -29,7 +29,7 @@ module.exports = {
   },
   test: {
     root: rootPath,
-    db: process.env.MONGODB_URI || 'mongodb://localhost:27018/yby_test',
+    db: process.env.MONGODB_URI || 'mongodb://localhost:27019/yby_test',
     i18n: i18n
   },
   production: {
