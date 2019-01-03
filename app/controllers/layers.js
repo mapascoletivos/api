@@ -1,32 +1,21 @@
-/**
- * Module dependencies.
- */
-
-var messages = require('../../lib/messages');
-
-var mongoose = require('mongoose');
-
-var Layer = mongoose.model('Layer');
-
-var Feature = mongoose.model('Feature');
-
-var Content = mongoose.model('Content');
-
-var User = mongoose.model('User');
-
-var mailer = require('../../lib/mailer');
-
-var _ = require('underscore');
-
-var async = require('async');
+const messages = require('../../lib/messages');
+const mongoose = require('mongoose');
+const Layer = mongoose.model('Layer');
+const Content = mongoose.model('Content');
+const User = mongoose.model('User');
+const _ = require('underscore');
+const async = require('async');
 
 /**
  * Load
  */
-
 exports.load = function (req, res, next, id) {
   Layer.load(id, function (err, layer) {
-    if (err) { return res.json(400, messages.error(req.i18n.t('layer.load.error'))); } else if (!layer) { return res.json(400, messages.error(req.i18n.t('layer.load.not_found'))); } else {
+    if (err) {
+      return res.json(400, messages.error(req.i18n.t('layer.load.error')));
+    } else if (!layer) {
+      return res.json(400, messages.error(req.i18n.t('layer.load.not_found')));
+    } else {
       req.layer = layer;
       next();
     }
@@ -46,7 +35,7 @@ exports.index = function (req, res) {
     criteria: { visibility: 'Visible' }
   };
 
-  if (req.isAuthenticated() && req.user.role == 'admin') {
+  if (req.isAuthenticated() && req.user.role === 'admin') {
     delete options.criteria;
   }
 
@@ -67,7 +56,9 @@ exports.index = function (req, res) {
   }
 
   Layer.list(options, function (err, layers) {
-    if (err) { return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer')); }
+    if (err) {
+      return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
+    }
     Layer.count(options.criteria).exec(function (err, count) {
       if (!err) {
         res.json({ options: options, layersTotal: count, layers: layers });
@@ -108,6 +99,7 @@ exports.show = function (req, res) {
         });
     },
     function (err) {
+      if (err) res.json(400, messages.error(req.i18n.t('layer.show.error')));
       layer.features = features;
       res.json(layer);
     }
@@ -125,10 +117,10 @@ exports.create = function (req, res) {
 
   if (!type) {
     return res.json(400, messages.error(req.i18n.t('layer.create.missing')));
-  } else if (type == 'TileLayer') {
+  } else if (type === 'TileLayer') {
     layer.url = req.body.url;
     layer.properties = req.body.properties;
-  } else if (type == 'FeatureLayer') {
+  } else if (type === 'FeatureLayer') {
     layer.features = req.body.features;
     layer.contents = req.body.contents;
 
@@ -166,7 +158,7 @@ exports.update = function (req, res) {
   delete req.body['contents'];
   delete req.body['__v'];
 
-  if (req.layer == 'TileLayer') {
+  if (req.layer === 'TileLayer') {
     return res.json(
       400,
       messages.error(req.i18n.t('layer.update.tilelayer.error'))
@@ -255,7 +247,7 @@ exports.addContributor = function (req, res) {
 
   var layer = req.layer;
 
-  if (contributorEmail == req.user.email) {
+  if (contributorEmail === req.user.email) {
     res.json(
       400,
       messages.error(req.i18n.t('layer.contributor.add.error.already_exists'))
@@ -272,10 +264,14 @@ exports.addContributor = function (req, res) {
       } else {
         layer.contributors.addToSet(user);
         layer.save(function (err) {
-          if (err) { res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer')); } else {
+          if (err) {
+            res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
+          } else {
             Layer.findById(layer._id)
               .populate('contributors', 'name username email')
               .exec(function (err, updatedLayer) {
+                if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
+
                 var data = {
                   layer: updatedLayer,
                   creator: req.user,
@@ -322,11 +318,11 @@ exports.removeContributor = function (req, res) {
 
   var layer = req.layer;
 
-  contributorCount = layer.contributors.length;
+  let contributorCount = layer.contributors.length;
 
   layer.contributors.pull({ _id: contributorId });
 
-  if (contributorCount == layer.contributors.lentgh) {
+  if (contributorCount === layer.contributors.lentgh) {
     res.json(
       400,
       messages.error(req.i18n.t('layer.contributor.remove.error.invalid_id'))
@@ -339,6 +335,8 @@ exports.removeContributor = function (req, res) {
         Layer.findById(layer._id)
           .populate('contributors', 'name username email')
           .exec(function (err, updatedLayer) {
+            if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
+
             res.json({
               layer: updatedLayer,
               messages: messages.success(

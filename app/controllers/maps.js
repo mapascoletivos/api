@@ -2,13 +2,11 @@
  * Module dependencies.
  */
 
-var _ = require('underscore');
-
 var mongoose = require('mongoose');
 
 var Map = mongoose.model('Map');
 
-var extend = require('util')._extend;
+// var extend = require('util')._extend;
 
 var messages = require('../../lib/messages');
 
@@ -104,7 +102,7 @@ exports.update = function (req, res) {
   // delete from body to keep it in the map model for updating relationships properly
   delete req.body['layers'];
 
-  map = extend(map, req.body);
+  map = Object.assing({}, map, req.body);
 
   map.setLayersAndSave(newLayerSet, function (err) {
     if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'map'));

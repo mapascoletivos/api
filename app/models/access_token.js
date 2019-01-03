@@ -1,12 +1,6 @@
-/*!
- * Module dependencies
- */
-
-var mongoose = require('mongoose');
-
-var Schema = mongoose.Schema;
-
-var moment = require('moment');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const moment = require('moment');
 
 /**
  * User schema
@@ -20,7 +14,7 @@ var AccessTokenSchema = new Schema({
     type: Date,
     required: true,
     default: moment()
-      .add('day', 15)
+      .add(15, 'day')
       .toDate()
   },
   user: { type: Schema.ObjectId, ref: 'User' }

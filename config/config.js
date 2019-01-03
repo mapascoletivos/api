@@ -1,25 +1,23 @@
-
 /*!
-* Module dependencies.
-*/
+ * Module dependencies.
+ */
 
-var
-  path = require('path'),
-  rootPath = path.resolve(__dirname + '/..'),
-  app_url = process.env.APP_URL || ('http://localhost:' + (process.env.PORT || 3000)),
-  i18n = {
-    lng: 'pt-BR',
-    preload: ['pt-BR'],
-    shorcutFunction: 'defaultValue',
-    fallbackLng: 'en',
-    saveMissing: true,
-    debug: true
-  };
+const path = require('path');
 
+const rootPath = path.join(__dirname, '..');
+
+const i18n = {
+  lng: 'pt-BR',
+  preload: ['pt-BR'],
+  shorcutFunction: 'defaultValue',
+  fallbackLng: 'en',
+  saveMissing: true,
+  debug: true
+};
 
 /**
-* Expose config
-*/
+ * Expose config
+ */
 
 module.exports = {
   development: {

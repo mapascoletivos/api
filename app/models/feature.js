@@ -8,8 +8,6 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var Area = mongoose.model('Area');
-
 var Content = mongoose.model('Content');
 
 /**
@@ -76,9 +74,6 @@ FeatureSchema.pre('remove', function (next) {
 FeatureSchema.virtual('contents')
   .get(function () {
     return this._contents;
-  })
-  .set(function (contents) {
-    this._contents;
   });
 
 /**
@@ -97,6 +92,7 @@ FeatureSchema.statics = {
   },
 
   list: function (options, doneList) {
+    var self = this;
     var criteria = options.criteria || {};
 
     this.find(criteria)

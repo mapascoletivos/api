@@ -1,18 +1,6 @@
-/**
- * Module dependencies.
- */
-
-var _ = require('underscore');
-
-var mongoose = require('mongoose');
-
-var Token = mongoose.model('Token');
-
-var User = mongoose.model('User');
-
-/**
- * Load
- */
+const mongoose = require('mongoose');
+const Token = mongoose.model('Token');
+const User = mongoose.model('User');
 
 exports.load = function (req, res, next, id) {
   Token.findById(id, function (err, token) {
@@ -43,7 +31,7 @@ exports.confirmEmail = function (req, res) {
   var token = req.token;
 
   // invalid route for token
-  if (token.type != 'confirm_email') {
+  if (token.type !== 'confirm_email') {
     return res.render('tokens/index', {
       errors: [req.i18n.t('token.error.invalid_type')]
     });
@@ -97,7 +85,7 @@ exports.acceptInvitationForm = function (req, res) {
   var token = req.token;
 
   // invalid route for token
-  if (token.type != 'acceptInvitation') {
+  if (token.type !== 'acceptInvitation') {
     return res.render('tokens/index', {
       errors: [req.i18n.t('token.accept_invitation.error.invalid_token')]
     });
@@ -112,7 +100,7 @@ exports.acceptInvitation = function (req, res) {
   var token = req.token;
 
   // invalid route for token
-  if (token.type != 'acceptInvitation') {
+  if (token.type !== 'acceptInvitation') {
     return res.render('tokens/index', {
       errors: [req.i18n.t('token.error.invalid')]
     });
@@ -177,7 +165,7 @@ exports.newPasswordForm = function (req, res) {
   var token = req.token;
 
   // invalid route for token
-  if (token.type != 'password_reset' && token.type != 'password_needed') {
+  if (token.type !== 'password_reset' && token.type !== 'password_needed') {
     return res.render('tokens/index', {
       errors: [req.i18n.t('token.error.invalid')]
     });
@@ -194,7 +182,7 @@ exports.newPassword = function (req, res) {
   var token = req.token;
 
   // invalid route for token
-  if (token.type != 'password_reset' && token.type != 'password_needed') {
+  if (token.type !== 'password_reset' && token.type !== 'password_needed') {
     return res.render('tokens/index', {
       errors: [req.i18n.t('token.error.invalid')]
     });
@@ -236,12 +224,8 @@ exports.newPassword = function (req, res) {
 exports.emailChange = function (req, res) {
   var token = req.token;
 
-  var error = [];
-
-  var info = [];
-
   // invalid route for token
-  if (token.type != 'email_change') {
+  if (token.type !== 'email_change') {
     return res.render('tokens/index', {
       errors: [req.i18n.t('token.error.invalid')]
     });

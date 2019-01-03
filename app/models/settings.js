@@ -47,12 +47,12 @@ var SettingsSchema = new Schema({
 
 SettingsSchema.statics = {
   load: function (done) {
-    var self = this;
+    var Self = this;
 
-    self.findOne(function (err, settings) {
+    Self.findOne(function (err, settings) {
       if (err) done(err);
       else if (!settings) {
-        settings = new self();
+        settings = new Self();
         settings.save(function (err) {
           done(err, settings);
         });

@@ -31,10 +31,7 @@ var generateAccessToken = function (user, res) {
 
   token.save(function (err) {
     if (err) {
-      return res.json(
-        401,
-        messages.mongooseErrors(req.i18n.t, err, 'accessToken')
-      );
+      return res.json(401, err.message);
     }
 
     var response = _.extend(
@@ -66,37 +63,26 @@ var authSocialUser = function (provider, profile, res) {
 
   User.load({ email: userProfile.email }, function (err, user) {
     if (err) {
-      return res.json(
-        401,
-        messages.error(req.i18n.t('access_token.authsocial.error.load_user'))
-      );
+      return res.json(401, err.message);
     }
     if (!user) {
       user = new User(userProfile);
       user.save(function (err) {
         if (err) {
-          return res.json(
-            401,
-            messages.error(
-              req.i18n.t('access_token.authsocial.error.save_user')
-            )
-          );
+          return res.json(401, err.message);
         }
         generateAccessToken(user, res);
       });
     } else {
       // add third party info if not present
-      if (provider == 'google' && !user.google) {
+      if (provider === 'google' && !user.google) {
         user.google = profile;
       }
 
       if (user.isModified) {
         user.save(function (err) {
           if (err) {
-            return res.json(
-              400,
-              messages.mongooseErrors(req.i18n.t, err, 'user')
-            );
+            return res.json(400, err.message);
           }
           generateAccessToken(user, res);
         });
@@ -108,7 +94,7 @@ var authSocialUser = function (provider, profile, res) {
 exports.google = function (req, res) {
   if (req.headers.authorization) {
     var authorizationField = req.headers.authorization.split(' ');
-    if ((authorizationField[0] = 'Bearer')) {
+    if (authorizationField[0] === 'Bearer') {
       https
         .get(
           'https://www.googleapis.com/plus/v1/people/me?access_token=' +
@@ -116,7 +102,7 @@ exports.google = function (req, res) {
           function (response) {
             var body = '';
 
-            if (response.statusCode == 200) {
+            if (response.statusCode === 200) {
               response.on('data', function (d) {
                 body += d;
               });
@@ -145,14 +131,14 @@ exports.google = function (req, res) {
 exports.facebook = function (req, res, next) {
   if (req.headers.authorization) {
     var authorizationField = req.headers.authorization.split(' ');
-    if ((authorizationField[0] = 'Bearer')) {
+    if (authorizationField[0] === 'Bearer') {
       https
         .get(
           'https://graph.facebook.com/me?access_token=' + authorizationField[1],
           function (response) {
             var body = '';
 
-            if (response.statusCode == 200) {
+            if (response.statusCode === 200) {
               response.on('data', function (d) {
                 body += d;
               });
@@ -194,10 +180,8 @@ exports.local = function (req, res, next) {
         403,
         messages.error(req.i18n.t('access_token.local.unauthorized'))
       );
-    }
-
-    // User needs to finish migration.
-    else if (user.status == 'to_migrate') {
+    } else if (user.status === 'to_migrate') {
+      // User needs to finish migration.
       return res.json(
         400,
         messages.error(req.i18n.t('access_token.local.needs_migration'))
@@ -269,8 +253,8 @@ exports.logout = function (req, res, next) {
   req.logout();
 
   if (req.headers.authorization) {
-    var access_token = req.headers.authorization.split(' ')[1];
-    AccessToken.findOne({ _id: access_token }, function (err, at) {
+    var accessToken = req.headers.authorization.split(' ')[1];
+    AccessToken.findOne({ _id: accessToken }, function (err, at) {
       if (err) return res.json(400, err);
       if (!at) {
         return res.json(

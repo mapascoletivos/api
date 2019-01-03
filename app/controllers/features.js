@@ -47,7 +47,9 @@ exports.index = function (req, res) {
   };
 
   Feature.list(options, function (err, features) {
-    if (err) { return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature')); }
+    if (err) {
+      return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
+    }
     Feature.count().exec(function (err, count) {
       if (!err) {
         res.json({
@@ -83,7 +85,9 @@ exports.create = function (req, res) {
 
       // save layer
       layer.save(function (err) {
-        if (err) { res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature')); }
+        if (err) {
+          res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
+        }
         res.json(feature);
       });
     }
@@ -103,7 +107,7 @@ exports.show = function (req, res) {
     err,
     contents
   ) {
-    if (err) callback(err);
+    if (err) res.json(400, err.message);
     else {
       if (contents) {
         feature.contents = _.map(contents, function (ct) {
@@ -164,7 +168,11 @@ exports.addContent = function (req, res) {
   content.save(function (err) {
     if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
     feature.save(function (err) {
-      if (err) { res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature')); } else { res.json(messages.success(req.i18n.t('feature.add_content.success'))); }
+      if (err) {
+        res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
+      } else {
+        res.json(messages.success(req.i18n.t('feature.add_content.success')));
+      }
     });
   });
 };
@@ -190,7 +198,9 @@ exports.removeContent = function (req, res) {
   content.save(function (err) {
     if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'content'));
     feature.save(function (err) {
-      if (err) { res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature')); } else {
+      if (err) {
+        res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
+      } else {
         res.json(
           messages.success(req.i18n.t('feature.remove_content.success'))
         );
@@ -210,7 +220,7 @@ exports.import = function (req, res) {
     async.eachSeries(
       req.body,
       function (feature, cb) {
-        var feature = new Feature(feature);
+        feature = new Feature(feature);
         feature.creator = req.user;
         feature.layer = req.layer;
 
@@ -230,7 +240,9 @@ exports.import = function (req, res) {
         });
       },
       function (err) {
-        if (err) { res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature')); } else {
+        if (err) {
+          res.json(400, messages.mongooseErrors(req.i18n.t, err, 'feature'));
+        } else {
           // save layer
           layer.save(function (err) {
             if (err) {

@@ -40,66 +40,67 @@ AreaSchema.statics = {
     var Area = this;
 
     var createAreasFromNominatim = function (
-      address_entries,
+      addressEntries,
       doneCreatingAreas
     ) {
       var entries = [];
 
-      var areas_objects = [];
+      var areasObjects = [];
 
-      var keys = Object.keys(address_entries);
+      var keys = Object.keys(addressEntries);
 
       keys.forEach(function (key) {
-        entries.push({ type: key, value: address_entries[key] });
+        entries.push({ type: key, value: addressEntries[key] });
       });
 
-      var parseEntries = function (entries_list, parent) {
-        var entry = entries_list.pop();
+      var parseEntries = function (entriesList, parent) {
+        var entry = entriesList.pop();
+        let areaProperties;
 
         // Ignore postcodes because they don't appear in hierarchical order
         if (entry.type === 'postcode') {
-          if (entries_list.length > 0) {
-            entry = entries_list.pop();
+          if (entriesList.length > 0) {
+            entry = entriesList.pop();
           } else {
-            doneWhichContains(null, areas_objects);
+            doneWhichContains(null, areasObjects);
           }
         }
 
         if (entry.type === 'country_code') {
-          area_properties = {
+          areaProperties = {
             type: 'country',
             code: entry.value.toUpperCase(),
             name: entry.value.toUpperCase()
           };
 
           // next entry is possible the contry name
-          entry = entries_list.pop();
+          entry = entriesList.pop();
           if (entry.type === 'country') {
-            area_properties.name = entry.value;
+            areaProperties.name = entry.value;
           } else {
             // if not a country, put back on the list
-            entries_list.push(entry);
+            entriesList.push(entry);
           }
         } else {
-          area_properties = {
+          areaProperties = {
             type: entry.type,
             name: entry.value
           };
         }
 
-        if (parent) area_properties.parent = parent;
+        if (parent) areaProperties.parent = parent;
 
-        Area.upsertArea(area_properties, function (err, area) {
+        Area.upsertArea(areaProperties, function (err, area) {
           if (err) {
             doneWhichContains(err);
           } else {
-            areas_objects.push(area);
+            areasObjects.push(area);
 
             // It still has more areas to parse?
-            if (entries_list.length > 0) {
-              parseEntries(entries_list, area._id);
+            if (entriesList.length > 0) {
+              parseEntries(entriesList, area._id);
             } else {
-              doneWhichContains(null, areas_objects);
+              doneWhichContains(null, areasObjects);
             }
           }
         });
@@ -108,7 +109,7 @@ AreaSchema.statics = {
       parseEntries(entries, null);
     };
 
-    var nominatim_query = {
+    var nominatimQuery = {
       protocol: 'https:',
       host: 'nominatim.openstreetmap.org',
       pathname: '/reverse',
@@ -123,21 +124,21 @@ AreaSchema.statics = {
 
     switch (geometry.type) {
       case 'Point':
-        nominatim_query.query.lon = geometry.coordinates[0];
-        nominatim_query.query.lat = geometry.coordinates[1];
+        nominatimQuery.query.lon = geometry.coordinates[0];
+        nominatimQuery.query.lat = geometry.coordinates[1];
         break;
       case 'LineString':
-        nominatim_query.query.lon = geometry.coordinates[0][0];
-        nominatim_query.query.lat = geometry.coordinates[0][1];
+        nominatimQuery.query.lon = geometry.coordinates[0][0];
+        nominatimQuery.query.lat = geometry.coordinates[0][1];
         break;
       case 'Polygon':
-        nominatim_query.query.lon = geometry.coordinates[0][0][0];
-        nominatim_query.query.lat = geometry.coordinates[0][0][1];
+        nominatimQuery.query.lon = geometry.coordinates[0][0][0];
+        nominatimQuery.query.lat = geometry.coordinates[0][0][1];
         break;
     }
 
     https
-      .get(url.format(nominatim_query), function (response) {
+      .get(url.format(nominatimQuery), function (response) {
         var body = '';
 
         if (response.statusCode === 200) {
@@ -153,12 +154,10 @@ AreaSchema.statics = {
             } else doneWhichContains();
           });
         } else {
-          console.log('not status code:' + response.statusCode);
           doneWhichContains(null, []);
         }
       })
       .on('error', function (e) {
-        console.log(e);
         doneWhichContains(null, []);
       });
   }

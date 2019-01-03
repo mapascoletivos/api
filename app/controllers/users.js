@@ -2,17 +2,18 @@
  * Module dependencies.
  */
 
-var validator = require('validator');
+const utils = require('../../lib/utils');
+const validator = require('validator');
 
-var messages = require('../../lib/messages');
+const messages = require('../../lib/messages');
 
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var User = mongoose.model('User');
+const User = mongoose.model('User');
 
-var Layer = mongoose.model('Layer');
+const Layer = mongoose.model('Layer');
 
-var Map = mongoose.model('Map');
+const Map = mongoose.model('Map');
 
 /**
  * Find user by id
@@ -40,6 +41,18 @@ exports.create = function (req, res) {
   var user = new User(req.body);
   var preValidationErrors = [];
 
+  function saveUser () {
+    user.save(function (err) {
+      if (err) {
+        return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));
+      } else {
+        return res.json(
+          messages.success(req.i18n.t('user.create.email.success'))
+        );
+      }
+    });
+  }
+
   // Checks existence of all fields before sending to mongoose
 
   if (!user.name) {
@@ -62,21 +75,6 @@ exports.create = function (req, res) {
       messages: messages.errorsArray(req.i18n, preValidationErrors)
     });
   } else {
-    function saveUser () {
-      user.save(function (err) {
-        if (err) {
-          return res.json(
-            400,
-            messages.mongooseErrors(req.i18n.t, err, 'user')
-          );
-        } else {
-          return res.json(
-            messages.success(req.i18n.t('user.create.email.success'))
-          );
-        }
-      });
-    }
-
     // Send e-mail confirmation if needed
     if (req.app.locals.settings.mailer.enforceEmailConfirmation) {
       var data = {
@@ -110,6 +108,13 @@ exports.create = function (req, res) {
 
 exports.update = function (req, res) {
   User.findById(req.user._id, function (err, user) {
+    if (err) {
+      return res.json(
+        400,
+        messages.error(req.i18n.t('user.update.error'))
+      );
+    }
+
     // User is changing password
     if (req.body.userPwd) {
       if (!user.authenticate(req.body.userPwd)) {
@@ -123,7 +128,7 @@ exports.update = function (req, res) {
           messages.error(req.i18n.t('user.update.password.error.length'))
         );
       } else {
-        if (req.body.newPwd == req.body.validatePwd) {
+        if (req.body.newPwd === req.body.validatePwd) {
           user.password = req.body.newPwd;
           user.save(function (err) {
             if (err) res.json(400, messages.errors(err));
@@ -144,7 +149,7 @@ exports.update = function (req, res) {
       // User is changing e-mail
     } else if (req.body.email) {
       // Check if is a diffent e-mail
-      if (req.body.email == user.email) {
+      if (req.body.email === user.email) {
         return res.json(
           400,
           messages.error(
@@ -163,7 +168,7 @@ exports.update = function (req, res) {
 
       // Send confirmation, if e-mail is not already used
       User.findOne({ email: req.body.email }, function (err, anotherUser) {
-        if (!req.body.callback_url) {
+        if (err || !req.body.callback_url) {
           return res.json(
             400,
             messages.error(
@@ -216,7 +221,7 @@ exports.update = function (req, res) {
 };
 
 /**
- *	Show a user profile
+ * Show a user profile
  */
 
 exports.show = function (req, res) {

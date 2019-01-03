@@ -185,7 +185,7 @@ UserSchema.methods = {
         _id: id,
         user: self,
         expiresAt: moment()
-          .add('hour', 1)
+          .add(1, 'hour')
           .toDate()
       });
       token.save();
