@@ -18,8 +18,7 @@
     }
   ],
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.2.x"
+    "node": ">=8.15.0"
   },
   "main": "web.js",
   "scripts": {
@@ -52,11 +51,18 @@
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
     "postmark": "^1.0.0",
+    "prettier": "^1.15.3",
     "underscore": "^1.8.2",
     "validator": "^3.35.0",
     "view-helpers": "^0.1.5"
   },
   "devDependencies": {
+    "eslint": "^5.11.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "grunt": "0.4.5",
     "i18next-parser": "0.3.8",
     "lorem-ipsum": "~1.0.1",
