@@ -29,17 +29,13 @@ npm install
 
 Init development database:
 
-    npm run init-dev-db
+    npm run start-dev-db
 
-Start development server with changes monitoring:
+In another terminal, start development server that listen to code changes:
 
     npm run dev
 
-Access the service at [localhost:3000](http://localhost:3000)
-
-Stop development database:
-
-    npm run stop-dev-db
+Server will be accessible at [localhost:3000](http://localhost:3000)
 
 ### Testing
 

@@ -18,7 +18,7 @@
     }
   ],
   "engines": {
-    "node": ">=8.15.0"
+    "node": ">=10"
   },
   "main": "web.js",
   "scripts": {
