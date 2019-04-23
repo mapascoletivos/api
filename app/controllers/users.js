@@ -4,15 +4,10 @@
 
 const utils = require('../../lib/utils');
 const validator = require('validator');
-
 const messages = require('../../lib/messages');
-
 const mongoose = require('mongoose');
-
 const User = mongoose.model('User');
-
 const Layer = mongoose.model('Layer');
-
 const Map = mongoose.model('Map');
 
 /**
@@ -109,10 +104,7 @@ exports.create = function (req, res) {
 exports.update = function (req, res) {
   User.findById(req.user._id, function (err, user) {
     if (err) {
-      return res.json(
-        400,
-        messages.error(req.i18n.t('user.update.error'))
-      );
+      return res.json(400, messages.error(req.i18n.t('user.update.error')));
     }
 
     // User is changing password

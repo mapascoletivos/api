@@ -35,21 +35,17 @@ In another terminal, start development server that listen to code changes:
 
     npm run dev
 
-Server will be accessible at [localhost:3000](http://localhost:3000)
+Create a admin user at [localhost:3000](http://localhost:3000).
 
 ### Testing
 
 Start test database:
 
-    npm run init-test-db
+    npm run start-test-db
 
-Run tests:
+In another terminal, run tests:
 
     npm run test
-
-Stop database container:
-
-    npm run stop-test-db
 
 ## Configure
 

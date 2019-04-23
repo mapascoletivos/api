@@ -26,6 +26,13 @@
             "subjects": {
                 "confirm_email": "views.mailer.subjects.confirm_email"
             }
+        },
+        "admin": {
+            "settings": {
+                "index": {
+                    "cdn_url": "views.admin.settings.index.cdn_url"
+                }
+            }
         }
     },
     "access_token": {
@@ -46,5 +53,6 @@
         "destroy": {
             "success": "content.destroy.success"
         }
-    }
+    },
+    "A senha deve ter no mínimo 6 caracteres": {}
 }

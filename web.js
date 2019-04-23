@@ -14,7 +14,7 @@ if (fs.existsSync('./.env')) {
 var express = require('express');
 var passport = require('passport');
 var env = process.env.NODE_ENV || 'development';
-var config = require('./config/config')[env];
+var config = require('./server/config')[env];
 var mongoose = require('mongoose');
 
 require('express-namespace');
@@ -27,15 +27,15 @@ fs.readdirSync(__dirname + '/app/models').forEach(function (file) {
 });
 
 // Bootstrap passport config
-require('./config/passport')(passport, config);
+require('./server/passport')(passport, config);
 
 var app = express();
 
 // Bootstrap application settings
-require('./config/express')(app, config, passport);
+require('./server/express')(app, config, passport);
 
 // Bootstrap routes
-require('./config/routes')(app, passport);
+require('./server/routes')(app, passport);
 
 // Start the app by listening on <port>
 var port = process.env.PORT || 3000;

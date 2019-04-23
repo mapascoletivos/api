@@ -12,7 +12,7 @@ const factory = require('../../lib/factory');
 const messages = require('../../lib/messages');
 const clear = require('../../lib/clear');
 
-const config = require('../../config/config')['test'];
+const config = require('../../server/config')['test'];
 
 const apiPrefix = '/api/v1';
 

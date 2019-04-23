@@ -4,7 +4,7 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Imager = require('imager');
-const imagerConfig = require('../../config/imager.js');
+const imagerConfig = require('../../server/imager.js');
 const imager = new Imager(imagerConfig, 'Local');
 
 /**

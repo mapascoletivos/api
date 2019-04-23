@@ -26,7 +26,6 @@
     "dev": "NODE_ENV=development node_modules/.bin/nodemon web.js",
     "start-dev-db": "docker-compose --project-name mc-dev -f docker-compose-dev.yml up",
     "start-test-db": "docker-compose --project-name mc-test -f docker-compose-test.yml up",
-    "stop-test-db": "docker-compose --project-name mc-test -f docker-compose-test.yml down",
     "test": "NODE_ENV=test mocha test/",
     "lint": "node_modules/.bin/eslint app/ test/ --ext .js"
   },
@@ -69,7 +68,7 @@
     "i18next-parser": "0.3.8",
     "lorem-ipsum": "~1.0.1",
     "mocha": "2.2.1",
-    "nodemon": "1.3.7",
+    "nodemon": "^1.18.11",
     "rosie": "0.4.0",
     "should": "5.2.0",
     "supertest": "0.15.0"
