@@ -3,8 +3,12 @@
  */
 
 var mongoose = require('mongoose');
-
 var Schema = mongoose.Schema;
+
+// Config
+const config = require('config');
+const confirmNewUserEmail = config.get('confirmNewUserEmail');
+
 
 /*
  * Schemma
@@ -29,7 +33,7 @@ var SettingsSchema = new Schema({
     allowedDomains: { type: String, default: 'http://localhost:8000' }
   },
   mailer: {
-    enforceEmailConfirmation: { type: Boolean, default: true },
+    enforceEmailConfirmation: { type: Boolean, default: confirmNewUserEmail },
     provider: { type: String, enum: ['smtp', 'postmark'], default: 'smtp' },
     from: { type: String, default: '' },
     smtp: {
