@@ -1,14 +1,7 @@
-/**
- * Module dependencies.
- */
-
 var mongoose = require('mongoose');
-
 var Map = mongoose.model('Map');
-
-// var extend = require('util')._extend;
-
 var messages = require('../../lib/messages');
+const { isInt } = require('../../lib/utils');
 
 /**
  * Load
@@ -33,11 +26,9 @@ exports.load = function (req, res, next, id) {
  */
 
 exports.index = function (req, res) {
-  var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
-  var perPage = req.param('perPage') > 0 ? req.param('perPage') : 30;
-  var options = {
-    perPage: perPage,
-    page: page,
+  const options = {
+    perPage: req.perPage,
+    page: req.page,
     criteria: { visibility: 'Visible' }
   };
 

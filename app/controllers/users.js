@@ -225,11 +225,9 @@ exports.info = function (req, res, next) {
 };
 
 exports.layers = function (req, res, next) {
-  var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
-  var perPage = req.param('perPage') > 0 ? req.param('perPage') : 30;
-  var options = {
-    perPage: perPage,
-    page: page,
+  const options = {
+    perPage: req.perPage,
+    page: req.page,
     criteria: {
       $or: [{ creator: req.user }, { contributors: { $in: [req.user._id] } }]
     }
@@ -257,11 +255,9 @@ exports.layers = function (req, res, next) {
 };
 
 exports.maps = function (req, res, next) {
-  var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
-  var perPage = req.param('perPage') > 0 ? req.param('perPage') : 30;
-  var options = {
-    perPage: perPage,
-    page: page,
+  const options = {
+    perPage: req.perPage,
+    page: req.page,
     criteria: { creator: req.user }
   };
 

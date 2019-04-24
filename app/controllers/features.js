@@ -39,11 +39,9 @@ exports.load = function (req, res, next, id) {
  */
 
 exports.index = function (req, res) {
-  var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
-  var perPage = req.param('perPage') > 0 ? req.param('perPage') : 30;
-  var options = {
-    perPage: perPage,
-    page: page
+  const options = {
+    perPage: req.perPage,
+    page: req.page
   };
 
   Feature.list(options, function (err, features) {

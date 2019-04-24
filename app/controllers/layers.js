@@ -1,4 +1,5 @@
 const messages = require('../../lib/messages');
+const { isInt } = require('../../lib/utils');
 const mongoose = require('mongoose');
 const Layer = mongoose.model('Layer');
 const Content = mongoose.model('Content');
@@ -27,11 +28,9 @@ exports.load = function (req, res, next, id) {
  */
 
 exports.index = function (req, res) {
-  var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
-  var perPage = req.param('perPage') > 0 ? req.param('perPage') : 30;
-  var options = {
-    perPage: perPage,
-    page: page,
+  const options = {
+    perPage: req.perPage,
+    page: req.page,
     criteria: { visibility: 'Visible' }
   };
 
@@ -270,7 +269,12 @@ exports.addContributor = function (req, res) {
             Layer.findById(layer._id)
               .populate('contributors', 'name username email')
               .exec(function (err, updatedLayer) {
-                if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
+                if (err) {
+                  res.json(
+                    400,
+                    messages.mongooseErrors(req.i18n.t, err, 'layer')
+                  );
+                }
 
                 var data = {
                   layer: updatedLayer,
@@ -335,7 +339,7 @@ exports.removeContributor = function (req, res) {
         Layer.findById(layer._id)
           .populate('contributors', 'name username email')
           .exec(function (err, updatedLayer) {
-            if (err) res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer'));
+            if (err) { res.json(400, messages.mongooseErrors(req.i18n.t, err, 'layer')); }
 
             res.json({
               layer: updatedLayer,
