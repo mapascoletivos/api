@@ -1,0 +1,22 @@
+version: '3'
+services:
+  database:
+    image: mongo:3.2
+    ports:
+      - "27020:27017"
+  app:
+    build: .
+    command: nodemon src/
+    links:
+      - database
+    environment:
+      - DB_CONNECTION_STRING=mongodb://database:27017/mc
+    ports:
+      - 3000:3000
+    volumes:
+      # Development volumes. Comment-out for production
+      - /src/node_modules
+      - .:/src
+      # Uncomment below for production (persist app data)
+      # - ./.data/files:/src/files
+      # - ./.data/public:/src/public

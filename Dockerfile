@@ -1,4 +1,4 @@
-FROM node:6-alpine
+FROM node:10-alpine
 
 EXPOSE 3000
 
@@ -14,7 +14,7 @@ RUN apk -U upgrade \
      build-base \
      python \
      imagemagick \
-  && npm install -g nodemon yarn node-gyp \
+  && npm install -g nodemon node-gyp \
   && update-ca-certificates \
   && rm -rf /tmp/* /var/cache/apk/*
 
@@ -22,7 +22,7 @@ RUN apk -U upgrade \
 COPY . /src
 
 # Install app dependencies
-RUN yarn install
+RUN npm install
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
