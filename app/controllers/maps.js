@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var Map = mongoose.model('Map');
 var messages = require('../../lib/messages');
-const { isInt } = require('../../lib/utils');
 
 /**
  * Load

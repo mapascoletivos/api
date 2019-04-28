@@ -1,5 +1,4 @@
 const messages = require('../../lib/messages');
-const { isInt } = require('../../lib/utils');
 const mongoose = require('mongoose');
 const Layer = mongoose.model('Layer');
 const Content = mongoose.model('Content');

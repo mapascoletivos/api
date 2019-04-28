@@ -9,7 +9,6 @@ var Schema = mongoose.Schema;
 const config = require('config');
 const confirmNewUserEmail = config.get('confirmNewUserEmail');
 
-
 /*
  * Schemma
  */
