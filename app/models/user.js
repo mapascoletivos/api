@@ -71,28 +71,36 @@ UserSchema.path('email').validate(function (email) {
   return email.length;
 }, 'Email cannot be blank.');
 
-UserSchema.path('email').validate(function (email, fn) {
-  var User = mongoose.model('User');
-  if (this.doesNotRequireValidation()) fn(true);
+UserSchema.path('email').validate({
+  isAsync: true,
+  message: 'E-mail address already in use.',
+  validator: function (email, fn) {
+    var User = mongoose.model('User');
+    if (this.doesNotRequireValidation()) fn(true);
 
-  // Check only when it is a new user or when email field is modified
-  if (this.isNew || this.isModified('email')) {
-    User.find({ email: email }).exec(function (err, users) {
-      fn(!err && users.length === 0);
-    });
-  } else fn(true);
-}, 'E-mail address already in use.');
+    // Check only when it is a new user or when email field is modified
+    if (this.isNew || this.isModified('email')) {
+      User.find({ email: email }).exec(function (err, users) {
+        fn(!err && users.length === 0);
+      });
+    } else fn(true);
+  }
+});
 
-UserSchema.path('username').validate(function (username, fn) {
-  var User = mongoose.model('User');
+UserSchema.path('username').validate({
+  isAsync: true,
+  message: 'Username already in use.',
+  validator: function (username, fn) {
+    var User = mongoose.model('User');
 
-  // Check only when it is a new user or when username field is modified
-  if (this.isNew || this.isModified('username')) {
-    User.find({ username: username }).exec(function (err, users) {
-      fn(!err && users.length === 0);
-    });
-  } else fn(true);
-}, 'Username already in use.');
+    // Check only when it is a new user or when username field is modified
+    if (this.isNew || this.isModified('username')) {
+      User.find({ username: username }).exec(function (err, users) {
+        fn(!err && users.length === 0);
+      });
+    } else fn(true);
+  }
+});
 
 /**
  * Methods
