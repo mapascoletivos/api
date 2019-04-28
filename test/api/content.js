@@ -34,9 +34,8 @@ const uploadedImagesPath = path.join(
   'uploads',
   'images'
 );
-const config = require('../../server/config')['test'];
-
-i18n.init(config.i18n);
+const config = require('config');
+i18n.init(config.get('i18n'));
 
 /**
  * Local variables

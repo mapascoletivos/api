@@ -1,29 +1,24 @@
-/**
- * Load environment variables
+const fs = require('fs');
+const express = require('express');
+const passport = require('passport');
+const mongoose = require('mongoose');
+const config = require('config');
+const { join, resolve } = require('path');
+
+/*
+ * Set application root as global.
+ * See: https://stackoverflow.com/questions/10265798/determine-project-root-from-a-running-node-js-application#18721515
  */
-
-var fs = require('fs');
-if (fs.existsSync('./.env')) {
-  require('dotenv').load();
-}
-
-/**
- * Module dependencies
- */
-
-var express = require('express');
-var passport = require('passport');
-var env = process.env.NODE_ENV || 'development';
-var config = require('./server/config')[env];
-var mongoose = require('mongoose');
+global.appRoot = resolve(__dirname);
 
 require('express-namespace');
 
-mongoose.connect(config.db);
+const dbConnectionString = config.get('dbConnectionString');
+mongoose.connect(dbConnectionString);
 
 // Bootstrap models
-fs.readdirSync(__dirname + '/app/models').forEach(function (file) {
-  if (~file.indexOf('.js')) require(__dirname + '/app/models/' + file);
+fs.readdirSync(join(global.appRoot, 'app/models')).forEach(function (file) {
+  if (~file.indexOf('.js')) require(global.appRoot + '/app/models/' + file);
 });
 
 // Bootstrap passport config
@@ -32,7 +27,7 @@ require('./server/passport')(passport, config);
 var app = express();
 
 // Bootstrap application settings
-require('./server/express')(app, config, passport);
+require('./server/express')(app, passport);
 
 // Bootstrap routes
 require('./server/routes')(app, passport);
@@ -40,6 +35,8 @@ require('./server/routes')(app, passport);
 // Start the app by listening on <port>
 var port = process.env.PORT || 3000;
 app.listen(port);
+
+// eslint-disable-next-line
 console.log('Express app started on port ' + port);
 
 // Expose app

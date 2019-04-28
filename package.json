@@ -35,7 +35,6 @@
     "connect-flash": "^0.1.1",
     "connect-mongo": "^2.0.1",
     "crypto": "0.0.3",
-    "dotenv": "^1.0.0",
     "express": "3.x",
     "express-namespace": "^0.1.1",
     "forever": "latest",
@@ -59,7 +58,7 @@
     "view-helpers": "^0.1.5"
   },
   "devDependencies": {
-    "eslint": "^5.11.1",
+    "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^8.0.0",

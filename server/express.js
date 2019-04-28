@@ -1,7 +1,5 @@
-/*!
- * Module dependencies.
- */
-
+const config = require('config');
+const { join } = require('path');
 const _ = require('underscore');
 const express = require('express');
 
@@ -13,15 +11,13 @@ const flash = require('connect-flash');
 const env = process.env.NODE_ENV || 'development';
 const mongoose = require('mongoose');
 const Settings = mongoose.model('Settings');
-const i18n = require('i18next');
 const Mailer = require('../lib/mailer');
-// const Geocoder = require('../lib/geocoder');
+const i18n = require('i18next');
 
-/*!
- * Expose
- */
+// Clone config because i18next tries to mutate object.
+const i18nConfig = Object.assign({}, config.get('i18n'));
 
-module.exports = function (app, config, passport) {
+module.exports = function (app, passport) {
   // Add basic auth for staging
   if (env === 'staging') {
     app.use(
@@ -43,7 +39,7 @@ module.exports = function (app, config, passport) {
   app.use(express.logger('dev'));
 
   // views config
-  app.set('views', config.root + '/app/views');
+  app.set('views', join(global.appRoot, 'app', 'views'));
   app.set('view engine', 'jade');
 
   var allowCrossDomain = function (req, res, next) {
@@ -57,9 +53,11 @@ module.exports = function (app, config, passport) {
       if (domains[0] === '*') {
         res.set('Access-Control-Allow-Origin', req.headers.origin);
       } else {
-        if (_.contains(domains, req.headers.origin)) { res.header('Access-Control-Allow-Origin', req.headers.origin); }
+        if (_.contains(domains, req.headers.origin)) {
+          res.header('Access-Control-Allow-Origin', req.headers.origin);
+        }
       }
-      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+      // res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
       res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
     }
     next();
@@ -68,7 +66,7 @@ module.exports = function (app, config, passport) {
   app.configure(function () {
     // setup less
     app.use(
-      lessMiddleware(config.root + '/public', [
+      lessMiddleware(join(global.appRoot, 'public'), [
         {
           compress: true,
           force: true
@@ -76,16 +74,16 @@ module.exports = function (app, config, passport) {
       ])
     );
 
-    app.use(express.static(config.root + '/public'));
+    app.use(express.static(join(global.appRoot, 'public')));
 
-    app.use(express.json({ limit: '5mb' }));
+    // app.use(ex.press.json({ limit: '5mb' }));
     app.use(express.urlencoded({ limit: '5mb' }));
 
     // bodyParser should be above methodOverride
     app.use(express.bodyParser());
 
     // i18next
-    i18n.init(config.i18n);
+    i18n.init(i18nConfig);
     app.use(i18n.handle);
     i18n.registerAppHelper(app);
 
@@ -96,7 +94,7 @@ module.exports = function (app, config, passport) {
         secret: pkg.name,
         store: new MongoStore(
           {
-            url: config.db,
+            url: config.get('dbConnectionString'),
             collection: 'sessions'
           },
           function () {

@@ -12,7 +12,8 @@ const factory = require('../../lib/factory');
 const messages = require('../../lib/messages');
 const clear = require('../../lib/clear');
 
-const config = require('../../server/config')['test'];
+const config = require('config');
+i18n.init(config.i18n);
 
 const apiPrefix = '/api/v1';
 
@@ -31,8 +32,6 @@ const uploadedImagesPath = path.join(
   'public',
   'uploads'
 );
-
-i18n.init(config.i18n);
 
 /**
  * Local variables

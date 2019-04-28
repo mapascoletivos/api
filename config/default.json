@@ -1,3 +1,11 @@
 {
-  "confirmNewUserEmail": true
+  "confirmNewUserEmail": true,
+  "i18n": {
+    "lng": "pt-BR",
+    "preload": ["pt-BR"],
+    "shorcutFunction": "defaultValue",
+    "fallbackLng": "en",
+    "saveMissing": true,
+    "debug": true
+  }
 }
