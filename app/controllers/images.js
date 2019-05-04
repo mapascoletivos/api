@@ -48,23 +48,24 @@ exports.showForm = function (req, res) {
  * Create image
  */
 
-exports.create = function (req, res) {
-  if (!req.files.attachment.file) {
-    return res.json(
-      400,
-      messages.error(req.i18n.t('image.create.error.not_found'))
-    );
-  } else {
-    var image = new Image({
-      creator: req.user,
-      // will store uploaded file path, which will be saved at pre-save hook
-      files: { default: req.files.attachment.file.path }
-    });
+exports.create = async function (req, res) {
+  try {
+    if (!req.files.attachment.file) {
+      return res.json(
+        400,
+        messages.error(req.i18n.t('image.create.error.not_found'))
+      );
+    } else {
+      const image = new Image({
+        creator: req.user,
+        files: { default: req.files.attachment.file.path }
+      });
 
-    image.save(function (err) {
-      if (err) {
-        return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'image'));
-      } else return res.json(image);
-    });
+      await image.save();
+
+      return res.json(image.depopulate().toJSON());
+    }
+  } catch (error) {
+    return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'image'));
   }
 };

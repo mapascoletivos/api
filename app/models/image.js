@@ -3,9 +3,8 @@ const async = require('async');
 const fs = require('fs');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Imager = require('imager');
-const imagerConfig = require('../../server/imager.js');
-const imager = new Imager(imagerConfig, 'Local');
+
+const { saveImage } = require('../../lib/images');
 
 /**
  * Config
@@ -44,29 +43,15 @@ ImageSchema.pre('remove', function (next) {
   );
 });
 
-ImageSchema.pre('save', function (done) {
+ImageSchema.pre('save', async function () {
   var self = this;
   if (self.isNew) {
-    imager.upload(
-      [self.files.default],
-      function (err, cdnUri, uploaded) {
-        if (err) return done(err);
-        else {
-          // save filesnames
-          self.files.thumb = 'thumb_' + uploaded[uploaded.length - 1];
-          self.files.mini = 'mini_' + uploaded[uploaded.length - 1];
-          self.files.default = 'default_' + uploaded[uploaded.length - 1];
-          self.files.large = 'large_' + uploaded[uploaded.length - 1];
+    self._id = mongoose.Types.ObjectId();
 
-          // This is a auxiliary attribute. It has to be declared at the model
-          // because of mongoose but isn't needed after image upload.
-          delete self.sourcefile;
-          done();
-        }
-      },
-      'items'
-    );
-  } else done();
+    const files = await saveImage(self.id, self.files.default);
+
+    self.files = files;
+  }
 });
 
 mongoose.model('Image', ImageSchema);

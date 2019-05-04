@@ -1,5 +1,4 @@
---require should
---reporter dot
---ui bdd
---recursive
 --check-leaks
+--global server
+--bail
+--exit

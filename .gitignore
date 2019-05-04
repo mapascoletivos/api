@@ -29,3 +29,5 @@ import/*
 backup/*
 
 translation_old.json
+
+tmp/
