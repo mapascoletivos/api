@@ -66,6 +66,6 @@ exports.create = async function (req, res) {
       return res.json(image.depopulate().toJSON());
     }
   } catch (error) {
-    return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'image'));
+    return res.json(400, messages.mongooseErrors(req.i18n.t, error, 'image'));
   }
 };

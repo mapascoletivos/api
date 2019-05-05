@@ -1,6 +1,5 @@
 const config = require('config');
 const { join } = require('path');
-const async = require('async');
 const { remove } = require('fs-extra');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
