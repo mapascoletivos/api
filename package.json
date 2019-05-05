@@ -66,10 +66,10 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "grunt": "0.4.5",
-    "i18next-parser": "0.3.8",
+    "i18next-parser": "^0.13.0",
     "lorem-ipsum": "~1.0.1",
     "mocha": "^6.1.4",
-    "nodemon": "^1.18.11",
+    "nodemon": "^1.19.0",
     "rosie": "0.4.0",
     "should": "^13.2.3",
     "supertest": "^4.0.2"
