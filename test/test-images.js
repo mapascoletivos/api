@@ -1,8 +1,7 @@
 const { createUser, createLayer, resetFixtures } = require('./fixtures');
 const { exists, stat } = require('fs-extra');
-const { getAccessToken } = require('./utils');
+const { getAccessToken, validResponseMessages } = require('./utils');
 const i18n = require('i18next');
-const messages = require('../lib/messages');
 const path = require('path');
 const request = require('supertest');
 const should = require('should');
@@ -19,7 +18,7 @@ describe('Images API', function () {
 
     // Create test objects
     user1 = await createUser();
-    user1AccessToken = await getAccessToken(user1.email, user1.password);
+    user1AccessToken = await getAccessToken(user1);
     layer1 = await createLayer(user1);
   });
 
@@ -35,7 +34,7 @@ describe('Images API', function () {
           .end(function (err, res) {
             should.not.exist(err);
             res.body.messages.should.have.lengthOf(1);
-            should(messages.hasValidMessages(res.body)).be.true();
+            should(validResponseMessages(res.body)).be.true();
             res.body.messages[0].should.have.property(
               'text',
               i18n.t('access_token.unauthorized')
@@ -105,7 +104,7 @@ describe('Images API', function () {
           .end(function (err, res) {
             should.not.exist(err);
             res.body.messages.should.have.lengthOf(1);
-            messages.hasValidMessages(res.body).should.be.true();
+            validResponseMessages(res.body).should.be.true();
             res.body.messages[0].should.have.property(
               'text',
               i18n.t('access_token.unauthorized')

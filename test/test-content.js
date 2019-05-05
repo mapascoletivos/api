@@ -1,32 +1,31 @@
-const path = require('path');
-const fs = require('fs');
+const config = require('config');
+const { exists, existsSync } = require('fs-extra');
+const { join } = require('path');
+const {
+  createImage,
+  createLayer,
+  createUser,
+  resetFixtures
+} = require('./fixtures');
+const { getAccessToken, validResponseMessages } = require('./utils');
 const _ = require('underscore');
 const async = require('async');
 const should = require('should');
 const request = require('supertest');
 const i18n = require('i18next');
-const app = require('../../web');
+const app = require('../web');
+
 const mongoose = require('mongoose');
 const Image = mongoose.model('Image');
 const Layer = mongoose.model('Layer');
-const helper = require('../../lib/test-helper');
-const factory = require('../../lib/factory');
-const messages = require('../../lib/messages');
-const clear = require('../../lib/clear');
 
 /**
  * Config
  */
-
+const imagesPath = global.imagesPath;
 const apiPrefix = '/api/v1';
-const imageFixturePath = path.join(
-  __dirname,
-  '..',
-  '..',
-  'fixtures',
-  'image-1.png'
-);
-const uploadedImagesPath = path.join(
+
+const uploadedImagesPath = join(
   __dirname,
   '..',
   '..',
@@ -34,157 +33,41 @@ const uploadedImagesPath = path.join(
   'uploads',
   'images'
 );
-const config = require('config');
 i18n.init(config.get('i18n'));
 
 /**
  * Local variables
  */
 
-var user1AccessToken;
-
-var user1;
-
-var user2;
-
-var admin;
-
-var content1Id;
-
-var image1;
-
-var image2;
-
-var image3;
-
-var imageFilenames = [];
-
-var layer1;
-
-var layer2;
+let user1AccessToken;
+let user1;
+let user2;
+let content1Id;
+let image1;
+let image2;
+let image3;
+let imageFilenames = [];
+let layer1;
+let layer2;
 
 /**
  * The tests
  */
 
 describe('Contents', function () {
-  before(function (doneBefore) {
-    /*
-     * Create user1, user2 and admin
-     */
-    function createUsers (doneCreateUsers) {
-      async.series(
-        [
-          function (done) {
-            factory.createUser(function (err, usr) {
-              should.not.exist(err);
-              user1 = usr;
-              helper.login(user1.email, user1.password, function (token) {
-                user1AccessToken = token;
-                done();
-              });
-            });
-          },
-          function (done) {
-            factory.createUser(function (err, usr) {
-              should.not.exist(err);
-              user2 = usr;
-              done();
-            });
-          },
-          function (done) {
-            factory.createUser(function (err, usr) {
-              should.not.exist(err);
-              admin = usr;
-              admin.role = 'admin';
-              done();
-            });
-          }
-        ],
-        doneCreateUsers
-      );
-    }
+  before(async function () {
+    await resetFixtures();
 
-    /*
-     * Create layer1 and layer2, associated to users
-     */
-    function createLayers (doneCreateLayers) {
-      async.series(
-        [
-          function (done) {
-            factory.createLayer(user1, function (err, layer) {
-              should.not.exist(err);
-              layer1 = layer;
-              done();
-            });
-          },
-          function (done) {
-            factory.createLayer(user2, function (err, layer) {
-              should.not.exist(err);
-              layer2 = layer;
-              done();
-            });
-          }
-        ],
-        doneCreateLayers
-      );
-    }
+    user1 = await createUser();
+    user1AccessToken = await getAccessToken(user1);
+    user2 = await createUser();
 
-    /*
-     * Create image
-     */
-    function createImages (doneCreateImages) {
-      async.parallel(
-        [
-          function (done) {
-            image1 = new Image({
-              creator: user1,
-              // will store uploaded file path, which will be saved at pre-save hook
-              files: { default: imageFixturePath }
-            });
-            image1.save(function (err) {
-              should.not.exist(err);
-              done();
-            });
-          },
-          function (done) {
-            image2 = new Image({
-              creator: user1,
-              files: { default: imageFixturePath }
-            });
-            image2.save(function (err) {
-              should.not.exist(err);
-              done();
-            });
-          },
-          function (done) {
-            image3 = new Image({
-              creator: user1,
-              files: { default: imageFixturePath }
-            });
-            image3.save(function (err) {
-              should.not.exist(err);
-              done();
-            });
-          }
-        ],
-        doneCreateImages
-      );
-    }
+    layer1 = await createLayer(user1);
+    layer2 = await createLayer(user2);
 
-    helper.whenExpressReady(function () {
-      clear.all(function (err) {
-        should.not.exist(err);
-        async.series([createUsers, createLayers, createImages], doneBefore);
-      });
-    });
-  });
-
-  after(function (done) {
-    clear.all(function (err) {
-      should.not.exist(err);
-      done(err);
-    });
+    image1 = await createImage(user1);
+    image2 = await createImage(user1);
+    image3 = await createImage(user1);
   });
 
   /**
@@ -199,7 +82,7 @@ describe('Contents', function () {
           .end(function (err, res) {
             should.not.exist(err);
             res.body.messages.should.have.lengthOf(1);
-            messages.hasValidMessages(res.body).should.be.true;
+            validResponseMessages(res.body).should.be.true();
             res.body.messages[0].should.have.property(
               'text',
               i18n.t('access_token.unauthorized')
@@ -215,8 +98,8 @@ describe('Contents', function () {
 
     context('user1 logged in', function () {
       it('accepts a valid content creation request', function (done) {
-        var payload = {
-          layer: layer1._id,
+        const payload = {
+          layer: layer1.id,
           title: 'Content title',
           sections: [
             {
@@ -228,7 +111,7 @@ describe('Contents', function () {
             {
               type: 'yby_image',
               data: {
-                _id: image1._id
+                _id: image1.id
               }
             },
             {
@@ -247,7 +130,7 @@ describe('Contents', function () {
             {
               type: 'yby_image',
               data: {
-                _id: image2._id
+                _id: image2.id
               }
             }
           ]
@@ -269,7 +152,7 @@ describe('Contents', function () {
           var section;
 
           // creator should be valid
-          body['creator'].should.have.property('_id', user1._id.toString());
+          body['creator'].should.have.property('_id', user1.id);
 
           // layer should be valid
 
@@ -325,7 +208,7 @@ describe('Contents', function () {
 
       it('should return error when section as invalid image data', function (done) {
         var payload = {
-          layer: layer1._id,
+          layer: layer1.id,
           title: 'Content title',
           sections: [
             {
@@ -354,7 +237,7 @@ describe('Contents', function () {
         function onResponse (err, res) {
           should.not.exist(err);
           res.body.messages.should.have.lengthOf(1);
-          messages.hasValidMessages(res.body).should.be.true;
+          validResponseMessages(res.body).should.be.true();
           res.body.messages[0].should.have.property(
             'text',
             i18n.t('mongoose.errors.content.malformed_sections')
@@ -380,7 +263,7 @@ describe('Contents', function () {
         function onResponse (err, res) {
           should.not.exist(err);
           res.body.messages.should.have.lengthOf(1);
-          messages.hasValidMessages(res.body).should.be.true;
+          validResponseMessages(res.body).should.be.true();
           res.body.messages[0].should.have.property(
             'text',
             i18n.t('content.create.error.invalid_layer')
@@ -406,7 +289,7 @@ describe('Contents', function () {
         function onResponse (err, res) {
           should.not.exist(err);
           res.body.messages.should.have.lengthOf(1);
-          messages.hasValidMessages(res.body).should.be.true;
+          validResponseMessages(res.body).should.be.true();
           res.body.messages[0].should.have.property(
             'text',
             i18n.t('content.create.error.layer_not_owned')
@@ -426,7 +309,7 @@ describe('Contents', function () {
           .end(function (err, res) {
             should.not.exist(err);
             res.body.messages.should.have.lengthOf(1);
-            messages.hasValidMessages(res.body).should.be.true;
+            validResponseMessages(res.body).should.be.true();
             res.body.messages[0].should.have.property(
               'text',
               i18n.t('access_token.unauthorized')
@@ -438,7 +321,7 @@ describe('Contents', function () {
 
     context('logged in', function () {
       it('should change content sections accordingly', function (doneIt) {
-        var payload = {
+        const payload = {
           layer: 'oaiosdiasodi', // this attribute shouldn't be changed
           title: 'Content title',
           sections: [
@@ -458,13 +341,13 @@ describe('Contents', function () {
             {
               type: 'yby_image',
               data: {
-                _id: image1._id
+                _id: image1.id
               }
             },
             {
               type: 'yby_image',
               data: {
-                _id: image3._id
+                _id: image3.id
               }
             },
             {
@@ -541,7 +424,7 @@ describe('Contents', function () {
             image2.files,
             function (filename, doneEach) {
               var filepath = uploadedImagesPath + filename;
-              fs.existsSync(filepath).should.be.false;
+              existsSync(filepath).should.be.false();
               doneEach();
             },
             doneIt
@@ -560,7 +443,7 @@ describe('Contents', function () {
           .end(function (err, res) {
             should.not.exist(err);
             res.body.messages.should.have.lengthOf(1);
-            messages.hasValidMessages(res.body).should.be.true;
+            validResponseMessages(res.body).should.be.true();
             res.body.messages[0].should.have.property(
               'text',
               i18n.t('access_token.unauthorized')
@@ -576,62 +459,32 @@ describe('Contents', function () {
           .del(apiPrefix + '/contents/' + content1Id)
           .set('Authorization', user1AccessToken)
           .expect(200)
-          .end(onResponse);
+          .end(async function (err, res) {
+            should.not.exist(err);
 
-        function onResponse (err, res) {
-          should.not.exist(err);
-
-          res.body.messages.should.have.lengthOf(1);
-          messages.hasValidMessages(res.body).should.be.true;
-          res.body.messages[0].should.have.property(
-            'text',
-            i18n.t('content.destroy.success')
-          );
-
-          function checkImageObjectsExistence (doneCheckImageObjectsExistence) {
-            async.eachSeries(
-              [image1, image2],
-              function (imgId, doneEach) {
-                Image.findById(imgId, function (err, img) {
-                  should.not.exist(err);
-                  should.not.exist(img);
-                  doneEach();
-                });
-              },
-              doneCheckImageObjectsExistence
+            res.body.messages.should.have.lengthOf(1);
+            validResponseMessages(res.body).should.be.true();
+            res.body.messages[0].should.have.property(
+              'text',
+              i18n.t('content.destroy.success')
             );
-          }
 
-          function checkImageFilesExistence (doneCheckImageFilesExistence) {
-            async.eachSeries(
-              imageFilenames,
-              function (filename, doneEach) {
-                var filepath = uploadedImagesPath + filename;
-                fs.existsSync(filepath).should.be.false;
-                doneEach();
-              },
-              doneCheckImageFilesExistence
-            );
-          }
+            // Image documents should be gone.
+            should(await Image.findById(image1.id)).be.null();
+            should(await Image.findById(image2.id)).be.null();
 
-          function checkRemovedFromLayer (doneCheckRemovedFromLayer) {
-            Layer.findById(layer1.id, function (err, layer) {
-              should.not.exist(err);
-              should.exist(layer);
-              layer.contents.should.not.containEql(content1Id);
-              doneCheckRemovedFromLayer();
-            });
-          }
+            // Image files should be gone.
+            for (const filename of imageFilenames) {
+              should(await exists(join(imagesPath, filename))).be.false();
+            }
 
-          async.series(
-            [
-              checkImageObjectsExistence,
-              checkImageFilesExistence,
-              checkRemovedFromLayer
-            ],
-            doneIt
-          );
-        }
+            // Content should not be part of layer.
+            const layer = await Layer.findById(layer1.id);
+            should(layer).not.be.null();
+            should(layer.contents).not.containEql(content1Id);
+
+            doneIt();
+          });
       });
     });
   });

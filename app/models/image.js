@@ -1,6 +1,7 @@
-const path = require('path');
+const config = require('config');
+const { join } = require('path');
 const async = require('async');
-const fs = require('fs');
+const { remove } = require('fs-extra');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -10,7 +11,7 @@ const { saveImage } = require('../../lib/images');
  * Config
  */
 
-const imagesPath = path.join(__dirname, '..', '..', 'public', 'uploads');
+const imagesPath = join(__dirname, '..', '..', ...config.get('imagesPath'));
 
 /**
  * Layer schema
@@ -31,16 +32,15 @@ var ImageSchema = new Schema({
  * Hooks
  */
 
-ImageSchema.pre('remove', function (next) {
-  var self = this;
+ImageSchema.pre('remove', async function (next) {
+  // Remove files reference, by size. Should not raise error if file
+  // doesn't exist.
+  for (const size of ['thumb', 'mini', 'default', 'large']) {
+    const filepath = join(imagesPath, this.files[size]);
+    await remove(filepath);
+  }
 
-  async.each(
-    ['thumb', 'mini', 'default', 'large'],
-    function (size, doneEach) {
-      fs.unlink(path.join(imagesPath, self.files[size]), doneEach);
-    },
-    next
-  );
+  next();
 });
 
 ImageSchema.pre('save', async function () {

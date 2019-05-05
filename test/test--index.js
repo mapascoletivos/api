@@ -12,6 +12,7 @@ describe('Mapas Coletivos', function () {
     mongoose.connection.on('open', done);
   });
 
+  require('./test-content.js');
   require('./test-images.js');
 
   after(async function () {
