@@ -3,6 +3,7 @@ const { join } = require('path');
 const _ = require('underscore');
 const express = require('express');
 
+const cors = require('cors');
 const MongoStore = require('connect-mongo')(express);
 const helpers = require('view-helpers');
 const lessMiddleware = require('less-middleware');
@@ -41,27 +42,6 @@ module.exports = function (app, passport) {
   // views config
   app.set('views', join(global.appRoot, 'app', 'views'));
   app.set('view engine', 'jade');
-
-  var allowCrossDomain = function (req, res, next) {
-    if (req.app.locals.settings.general.allowedDomains) {
-      var domains = req.app.locals.settings.general.allowedDomains.split(',');
-
-      domains = _.map(domains, function (d) {
-        return d.trim();
-      });
-
-      if (domains[0] === '*') {
-        res.set('Access-Control-Allow-Origin', req.headers.origin);
-      } else {
-        if (_.contains(domains, req.headers.origin)) {
-          res.header('Access-Control-Allow-Origin', req.headers.origin);
-        }
-      }
-      // res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-      res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-    }
-    next();
-  };
 
   app.configure(function () {
     // setup less
@@ -125,7 +105,7 @@ module.exports = function (app, passport) {
     app.use(helpers(pkg.name));
 
     // Setup CORS
-    app.use(allowCrossDomain);
+    app.use(cors());
 
     // routes should be at the last
     app.use(app.router);
