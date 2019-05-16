@@ -7,9 +7,6 @@ A colaboration platform for maps.
 To set up a development environment install the following on your system:
 
 * [Git](https://help.github.com/articles/set-up-git)
-* [ImageMagick](http://www.imagemagick.org) 
-  * On OSX: `brew install imagemagick`  
-  * On Ubuntu: `sudo apt-get install imagemagick`
 * [nvm](https://github.com/creationix/nvm) or Node.js version available at [.nvmrc](.nvmrc)
 * [Docker](https://www.docker.com/)
 
