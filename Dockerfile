@@ -1,18 +1,19 @@
 FROM node:10-alpine
 
-EXPOSE 3000
+# see: https://github.com/krallin/tini#alpine-linux-package
+RUN apk add --no-cache tini
+ENTRYPOINT ["/sbin/tini", "--"]
 
-WORKDIR /src
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-# Copy files
-COPY . /src
+WORKDIR /home/node/app
 
-# Install app dependencies
+COPY package*.json ./
 RUN npm install
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY --chown=node:node . .
 
-# Run node server
-CMD ["node", "web.js"]
+USER node
+
+CMD [ "npm", "start" ]
