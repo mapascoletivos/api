@@ -1,9 +1,9 @@
 {
-  "name": "mc-api-service",
+  "name": "mc-api",
   "description": "Mapas Coletivos API Service",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mapascoletivos/api-service.git"
+    "url": "git://github.com/mapascoletivos/api.git"
   },
   "version": "0.1.0",
   "author": "Mapas Coletivos <contato@mapascoletivos.com.br>",
@@ -24,9 +24,9 @@
   "scripts": {
     "start": "node web.js",
     "dev": "NODE_ENV=development node_modules/.bin/nodemon web.js",
-    "start-dev-db": "docker-compose --project-name mc-dev -f docker-compose-dev.yml up",
-    "start-test-db": "docker-compose --project-name mc-test -f docker-compose-test.yml up",
-    "test": "NODE_ENV=test mocha test/test--index.js",
+    "start-dev-db": "docker-compose --project-name mc up dev-db",
+    "start-test-db": "docker-compose --project-name mc up test-db",
+    "test": "NODE_ENV=test node_modules/.bin/mocha test/test--index.js",
     "lint": "node_modules/.bin/eslint app/ test/ --ext .js"
   },
   "dependencies": {
