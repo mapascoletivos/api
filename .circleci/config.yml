@@ -11,7 +11,7 @@ jobs:
         # Needed to load the correct config
         NODE_ENV: circle
         PRODUCTION_BRANCH: master
-        DEVELOPMENT_BRANCH: develop
+        STAGING_BRANCH: develop
 
     steps:
       - checkout
@@ -39,3 +39,12 @@ jobs:
       - run:
           name: Run tests
           command: node node_modules/mocha/bin/mocha  test/test--index.js
+
+      - run:
+          name: Deploy to staging environment in Heroku
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "${STAGING_BRANCH}" ]; then
+              echo "Updating staging environment..."
+              git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git $STAGING_BRANCH:master
+            fi
+
