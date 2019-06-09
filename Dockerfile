@@ -9,6 +9,8 @@ COPY . .
 
 RUN npm ci
 
+VOLUME ["/app/media"]
+
 EXPOSE 3000
 
 CMD ["npm", "start"]

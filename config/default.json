@@ -8,5 +8,5 @@
     "saveMissing": true,
     "debug": true
   },
-  "imagesPath": ["public", "uploads", "images"]
+  "imagesPath": ["media"]
 }

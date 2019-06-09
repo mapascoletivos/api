@@ -1,4 +1,5 @@
 const config = require('config');
+const fs = require('fs-extra');
 const { join } = require('path');
 const _ = require('underscore');
 const express = require('express');
@@ -54,9 +55,19 @@ module.exports = function (app, passport) {
       ])
     );
 
+    // Expose images files in ./media directory
+    const imagesPath = join(global.appRoot, ...config.get('imagesPath'));
+    fs.ensureDir(imagesPath, err => {
+      if (err) {
+        // eslint-disable-next-line
+        console.log(`Could not initialize media directory at ${imagesPath}, images won't be served.`)
+      }
+    });
+    app.use('/media', express.static(imagesPath));
+
+    // Expose public files
     app.use(express.static(join(global.appRoot, 'public')));
 
-    // app.use(ex.press.json({ limit: '5mb' }));
     app.use(express.urlencoded({ limit: '5mb' }));
 
     // bodyParser should be above methodOverride
