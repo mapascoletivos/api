@@ -1,0 +1,4 @@
+{
+  "confirmNewUserEmail": false,
+  "dbConnectionString": "mongodb://localhost:27017/mc"
+}
