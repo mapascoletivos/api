@@ -58,7 +58,8 @@
     "sharp": "^0.22.1",
     "underscore": "^1.8.2",
     "validator": "^3.35.0",
-    "view-helpers": "^0.1.5"
+    "view-helpers": "^0.1.5",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
