@@ -283,55 +283,53 @@ exports.maps = function (req, res, next) {
  * Send reset password token
  */
 
-exports.resetPasswordToken = function (req, res) {
-  User.findOne(
-    {
+exports.resetPasswordToken = async function (req, res) {
+  try {
+    // TODO Sanitize e-mail or username
+
+    const user = await User.findOne({
       $or: [
         { email: req.body['emailOrUsername'] },
         { username: req.body['emailOrUsername'] }
       ]
-    },
-    function (err, user) {
-      if (err) {
-        res.render('users/forgot_password', {
-          title: req.i18n.t('user.reset_pwd.mail.title'),
-          message: req.flash('error')
-        });
-      } else {
-        if (user) {
-          var data = {
-            user: user,
-            callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
-          };
+    });
 
-          req.app.locals.mailer.sendEmail(
-            'password_reset',
-            user.email,
-            data,
-            req.i18n,
-            function (err) {
-              if (err) {
-                return res.json(
-                  messages.error(req.i18n.t('user.reset_pwd.token.error'))
-                );
-              } else {
-                return res.json(
-                  messages.success(req.i18n.t('user.reset_pwd.token.success'))
-                );
-              }
-            }
-          );
-        } else {
-          req.flash(
-            'error',
-            req.i18n.t('user.reset_pwd.form.error.user.not_found')
-          );
-          res.render('users/forgot_password', {
-            title: req.i18n.t('user.reset_pwd.form.title'),
-            message: req.flash('error')
-          });
-        }
+    if (user) {
+      var data = {
+        user: user,
+        callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
+      };
+
+      try {
+        await req.app.locals.mailer.sendEmail(
+          'password_reset',
+          user.email,
+          data,
+          req.i18n
+        );
+
+        return res.json(
+          messages.success(req.i18n.t('user.reset_pwd.token.success'))
+        );
+      } catch (error) {
+        return res.json(
+          500,
+          messages.error(req.i18n.t('user.reset_pwd.token.error'))
+        );
       }
+    } else {
+      req.flash(
+        'error',
+        req.i18n.t('user.reset_pwd.form.error.user.not_found')
+      );
+      res.render('users/forgot_password', {
+        title: req.i18n.t('user.reset_pwd.form.title'),
+        message: req.flash('error')
+      });
     }
-  );
+  } catch (error) {
+    return res.json(500, {
+      message: 'Unexpected server error'
+    });
+  }
 };

@@ -14,6 +14,7 @@ describe('Mapas Coletivos', function () {
   });
 
   require('./test-content.js');
+  require('./test-email.js');
   require('./test-images.js');
 
   after(async function () {
