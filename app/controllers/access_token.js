@@ -165,7 +165,7 @@ exports.facebook = function (req, res, next) {
 };
 
 exports.local = function (req, res, next) {
-  passport.authenticate('local', function (err, user, info) {
+  passport.authenticate('local', async function (err, user, info) {
     // Unknown error
     if (err) {
       return res.json(400, messages.error(req.i18n, err));
@@ -209,38 +209,36 @@ exports.local = function (req, res, next) {
           }
         }
       );
-
-      // User needs to confirm his email, send another e-mail
     } else if (
       req.app.locals.settings.mailer.enforceEmailConfirmation &&
       !user.emailConfirmed
     ) {
+      // User needs to confirm his email, send another e-mail
       var data = {
         user: user,
         callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
       };
 
-      req.app.locals.mailer.sendEmail(
-        'confirm_email',
-        user.email,
-        data,
-        req.i18n,
-        function (err) {
-          if (err) {
-            return res.json(
-              400,
-              messages.error(req.i18n.t('access_token.local.error.send_email'))
-            );
-          } else {
-            return res.json(
-              400,
-              messages.error(
-                req.i18n.t('access_token.local.error.needs_email_confirmation')
-              )
-            );
-          }
-        }
-      );
+      try {
+        await req.app.locals.mailer.sendEmail(
+          'confirm_email',
+          user.email,
+          data,
+          req.i18n
+        );
+
+        return res.json(
+          401,
+          messages.error(
+            req.i18n.t('access_token.local.error.needs_email_confirmation')
+          )
+        );
+      } catch (error) {
+        return res.json(
+          500,
+          messages.error(req.i18n.t('access_token.local.error.send_email'))
+        );
+      }
 
       // Login successful, proceed with token
     } else if (user) {
