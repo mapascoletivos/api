@@ -1,8 +1,4 @@
-const { createUser, createLayer, resetFixtures } = require('./fixtures');
-const { exists, stat } = require('fs-extra');
-const { getAccessToken, validResponseMessages } = require('./utils');
-const i18n = require('i18next');
-const path = require('path');
+const { createUser, resetFixtures } = require('./fixtures');
 const request = require('supertest');
 
 const apiPrefix = '/api/v1';
