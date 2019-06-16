@@ -24,6 +24,7 @@ public/css/app.css
 client/config.js
 
 config/config.local.js
+config/local.json
 
 import/*
 backup/*
