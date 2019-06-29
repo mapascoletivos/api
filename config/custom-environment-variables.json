@@ -1,3 +1,4 @@
 {
-  "dbConnectionString": "DB_CONNECTION_STRING"
+  "dbConnectionString": "DB_CONNECTION_STRING",
+  "recaptchaSecret": "RECAPTCHA_SECRET"
 }
