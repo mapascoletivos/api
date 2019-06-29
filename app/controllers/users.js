@@ -67,7 +67,7 @@ exports.create = asyncExpressMiddleware(async function (req, res) {
     preValidationErrors.push(req.i18n.t('user.create.error.password.length'));
   }
 
-  if (process.env.NODE_ENV !== 'test') {
+  if (process.env.NODE_ENV !== 'test' && !process.env.CIRCLE_BRANCH) {
     const validCaptcha = await validateRecaptchaResponse(recaptchaResponse);
     if (!validCaptcha) {
       preValidationErrors.push(req.i18n.t('user.create.error.missing.captcha'));
@@ -297,7 +297,7 @@ exports.resetPasswordToken = async function (req, res) {
     // TODO Sanitize e-mail or username
     const { recaptchaResponse } = req.body;
 
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV !== 'test' && !process.env.CIRCLE_BRANCH) {
       const validCaptcha = await validateRecaptchaResponse(recaptchaResponse);
       if (!validCaptcha) {
         return res.json(
