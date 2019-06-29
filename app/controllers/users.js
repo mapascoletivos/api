@@ -2,7 +2,8 @@
  * Module dependencies.
  */
 
-const utils = require('../../lib/utils');
+const { errorMessages, asyncExpressMiddleware } = require('../../lib/utils');
+const validateRecaptchaResponse = require('../../lib/validate-recaptcha');
 const validator = require('validator');
 const messages = require('../../lib/messages');
 const mongoose = require('mongoose');
@@ -32,7 +33,8 @@ exports.user = function (req, res, next, id) {
  * Create user
  */
 
-exports.create = function (req, res) {
+exports.create = asyncExpressMiddleware(async function (req, res) {
+  const { recaptchaResponse } = req.body;
   var user = new User(req.body);
   var preValidationErrors = [];
 
@@ -65,6 +67,13 @@ exports.create = function (req, res) {
     preValidationErrors.push(req.i18n.t('user.create.error.password.length'));
   }
 
+  if (process.env.NODE_ENV !== 'test') {
+    const validCaptcha = await validateRecaptchaResponse(recaptchaResponse);
+    if (!validCaptcha) {
+      preValidationErrors.push(req.i18n.t('user.create.error.missing.captcha'));
+    }
+  }
+
   if (preValidationErrors.length > 0) {
     return res.json(400, {
       messages: messages.errorsArray(req.i18n, preValidationErrors)
@@ -95,7 +104,7 @@ exports.create = function (req, res) {
       saveUser();
     }
   }
-};
+});
 
 /**
  * Update user
@@ -248,7 +257,7 @@ exports.layers = function (req, res, next) {
       if (!err) {
         res.json({ options: options, layersTotal: count, layers: layers });
       } else {
-        res.json(400, utils.errorMessages(err.errors || err));
+        res.json(400, errorMessages(err.errors || err));
       }
     });
   });
@@ -271,9 +280,9 @@ exports.maps = function (req, res, next) {
   }
 
   Map.list(options, function (err, maps) {
-    if (err) return res.json(400, utils.errorMessages(err.errors || err));
+    if (err) return res.json(400, errorMessages(err.errors || err));
     Map.count(options.criteria).exec(function (err, count) {
-      if (err) res.json(400, utils.errorMessages(err.errors || err));
+      if (err) res.json(400, errorMessages(err.errors || err));
       else res.json({ options: options, mapsTotal: count, maps: maps });
     });
   });
