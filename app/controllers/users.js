@@ -295,7 +295,17 @@ exports.maps = function (req, res, next) {
 exports.resetPasswordToken = async function (req, res) {
   try {
     // TODO Sanitize e-mail or username
+    const { recaptchaResponse } = req.body;
 
+    if (process.env.NODE_ENV !== 'test') {
+      const validCaptcha = await validateRecaptchaResponse(recaptchaResponse);
+      if (!validCaptcha) {
+        return res.json(
+          400,
+          messages.error(req.i18n.t('user.reset_pwd.invalid.captcha'))
+        );
+      }
+    }
     const user = await User.findOne({
       $or: [
         { email: req.body['emailOrUsername'] },
