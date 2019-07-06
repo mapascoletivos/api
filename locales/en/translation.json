@@ -1,57 +1,57 @@
 {
-    "mongoose": {
-        "errors": {
-            "map": {
-                "undefined": "mongoose.errors.map.undefined"
-            },
-            "content": {
-                "undefined": "mongoose.errors.content.undefined",
-                "malformed_sections": "mongoose.errors.content.malformed_sections"
-            },
-            "layer": {
-                "undefined": "mongoose.errors.layer.undefined"
-            }
+  "mongoose": {
+    "errors": {
+      "map": {
+        "undefined": "mongoose.errors.map.undefined"
+      },
+      "content": {
+        "undefined": "mongoose.errors.content.undefined",
+        "malformed_sections": "mongoose.errors.content.malformed_sections"
+      },
+      "layer": {
+        "undefined": "mongoose.errors.layer.undefined"
+      }
+    }
+  },
+  "views": {
+    "mailer": {
+      "email": {
+        "confirm": {
+          "salute": "Hi, __username__,",
+          "intro": "Your e-mail address need to be confirmed to activate your account. Please visit the link to proceed:",
+          "bye": "Nice mapping!"
         }
+      },
+      "subjects": {
+        "confirm_email": "Active your account"
+      }
     },
-    "views": {
-        "mailer": {
-            "email": {
-                "confirm": {
-                    "salute": "Hi, __username__,",
-                    "intro": "Your e-mail address need to be confirmed to activate your account. Please visit the link to proceed:",
-                    "bye": "Nice mapping!"
-                }
-            },
-            "subjects": {
-                "confirm_email": "Active your account",
-            }
-        },
-        "admin": {
-            "settings": {
-                "index": {
-                    "cdn_url": "views.admin.settings.index.cdn_url"
-                }
-            }
+    "admin": {
+      "settings": {
+        "index": {
+          "cdn_url": "views.admin.settings.index.cdn_url"
         }
+      }
+    }
+  },
+  "access_token": {
+    "local": {
+      "error": {
+        "send_email": "access_token.local.error.send_email"
+      }
     },
-    "access_token": {
-        "local": {
-            "error": {
-                "send_email": "access_token.local.error.send_email"
-            }
-        },
-        "unauthorized": "access_token.unauthorized"
+    "unauthorized": "access_token.unauthorized"
+  },
+  "content": {
+    "create": {
+      "error": {
+        "invalid_layer": "content.create.error.invalid_layer",
+        "layer_not_owned": "content.create.error.layer_not_owned"
+      }
     },
-    "content": {
-        "create": {
-            "error": {
-                "invalid_layer": "content.create.error.invalid_layer",
-                "layer_not_owned": "content.create.error.layer_not_owned"
-            }
-        },
-        "destroy": {
-            "success": "content.destroy.success"
-        }
-    },
-    "A senha deve ter no mínimo 6 caracteres": {}
+    "destroy": {
+      "success": "content.destroy.success"
+    }
+  },
+  "A senha deve ter no mínimo 6 caracteres": {}
 }

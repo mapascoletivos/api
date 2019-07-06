@@ -26,8 +26,8 @@
       "user_not_registered": "Usuário não encontrado.",
       "invalid_password": "Senha inválida.",
       "needs_migration": {
-          "error": "Não foi possível acessar sua conta, contate o suporte.",
-          "sent": "Você precisa definir uma nova senha, cheque seu e-mail."
+        "error": "Não foi possível acessar sua conta, contate o suporte.",
+        "sent": "Você precisa definir uma nova senha, cheque seu e-mail."
       }
     },
     "logout": {
@@ -39,12 +39,12 @@
     }
   },
   "admin": {
-      "invite_user": {
-          "success": "Usuário convidado com sucesso."
-      },
-      "first_admin": {
-          "success": "Administrador criado com sucesso."
-      }
+    "invite_user": {
+      "success": "Usuário convidado com sucesso."
+    },
+    "first_admin": {
+      "success": "Administrador criado com sucesso."
+    }
   },
   "content": {
     "destroy": {
