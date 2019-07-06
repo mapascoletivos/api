@@ -26,8 +26,8 @@
       "user_not_registered": "Usuário não encontrado.",
       "invalid_password": "Senha inválida.",
       "needs_migration": {
-          "error": "Não foi possível acessar sua conta, contate o suporte.",
-          "sent": "Você precisa definir uma nova senha, cheque seu e-mail."
+        "error": "Não foi possível acessar sua conta, contate o suporte.",
+        "sent": "Você precisa definir uma nova senha, cheque seu e-mail."
       }
     },
     "logout": {
@@ -39,12 +39,12 @@
     }
   },
   "admin": {
-      "invite_user": {
-          "success": "Usuário convidado com sucesso."
-      },
-      "first_admin": {
-          "success": "Administrador criado com sucesso."
-      }
+    "invite_user": {
+      "success": "Usuário convidado com sucesso."
+    },
+    "first_admin": {
+      "success": "Administrador criado com sucesso."
+    }
   },
   "content": {
     "destroy": {
@@ -355,19 +355,17 @@
       "email": {
         "change": {
           "bye": "Bom mapeamento!",
-          "intro": "Você solicitou alteração do seu endereço de e-mail.",
-          "link": "Clique para proceder com a alteração",
+          "intro": "Visite o link para associar este endereço de e-mail à sua conta:",
           "salute": "Olá, __username__,"
         },
         "confirm": {
           "bye": "Bom mapeamento!",
-          "intro": "É necessária confirmação de seu endereço de e-mail.",
-          "link": "Clique para confirmar.",
+          "intro": "Para ativar sua conta é necessária a confirmação do seu endereço de e-mail. Por favor, visite o link para continuar:",
           "salute": "Olá, __username__,"
         }
       },
       "password": {
-        "recover": {
+        "reset": {
           "ignore": "Se você não fez esta solicitação, ignore este e-mail.",
           "intro": "Siga o link abaixo para definir uma nova senha.",
           "link": "Definir senha.",

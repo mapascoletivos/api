@@ -1,0 +1,5 @@
+p=locals.t('views.mailer.password.reset.salute', { username: locals.user.name})
+p=locals.t('views.mailer.password.reset.intro')
+p=`${locals.serverUrl}/new_password/${locals.token._id}`
+p=locals.t('views.mailer.password.reset.ignore')
+p=locals.t('views.mailer.password.reset.thanks')
