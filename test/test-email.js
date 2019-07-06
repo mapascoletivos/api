@@ -64,7 +64,7 @@ describe('E-mail notifications', function () {
     });
 
     body.should.be.equal(
-      '<p>Hi, user,</p><p>Please visit the link to associate this e-mail address to your account:</p><p>http://localhost:3000/email_change/token-string</p><p>Nice mapping!</p>'
+      '<p>Hi, user,</p><p>Please visit the link to define a new password.</p><p>http://localhost:3000/new_password/token-string</p><p>Or ignore this e-mail if you didn\'t requested a password reset.</p><p>Nice mapping!</p>'
     );
   });
 });

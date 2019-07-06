@@ -33,8 +33,8 @@
       },
       "password": {
         "reset": {
-          "ignore": "Please ignore this e-mail if you didn't requested a password reset.",
-          "intro": "Visit the link to define a new password.",
+          "ignore": "Or ignore this e-mail if you didn't requested a password reset.",
+          "intro": "Please visit the link to define a new password.",
           "salute": "Hi, __username__,",
           "thanks": "Nice mapping!"
         }
