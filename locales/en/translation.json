@@ -20,6 +20,11 @@
           "salute": "Hi, __username__,",
           "intro": "Your e-mail address need to be confirmed to activate your account. Please visit the link to proceed:",
           "bye": "Nice mapping!"
+        },
+        "change": {
+          "salute": "Hi, __username__,",
+          "intro": "Please visit the link to associate this e-mail address to your account:",
+          "bye": "Nice mapping!"
         }
       },
       "subjects": {

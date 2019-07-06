@@ -1,8 +1,4 @@
 p=locals.t('views.mailer.email.change.salute', {username: locals.user.name})
-
 p=locals.t('views.mailer.email.change.intro')
-
-p 
-	a(href='#{locals.serverUrl}/email_change/#{locals.token._id}')=locals.t('views.mailer.email.change.link')
-
+p=`${locals.serverUrl}/email_change/${locals.token._id}`
 p=locals.t('views.mailer.email.change.bye')

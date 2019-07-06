@@ -26,7 +26,7 @@ describe('E-mail notifications', function () {
       .expect(500);
   });
 
-  it('render confirmation e-mail from options', async function () {
+  it('render "activate account" e-mail from options', async function () {
     const body = pug.renderFile(templatesPath + '/email/confirm.jade', {
       t: i18n.t,
       user: { name: 'user' },
@@ -37,6 +37,20 @@ describe('E-mail notifications', function () {
 
     body.should.be.equal(
       '<p>Hi, user,</p><p>Your e-mail address need to be confirmed to activate your account. Please visit the link to proceed:</p><p>http://localhost:3000/confirm_email/token-string</p><p>Nice mapping!</p>'
+    );
+  });
+
+  it('render "change e-mail address" e-mail from options', async function () {
+    const body = pug.renderFile(templatesPath + '/email/change.jade', {
+      t: i18n.t,
+      user: { name: 'user' },
+      token: { _id: 'token-string' },
+      serverUrl: 'http://localhost:3000',
+      appUrl: 'http://localhost:8000'
+    });
+
+    body.should.be.equal(
+      '<p>Hi, user,</p><p>Please visit the link to associate this e-mail address to your account:</p><p>http://localhost:3000/email_change/token-string</p><p>Nice mapping!</p>'
     );
   });
 });

@@ -355,8 +355,7 @@
       "email": {
         "change": {
           "bye": "Bom mapeamento!",
-          "intro": "Você solicitou alteração do seu endereço de e-mail.",
-          "link": "Clique para proceder com a alteração",
+          "intro": "Visite o link para associar este endereço de e-mail à sua conta:",
           "salute": "Olá, __username__,"
         },
         "confirm": {
