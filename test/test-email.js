@@ -53,4 +53,18 @@ describe('E-mail notifications', function () {
       '<p>Hi, user,</p><p>Please visit the link to associate this e-mail address to your account:</p><p>http://localhost:3000/email_change/token-string</p><p>Nice mapping!</p>'
     );
   });
+
+  it('render "reset password" e-mail from options', async function () {
+    const body = pug.renderFile(templatesPath + '/password/reset.jade', {
+      t: i18n.t,
+      user: { name: 'user' },
+      token: { _id: 'token-string' },
+      serverUrl: 'http://localhost:3000',
+      appUrl: 'http://localhost:8000'
+    });
+
+    body.should.be.equal(
+      '<p>Hi, user,</p><p>Please visit the link to associate this e-mail address to your account:</p><p>http://localhost:3000/email_change/token-string</p><p>Nice mapping!</p>'
+    );
+  });
 });

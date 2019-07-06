@@ -28,7 +28,16 @@
         }
       },
       "subjects": {
-        "confirm_email": "Active your account"
+        "confirm_email": "Active your account",
+        "password_reset": "Reset your password"
+      },
+      "password": {
+        "reset": {
+          "ignore": "Please ignore this e-mail if you didn't requested a password reset.",
+          "intro": "Visit the link to define a new password.",
+          "salute": "Hi, __username__,",
+          "thanks": "Nice mapping!"
+        }
       }
     },
     "admin": {

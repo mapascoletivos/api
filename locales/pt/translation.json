@@ -365,7 +365,7 @@
         }
       },
       "password": {
-        "recover": {
+        "reset": {
           "ignore": "Se você não fez esta solicitação, ignore este e-mail.",
           "intro": "Siga o link abaixo para definir uma nova senha.",
           "link": "Definir senha.",

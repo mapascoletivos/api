@@ -341,7 +341,7 @@
         }
       },
       "password": {
-        "recover": {
+        "reset": {
           "ignore": "Si no has solicitado, ignore este correo.",
           "intro": "Has solicitado cambio de contraseña.",
           "link": "Segui para el cambio de contraseña.",
