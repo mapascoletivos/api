@@ -361,8 +361,7 @@
         },
         "confirm": {
           "bye": "Bom mapeamento!",
-          "intro": "É necessária confirmação de seu endereço de e-mail.",
-          "link": "Clique para confirmar.",
+          "intro": "Para ativar sua conta é necessária a confirmação do seu endereço de e-mail. Por favor, visite o link para continuar:",
           "salute": "Olá, __username__,"
         }
       },

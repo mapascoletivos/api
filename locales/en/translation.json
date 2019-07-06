@@ -17,14 +17,13 @@
         "mailer": {
             "email": {
                 "confirm": {
-                    "salute": "views.mailer.email.confirm.salute",
-                    "intro": "views.mailer.email.confirm.intro",
-                    "link": "views.mailer.email.confirm.link",
-                    "bye": "views.mailer.email.confirm.bye"
+                    "salute": "Hi, __username__,",
+                    "intro": "Your e-mail address need to be confirmed to activate your account. Please visit the link to proceed:",
+                    "bye": "Nice mapping!"
                 }
             },
             "subjects": {
-                "confirm_email": "views.mailer.subjects.confirm_email"
+                "confirm_email": "Active your account",
             }
         },
         "admin": {

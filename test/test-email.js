@@ -1,8 +1,12 @@
-const { createUser, resetFixtures } = require('./fixtures');
+const { join } = require('path');
 const request = require('supertest');
+const pug = require('pug');
+const { createUser, resetFixtures } = require('./fixtures');
+const i18n = require('../lib/i18n');
 
 const apiPrefix = '/api/v1';
 const app = global.server;
+const templatesPath = join(__dirname, '..', 'app', 'views', 'mailer');
 
 let user1;
 
@@ -12,7 +16,7 @@ describe('E-mail notifications', function () {
     user1 = await createUser();
   });
 
-  it('/forgot_password should return error when emails is misconfigured', async function () {
+  it('/forgot_password should return error when emails is not configured', async function () {
     await request(app)
       .post(apiPrefix + '/forgot_password')
       .send({
@@ -20,5 +24,19 @@ describe('E-mail notifications', function () {
       })
       .expect('Content-Type', /json/)
       .expect(500);
+  });
+
+  it('render confirmation e-mail from options', async function () {
+    const body = pug.renderFile(templatesPath + '/email/confirm.jade', {
+      t: i18n.t,
+      user: { name: 'user' },
+      token: { _id: 'token-string' },
+      serverUrl: 'http://localhost:3000',
+      appUrl: 'http://localhost:8000'
+    });
+
+    body.should.be.equal(
+      '<p>Hi, user,</p><p>Your e-mail address need to be confirmed to activate your account. Please visit the link to proceed:</p><p>http://localhost:3000/confirm_email/token-string</p><p>Nice mapping!</p>'
+    );
   });
 });
