@@ -1,7 +1,3 @@
-/**
- * Module dependencies.
- */
-
 const { errorMessages, asyncExpressMiddleware } = require('../../lib/utils');
 const validateRecaptchaResponse = require('../../lib/validate-recaptcha');
 const validator = require('validator');
@@ -10,11 +6,11 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const Layer = mongoose.model('Layer');
 const Map = mongoose.model('Map');
+const logger = require('../../lib/logger');
 
 /**
  * Find user by id
  */
-
 exports.user = function (req, res, next, id) {
   var query = { username: id };
   if (id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -34,51 +30,48 @@ exports.user = function (req, res, next, id) {
  */
 
 exports.create = asyncExpressMiddleware(async function (req, res) {
-  const { recaptchaResponse } = req.body;
-  var user = new User(req.body);
-  var preValidationErrors = [];
+  try {
+    const { recaptchaResponse } = req.body;
+    var user = new User(req.body);
+    var preValidationErrors = [];
 
-  function saveUser () {
-    user.save(function (err) {
-      if (err) {
-        return res.json(400, messages.mongooseErrors(req.i18n.t, err, 'user'));
-      } else {
-        return res.json(
-          messages.success(req.i18n.t('user.create.email.success'))
+    // Checks existence of all fields before sending to mongoose
+
+    if (!user.name) {
+      preValidationErrors.push(req.i18n.t('user.create.error.missing_name'));
+    }
+    if (!user.email) {
+      preValidationErrors.push(req.i18n.t('user.create.error.email.missing'));
+    } else if (!validator.isEmail(user.email)) {
+      preValidationErrors.push(req.i18n.t('user.create.error.email.invalid'));
+    }
+
+    if (!user.password) {
+      preValidationErrors.push(
+        req.i18n.t('user.create.error.password.missing')
+      );
+    } else if (user.password.length < 6) {
+      preValidationErrors.push(req.i18n.t('user.create.error.password.length'));
+    }
+
+    if (process.env.NODE_ENV !== 'test' && !process.env.CIRCLE_BRANCH) {
+      const validCaptcha = await validateRecaptchaResponse(recaptchaResponse);
+      if (!validCaptcha) {
+        preValidationErrors.push(
+          req.i18n.t('user.create.error.missing.captcha')
         );
       }
-    });
-  }
-
-  // Checks existence of all fields before sending to mongoose
-
-  if (!user.name) {
-    preValidationErrors.push(req.i18n.t('user.create.error.missing_name'));
-  }
-  if (!user.email) {
-    preValidationErrors.push(req.i18n.t('user.create.error.email.missing'));
-  } else if (!validator.isEmail(user.email)) {
-    preValidationErrors.push(req.i18n.t('user.create.error.email.invalid'));
-  }
-
-  if (!user.password) {
-    preValidationErrors.push(req.i18n.t('user.create.error.password.missing'));
-  } else if (user.password.length < 6) {
-    preValidationErrors.push(req.i18n.t('user.create.error.password.length'));
-  }
-
-  if (process.env.NODE_ENV !== 'test' && !process.env.CIRCLE_BRANCH) {
-    const validCaptcha = await validateRecaptchaResponse(recaptchaResponse);
-    if (!validCaptcha) {
-      preValidationErrors.push(req.i18n.t('user.create.error.missing.captcha'));
     }
-  }
 
-  if (preValidationErrors.length > 0) {
-    return res.json(400, {
-      messages: messages.errorsArray(req.i18n, preValidationErrors)
-    });
-  } else {
+    if (preValidationErrors.length > 0) {
+      return res.json(400, {
+        messages: messages.errorsArray(req.i18n, preValidationErrors)
+      });
+    }
+
+    // Create user
+    await user.save();
+
     // Send e-mail confirmation if needed
     if (req.app.locals.settings.mailer.enforceEmailConfirmation) {
       var data = {
@@ -86,23 +79,19 @@ exports.create = asyncExpressMiddleware(async function (req, res) {
         callbackUrl: req.app.locals.settings.general.clientUrl + '/login'
       };
 
-      req.app.locals.mailer.sendEmail(
+      await req.app.locals.mailer.sendEmail(
         'confirm_email',
         user.email,
         data,
-        req.i18n,
-        function (err) {
-          if (err) {
-            return res.json(
-              400,
-              messages.error(req.i18n.t('user.create.email.error.mailer'))
-            );
-          } else saveUser();
-        }
+        req.i18n
       );
-    } else {
-      saveUser();
     }
+
+    // Return success
+    return res.json(messages.success(req.i18n.t('user.create.email.success')));
+  } catch (error) {
+    logger.error(error);
+    return res.json(500, 'Unexpected error');
   }
 });
 
